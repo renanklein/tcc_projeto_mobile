@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Text("Criar Conta",
             style: TextStyle(color: Colors.white),),
             onPressed: () {
-              Navigator.of(context).pushReplacement(
+              Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => SignupScreen())
               );
             },

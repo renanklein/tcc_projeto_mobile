@@ -43,6 +43,8 @@ flutter:
   assets:
     - assets/images/seringa_icone.png
     - assets/images/estetoscopio.png
+    - assets/images/drawer_header.jpg
+    - assets/images/avatar_placeholder.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

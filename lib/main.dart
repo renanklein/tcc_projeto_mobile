@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
       title: "Projeto tcc",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.blueAccent,
+        primaryColor: Colors.blueGrey
       ),
       home: HomeScreen()
     );

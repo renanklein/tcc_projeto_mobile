@@ -10,16 +10,16 @@ class UserDrawer extends StatelessWidget {
           children: <Widget>[
             _createDrawerHeader(),
             DrawerTile(
-                icon: Icons.person, text: "pacientes", onTapCallback: null),
+                icon: Icons.person, text: "Pacientes", onTapCallback: null),
             DrawerTile(
-                icon: Icons.event_note, text: "exames", onTapCallback: null),
+                icon: Icons.event_note, text: "Exames", onTapCallback: null),
             DrawerTile(
-                icon: Icons.assignment, text: "anamnese", onTapCallback: null),
+                icon: Icons.assignment, text: "Anamnese", onTapCallback: null),
             DrawerTile(
-                icon: Icons.info, text: "relatorios", onTapCallback: null),
+                icon: Icons.info, text: "Relatorios", onTapCallback: null),
             Divider(),
             DrawerTile(
-                icon: Icons.bug_report, text: "relatar erros", onTapCallback: null),
+                icon: Icons.bug_report, text: "Relatar Erros", onTapCallback: null),
           ],
         ));
   }

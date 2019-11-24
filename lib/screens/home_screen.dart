@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/tiles/home_card_tile.dart';
+import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,7 +23,11 @@ class HomeScreen extends StatelessWidget {
             color: Colors.white,
           ),
           color: Theme.of(context).primaryColor,
-          onPressed: (){},
+          onPressed: (){
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => UserCalendar())
+            );
+          },
         ),
       ),
       body: Container(

@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 
-class CalendarEventTile extends StatefulWidget {
+class CalendarEventTile extends StatelessWidget {
   String eventText;
   DateTime eventDate;
   CalendarEventTile({@required this.eventText, @required this.eventDate});
 
   @override
-  _CalendarEventTileState createState() => _CalendarEventTileState();
-}
-
-class _CalendarEventTileState extends State<CalendarEventTile> {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: AnimatedContainer(
         decoration: BoxDecoration(
+          color: Colors.black,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(15.0),
         ),
-        duration: Duration(milliseconds: 300),
-        color: Theme.of(context).primaryColor,
+        duration: Duration(milliseconds: 3000),
         child: Row(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             CircleAvatar(
               radius: 25.0,
@@ -34,7 +30,7 @@ class _CalendarEventTileState extends State<CalendarEventTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  widget.eventText,
+                  eventText,
                   style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.w500,
@@ -42,7 +38,7 @@ class _CalendarEventTileState extends State<CalendarEventTile> {
                   ),
                 ),
                 Text(
-                  "${widget.eventDate.day}",
+                  "${eventDate.day}",
                   style: TextStyle(
                     color : Colors.grey,
                     fontWeight: FontWeight.w300,
@@ -63,4 +59,5 @@ class _CalendarEventTileState extends State<CalendarEventTile> {
       },
     );
   }
+ 
 }

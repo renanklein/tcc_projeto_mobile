@@ -19,8 +19,8 @@ class _UserCalendarState extends State<UserCalendar> {
     _selectedDay = DateTime.now();
     _events = {
       _selectedDay.subtract(Duration(days: 0)): ["Ir ao mercado"],
-      _selectedDay.add(Duration(days: 3)): ["Lavar a roupa suja"],
-      _selectedDay.add(Duration(days: 2)): [
+      _selectedDay.add(Duration(days: 0)): ["Lavar a roupa suja"],
+      _selectedDay.add(Duration(days: 1)): [
         "Estudar para a prova de matemática"
       ],
       _selectedDay.add(Duration(days: 5)): ["Visitar os avós"],
@@ -89,7 +89,7 @@ class _UserCalendarState extends State<UserCalendar> {
       height: 10.0,
       child: Center(
         child: Text(
-          "${date.day}",
+          "Dia : ${date.day}",
           style: TextStyle(
               color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16.0),
         ),
@@ -110,7 +110,9 @@ class _UserCalendarState extends State<UserCalendar> {
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       shrinkWrap: true,
       children: _selectedDayDescriptions.map((event){
-        return CalendarEventTile(eventText: event, eventDate: _selectedDay);
+        return ListTile(
+          title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
+        );
       }).toList(),
     );
   }

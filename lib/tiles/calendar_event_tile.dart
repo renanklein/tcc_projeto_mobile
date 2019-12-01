@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 
 class CalendarEventTile extends StatelessWidget {
   String eventText;
   DateTime eventDate;
   CalendarEventTile({@required this.eventText, @required this.eventDate});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -56,11 +56,17 @@ class CalendarEventTile extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Scaffold.of(context).showBottomSheet((context) {
-          return Container(
-            child: Text("Tela para editar evento"),
-          );
-        });
+        showBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          elevation: 4.0,
+          builder: (context){
+            return Container(
+              height: 250,
+              child: EventEditorTile(eventText: this.eventText, eventDate: this.eventDate,),
+            );
+          }
+        );
       },
     );
   }

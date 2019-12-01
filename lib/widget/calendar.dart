@@ -18,8 +18,8 @@ class _UserCalendarState extends State<UserCalendar> {
     _controller = new CalendarController();
     _selectedDay = DateTime.now();
     _events = {
-      _selectedDay.subtract(Duration(days: 0)): ["Ir ao mercado"],
-      _selectedDay.add(Duration(days: 0)): ["Lavar a roupa suja"],
+      _selectedDay.subtract(Duration(days: 0)): ["Ir ao mercado","Ir a padaria", "Visitar fulano"],
+      _selectedDay.add(Duration(days: 2)): ["Lavar a roupa suja"],
       _selectedDay.add(Duration(days: 1)): [
         "Estudar para a prova de matemática"
       ],
@@ -41,6 +41,12 @@ class _UserCalendarState extends State<UserCalendar> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Agenda"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: (){},
+          )
+        ],
         elevation: 0.0,
       ),
       body: Container(

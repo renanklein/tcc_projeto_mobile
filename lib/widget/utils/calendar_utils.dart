@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/tiles/calendar_event_tile.dart';
 
-class CalendarUtils{
-   static Widget buildSelectedDayBorder(DateTime date) {
+class CalendarUtils {
+  static Widget buildSelectedDayBorder(DateTime date) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
@@ -29,13 +29,14 @@ class CalendarUtils{
     );
   }
 
-  static Widget buildEventList(List _selectedDayDescriptions, DateTime _selectedDay) {
+  static Widget buildEventList(
+      List _selectedDayDescriptions, DateTime _selectedDay) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       shrinkWrap: true,
-      children: _selectedDayDescriptions.map((event){
+      children: _selectedDayDescriptions.map((event) {
         return ListTile(
-          title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
+         title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
         );
       }).toList(),
     );

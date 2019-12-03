@@ -12,6 +12,7 @@ class CalendarEventTile extends StatelessWidget {
     return GestureDetector(
       child: AnimatedContainer(
         height: 65.0,
+        width: 120.0,
         decoration: BoxDecoration(
           color: Colors.black,
           shape: BoxShape.rectangle,

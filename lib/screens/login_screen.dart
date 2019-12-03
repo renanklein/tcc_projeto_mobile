@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/screens/home_screen.dart';
 import 'package:tcc_projeto_app/screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -111,7 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0
                 )),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder : (context) => HomeScreen()));
+                },
               )
             ),
             

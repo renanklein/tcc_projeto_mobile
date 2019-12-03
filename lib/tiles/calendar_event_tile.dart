@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/tiles/elements/events/event_avatar.dart';
+import 'package:tcc_projeto_app/tiles/elements/events/event_description.dart';
 import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 
 class CalendarEventTile extends StatelessWidget {
@@ -20,46 +22,19 @@ class CalendarEventTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 20.0),
-              child: CircleAvatar(
-                radius: 25.0,
-                backgroundColor: Colors.transparent,
-                backgroundImage:
-                    AssetImage("assets/images/avatar_placeholder.jpg"),
-              ),
-            ),
+            EventAvatar(),
             SizedBox(
               width: 15.0,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  eventText,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20.0),
-                ),
-                Text(
-                  "${eventDate.day}",
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 14.0),
-                )
-              ],
-            )
-          ],
+            EventDescription(eventText: eventText, eventDate: eventDate)
+          ]
         ),
       ),
       onTap: () {
         showBottomSheet(
           context: context,
-          backgroundColor: Colors.transparent,
-          elevation: 4.0,
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0.0,
           builder: (context){
             return Container(
               height: 250,

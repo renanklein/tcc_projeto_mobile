@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tcc_projeto_app/tiles/calendar_event_tile.dart';
+import 'package:tcc_projeto_app/widget/utils/calendar_utils.dart';
 
 class UserCalendar extends StatefulWidget {
   @override
@@ -18,7 +18,11 @@ class _UserCalendarState extends State<UserCalendar> {
     _controller = new CalendarController();
     _selectedDay = DateTime.now();
     _events = {
-      _selectedDay.subtract(Duration(days: 0)): ["Ir ao mercado","Ir a padaria", "Visitar fulano"],
+      _selectedDay.subtract(Duration(days: 0)): [
+        "Ir ao mercado",
+        "Ir a padaria",
+        "Visitar fulano"
+      ],
       _selectedDay.add(Duration(days: 2)): ["Lavar a roupa suja"],
       _selectedDay.add(Duration(days: 1)): [
         "Estudar para a prova de matemática"
@@ -44,7 +48,7 @@ class _UserCalendarState extends State<UserCalendar> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: (){},
+            onPressed: () {},
           )
         ],
         elevation: 0.0,
@@ -56,10 +60,10 @@ class _UserCalendarState extends State<UserCalendar> {
               TableCalendar(
                 locale: "pt_BR",
                 onDaySelected: (date, events) {
-                 setState(() {
+                  setState(() {
                     _selectedDay = date;
                     _selectedDayDescriptions = events;
-                 });
+                  });
                 },
                 events: _events,
                 calendarController: _controller,
@@ -75,51 +79,13 @@ class _UserCalendarState extends State<UserCalendar> {
                     formatButtonTextStyle: TextStyle(color: Colors.white)),
                 builders: CalendarBuilders(
                     markersBuilder: (context, date, events, _) {
-                  return <Widget>[_buildEventMarker(date, events)];
+                  return <Widget>[CalendarUtils.buildEventMarker(date, events)];
                 }),
               ),
-             _buildEventList()
+              CalendarUtils.buildEventList(
+                  _selectedDayDescriptions, _selectedDay)
             ],
           )),
-    );
-  }
-
-  Widget _buildSelectedDayBorder(DateTime date) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5.0),
-        color: Colors.white,
-      ),
-      width: 5.0,
-      height: 10.0,
-      child: Center(
-        child: Text(
-          "Dia : ${date.day}",
-          style: TextStyle(
-              color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16.0),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEventMarker(DateTime eventDate, List events) {
-    return Container(
-      decoration: BoxDecoration(shape: BoxShape.rectangle, color: Colors.white),
-      width: 10.0,
-      height: 2.0,
-    );
-  }
-
-  Widget _buildEventList() {
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      shrinkWrap: true,
-      children: _selectedDayDescriptions.map((event){
-        return ListTile(
-          title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
-        );
-      }).toList(),
     );
   }
 }

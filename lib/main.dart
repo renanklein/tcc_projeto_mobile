@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
-import 'screens/home_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main (){

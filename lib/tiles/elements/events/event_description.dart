@@ -20,7 +20,7 @@ class EventDescription extends StatelessWidget {
                   fontSize: 20.0),
             ),
             Text(
-              "${this.eventDate.day}",
+              "Horário ${eventDate.hour} : ${eventDate.minute}",
               style: TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.w300,

@@ -30,7 +30,7 @@ class _EventEditorTileState extends State<EventEditorTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin:  EdgeInsets.only(top : 5, left: 15.0,right: 15.0, bottom: 5),
+      margin:  EdgeInsets.only(top : 5, left: 15.0,right: 15.0, bottom: 30.0),
       padding: EdgeInsets.only(top: 10.0,left: 10.0 ,right: 10.0),
       height: 160,
       decoration: BoxDecoration(

@@ -34,7 +34,7 @@ class CalendarEventTile extends StatelessWidget {
       onTap: () {
         showBottomSheet(
           context: context,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Colors.transparent,
           elevation: 0.0,
           builder: (context){
             return Container(

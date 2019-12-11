@@ -7,6 +7,7 @@ class CalendarEventTile extends StatelessWidget {
   String eventText;
   DateTime eventDate;
   CalendarEventTile({@required this.eventText, @required this.eventDate});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -39,7 +40,10 @@ class CalendarEventTile extends StatelessWidget {
           builder: (context){
             return Container(
               height: 250,
-              child: EventEditorTile(eventText: this.eventText, eventDate: this.eventDate,),
+              child: EventEditorTile( 
+                isEdit: true,
+                eventKey: eventDate,
+              ) 
             );
           }
         );

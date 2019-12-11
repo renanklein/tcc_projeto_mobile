@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/widget/utils/calendar_utils.dart';
 
 class UserCalendar extends StatefulWidget {
@@ -12,6 +13,7 @@ class _UserCalendarState extends State<UserCalendar> {
   List _selectedDayDescriptions;
   CalendarController _controller;
   DateTime _selectedDay;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,7 @@ class _UserCalendarState extends State<UserCalendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
@@ -49,7 +52,18 @@ class _UserCalendarState extends State<UserCalendar> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              _scaffoldKey.currentState.showBottomSheet(
+                  (context){
+                    return Container(
+                      height: 250,
+                      child: EventEditorTile(isEdit: false),
+                    );
+                  },
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+              );
+            },
           )
         ],
         elevation: 0.0,

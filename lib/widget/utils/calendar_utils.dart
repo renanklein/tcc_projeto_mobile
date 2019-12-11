@@ -36,7 +36,9 @@ class CalendarUtils {
       shrinkWrap: true,
       children: _selectedDayDescriptions.map((event) {
         return ListTile(
-         title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
+         title: CalendarEventTile(
+         eventText: event, 
+         eventDate: _selectedDay),
         );
       }).toList(),
     );

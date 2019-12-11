@@ -45,7 +45,6 @@ class _UserCalendarState extends State<UserCalendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Agenda"),
@@ -70,7 +69,7 @@ class _UserCalendarState extends State<UserCalendar> {
       ),
       body: Container(
           color: Theme.of(context).primaryColor,
-          child: Column(
+          child: ListView(
             children: <Widget>[
               TableCalendar(
                 locale: "pt_BR",

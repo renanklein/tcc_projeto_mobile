@@ -31,16 +31,15 @@ class CalendarUtils {
 
   static Widget buildEventList(
       List _selectedDayDescriptions, DateTime _selectedDay) {
-    return ListView(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      shrinkWrap: true,
-      children: _selectedDayDescriptions.map((event) {
-        return ListTile(
-         title: CalendarEventTile(
-         eventText: event, 
-         eventDate: _selectedDay),
-        );
-      }).toList(),
+      child: Column(
+        children: _selectedDayDescriptions.map((event) {
+          return ListTile(
+            title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
+          );
+        }).toList(),
+      ),
     );
   }
 }

@@ -77,7 +77,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32.0)
                 ),
-            )
+            ),
+            onChanged: (_){},
             ),
 
             SizedBox(

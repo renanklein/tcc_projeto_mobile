@@ -25,6 +25,11 @@ dependencies:
   cupertino_icons: ^0.1.2
   table_calendar: ^2.2.1
   datetime_picker_formfield: ^0.4.3
+  cloud_firestore: ^0.13.0+1
+  scoped_model: ^1.0.1
+  firebase_auth: ^0.15.2
+
+  
 
 dev_dependencies:
   flutter_test:

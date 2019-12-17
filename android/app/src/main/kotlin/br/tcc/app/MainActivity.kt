@@ -1,4 +1,4 @@
-package com.example.tcc_projeto_app
+package br.tcc.app
 
 import android.os.Bundle
 

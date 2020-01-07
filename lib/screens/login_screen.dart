@@ -120,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onFail(){
     this.scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
       content: Text(
         "Falha ao autenticar, verifique os dados informados",
         style: TextStyle(

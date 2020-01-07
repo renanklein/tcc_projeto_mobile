@@ -22,8 +22,8 @@ class UserModel extends Model{
       password: pass
     )
     .then((resp) async{
-      await saveUserData(userDados);
       this.user = resp.user;
+      await saveUserData(userDados);
       onSuccess();
       isLoading = false;
       notifyListeners();
@@ -48,7 +48,6 @@ class UserModel extends Model{
     )
     .then((resp) async {
       await loadUser();
-      loadUser();
       onSuccess();
       isLoading = false;
       notifyListeners();
@@ -69,12 +68,16 @@ class UserModel extends Model{
   Future<void> loadUser() async{
     if(this.user == null){
       this.user = await this.userAuth.currentUser();
+      await Firestore.instance.collection("users").document(this.user.uid).get()
+        .then((resp){
+          this.userData = resp.data;
+        });
     }
   }
 
   Future<void> saveUserData(Map<String, dynamic> userData) async{
     this.userData = userData;
-    await Firestore.instance.collection("users").document().setData(userData);
+    await Firestore.instance.collection("users").document(this.user.uid).setData(userData);
   }
 
   bool isLoggedIn(){

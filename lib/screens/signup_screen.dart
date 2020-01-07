@@ -4,6 +4,7 @@ import 'package:tcc_projeto_app/models/user_model.dart';
 import 'package:tcc_projeto_app/screens/elements/email_field.dart';
 import 'package:tcc_projeto_app/screens/elements/name_field.dart';
 import 'package:tcc_projeto_app/screens/elements/password_field.dart';
+import 'package:tcc_projeto_app/screens/home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -128,7 +129,9 @@ class _SignupScreenState extends State<SignupScreen> {
     Future.delayed(
       Duration(seconds: 2),
     ).then((resp) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen())
+      );
     });
   }
 

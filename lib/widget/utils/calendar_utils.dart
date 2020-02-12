@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/models/agenda_model.dart';
 import 'package:tcc_projeto_app/tiles/calendar_event_tile.dart';
 
 class CalendarUtils {
@@ -29,12 +30,13 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(
-      List _selectedDayDescriptions, DateTime _selectedDay) {
+  static Widget buildEventList(List _selectedDayDescriptions,
+      DateTime _selectedDay, AgendaModel agendaModel) {
+    List dayEvents = _selectedDayDescriptions ?? new List();
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
-        children: _selectedDayDescriptions.map((event) {
+        children: dayEvents.map((event) {
           return ListTile(
             title: CalendarEventTile(eventText: event, eventDate: _selectedDay),
           );

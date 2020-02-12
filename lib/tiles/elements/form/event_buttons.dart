@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/models/agenda_model.dart';
 
 class EventButtons extends StatefulWidget {
   String eventText;
   String eventDate;
   DateTime eventKey;
   bool isEdit;
+  AgendaModel agendaModel;
   EventButtons(
       {@required this.eventText,
       @required this.eventDate,
       @required this.isEdit,
+      @required this.agendaModel,
       this.eventKey});
   @override
   _EventButtonsState createState() => _EventButtonsState();
@@ -54,7 +57,9 @@ class _EventButtonsState extends State<EventButtons> {
               if (this.widget.isEdit) {
                 // edit existing event
               } else {
-                // create another one
+                this.widget.agendaModel.addEvent(
+                  this.widget.eventText,
+                  DateTime.parse(this.widget.eventDate));
               }
               Future.delayed(Duration(seconds: 1));
               Navigator.of(context).pop();

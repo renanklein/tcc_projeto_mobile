@@ -57,6 +57,7 @@ class _EventButtonsState extends State<EventButtons> {
               if (this.widget.isEdit) {
                 // edit existing event
               } else {
+                var test = DateTime.parse(this.widget.eventDate);
                 this.widget.agendaModel.addEvent(
                   this.widget.eventText,
                   DateTime.parse(this.widget.eventDate));

@@ -11,16 +11,19 @@ class UserCalendar extends StatefulWidget {
 }
 
 class _UserCalendarState extends State<UserCalendar> {
-  Map<DateTime, List<dynamic>> _events;
+  AgendaModel model;
+  Future<Map<DateTime, List<dynamic>>> _events;
   List _selectedDayDescriptions;
   CalendarController _controller;
   DateTime _selectedDay;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
+    this.model = ScopedModel.of<AgendaModel>(context);
+    this._controller = new CalendarController();
+    this._events = this.model.getEvents();
     super.initState();
-    _controller = new CalendarController();
-    _selectedDay = DateTime.now();
   }
 
   @override
@@ -31,72 +34,80 @@ class _UserCalendarState extends State<UserCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<AgendaModel>(builder: (context, child, model) {
-      if(model.isLoading){
-        this._events = model.getEvents();
-        this._selectedDayDescriptions = this._events[_selectedDay];
-      }
-      
-      return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Agenda"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                _scaffoldKey.currentState.showBottomSheet(
-                  (context) {
-                    return Container(
-                      height: 250,
-                      child: EventEditorTile(isEdit: false, agendaModel: model),
+    return FutureBuilder(
+      future: this._events,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+          );
+        } else {
+          return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text("Agenda"),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    _scaffoldKey.currentState.showBottomSheet(
+                      (context) {
+                        return Container(
+                          height: 250,
+                          child: EventEditorTile(
+                              isEdit: false, agendaModel: this.model),
+                        );
+                      },
+                      backgroundColor: Colors.transparent,
+                      elevation: 0.0,
                     );
                   },
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
-                );
-              },
-            )
-          ],
-          elevation: 0.0,
-        ),
-        body: Container(
-            color: Theme.of(context).primaryColor,
-            child: ListView(
-              children: <Widget>[
-                TableCalendar(
-                  locale: "pt_BR",
-                  onDaySelected: (date, events) {
-                    setState(() {
-                      _selectedDay = date;
-                      _selectedDayDescriptions = events;
-                    });
-                  },
-                  events: _events,
-                  calendarController: _controller,
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  calendarStyle: CalendarStyle(
-                      weekdayStyle: TextStyle(color: Colors.white),
-                      weekendStyle: TextStyle(color: Colors.white12),
-                      todayStyle: TextStyle(color: Colors.white)),
-                  headerStyle: HeaderStyle(
-                      centerHeaderTitle: true,
-                      formatButtonShowsNext: false,
-                      titleTextStyle: TextStyle(color: Colors.white),
-                      formatButtonTextStyle: TextStyle(color: Colors.white)),
-                  builders: CalendarBuilders(
-                      markersBuilder: (context, date, events, _) {
-                    return <Widget>[
-                      CalendarUtils.buildEventMarker(date, events)
-                    ];
-                  }),
-                ),
-                CalendarUtils.buildEventList(
-                    _selectedDayDescriptions, _selectedDay, model)
+                )
               ],
-            )),
-      );
-    });
+              elevation: 0.0,
+            ),
+            body: Container(
+                color: Theme.of(context).primaryColor,
+                child: ListView(
+                  children: <Widget>[
+                    TableCalendar(
+                      locale: "pt_BR",
+                      onDaySelected: (date, events) {
+                        setState(() {
+                          this._selectedDay = date;
+                          this._selectedDayDescriptions = events;
+                        });
+                      },
+                      events: snapshot.data,
+                      calendarController: _controller,
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      calendarStyle: CalendarStyle(
+                          weekdayStyle: TextStyle(color: Colors.white),
+                          weekendStyle: TextStyle(color: Colors.white12),
+                          todayStyle: TextStyle(color: Colors.white)),
+                      headerStyle: HeaderStyle(
+                          centerHeaderTitle: true,
+                          formatButtonShowsNext: false,
+                          titleTextStyle: TextStyle(color: Colors.white),
+                          formatButtonTextStyle:
+                              TextStyle(color: Colors.white)),
+                      builders: CalendarBuilders(
+                          markersBuilder: (context, date, events, _) {
+                        return <Widget>[
+                          CalendarUtils.buildEventMarker(date, events)
+                        ];
+                      }),
+                    ),
+                    CalendarUtils.buildEventList(
+                        this._selectedDayDescriptions, this._selectedDay, this.model)
+                  ],
+                )),
+          );
+        }
+      },
+    );
   }
 }

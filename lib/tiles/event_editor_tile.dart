@@ -34,12 +34,12 @@ class _EventEditorTileState extends State<EventEditorTile> {
       child: Form(
         child: Column(
           children: <Widget>[
-            EventNameField(eventNameController: _eventNameController),
+            EventNameField(eventNameController: this._eventNameController),
             SizedBox(
               height: 10.0,
             ),
             EventDateField(
-              eventDateController: _eventDateController,
+              eventDateController: this._eventDateController,
             ),
             SizedBox(
               height: 20.0,

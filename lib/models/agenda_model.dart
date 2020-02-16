@@ -12,7 +12,6 @@ class AgendaModel extends Model {
     this._user = user;
     this._events = new Map<DateTime, List<dynamic>>();
   }
-
   void addEvent(String name, DateTime date) async {
     // under construction ...
     await Firestore.instance
@@ -20,16 +19,17 @@ class AgendaModel extends Model {
         .document(_user.uid)
         .collection("events")
         .add({"name": name, "date": date})
-        .then((resp) => {})
+        .then((resp) => {
+        })
         .catchError((error) => {});
   }
 
   void removeEvent() {}
 
 
- Map<DateTime, List<dynamic>> getEvents(){
+ Future<Map<DateTime, List<dynamic>>> getEvents() async{
    this.isLoading = true;
-   Firestore.instance
+   await Firestore.instance
         .collection("agenda")
         .document(this._user.uid)
         .collection("events")

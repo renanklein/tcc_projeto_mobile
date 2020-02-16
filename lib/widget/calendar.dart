@@ -64,6 +64,9 @@ class _UserCalendarState extends State<UserCalendar> {
                       backgroundColor: Colors.transparent,
                       elevation: 0.0,
                     );
+                    setState(() {
+                      this.build(context);
+                    });
                   },
                 )
               ],
@@ -101,8 +104,8 @@ class _UserCalendarState extends State<UserCalendar> {
                         ];
                       }),
                     ),
-                    CalendarUtils.buildEventList(
-                        this._selectedDayDescriptions, this._selectedDay, this.model)
+                    CalendarUtils.buildEventList(this._selectedDayDescriptions,
+                        this._selectedDay, this.model)
                   ],
                 )),
           );

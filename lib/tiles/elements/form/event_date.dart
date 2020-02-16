@@ -16,7 +16,7 @@ class EventDateField extends StatelessWidget {
             lastDate: DateTime(2030),
             context: context);
       },
-      format: DateFormat("yyy-MM-DD"),
+      format: DateFormat("yyy-MM-dd"),
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),

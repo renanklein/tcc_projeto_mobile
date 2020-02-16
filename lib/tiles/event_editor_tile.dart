@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/models/agenda_model.dart';
-import 'package:tcc_projeto_app/tiles/elements/form/event_buttons.dart';
 import 'package:tcc_projeto_app/tiles/elements/form/event_date.dart';
 import 'elements/form/event_name.dart';
 
@@ -8,9 +7,8 @@ class EventEditorTile extends StatefulWidget {
   bool isEdit;
   DateTime eventKey;
   AgendaModel agendaModel;
-
-  //placeholder event list
-  EventEditorTile({@required this.isEdit, @required this.agendaModel, this.eventKey});
+  EventEditorTile(
+      {@required this.isEdit, @required this.agendaModel, this.eventKey});
 
   @override
   _EventEditorTileState createState() => _EventEditorTileState();
@@ -44,12 +42,53 @@ class _EventEditorTileState extends State<EventEditorTile> {
             SizedBox(
               height: 20.0,
             ),
-            EventButtons(
-              eventText: _eventNameController.text,
-              eventDate: _eventDateController.text,
-              agendaModel: this.widget.agendaModel,
-              isEdit: this.widget.isEdit,
-              eventKey: this.widget.eventKey,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: RaisedButton(
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    child: Text(
+                      "${this.widget.isEdit ? "Editar" : "Criar"}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    onPressed: () {
+                      if (this.widget.isEdit) {
+                        // edit existing event
+                      } else {
+                        this.widget.agendaModel.addEvent(
+                            this._eventNameController.text,
+                            DateTime.parse(this._eventDateController.text));
+                      }
+                      Future.delayed(Duration(seconds: 1));
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
             )
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/models/agenda_model.dart';
+import 'package:tcc_projeto_app/model/agenda_model.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_avatar.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_description.dart';
 import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tcc_projeto_app/models/agenda_model.dart';
+import 'package:tcc_projeto_app/model/agenda_model.dart';
 import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/widget/utils/calendar_utils.dart';
 
@@ -24,6 +24,11 @@ class _UserCalendarState extends State<UserCalendar> {
     this._controller = new CalendarController();
     this._events = this.model.getEvents();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(UserCalendar oldAgenda){
+    super.didUpdateWidget(oldAgenda);
   }
 
   @override
@@ -64,9 +69,6 @@ class _UserCalendarState extends State<UserCalendar> {
                       backgroundColor: Colors.transparent,
                       elevation: 0.0,
                     );
-                    setState(() {
-                      this.build(context);
-                    });
                   },
                 )
               ],

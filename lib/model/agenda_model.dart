@@ -24,8 +24,7 @@ class AgendaModel extends Model {
         .collection("events")
         .document(eventsKey)
         .setData({"dayEvents": updatedDayEvents})
-        .then((resp) => {
-        })
+        .then((resp) => {})
         .catchError((error) => {});
   }
 
@@ -76,10 +75,11 @@ class AgendaModel extends Model {
     bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay);
     List dayEvents = new List();
     if (existsEventsInThatDay) {
+      this._events[eventDay].add(event);
       this._events[eventDay].forEach((event) => dayEvents.add(event));
+    } else {
+      dayEvents.add(event);
     }
-
-    dayEvents.add(event);
 
     return dayEvents;
   }

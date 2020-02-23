@@ -3,7 +3,8 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:tcc_projeto_app/models/user_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
-import 'models/agenda_model.dart';
+
+import 'model/agenda_model.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));

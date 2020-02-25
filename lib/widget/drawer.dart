@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:tcc_projeto_app/models/user_model.dart';
+import 'package:tcc_projeto_app/model/user_model.dart';
+import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
 import 'package:tcc_projeto_app/tiles/drawer_tile.dart';
 
 class UserDrawer extends StatelessWidget {
+  UserRepository userRepository;
+
+  UserDrawer({@required this.userRepository}) : assert(userRepository != null);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -13,7 +18,7 @@ class UserDrawer extends StatelessWidget {
           builder: (context, child, model) {
             if (model == null || model.isLoading) {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+                  MaterialPageRoute(builder: (context) => LoginScreen(userRepository : this.userRepository)));
             } else {
               return ListView(
                 children: <Widget>[
@@ -88,7 +93,7 @@ class UserDrawer extends StatelessWidget {
               onPressed: (){
                 model.logOut();
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen())
+                  MaterialPageRoute(builder: (context) => LoginScreen(userRepository: this.userRepository,))
                 );
               },
             ),

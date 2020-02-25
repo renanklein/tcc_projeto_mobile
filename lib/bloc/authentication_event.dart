@@ -9,9 +9,9 @@ class AppStarted extends AuthenticationEvent{
 }
 
 class LoggedIn extends AuthenticationEvent{
-  String token;
+  IdTokenResult token;
 
-  LoggedIn({@required String token});
+  LoggedIn({@required IdTokenResult token});
 }
 
 class LoggedOut extends AuthenticationEvent{}

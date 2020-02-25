@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 
@@ -10,13 +11,12 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   UserRepository userRepository;
-  String email;
-  String password;
+  String token;
 
   @override
-  AuthenticationState get initialState => AuthenticationInitial();
+  AuthenticationState get initialState => AuthenticationUninitialized();
 
-  AuthenticationBloc({@required this.userRepository});
+  AuthenticationBloc({@required this.userRepository}) : assert(userRepository != null);
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -34,9 +34,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     else if(event is LoggedIn){
       yield AuthenticationProcessing();
-      this.userRepository.signIn(
-        email: email, 
-        pass: password);
+      
+      final token = event.token;
+
+      if(token == null || token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0){
+          yield AuthenticationUnauthenticated();
+      }
+
       yield AuthenticationAuthenticated();
     }
 

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/tiles/home_card_tile.dart';
 import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
 class HomeScreen extends StatelessWidget {
+  UserRepository userRepository;
 
+  HomeScreen({@required this.userRepository}) : assert(userRepository != null);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      drawer: UserDrawer(),
+      drawer: UserDrawer(userRepository: userRepository),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
         child: IconButton(

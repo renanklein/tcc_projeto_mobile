@@ -9,20 +9,31 @@ class UserRepository {
     @required String email,
     @required String pass})
      async {
-    return await firebaseAuth.createUserWithEmailAndPassword(
+    return await this.firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: pass);
   }
 
   Future<AuthResult> signIn({
      @required String email, 
      @required String pass}) async {
-    return await firebaseAuth.signInWithEmailAndPassword(
+    return await this.firebaseAuth.signInWithEmailAndPassword(
         email: email, password: pass);
   }
 
-  Future<String> getToken({@required FirebaseUser user}) async {
-     final idToken = await user.getIdToken();
-     return idToken.token;
+  Future resetPassword({
+    @required String email
+  }) async {
+    return await this.firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<IdTokenResult> getToken() async {
+     final user = await getUser();
+
+     if(user == null){
+       return null;
+     }
+
+     return await user.getIdToken();
   }
 
   void logOut() async {

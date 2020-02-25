@@ -5,7 +5,7 @@ abstract class AuthenticationState extends Equatable {
   
 }
 
-class AuthenticationInitial extends AuthenticationState {
+class AuthenticationUninitialized extends AuthenticationState {
   @override
   List<Object> get props => [];
 }

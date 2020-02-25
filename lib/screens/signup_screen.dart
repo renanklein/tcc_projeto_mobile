@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:tcc_projeto_app/models/user_model.dart';
+import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/screens/elements/email_field.dart';
 import 'package:tcc_projeto_app/screens/elements/name_field.dart';
 import 'package:tcc_projeto_app/screens/elements/password_field.dart';
@@ -92,7 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               model.signUp(
                                   pass: this._passController.text,
                                   userDados: userData,
-                                  onSuccess: onSuccess,
+                                  onSuccess: null,
                                   onFail: onFail);
                             }
                           },
@@ -120,20 +120,20 @@ class _SignupScreenState extends State<SignupScreen> {
     return list;
   }
 
-  void onSuccess() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Conta criada com sucesso !"),
-      backgroundColor: Colors.green,
-    ));
+  // void onSuccess() {
+  //   scaffoldKey.currentState.showSnackBar(SnackBar(
+  //     content: Text("Conta criada com sucesso !"),
+  //     backgroundColor: Colors.green,
+  //   ));
 
-    Future.delayed(
-      Duration(seconds: 2),
-    ).then((resp) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen())
-      );
-    });
-  }
+  //   Future.delayed(
+  //     Duration(seconds: 2),
+  //   ).then((resp) {
+  //     Navigator.of(context).pushReplacement(
+  //       MaterialPageRoute(builder: (context) => HomeScreen())
+  //     );
+  //   });
+  // }
 
   void onFail() {
     scaffoldKey.currentState.showSnackBar(SnackBar(

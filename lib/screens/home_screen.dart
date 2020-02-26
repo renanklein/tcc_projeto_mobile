@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/tiles/home_card_tile.dart';
 import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
-class HomeScreen extends StatelessWidget {
-  UserRepository userRepository;
+class HomeScreen extends StatefulWidget {
+  final userRepository;
 
   HomeScreen({@required this.userRepository}) : assert(userRepository != null);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  UserModel model;
+
+  UserRepository get userRepository => this.widget.userRepository;
+
+  @override
+  void initState() {
+    _setUserModel();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +34,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      drawer: UserDrawer(userRepository: userRepository),
+      drawer: UserDrawer(userRepository: userRepository, userModel: this.model,),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
         child: IconButton(
@@ -40,7 +57,11 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
- //placeholder code, the data within cards should be from firebase
+   void _setUserModel() async {
+     final user = await this.userRepository.getUser();
+     final userData = await this.userRepository.getUserData(user.uid);
+     this.model = UserModel(email: userData.data["email"], name: userData.data["name"]);
+  }
   Widget _createCardList(){
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),

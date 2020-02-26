@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class LoginPasswordField extends StatelessWidget {
 
-  TextEditingController passController;
+  final passController;
 
   LoginPasswordField({@required this.passController});
   @override

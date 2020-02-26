@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginNameField extends StatelessWidget {
-  TextEditingController nameController;
+  final nameController;
 
   LoginNameField({@required this.nameController});
   @override

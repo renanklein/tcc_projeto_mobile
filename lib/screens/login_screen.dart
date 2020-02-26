@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/login_bloc.dart';
-import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/home_screen.dart';
 import 'package:tcc_projeto_app/screens/signup_screen.dart';
@@ -40,7 +38,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void dispose() {
+  void dispose() async{
+    await this.loginBloc.close();
+    await this.authenticationBloc.close();
     super.dispose();
   }
 
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignupScreen()));
+                    MaterialPageRoute(builder: (context) => SignupScreen(userRepository: _userRepository,)));
               },
             )
           ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginEmailField extends StatelessWidget {
-  TextEditingController emailController;
+  final emailController;
 
   LoginEmailField({@required this.emailController});
   @override

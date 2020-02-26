@@ -44,6 +44,13 @@ class UserRepository {
     return await this.firebaseAuth.currentUser();
   }
 
+  Future<DocumentSnapshot> getUserData(String uid) async{
+    return await Firestore.instance
+      .collection("users")
+      .document(uid)
+      .get();
+  }
+
   Future<void> sendUserData({
     @required String name,
     @required String email,
@@ -59,4 +66,5 @@ class UserRepository {
         .document(uid)
         .setData(userData);
   }
+
 }

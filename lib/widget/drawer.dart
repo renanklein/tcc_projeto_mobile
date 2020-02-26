@@ -1,28 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
 import 'package:tcc_projeto_app/tiles/drawer_tile.dart';
 
-class UserDrawer extends StatelessWidget {
-  UserRepository userRepository;
+class UserDrawer extends StatefulWidget {
+  final userRepository;
+  final userModel;
+  UserDrawer({@required this.userRepository, @required this.userModel}) 
+  : assert(userRepository != null && userModel != null) ;
 
-  UserDrawer({@required this.userRepository}) : assert(userRepository != null);
+  @override
+  _UserDrawerState createState() => _UserDrawerState();
+}
+
+class _UserDrawerState extends State<UserDrawer> {
+
+  AuthenticationBloc authenticationBloc;
+
+  UserRepository get userRepository => this.widget.userRepository;
+  UserModel get userModel => this.widget.userModel;
+
+  @override
+  void initState(){
+    this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    this.authenticationBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
         elevation: 16.0,
-        child: ScopedModelDescendant<UserModel>(
-          builder: (context, child, model) {
-            if (model == null || model.isLoading) {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen(userRepository : this.userRepository)));
+        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          bloc: this.authenticationBloc,
+          builder: (context, state) {
+            if (state is AuthenticationUnauthenticated) {
+              return LoginScreen(userRepository : userRepository);
             } else {
               return ListView(
                 children: <Widget>[
-                  _createDrawerHeader(model, context),
+                  _createDrawerHeader(userModel, context),
                   DrawerTile(
                       icon: Icons.person,
                       text: "Pacientes",
@@ -47,8 +72,9 @@ class UserDrawer extends StatelessWidget {
                 ],
               );
             }
-          },
+          }
         ));
+            
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
@@ -73,7 +99,7 @@ class UserDrawer extends StatelessWidget {
                   width: 30.0,
                 ),
                 Text(
-                  "${model.userData["name"] ?? "Bemvindo, usuário !"}",
+                  "${model.name ?? "Bemvindo, usuário !"}",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -91,9 +117,9 @@ class UserDrawer extends StatelessWidget {
                 ),
               ),
               onPressed: (){
-                model.logOut();
+                this.authenticationBloc.add(LoggedOut());
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen(userRepository: this.userRepository,))
+                  MaterialPageRoute(builder: (context) => LoginScreen(userRepository: userRepository))
                 );
               },
             ),

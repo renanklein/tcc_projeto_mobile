@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/home_screen.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
 
-import 'model/agenda_model.dart';
-import 'model/user_model.dart';
 
 
 class MyApp extends StatefulWidget {

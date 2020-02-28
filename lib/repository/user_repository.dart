@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 class UserRepository {
   final firebaseAuth = FirebaseAuth.instance;
 
+  void firebaseSignOut(){
+    this.firebaseAuth.signOut();
+  }
+
   Future<AuthResult> signUp({
     @required String email,
     @required String pass})

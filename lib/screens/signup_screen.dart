@@ -10,7 +10,7 @@ import 'package:tcc_projeto_app/screens/elements/password_field.dart';
 import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
-  UserRepository userRepository;
+  final userRepository;
   SignupScreen({@required this.userRepository})
       : assert(userRepository != null);
 
@@ -23,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = new TextEditingController();
   final _passController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   AuthenticationBloc authenticationBloc;
   SignupBloc signupBloc;
 
@@ -47,93 +48,96 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Criar Conta"),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: BlocBuilder(
-        bloc: signupBloc,
-        builder: (context, state) {
-          if (state is SignupInitial) {
-            return Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).primaryColor,
-              ),
-            );
-          } else {
-            if(state is SignupFailed){
-              onFail();
-            }
-            return Form(
-              key: formKey,
-              child: ListView(
-                padding: EdgeInsets.all(16.0),
-                children: <Widget>[
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  LoginNameField(
-                    nameController: this._nameController,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  LoginEmailField(
-                    emailController: this._emailController,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  LoginPasswordField(passController: this._passController),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  DropdownButtonFormField(
-                    items: _getDropdownMenuItems(),
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32.0)),
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: Text("Criar Conta"),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: BlocProvider(
+          create: (context) => this.signupBloc,
+          child: BlocListener<SignupBloc, SignupState>(
+              listener: (context, state) {
+                if (state is SignupSigned) {
+                 onSuccess();
+                 redirectToHomePage();
+                } else if (state is SignupProcessing) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    onChanged: (_) {},
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  SizedBox(
-                      height: 44.0,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        child: Text("Criar Conta",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20.0)),
-                        onPressed: () {
-                          if (this.formKey.currentState.validate()) {
-                            this.signupBloc.add(
-                              SignupButtonPressed(
-                                name : this._nameController.text,
-                                email : this._emailController.text,
-                                password: this._passController.text
-                              )
-                            );
-
-                            onSuccess(userRepository);
-                          }
-                        },
-                      ))
-                ],
-              ),
-            );
-          }
-        },
-      ),
-    );
+                  );
+                } else if (state is SignupFailed) {
+                  onFail();
+                }
+              },
+              child: BlocBuilder(
+                  bloc: signupBloc,
+                  builder: (context, state) {
+                    return Form(
+                      key: formKey,
+                      child: ListView(
+                        padding: EdgeInsets.all(16.0),
+                        children: <Widget>[
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          LoginNameField(
+                            nameController: this._nameController,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          LoginEmailField(
+                            emailController: this._emailController,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          LoginPasswordField(
+                              passController: this._passController),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          DropdownButtonFormField(
+                            items: _getDropdownMenuItems(),
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32.0)),
+                            ),
+                            onChanged: (_) {},
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          SizedBox(
+                              height: 44.0,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                color: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
+                                child: Text("Criar Conta",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0)),
+                                onPressed: () {
+                                  if (this.formKey.currentState.validate()) {
+                                    this.signupBloc.add(SignupButtonPressed(
+                                        name: this._nameController.text,
+                                        email: this._emailController.text,
+                                        password: this._passController.text));
+                                  }
+                                },
+                              ))
+                        ],
+                      ),
+                    );
+                  })),
+        ));
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {
@@ -151,25 +155,25 @@ class _SignupScreenState extends State<SignupScreen> {
     return list;
   }
 
-  void onSuccess(UserRepository userRepository) {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("Conta criada com sucesso !"),
-      backgroundColor: Colors.green,
-    ));
+  void onSuccess() {
+    this.scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Conta criada com sucesso !"),
+          backgroundColor: Colors.green,
+        ));
+  }
 
-    Future.delayed(
-      Duration(seconds: 2),
-    ).then((resp) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen(userRepository: userRepository,))
-      );
-    });
+  void redirectToHomePage() {
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => HomeScreen(
+              userRepository: userRepository,
+        )));
   }
 
   void onFail() {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("Falha ao criar o usuário"),
-      backgroundColor: Colors.red,
-    ));
+    this.scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Falha ao criar o usuário"),
+          backgroundColor: Colors.red,
+        ));
   }
 }

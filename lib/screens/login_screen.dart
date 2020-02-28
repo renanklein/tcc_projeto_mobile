@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void dispose() async{
+  void dispose() async {
     await this.loginBloc.close();
     await this.authenticationBloc.close();
     super.dispose();
@@ -59,88 +59,103 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignupScreen(userRepository: _userRepository,)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SignupScreen(
+                          userRepository: _userRepository,
+                        )));
               },
             )
           ],
         ),
-        body: BlocBuilder<LoginBloc, LoginState>(
-            bloc: this.loginBloc,
-            builder: (context, state) {
-              if (state is LoginFailure) {
-                onFail();
-              }
-              return Form(
-                key: formKey,
-                child: ListView(
-                  padding: EdgeInsets.all(16.0),
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    LoginLogo(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    LoginEmailField(emailController: this.emailController),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    LoginPasswordField(passController: this.passController),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: FlatButton(
-                        child: Text(
-                          "Esqueci minha senha",
-                          textAlign: TextAlign.right,
+        body: BlocProvider(
+          create: (context) => this.loginBloc,
+          child: BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                if (state is LoginSucceded) {
+                  onSuccess();
+                } else if (state is LoginFailure) {
+                  onFail();
+                }
+              },
+              child: BlocBuilder<LoginBloc, LoginState>(
+                  bloc: this.loginBloc,
+                  builder: (context, state) {
+                    if (state is LoginProcessing) {
+                      _showCircularProgressIndicator();
+                    } 
+                    return Form(
+                        key: formKey,
+                        child: ListView(
+                          padding: EdgeInsets.all(16.0),
+                          children: <Widget>[
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            LoginLogo(),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            LoginEmailField(
+                                emailController: this.emailController),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            LoginPasswordField(
+                                passController: this.passController),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: FlatButton(
+                                child: Text(
+                                  "Esqueci minha senha",
+                                  textAlign: TextAlign.right,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  this.loginBloc.add(
+                                      LoginResetPasswordButtonPressed(
+                                          email: this.emailController.text));
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            SizedBox(
+                                height: 44.0,
+                                child: RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  color: Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  child: Text("Entrar",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0)),
+                                  onPressed: () {
+                                    if (formKey.currentState.validate()) {
+                                      this.loginBloc.add(LoginButtonPressed(
+                                          email: this.emailController.text,
+                                          password: this.passController.text));
+                                    }
+                                  },
+                                )),
+                          ],
                         ),
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          this.loginBloc.add(
-                            LoginResetPasswordButtonPressed(
-                              email : this.emailController.text
-                            )
-                          );
-                          _resetPasswordEmailSendingNotification();
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    SizedBox(
-                        height: 44.0,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          color: Theme.of(context).primaryColor,
-                          textColor: Colors.white,
-                          child: Text("Entrar",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0)),
-                          onPressed: () {
-                            if (formKey.currentState.validate()) {
-                              this.loginBloc.add(LoginButtonPressed(
-                                  email: this.emailController.text,
-                                  password: this.passController.text));
-                            }
-                          },
-                        )),
-                  ],
-                ),
-              );
-            }));
+                      );
+                  })),
+        ));
   }
 
   void onSuccess() {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(userRepository: _userRepository,)));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => HomeScreen(
+              userRepository: _userRepository,
+            )));
   }
 
   void onFail() {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    this.scaffoldKey.currentState.showSnackBar(SnackBar(
       backgroundColor: Colors.red,
       content: Text(
         "Falha ao autenticar, verifique os dados informados",
@@ -151,10 +166,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _resetPasswordEmailSendingNotification() {
-      Scaffold.of(context).showSnackBar(SnackBar(
+   this.scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      content: Text(
+          "Foi enviado um formulário de mudança de senha para o email cadastrado"),
+    ));
+  }
+
+  Widget _showCircularProgressIndicator() {
+    return Center(
+      child: CircularProgressIndicator(
         backgroundColor: Theme.of(context).primaryColor,
-        content: Text(
-            "Foi enviado um formulário de mudança de senha para o email cadastrado"),
-      ));
-    }
+      ),
+    );
+  }
 }

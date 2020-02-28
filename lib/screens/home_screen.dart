@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _setUserModel();
     super.initState();
   }
 
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      drawer: UserDrawer(userRepository: userRepository, userModel: this.model,),
+      drawer: UserDrawer(userRepository: userRepository),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
         child: IconButton(
@@ -57,11 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-   void _setUserModel() async {
-     final user = await this.userRepository.getUser();
-     final userData = await this.userRepository.getUserData(user.uid);
-     this.model = UserModel(email: userData.data["email"], name: userData.data["name"]);
-  }
   Widget _createCardList(){
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),

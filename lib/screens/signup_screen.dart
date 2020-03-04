@@ -40,8 +40,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    this.authenticationBloc.close();
-    this.signupBloc.close();
     super.dispose();
   }
 
@@ -163,7 +161,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void redirectToHomePage() {
-    Navigator.of(context).pop();
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => HomeScreen(
               userRepository: userRepository,

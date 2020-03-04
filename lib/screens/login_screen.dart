@@ -38,9 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void dispose() async {
-    await this.loginBloc.close();
-    await this.authenticationBloc.close();
+  void dispose(){
     super.dispose();
   }
 

@@ -40,7 +40,7 @@ class UserRepository {
      return await user.getIdToken();
   }
 
-  void logOut() async {
+  Future<void> logOut() async {
     await this.firebaseAuth.signOut();
   }
 

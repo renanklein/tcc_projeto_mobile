@@ -46,7 +46,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     else if(event is LoggedOut) {
        yield AuthenticationProcessing();
-       this.userRepository.logOut();
+       await this.userRepository.logOut();
        yield AuthenticationUnauthenticated();
     }
   }

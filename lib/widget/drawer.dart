@@ -40,49 +40,45 @@ class _UserDrawerState extends State<UserDrawer> {
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             bloc: this.authenticationBloc,
             builder: (context, state) {
-              if (state is AuthenticationUnauthenticated) {
-                return LoginScreen(userRepository: userRepository);
-              } else {
-                return FutureBuilder(
-                  future: _setUserModel(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ),
-                      );
-                    } else {
-                      return ListView(
-                        children: <Widget>[
-                          _createDrawerHeader(this.userModel, context),
-                          DrawerTile(
-                              icon: Icons.person,
-                              text: "Pacientes",
-                              onTapCallback: null),
-                          DrawerTile(
-                              icon: Icons.event_note,
-                              text: "Exames",
-                              onTapCallback: null),
-                          DrawerTile(
-                              icon: Icons.assignment,
-                              text: "Anamnese",
-                              onTapCallback: null),
-                          DrawerTile(
-                              icon: Icons.info,
-                              text: "Relatorios",
-                              onTapCallback: null),
-                          Divider(),
-                          DrawerTile(
-                              icon: Icons.bug_report,
-                              text: "Relatar Erros",
-                              onTapCallback: null),
-                        ],
-                      );
-                    }
-                  },
-                );
-              }
+              return FutureBuilder(
+                future: _setUserModel(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  } else {
+                    return ListView(
+                      children: <Widget>[
+                        _createDrawerHeader(this.userModel, context),
+                        DrawerTile(
+                            icon: Icons.person,
+                            text: "Pacientes",
+                            onTapCallback: null),
+                        DrawerTile(
+                            icon: Icons.event_note,
+                            text: "Exames",
+                            onTapCallback: null),
+                        DrawerTile(
+                            icon: Icons.assignment,
+                            text: "Anamnese",
+                            onTapCallback: null),
+                        DrawerTile(
+                            icon: Icons.info,
+                            text: "Relatorios",
+                            onTapCallback: null),
+                        Divider(),
+                        DrawerTile(
+                            icon: Icons.bug_report,
+                            text: "Relatar Erros",
+                            onTapCallback: null),
+                      ],
+                    );
+                  }
+                },
+              );
             }));
   }
 
@@ -131,9 +127,9 @@ class _UserDrawerState extends State<UserDrawer> {
                     fontWeight: FontWeight.w300,
                     color: Colors.grey[300]),
               ),
-              onPressed: () {
+              onPressed: () async{
                 this.authenticationBloc.add(LoggedOut());
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                await Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) =>
                         LoginScreen(userRepository: userRepository)));
               },

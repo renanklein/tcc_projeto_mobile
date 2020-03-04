@@ -12,21 +12,25 @@ class EventDescription extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              this.eventText,
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20.0),
-            ),
-            Text(
-              "Horário ${eventDate.hour} : ${eventDate.minute}",
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 14.0),
-            )
+            _buildEventTitle(),
+            _buildEventDate()
           ]),
+    );
+  }
+
+  Widget _buildEventTitle() {
+    return Text(
+      this.eventText,
+      style: TextStyle(
+          color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 20.0),
+    );
+  }
+
+  Widget _buildEventDate() {
+    return Text(
+      "Horário ${eventDate.hour} : ${eventDate.minute}",
+      style: TextStyle(
+          color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14.0),
     );
   }
 }

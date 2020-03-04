@@ -3,6 +3,7 @@ import 'package:tcc_projeto_app/model/agenda_model.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_avatar.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_description.dart';
 import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
+import 'package:tcc_projeto_app/utils/LayoutUtils.dart';
 
 class CalendarEventTile extends StatelessWidget {
   String eventText;
@@ -16,20 +17,14 @@ class CalendarEventTile extends StatelessWidget {
       child: AnimatedContainer(
         height: 65.0,
         width: 120.0,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(15.0),
-        ),
+        decoration:_buildContainerDecoration(),
         duration: Duration(milliseconds: 3000),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             EventAvatar(),
-            SizedBox(
-              width: 15.0,
-            ),
+            LayoutUtils.buildHorizontalSpacing(15.0),
             EventDescription(eventText: eventText, eventDate: eventDate)
           ]
         ),
@@ -53,4 +48,12 @@ class CalendarEventTile extends StatelessWidget {
       },
     );
   }
+
+  BoxDecoration _buildContainerDecoration(){
+    return BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(15.0));
+  }
+  
 }

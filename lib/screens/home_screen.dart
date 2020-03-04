@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
 import 'package:tcc_projeto_app/tiles/home_card_tile.dart';
+import 'package:tcc_projeto_app/utils/LayoutUtils.dart';
 import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
@@ -81,37 +82,26 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
       child: ListView(
         children: <Widget>[
-          SizedBox(
-            height: 16.0,
-          ),
           HomeCardTile(
             title: "Lorem",
             textBody: "lorem ipsum bla bla ",
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          LayoutUtils.buildVerticalSpacing(16.0),
           HomeCardTile(
             title: "Lorem",
             textBody: "lorem ipsum bla bla ",
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          LayoutUtils.buildVerticalSpacing(16.0),
           HomeCardTile(
             title: "Lorem",
             textBody: "lorem ipsum bla bla ",
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          LayoutUtils.buildVerticalSpacing(16.0),
           HomeCardTile(
             title: "Lorem",
             textBody: "lorem ipsum bla bla ",
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          LayoutUtils.buildVerticalSpacing(16.0),
           HomeCardTile(
             title: "Lorem",
             textBody: "lorem ipsum bla bla ",

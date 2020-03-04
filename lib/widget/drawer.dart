@@ -91,52 +91,62 @@ class _UserDrawerState extends State<UserDrawer> {
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
     return DrawerHeader(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/images/drawer_header.jpg"),
-            fit: BoxFit.cover),
-      ),
+      decoration: BoxDecoration(image: _buildHeaderImage()),
       child: Center(
         child: Column(
           children: <Widget>[
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                CircleAvatar(
-                    radius: 40.0,
-                    backgroundColor: Colors.transparent,
-                    backgroundImage:
-                        AssetImage("assets/images/avatar_placeholder.jpg")),
+                _buildAvatarImage(),
                 SizedBox(
                   width: 30.0,
                 ),
-                Text(
-                  "${model.name ?? "Bemvindo, usuário !"}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 25.0),
-                )
+                _buildUserName(model),
               ],
             ),
-            FlatButton(
-              child: Text(
-                "Sair",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey[300]),
-              ),
-              onPressed: () async{
-                this.authenticationBloc.add(LoggedOut());
-                await Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) =>
-                        LoginScreen(userRepository: userRepository)));
-              },
-            ),
+             _buildSignoutButton(authenticationBloc)
           ],
         ),
       ),
+    );
+  }
+
+  DecorationImage _buildHeaderImage() {
+    return DecorationImage(
+        image: AssetImage("assets/images/drawer_header.jpg"),
+        fit: BoxFit.cover);
+  }
+
+  Widget _buildAvatarImage() {
+    return CircleAvatar(
+        radius: 40.0,
+        backgroundColor: Colors.transparent,
+        backgroundImage: AssetImage("assets/images/avatar_placeholder.jpg"));
+  }
+
+  Widget _buildUserName(UserModel model) {
+    return Text(
+      "${model.name ?? "Bemvindo, usuário !"}",
+      style: TextStyle(
+          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 25.0),
+    );
+  }
+
+  Widget _buildSignoutButton(AuthenticationBloc authenticationBloc) {
+    return FlatButton(
+      child: Text(
+        "Sair",
+        style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.grey[300]),
+      ),
+      onPressed: () async {
+        this.authenticationBloc.add(LoggedOut());
+        await Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => LoginScreen(userRepository: userRepository)));
+      },
     );
   }
 }

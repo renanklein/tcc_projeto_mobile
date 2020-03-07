@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
-class UserModel extends Model{
+class UserModel{
   String _email;
   String _name;
 

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/model/agenda_model.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_avatar.dart';
 import 'package:tcc_projeto_app/tiles/elements/events/event_description.dart';
 import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
-import 'package:tcc_projeto_app/utils/LayoutUtils.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CalendarEventTile extends StatelessWidget {
-  String eventText;
-  DateTime eventDate;
-  AgendaModel agendaModel;
-  CalendarEventTile({@required this.eventText, @required this.eventDate});
+  final eventText;
+  final eventDate;
+  final agendaEventBloc;
+  CalendarEventTile({@required this.eventText, @required this.eventDate, @required this.agendaEventBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class CalendarEventTile extends StatelessWidget {
             return Container(
               height: 250,
               child: EventEditorTile(
-                agendaModel: agendaModel, 
+                agendaEventBloc: agendaEventBloc, 
                 isEdit: true,
                 eventKey: eventDate,
               ) 

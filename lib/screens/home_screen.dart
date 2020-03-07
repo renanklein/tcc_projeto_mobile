@@ -5,7 +5,7 @@ import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/login_screen.dart';
 import 'package:tcc_projeto_app/tiles/home_card_tile.dart';
-import 'package:tcc_projeto_app/utils/LayoutUtils.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserCalendar()));
+                        builder: (context) => UserCalendar(userRepository: userRepository,)));
                   },
                 ),
               ),

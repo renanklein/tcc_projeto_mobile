@@ -5,7 +5,7 @@ import 'package:tcc_projeto_app/bloc/login_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/home_screen.dart';
 import 'package:tcc_projeto_app/screens/signup_screen.dart';
-import 'package:tcc_projeto_app/utils/LayoutUtils.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'elements/email_field.dart';
 import 'elements/password_field.dart';
 import 'elements/login_logo.dart';

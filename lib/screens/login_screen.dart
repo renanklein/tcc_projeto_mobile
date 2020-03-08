@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/login_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
@@ -11,10 +12,7 @@ import 'elements/password_field.dart';
 import 'elements/login_logo.dart';
 
 class LoginScreen extends StatefulWidget {
-  final UserRepository userRepository;
-
-  LoginScreen({@required this.userRepository}) : assert(userRepository != null);
-
+  final userRepository = Injector.appInstance.getDependency<UserRepository>();
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -58,10 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SignupScreen(
-                          userRepository: _userRepository,
-                        )));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SignupScreen()));
               },
             )
           ],
@@ -75,13 +71,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 } else if (state is LoginFailure) {
                   onFail();
                 }
+                else if (state is LoginProcessing){
+                  return LayoutUtils.buildCircularProgressIndicator(context);
+                }
               },
               child: BlocBuilder<LoginBloc, LoginState>(
                   bloc: this.loginBloc,
                   builder: (context, state) {
-                    if (state is LoginProcessing) {
-                      _showCircularProgressIndicator();
-                    }
                     return Form(
                       key: formKey,
                       child: ListView(
@@ -121,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   Widget _buildLoginScreenButton() {
     return SizedBox(
         height: 44.0,
@@ -143,10 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onSuccess() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => HomeScreen(
-              userRepository: _userRepository,
-            )));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   void onFail() {
@@ -160,12 +155,5 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.w500),
           ),
         ));
-  }
-  Widget _showCircularProgressIndicator() {
-    return Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
   }
 }

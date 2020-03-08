@@ -52,7 +52,7 @@ class AgendaRepository{
   }
 
   bool _verifyIfExistsEventInThatDay(DateTime eventDay, Map events) {
-    return eventDay != null;
+    return events[eventDay] != null;
   }
 
   String _dayEventAsMilisecondEpoch(DateTime eventDay) {

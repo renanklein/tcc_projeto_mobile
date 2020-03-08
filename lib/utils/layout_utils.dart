@@ -12,4 +12,12 @@ class LayoutUtils{
       width: spacingWidth,
     );
   }
+
+  static Widget buildCircularProgressIndicator(BuildContext context){
+    return Center(
+      child: CircularProgressIndicator(
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+    );
+  }
 }

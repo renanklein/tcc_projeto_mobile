@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/signup_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/screens/elements/email_field.dart';
 import 'package:tcc_projeto_app/screens/elements/name_field.dart';
 import 'package:tcc_projeto_app/screens/elements/password_field.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
-  final userRepository;
-  SignupScreen({@required this.userRepository})
-      : assert(userRepository != null);
+  final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -57,14 +57,10 @@ class _SignupScreenState extends State<SignupScreen> {
           child: BlocListener<SignupBloc, SignupState>(
               listener: (context, state) {
                 if (state is SignupSigned) {
-                 onSuccess();
-                 redirectToHomePage();
+                  onSuccess();
+                  redirectToHomePage();
                 } else if (state is SignupProcessing) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ),
-                  );
+                  LayoutUtils.buildCircularProgressIndicator(context);
                 } else if (state is SignupFailed) {
                   onFail();
                 }
@@ -161,10 +157,8 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void redirectToHomePage() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => HomeScreen(
-              userRepository: userRepository,
-        )));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   void onFail() {

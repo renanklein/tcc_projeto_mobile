@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
@@ -10,8 +11,7 @@ import 'package:tcc_projeto_app/widget/calendar.dart';
 import 'package:tcc_projeto_app/widget/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
-  final userRepository;
-  HomeScreen({@required this.userRepository}) : assert(userRepository != null);
+  final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
         listener: (context, state) {
           if (state is AuthenticationUnauthenticated) {
             return LoginScreen(
-              userRepository: userRepository,
             );
           }
         },
@@ -51,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
                 elevation: 0.0,
               ),
-              drawer: UserDrawer(userRepository: userRepository),
+              drawer: UserDrawer(),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {},
                 child: IconButton(
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserCalendar(userRepository: userRepository,)));
+                        builder: (context) => UserCalendar()));
                   },
                 ),
               ),

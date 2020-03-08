@@ -31,8 +31,8 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaRepository = injector.getDependency<AgendaRepository>();
     this._agendaEventBloc =
         new AgendaEventBloc(agendaRepository: this._agendaRepository);
-    this._controller = new CalendarController();
     _buildEvents();
+    this._controller = new CalendarController();
     super.initState();
   }
 

@@ -60,16 +60,15 @@ class AgendaRepository{
     return dateTimestamp.millisecondsSinceEpoch.toString();
   }
 
-  List<dynamic> _retrieveListOfEvents(DateTime eventDay, String event, Map events) {
+  List<dynamic> _retrieveListOfEvents(DateTime eventDay, String event, Map<DateTime, List<dynamic>> events) {
     bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay, events);
     List dayEvents = new List();
     if (existsEventsInThatDay) {
-      events[eventDay].add(event);
       events[eventDay].forEach((event) => dayEvents.add(event));
-    } else {
-      dayEvents.add(event);
-    }
+    } 
 
+    dayEvents.add(event);
+    
     return dayEvents;
   }
 }

@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    this.authenticationBloc = AuthenticationBloc();
+    this.authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
     this.authenticationBloc.add(AppStarted());
     super.initState();
   }

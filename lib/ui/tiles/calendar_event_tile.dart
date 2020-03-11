@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/tiles/elements/events/event_avatar.dart';
-import 'package:tcc_projeto_app/tiles/elements/events/event_description.dart';
-import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+
+import 'elements/events/event_avatar.dart';
+import 'elements/events/event_description.dart';
+import 'event_editor_tile.dart';
 
 class CalendarEventTile extends StatelessWidget {
   final eventText;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/UI/tiles/calendar_event_tile.dart';
 import 'package:tcc_projeto_app/bloc/agenda_event_bloc.dart';
-import 'package:tcc_projeto_app/tiles/calendar_event_tile.dart';
+
 
 class CalendarUtils {
   static Widget buildSelectedDayBorder(DateTime date) {

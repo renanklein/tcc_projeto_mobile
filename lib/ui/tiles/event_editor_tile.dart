@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/bloc/agenda_event_bloc.dart';
-import 'package:tcc_projeto_app/tiles/elements/form/event_date.dart';
+import 'elements/form/event_date.dart';
 import 'elements/form/event_name.dart';
 
 class EventEditorTile extends StatefulWidget {

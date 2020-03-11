@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tcc_projeto_app/UI/tiles/event_editor_tile.dart';
+import 'package:tcc_projeto_app/UI/widget/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/bloc/agenda_event_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
-import 'package:tcc_projeto_app/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:tcc_projeto_app/widget/utils/calendar_utils.dart';
+
 
 class UserCalendar extends StatefulWidget {
   @override

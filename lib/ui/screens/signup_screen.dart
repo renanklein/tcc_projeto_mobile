@@ -4,11 +4,11 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/signup_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
-import 'package:tcc_projeto_app/screens/elements/email_field.dart';
-import 'package:tcc_projeto_app/screens/elements/name_field.dart';
-import 'package:tcc_projeto_app/screens/elements/password_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
+import 'elements/email_field.dart';
+import 'elements/name_field.dart';
+import 'elements/password_field.dart';
 import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {

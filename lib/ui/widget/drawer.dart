@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/UI/screens/login_screen.dart';
+import 'package:tcc_projeto_app/UI/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
-import 'package:tcc_projeto_app/screens/login_screen.dart';
-import 'package:tcc_projeto_app/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {

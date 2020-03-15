@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tcc_projeto_app/UI/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/UI/widget/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserCalendar extends StatefulWidget {
@@ -15,7 +14,6 @@ class UserCalendar extends StatefulWidget {
 }
 
 class _UserCalendarState extends State<UserCalendar> {
-  UserRepository _userRepository;
   AgendaRepository _agendaRepository;
   AgendaBloc _agendaBloc;
   Map<DateTime, List<dynamic>> _events;
@@ -27,7 +25,6 @@ class _UserCalendarState extends State<UserCalendar> {
   @override
   void initState() {
     var injector = Injector.appInstance;
-    this._userRepository = injector.getDependency<UserRepository>();
     this._agendaRepository = injector.getDependency<AgendaRepository>();
     this._events = new Map<DateTime, List<dynamic>>();
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
@@ -53,20 +50,14 @@ class _UserCalendarState extends State<UserCalendar> {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                _scaffoldKey.currentState.showBottomSheet(
-                  (context) {
-                    return Container(
-                      height: 250,
-                      child: EventEditorTile(
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => EventEditorScreen(
                         isEdit: false,
                         agendaBloc: this._agendaBloc,
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
+                        selectedDay: this._selectedDay,
+                  ))
                 );
-              },
+              }
             )
           ],
           elevation: 0.0,

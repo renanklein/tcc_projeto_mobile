@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 class EventDescription extends StatelessWidget {
-  String eventText;
-  DateTime eventDate;
+  final eventText;
+  final eventHourStart;
+  final eventHourEnd;
 
-  EventDescription({@required this.eventText, @required this.eventDate});
+  EventDescription({
+    @required this.eventText,
+    @required this.eventHourStart,
+    @required this.eventHourEnd});
+  
+  TimeOfDay get eventStart => this.eventHourStart;
+  TimeOfDay get eventEnd => this.eventHourEnd;
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildEventTitle(),
-            _buildEventDate()
-          ]),
+          children: <Widget>[_buildEventTitle(), _buildEventTimeRange()]),
     );
   }
 
@@ -26,11 +30,15 @@ class EventDescription extends StatelessWidget {
     );
   }
 
-  Widget _buildEventDate() {
+  Widget _buildEventTimeRange() {
     return Text(
-      "Horário ${eventDate.hour} : ${eventDate.minute}",
+      "${_timeOfDayAsString(this.eventHourStart)} - ${_timeOfDayAsString(this.eventHourEnd)}",
       style: TextStyle(
           color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14.0),
     );
+  }
+
+  String _timeOfDayAsString(TimeOfDay time){
+    return "${time.hour} : ${time.minute}";
   }
 }

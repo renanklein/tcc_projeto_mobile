@@ -24,7 +24,13 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
     if(event is AgendaCreateButtonPressed){
      try{
       yield AgendaEventProcessing();
-      this.agendaRepository.addEvent(event.eventName, event.eventDate);
+
+      var eventHourRange = new List<TimeOfDay>();
+      eventHourRange.add(event.eventStart);
+      eventHourRange.add(event.eventEnd);
+
+      this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
+      
       yield AgendaEventCreateSuccess();
      }
      catch(error){

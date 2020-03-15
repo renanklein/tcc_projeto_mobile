@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DrawerTile extends StatelessWidget {
-  String text;
-  IconData icon;
-  GestureTapCallback onTapCallback;
+  final text;
+  final icon;
+  final onTapCallback;
   DrawerTile({@required this.text, @required this.icon, @required this.onTapCallback});
 
   @override

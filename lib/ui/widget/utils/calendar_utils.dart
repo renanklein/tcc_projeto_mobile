@@ -31,20 +31,29 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaBloc agendaEventBloc) {
+  static Widget buildEventList(
+    List _selectedDayDescriptions,
+    DateTime _selectedDay, 
+    AgendaBloc agendaEventBloc) {
     List dayEvents = _selectedDayDescriptions ?? new List();
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
         children: dayEvents.map((event) {
+          var eventStart = event["begin"].split(':');
+          var eventEnd = event["end"].split(":");
+
           return ListTile(
             title: CalendarEventTile(eventText: event, 
-            eventDate: _selectedDay, 
+            selectedDay: _selectedDay, 
+            eventHourStart: TimeOfDay(hour: eventStart[0], minute: eventStart[1]),
+            eventHourEnd: TimeOfDay(hour: eventEnd[0], minute: eventEnd[1]),
             agendaBloc: agendaEventBloc,),
           );
         }).toList(),
       ),
     );
   }
+
+ 
 }

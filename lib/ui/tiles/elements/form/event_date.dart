@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 
 class EventDateField extends StatelessWidget {
   final eventDateController;
-  EventDateField({@required this.eventDateController});
+  final eventHint;
+  EventDateField({@required this.eventDateController, @required this.eventHint});
   @override
   Widget build(BuildContext context) {
     return DateTimeField(
@@ -22,7 +23,7 @@ class EventDateField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        hintText: "Data do evento",
+        hintText: this.eventHint,
       ),
     );
   }

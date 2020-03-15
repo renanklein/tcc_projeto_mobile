@@ -11,7 +11,6 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 
 
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();

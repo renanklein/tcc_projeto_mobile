@@ -8,8 +8,8 @@ import 'event_editor_tile.dart';
 class CalendarEventTile extends StatelessWidget {
   final eventText;
   final eventDate;
-  final agendaEventBloc;
-  CalendarEventTile({@required this.eventText, @required this.eventDate, @required this.agendaEventBloc});
+  final agendaBloc;
+  CalendarEventTile({@required this.eventText, @required this.eventDate, @required this.agendaBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class CalendarEventTile extends StatelessWidget {
             return Container(
               height: 250,
               child: EventEditorTile(
-                agendaEventBloc: agendaEventBloc, 
+                agendaBloc: agendaBloc, 
                 isEdit: true,
                 eventKey: eventDate,
               ) 

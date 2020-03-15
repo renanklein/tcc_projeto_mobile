@@ -4,7 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tcc_projeto_app/UI/tiles/event_editor_tile.dart';
 import 'package:tcc_projeto_app/UI/widget/utils/calendar_utils.dart';
-import 'package:tcc_projeto_app/bloc/agenda_event_bloc.dart';
+import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -18,7 +18,7 @@ class UserCalendar extends StatefulWidget {
 class _UserCalendarState extends State<UserCalendar> {
   UserRepository _userRepository;
   AgendaRepository _agendaRepository;
-  AgendaEventBloc _agendaEventBloc;
+  AgendaBloc _agendaBloc;
   Map<DateTime, List<dynamic>> _events;
   List _selectedDayDescriptions;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -30,8 +30,8 @@ class _UserCalendarState extends State<UserCalendar> {
     var injector = Injector.appInstance;
     this._userRepository = injector.getDependency<UserRepository>();
     this._agendaRepository = injector.getDependency<AgendaRepository>();
-    this._agendaEventBloc =
-        new AgendaEventBloc(agendaRepository: this._agendaRepository);
+    this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
+
     _buildEvents();
     this._controller = new CalendarController();
     super.initState();
@@ -60,7 +60,7 @@ class _UserCalendarState extends State<UserCalendar> {
                       height: 250,
                       child: EventEditorTile(
                         isEdit: false,
-                        agendaEventBloc: this._agendaEventBloc,
+                        agendaBloc: this._agendaBloc,
                       ),
                     );
                   },
@@ -73,15 +73,15 @@ class _UserCalendarState extends State<UserCalendar> {
           elevation: 0.0,
         ),
         body: BlocProvider(
-            create: (context) => this._agendaEventBloc,
-            child: BlocListener<AgendaEventBloc, AgendaEventState>(
+            create: (context) => this._agendaBloc,
+            child: BlocListener<AgendaBloc, AgendaState>(
               listener: (context, state) {
                 if (state is AgendaEventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
               },
-              child: BlocBuilder<AgendaEventBloc, AgendaEventState>(
-                bloc: this._agendaEventBloc,
+              child: BlocBuilder<AgendaBloc, AgendaState>(
+                bloc: this._agendaBloc,
                 builder: (context, state) {
                   return Container(
                       color: Theme.of(context).primaryColor,
@@ -110,7 +110,7 @@ class _UserCalendarState extends State<UserCalendar> {
                           CalendarUtils.buildEventList(
                               this._selectedDayDescriptions,
                               this._selectedDay,
-                              this._agendaEventBloc)
+                              this._agendaBloc)
                         ],
                       ));
                 },

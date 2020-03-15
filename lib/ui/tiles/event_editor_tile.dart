@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/bloc/agenda_event_bloc.dart';
+import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'elements/form/event_date.dart';
 import 'elements/form/event_name.dart';
 
 class EventEditorTile extends StatefulWidget {
   final isEdit;
   final eventKey;
-  final agendaEventBloc;
+  final agendaBloc;
   EventEditorTile(
-      {@required this.isEdit, @required this.agendaEventBloc, this.eventKey});
+      {@required this.isEdit, @required this.agendaBloc, this.eventKey});
 
   @override
   _EventEditorTileState createState() => _EventEditorTileState();
@@ -21,7 +22,7 @@ class _EventEditorTileState extends State<EventEditorTile> {
 
   bool get isEdit => this.widget.isEdit;
   DateTime get eventKey => this.widget.eventKey;
-  AgendaEventBloc get agendaEventBloc => this.widget.agendaEventBloc;
+  AgendaBloc get agendaEventBloc => this.widget.agendaBloc;
 
 
   @override
@@ -38,15 +39,11 @@ class _EventEditorTileState extends State<EventEditorTile> {
         child: Column(
           children: <Widget>[
             EventNameField(eventNameController: this._eventNameController),
-            SizedBox(
-              height: 10.0,
-            ),
+            LayoutUtils.buildVerticalSpacing(10.0),
             EventDateField(
               eventDateController: this._eventDateController,
             ),
-            SizedBox(
-              height: 20.0,
-            ),
+            LayoutUtils.buildVerticalSpacing(20.0),
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,

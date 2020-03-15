@@ -5,21 +5,21 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 
-part 'agenda_event_event.dart';
-part 'agenda_event_state.dart';
+part 'agenda_event.dart';
+part 'agenda_state.dart';
 
-class AgendaEventBloc extends Bloc<AgendaEventEvent, AgendaEventState> {
+class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
   AgendaRepository agendaRepository;
 
-  AgendaEventBloc({@required this.agendaRepository});
+  AgendaBloc({@required this.agendaRepository});
 
   @override
-  AgendaEventState get initialState => AgendaEventInitial();
+  AgendaState get initialState => AgendaInitial();
 
   @override
-  Stream<AgendaEventState> mapEventToState(
-    AgendaEventEvent event,
+  Stream<AgendaState> mapEventToState(
+    AgendaEvent event,
   ) async* {
     if(event is AgendaCreateButtonPressed){
      try{

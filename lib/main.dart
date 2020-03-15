@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/UI/screens/login_screen.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 
 
@@ -63,11 +64,7 @@ class _MyAppState extends State<MyApp> {
               return HomeScreen();
             }
             else if(state is AuthenticationProcessing || state is AuthenticationUninitialized){
-              return Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-              );
+             return LayoutUtils.buildCircularProgressIndicator(context);
             }
           },
         ),

@@ -13,12 +13,6 @@ class EventDateField extends StatelessWidget {
       onShowPicker: (context, date) async {
         return DatePicker.showTimePicker(
           context,
-          onChanged: ((date){
-            return date.minute - 20;
-          }),
-          theme: DatePickerTheme(
-            containerHeight: 20.0
-          ),
           showSecondsColumn: false,
           locale: LocaleType.pt
         );

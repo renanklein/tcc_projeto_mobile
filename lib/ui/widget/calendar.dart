@@ -9,7 +9,6 @@ import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
-
 class UserCalendar extends StatefulWidget {
   @override
   _UserCalendarState createState() => _UserCalendarState();
@@ -30,9 +29,9 @@ class _UserCalendarState extends State<UserCalendar> {
     var injector = Injector.appInstance;
     this._userRepository = injector.getDependency<UserRepository>();
     this._agendaRepository = injector.getDependency<AgendaRepository>();
+    this._events = new Map<DateTime, List<dynamic>>();
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
-
-    _buildEvents();
+    _dispatchAgendaLoadEvent();
     this._controller = new CalendarController();
     super.initState();
   }
@@ -76,13 +75,21 @@ class _UserCalendarState extends State<UserCalendar> {
             create: (context) => this._agendaBloc,
             child: BlocListener<AgendaBloc, AgendaState>(
               listener: (context, state) {
-                if (state is AgendaEventProcessing) {
-                  return LayoutUtils.buildCircularProgressIndicator(context);
+                if (_isEventCreateSuccess(state)) {
+                 _dispatchAgendaLoadEvent();
+                }
+                else if(state is AgendaLoadSuccess){
+                  this._events = state.eventsLoaded;
+                  this._selectedDay = DateTime.now();
+                  this._selectedDayDescriptions = this._events[this._selectedDay];
                 }
               },
               child: BlocBuilder<AgendaBloc, AgendaState>(
                 bloc: this._agendaBloc,
                 builder: (context, state) {
+                  if (_isLoadingState(state)) {
+                    return LayoutUtils.buildCircularProgressIndicator(context);
+                  }
                   return Container(
                       color: Theme.of(context).primaryColor,
                       child: ListView(
@@ -133,9 +140,21 @@ class _UserCalendarState extends State<UserCalendar> {
         formatButtonTextStyle: TextStyle(color: Colors.white));
   }
 
-  Future<void> _buildEvents() async {
-    this._events = await this._agendaRepository.getEvents();
-    this._selectedDay = DateTime.now();
-    this._selectedDayDescriptions = this._events[this._selectedDay];
+  bool _isLoadingState(AgendaState state) {
+    if (state is AgendaEventProcessing || state is AgendaLoading) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _isEventCreateSuccess(AgendaState state) {
+    if (state is AgendaEventCreateSuccess) {
+      return true;
+    }
+    return false;
+  }
+
+  void _dispatchAgendaLoadEvent() {
+    this._agendaBloc.add(AgendaLoad());
   }
 }

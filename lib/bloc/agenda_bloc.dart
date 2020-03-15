@@ -31,5 +31,17 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
        yield AgendaEventCreateFail();
      }
     }
+
+    else if(event is AgendaLoad){
+      try{
+        yield AgendaLoading();
+
+        var events = await this.agendaRepository.getEvents();
+
+        yield AgendaLoadSuccess(events);
+      }catch(error){
+        yield AgendaLoadFail();
+      }
+    }
   }
 }

@@ -22,7 +22,7 @@ class _EventEditorTileState extends State<EventEditorTile> {
 
   bool get isEdit => this.widget.isEdit;
   DateTime get eventKey => this.widget.eventKey;
-  AgendaBloc get agendaEventBloc => this.widget.agendaBloc;
+  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
 
   @override
@@ -83,7 +83,7 @@ class _EventEditorTileState extends State<EventEditorTile> {
                       } else {
                         //this._eventNameController.text,
                         //DateTime.parse(this._eventDateController.text)
-                        agendaEventBloc.add(AgendaCreateButtonPressed(
+                        agendaBloc.add(AgendaCreateButtonPressed(
                           eventDate: DateTime.parse(this._eventDateController.text),
                           eventName: this._eventNameController.text,
                         ));

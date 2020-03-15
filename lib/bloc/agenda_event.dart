@@ -10,3 +10,7 @@ class AgendaCreateButtonPressed extends AgendaEvent{
 
   AgendaCreateButtonPressed({@required this.eventName, @required this.eventDate});
 }
+
+class AgendaLoad extends AgendaEvent{
+  
+}

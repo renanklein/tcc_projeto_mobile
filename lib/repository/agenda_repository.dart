@@ -3,19 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
-class AgendaRepository{
-   final firestore =  Firestore.instance;
-   String userId;
-   AgendaRepository({@required this.userId});
+class AgendaRepository {
+  final firestore = Firestore.instance;
+  String userId;
+  Map<DateTime, dynamic> _events;
+  AgendaRepository({@required this.userId});
 
-   void addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
-    var dayEvents = await getEvents();
+  set events(Map<DateTime, dynamic> events) => this._events = events;
+
+  void addEvent(
+      String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
-    List<dynamic> dayEventsAsList = _retrieveListOfEvents(eventday, dayEvents);
+    List<dynamic> dayEventsAsList = _retrieveListOfEvents(eventday, _events);
     _addNewEvent({
-      "description" : name,
-      "begin" : ConvertUtils.fromTimeOfDay(eventDuration[0]),
-      "end" : ConvertUtils.fromTimeOfDay(eventDuration[1])
+      "description": name,
+      "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
+      "end": ConvertUtils.fromTimeOfDay(eventDuration[1])
     }, dayEventsAsList);
 
     await Firestore.instance
@@ -38,7 +41,7 @@ class AgendaRepository{
         .collection("events")
         .getDocuments()
         .then((resp) {
-      events = _retriveEventsAsMap(resp.documents);
+      events = _retriveEventsForAgenda(resp.documents);
     });
 
     return events;
@@ -46,14 +49,15 @@ class AgendaRepository{
 
   //documentId -> epoch date
   //dayEvents -> list of events
-  Map<DateTime, List<Map>> _retriveEventsAsMap(
+  Map<DateTime, List<String>> _retriveEventsForAgenda(
       List<DocumentSnapshot> documents) {
-    Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
+    Map<DateTime, List<String>> events = new Map<DateTime, List<String>>();
     documents.forEach((snapshot) {
-      var dateFromEpoch =
-          DateTime((int.parse(snapshot.documentID)));
+      var dateFromEpoch = DateTime((int.parse(snapshot.documentID)));
       List<Map> dayEvents = snapshot.data.values.first;
-      events.addAll({dateFromEpoch: dayEvents});
+
+      events.addAll(
+          {dateFromEpoch: ConvertUtils.toStringListOfEvents(dayEvents)});
     });
 
     return events;
@@ -63,17 +67,18 @@ class AgendaRepository{
     return events[eventDay] != null;
   }
 
-
-  List<dynamic> _retrieveListOfEvents(DateTime eventDay, Map<DateTime, List<Map>> events) {
-    bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay, events);
+  List<dynamic> _retrieveListOfEvents(
+      DateTime eventDay, Map<DateTime, List<Map>> events) {
+    bool existsEventsInThatDay =
+        _verifyIfExistsEventInThatDay(eventDay, events);
     List dayEvents = new List();
     if (existsEventsInThatDay) {
       events[eventDay].forEach((event) => dayEvents.add(event));
-    } 
+    }
     return dayEvents;
   }
 
-  void _addNewEvent(Map event, List<dynamic> events){
+  void _addNewEvent(Map event, List<dynamic> events) {
     events.add(event);
   }
 }

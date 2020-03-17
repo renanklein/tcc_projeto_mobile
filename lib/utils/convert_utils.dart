@@ -8,4 +8,14 @@ class ConvertUtils{
   static String dayFromDateTime(DateTime date){
     return "${date.year}-${date.month}-${date.day}";
   }
+
+  static List<String> toStringListOfEvents(List<Map> events){
+    List<String> eventsParsed = new List<String>();
+
+    events.forEach((event){
+      eventsParsed.add("${event["description"]};${event["begin"]};${event["end"]}");
+    });
+
+    return eventsParsed;
+  }
 }

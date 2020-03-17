@@ -24,9 +24,10 @@ class _UserCalendarState extends State<UserCalendar> {
 
   @override
   void initState() {
+    this._events = new Map<DateTime, List<dynamic>>();
     var injector = Injector.appInstance;
     this._agendaRepository = injector.getDependency<AgendaRepository>();
-    this._events = new Map<DateTime, List<dynamic>>();
+    this._agendaRepository.events = this._events;
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
     _dispatchAgendaLoadEvent();
     this._controller = new CalendarController();

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class AgendaRepository{
    final firestore =  Firestore.instance;
@@ -9,12 +10,12 @@ class AgendaRepository{
 
    void addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
     var dayEvents = await getEvents();
-    String eventsKey = _extractDayFromDateTime(eventday);
+    String eventsKey = ConvertUtils.dayFromDateTime(eventday);
     List<dynamic> dayEventsAsList = _retrieveListOfEvents(eventday, dayEvents);
     _addNewEvent({
       "description" : name,
-      "begin" : eventDuration[0].toString(),
-      "end" : eventDuration[1].toString()
+      "begin" : ConvertUtils.fromTimeOfDay(eventDuration[0]),
+      "end" : ConvertUtils.fromTimeOfDay(eventDuration[1])
     }, dayEventsAsList);
 
     await Firestore.instance
@@ -29,7 +30,7 @@ class AgendaRepository{
 
   void removeEvent() {}
 
-  Future<Map<DateTime, List<Map>>> getEvents() async {
+  Future<Map<DateTime, List<Map<dynamic, dynamic>>>> getEvents() async {
     var events;
     await Firestore.instance
         .collection("agenda")
@@ -47,11 +48,11 @@ class AgendaRepository{
   //dayEvents -> list of events
   Map<DateTime, List<Map>> _retriveEventsAsMap(
       List<DocumentSnapshot> documents) {
-    Map<DateTime, List<dynamic>> events = new Map<DateTime, List<dynamic>>();
+    Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
     documents.forEach((snapshot) {
       var dateFromEpoch =
           DateTime((int.parse(snapshot.documentID)));
-      List<dynamic> dayEvents = snapshot.data.values.first;
+      List<Map> dayEvents = snapshot.data.values.first;
       events.addAll({dateFromEpoch: dayEvents});
     });
 
@@ -60,10 +61,6 @@ class AgendaRepository{
 
   bool _verifyIfExistsEventInThatDay(DateTime eventDay, Map events) {
     return events[eventDay] != null;
-  }
-
-  String _extractDayFromDateTime(DateTime eventDay) {
-    return "${eventDay.year} - ${eventDay.month} - ${eventDay.day}";
   }
 
 

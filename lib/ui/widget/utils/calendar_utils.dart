@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/UI/tiles/calendar_event_tile.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
-
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class CalendarUtils {
   static Widget buildSelectedDayBorder(DateTime date) {
@@ -31,29 +31,32 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(
-    List _selectedDayDescriptions,
-    DateTime _selectedDay, 
-    AgendaBloc agendaEventBloc) {
-    List dayEvents = _selectedDayDescriptions ?? new List();
+  static Widget buildEventList(List _selectedDayDescriptions,
+      DateTime _selectedDay, AgendaBloc agendaEventBloc) {
+    if (_selectedDayDescriptions == null) {
+      return Column();
+    }
+    List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
-        children: dayEvents.map((event) {
-          var eventStart = event["begin"].split(':');
-          var eventEnd = event["end"].split(":");
+          children: dayEvents.map((event) {
+        var beginHourSplited = event["begin"].split(":");
+        var endHourSplited = event["end"].split(":");
+        var description = event["description"];
 
-          return ListTile(
-            title: CalendarEventTile(eventText: event, 
-            selectedDay: _selectedDay, 
-            eventHourStart: TimeOfDay(hour: eventStart[0], minute: eventStart[1]),
-            eventHourEnd: TimeOfDay(hour: eventEnd[0], minute: eventEnd[1]),
-            agendaBloc: agendaEventBloc,),
-          );
-        }).toList(),
-      ),
+        return ListTile(
+          title: CalendarEventTile(
+            eventText: description,
+            selectedDay: _selectedDay,
+            eventHourStart: TimeOfDay(
+                hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
+            eventHourEnd:
+                TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
+            agendaBloc: agendaEventBloc,
+          ),
+        );
+      }).toList()),
     );
   }
-
- 
 }

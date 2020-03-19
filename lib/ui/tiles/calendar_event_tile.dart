@@ -41,21 +41,7 @@ class CalendarEventTile extends StatelessWidget {
         ),
       ),
       onTap: () {
-        showBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          builder: (context){
-            return Container(
-              height: 250,
-              child: EventEditorScreen(
-                agendaBloc: agendaBloc, 
-                isEdit: true,
-                selectedDay: selectedDay,
-              ) 
-            );
-          }
-        );
+        // to be continued ...
       },
     );
   }

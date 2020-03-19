@@ -33,7 +33,7 @@ class AgendaRepository {
 
   void removeEvent() {}
 
-  Future<Map<DateTime, List<Map<dynamic, dynamic>>>> getEvents() async {
+  Future<Map<DateTime, List>> getEvents() async {
     var events;
     await Firestore.instance
         .collection("agenda")
@@ -52,9 +52,9 @@ class AgendaRepository {
   Map<DateTime, List<String>> _retriveEventsForAgenda(
       List<DocumentSnapshot> documents) {
     Map<DateTime, List<String>> events = new Map<DateTime, List<String>>();
-    documents.forEach((snapshot) {
-      var dateFromEpoch = DateTime((int.parse(snapshot.documentID)));
-      List<Map> dayEvents = snapshot.data.values.first;
+    documents.forEach((snapshot) { 
+      var dateFromEpoch = ConvertUtils.documentIdToDateTime(snapshot.documentID);
+      var dayEvents = snapshot.data.values.first;
 
       events.addAll(
           {dateFromEpoch: ConvertUtils.toStringListOfEvents(dayEvents)});

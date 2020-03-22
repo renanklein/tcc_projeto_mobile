@@ -11,11 +11,14 @@ class AgendaRepository {
 
   set events(Map<DateTime, dynamic> events) => this._events = events;
 
-  void addEvent(
-      String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
+  void addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
     List<dynamic> dayEventsAsList = _retrieveListOfEvents(eventday, _events);
+    int lastId = int.tryParse(dayEventsAsList.last["id"]);
+    int eventId = lastId + 1 ?? 1;
+
     _addNewEvent({
+      "id" : eventId,
       "description": name,
       "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
       "end": ConvertUtils.fromTimeOfDay(eventDuration[1])
@@ -47,6 +50,31 @@ class AgendaRepository {
     return events;
   }
 
+  Future<void> updateEvent(DateTime eventDay, String eventId, Map newEvent) async{
+    var events = await getEvents();
+
+    var filteredDate = ConvertUtils.removeTime(eventDay);
+
+    var dayEvent = events[filteredDate];
+
+    var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
+
+    var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
+
+    listEvents.remove(oldEvent);
+
+    listEvents.add(newEvent);
+
+    await firestore
+      .collection("agenda")
+      .document(this.userId)
+      .collection("events")
+      .document(ConvertUtils.dayFromDateTime(filteredDate))
+      .updateData({
+       "events" : listEvents 
+      });
+  }
+
   //documentId -> epoch date
   //dayEvents -> list of events
   Map<DateTime, List<String>> _retriveEventsForAgenda(
@@ -67,10 +95,9 @@ class AgendaRepository {
     return events[eventDay] != null;
   }
 
-  List<dynamic> _retrieveListOfEvents(
-      DateTime eventDay, Map<DateTime, List<Map>> events) {
-    bool existsEventsInThatDay =
-        _verifyIfExistsEventInThatDay(eventDay, events);
+  List<dynamic> _retrieveListOfEvents(DateTime eventDay, Map<DateTime, List<Map>> events) {
+
+    bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay, events);
     List dayEvents = new List();
     if (existsEventsInThatDay) {
       events[eventDay].forEach((event) => dayEvents.add(event));

@@ -59,8 +59,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 if (state is SignupSigned) {
                   onSuccess();
                   redirectToHomePage();
-                } else if (state is SignupProcessing) {
-                  LayoutUtils.buildCircularProgressIndicator(context);
                 } else if (state is SignupFailed) {
                   onFail();
                 }
@@ -68,31 +66,26 @@ class _SignupScreenState extends State<SignupScreen> {
               child: BlocBuilder(
                   bloc: signupBloc,
                   builder: (context, state) {
+                    if(state is SignupProcessing){
+                      return LayoutUtils.buildCircularProgressIndicator(context);
+                    }
                     return Form(
                       key: formKey,
                       child: ListView(
                         padding: EdgeInsets.all(16.0),
                         children: <Widget>[
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          LayoutUtils.buildHorizontalSpacing(20.0),
                           LoginNameField(
                             nameController: this._nameController,
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          LayoutUtils.buildHorizontalSpacing(20.0),
                           LoginEmailField(
                             emailController: this._emailController,
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          LayoutUtils.buildHorizontalSpacing(20.0),
                           LoginPasswordField(
                               passController: this._passController),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          LayoutUtils.buildHorizontalSpacing(20.0),
                           DropdownButtonFormField(
                             items: _getDropdownMenuItems(),
                             decoration: InputDecoration(
@@ -103,9 +96,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             onChanged: (_) {},
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          LayoutUtils.buildHorizontalSpacing(20.0),
                           SizedBox(
                               height: 44.0,
                               child: RaisedButton(

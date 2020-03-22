@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/UI/tiles/home_card_tile.dart';
-import 'package:tcc_projeto_app/UI/widget/calendar.dart';
-import 'package:tcc_projeto_app/UI/widget/drawer.dart';
+import 'package:tcc_projeto_app/ui/tiles/home_card_tile.dart';
+import 'package:tcc_projeto_app/ui/widget/calendar.dart';
+import 'package:tcc_projeto_app/ui/widget/drawer.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';

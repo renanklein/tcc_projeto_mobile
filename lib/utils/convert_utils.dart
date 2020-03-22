@@ -9,17 +9,27 @@ class ConvertUtils{
     return "${date.year}-${date.month}-${date.day}";
   }
 
+  static DateTime removeTime(DateTime date){
+    var listDate = dayFromDateTime(date).split("-");
+
+    return new DateTime(
+      int.parse(listDate[0]),
+      int.parse(listDate[1]),
+      int.parse(listDate[2])
+    );
+  }
+
   static List<String> toStringListOfEvents(List events){
     List<String> eventsParsed = new List<String>();
 
     events.forEach((event){
-      eventsParsed.add("${event["description"]};${event["begin"]};${event["end"]}");
+      eventsParsed.add("${event["id"]};${event["description"]};${event["begin"]};${event["end"]}");
     });
 
     return eventsParsed;
   }
 
-  static List<Map> toMapListOfEvents(List<String> events){
+  static List<Map> toMapListOfEvents(List events){
 
     if(events == null){
       return List<Map>();
@@ -30,9 +40,10 @@ class ConvertUtils{
       var eventsData = eventString.split(";"); 
       
       eventsParsed.add({
-        "description" : eventsData[0],
-        "begin" : eventsData[1],
-        "end" : eventsData[2]
+        "id" : eventsData[0],
+        "description" : eventsData[1],
+        "begin" : eventsData[2],
+        "end" : eventsData[3]
       });
     });
 

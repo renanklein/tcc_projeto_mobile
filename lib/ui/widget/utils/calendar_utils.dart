@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/UI/tiles/calendar_event_tile.dart';
+import 'package:tcc_projeto_app/ui/tiles/calendar_event_tile.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
@@ -41,12 +41,14 @@ class CalendarUtils {
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
           children: dayEvents.map((event) {
+        var eventId = event["id"];
         var beginHourSplited = event["begin"].split(":");
         var endHourSplited = event["end"].split(":");
         var description = event["description"];
 
         return ListTile(
           title: CalendarEventTile(
+            eventId: eventId,
             eventText: description,
             selectedDay: _selectedDay,
             eventHourStart: TimeOfDay(

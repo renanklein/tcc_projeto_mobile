@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:tcc_projeto_app/UI/screens/home_screen.dart';
-import 'package:tcc_projeto_app/UI/screens/login_screen.dart';
+import 'package:tcc_projeto_app/ui/screens/home_screen.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 

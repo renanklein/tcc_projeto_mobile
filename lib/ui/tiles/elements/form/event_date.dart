@@ -21,7 +21,7 @@ class EventDateField extends StatelessWidget {
       format: DateFormat("HH:mm"),
       decoration: InputDecoration(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(32.0),
         ),
         hintText: this.eventHint,
       ),

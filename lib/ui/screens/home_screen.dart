@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/UI/tiles/home_card_tile.dart';
-import 'package:tcc_projeto_app/UI/widget/calendar.dart';
 import 'package:tcc_projeto_app/UI/widget/drawer.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
@@ -37,8 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is AuthenticationUnauthenticated) {
-            return LoginScreen(
-            );
+            return LoginScreen();
           }
         },
         child: BlocBuilder(
@@ -61,8 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserCalendar()));
+                    Navigator.of(context).pushNamed('/calendar');                    
                   },
                 ),
               ),

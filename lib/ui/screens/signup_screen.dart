@@ -4,12 +4,12 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/signup_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 import 'elements/email_field.dart';
 import 'elements/name_field.dart';
 import 'elements/password_field.dart';
-import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
@@ -158,7 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void redirectToHomePage() {
     Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
   }
 
   void onFail() {

@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:tcc_projeto_app/UI/screens/home_screen.dart';
-import 'package:tcc_projeto_app/UI/screens/login_screen.dart';
+import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
+import 'package:tcc_projeto_app/ui/screens/home_screen.dart';
+import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-
-
 
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   Injector injector = Injector.appInstance;
 
   injector.registerSingleton<UserRepository>((_) => UserRepository());
-  
+
   var user = await injector.getDependency<UserRepository>().getUser();
   injector.registerSingleton((_) => AgendaRepository(userId: user.uid));
 
@@ -35,7 +35,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    this.authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
+    this.authenticationBloc =
+        AuthenticationBloc(userRepository: _userRepository);
     this.authenticationBloc.add(AppStarted());
     super.initState();
   }
@@ -53,17 +54,17 @@ class _MyAppState extends State<MyApp> {
         title: "Projeto tcc",
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blueGrey),
+        onGenerateRoute: RouteGenerator.generateRoute,
         home: BlocBuilder(
           bloc: this.authenticationBloc,
-          builder: (BuildContext context, AuthenticationState state){
-            if(state is AuthenticationUnauthenticated){
-              return LoginScreen();
-            }
-            else if (state is AuthenticationAuthenticated){
+          builder: (BuildContext context, AuthenticationState state) {
+            if (state is AuthenticationUnauthenticated) {
+              return Dashboard();
+            } else if (state is AuthenticationAuthenticated) {
               return HomeScreen();
-            }
-            else if(state is AuthenticationProcessing || state is AuthenticationUninitialized){
-             return LayoutUtils.buildCircularProgressIndicator(context);
+            } else if (state is AuthenticationProcessing ||
+                state is AuthenticationUninitialized) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
             }
           },
         ),

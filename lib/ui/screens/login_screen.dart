@@ -5,11 +5,11 @@ import 'package:tcc_projeto_app/UI/screens/signup_screen.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/login_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'elements/email_field.dart';
 import 'elements/password_field.dart';
 import 'elements/login_logo.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onSuccess() {
     Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
   }
 
   void onFail() {

@@ -11,9 +11,10 @@ class AgendaRepository {
 
   set events(Map<DateTime, dynamic> events) => this._events = events;
 
-  void addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
+  Future<void> addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
-    List<dynamic> dayEventsAsList = _retrieveListOfEvents(eventday, _events);
+    var filteredDate = ConvertUtils.removeTime(eventday);
+    List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(_retrieveListOfEvents(filteredDate, _events));
     int lastId = int.tryParse(dayEventsAsList.last["id"]);
     int eventId = lastId + 1 ?? 1;
 
@@ -95,7 +96,7 @@ class AgendaRepository {
     return events[eventDay] != null;
   }
 
-  List<dynamic> _retrieveListOfEvents(DateTime eventDay, Map<DateTime, List<Map>> events) {
+  List<dynamic> _retrieveListOfEvents(DateTime eventDay, dynamic events) {
 
     bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay, events);
     List dayEvents = new List();

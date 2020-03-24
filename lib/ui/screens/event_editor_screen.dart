@@ -61,7 +61,12 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         body: BlocProvider(
             create: (_) => this.agendaBloc,
             child: BlocListener<AgendaBloc, AgendaState>(
-              listener: (context, state) {},
+              listener: (context, state) {
+                if(_verifySuccessState(state)){
+                  Future.delayed(Duration(seconds: 1));
+                  Navigator.of(context).pop();
+                }
+              },
               child: BlocBuilder<AgendaBloc, AgendaState>(
                 builder: (context, state) {
                   if (state is AgendaEventProcessing) {
@@ -142,9 +147,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
-
-    Future.delayed(Duration(seconds: 1));
-    Navigator.of(context).pop();
   }
 
   bool _verifySuccessState(AgendaState state) {

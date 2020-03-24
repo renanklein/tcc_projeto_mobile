@@ -30,7 +30,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventHourRange.add(event.eventStart);
       eventHourRange.add(event.eventEnd);
 
-      this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
+      await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
       
       yield AgendaEventCreateSuccess();
      }

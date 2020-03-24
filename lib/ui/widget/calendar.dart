@@ -73,6 +73,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 }
                 else if(state is AgendaLoadSuccess){
                   this._events = state.eventsLoaded;
+                  this._agendaRepository.events = this._events;
                   this._selectedDay = DateTime.now();
                   this._selectedDayDescriptions = this._events[this._selectedDay];
                 }

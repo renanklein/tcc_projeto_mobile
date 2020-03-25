@@ -35,8 +35,6 @@ class AgendaRepository {
         .catchError((error) => {});
   }
 
-  void removeEvent() {}
-
   Future<Map<DateTime, List>> getEvents() async {
     var events;
     await Firestore.instance

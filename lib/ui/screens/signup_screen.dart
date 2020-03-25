@@ -74,18 +74,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: ListView(
                         padding: EdgeInsets.all(16.0),
                         children: <Widget>[
-                          LayoutUtils.buildHorizontalSpacing(20.0),
+                          LayoutUtils.buildVerticalSpacing(20.0),
                           LoginNameField(
                             nameController: this._nameController,
                           ),
-                          LayoutUtils.buildHorizontalSpacing(20.0),
+                          LayoutUtils.buildVerticalSpacing(20.0),
                           LoginEmailField(
                             emailController: this._emailController,
                           ),
-                          LayoutUtils.buildHorizontalSpacing(20.0),
+                          LayoutUtils.buildVerticalSpacing(20.0),
                           LoginPasswordField(
                               passController: this._passController),
-                          LayoutUtils.buildHorizontalSpacing(20.0),
+                          LayoutUtils.buildVerticalSpacing(20.0),
                           DropdownButtonFormField(
                             items: _getDropdownMenuItems(),
                             decoration: InputDecoration(
@@ -96,7 +96,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             onChanged: (_) {},
                           ),
-                          LayoutUtils.buildHorizontalSpacing(20.0),
+                          LayoutUtils.buildVerticalSpacing(20.0),
                           SizedBox(
                               height: 44.0,
                               child: RaisedButton(
@@ -156,6 +156,6 @@ class _SignupScreenState extends State<SignupScreen> {
     this.scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text("Falha ao criar o usuário"),
           backgroundColor: Colors.red,
-        ));
+      ));
   }
 }

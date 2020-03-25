@@ -62,9 +62,20 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
             create: (_) => this.agendaBloc,
             child: BlocListener<AgendaBloc, AgendaState>(
               listener: (context, state) {
-                if(_verifySuccessState(state)){
+                if (_verifySuccessState(state)) {
                   Future.delayed(Duration(seconds: 1));
                   Navigator.of(context).pop();
+                } else if (_verifyFailState(state)) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                      "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ));
                 }
               },
               child: BlocBuilder<AgendaBloc, AgendaState>(
@@ -151,6 +162,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _verifySuccessState(AgendaState state) {
     return state is AgendaEventEditSuccess || state is AgendaEventCreateSuccess;
+  }
+
+  bool _verifyFailState(AgendaState state) {
+    return state is AgendaEventCreateFail || state is AgendaEventEditFail;
   }
 
   List<String> _retriveTimeAsString(String time) {

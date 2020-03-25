@@ -77,6 +77,9 @@ class _UserCalendarState extends State<UserCalendar> {
                   this._selectedDay = DateTime.now();
                   this._selectedDayDescriptions = this._events[this._selectedDay];
                 }
+                else if(state is AgendaLoadFail){
+                  _buildFailSnackBar();
+                }
               },
               child: BlocBuilder<AgendaBloc, AgendaState>(
                 bloc: this._agendaBloc,
@@ -146,6 +149,22 @@ class _UserCalendarState extends State<UserCalendar> {
       return true;
     }
     return false;
+  }
+  
+  void _buildFailSnackBar(){
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          "Ocorreu um erro ao carregar a agenda",
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500,
+            color: Colors.white
+          ),
+        ),
+      )
+    );
   }
 
   void _dispatchAgendaLoadEvent() {

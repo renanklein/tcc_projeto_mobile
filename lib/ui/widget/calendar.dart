@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tcc_projeto_app/UI/widget/utils/calendar_utils.dart';
+import 'package:tcc_projeto_app/ui/widget/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
@@ -53,6 +53,7 @@ class _UserCalendarState extends State<UserCalendar> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => EventEditorScreen(
+                        event: null,
                         isEdit: false,
                         agendaBloc: this._agendaBloc,
                         selectedDay: this._selectedDay,
@@ -72,8 +73,12 @@ class _UserCalendarState extends State<UserCalendar> {
                 }
                 else if(state is AgendaLoadSuccess){
                   this._events = state.eventsLoaded;
+                  this._agendaRepository.events = this._events;
                   this._selectedDay = DateTime.now();
                   this._selectedDayDescriptions = this._events[this._selectedDay];
+                }
+                else if(state is AgendaLoadFail){
+                  _buildFailSnackBar();
                 }
               },
               child: BlocBuilder<AgendaBloc, AgendaState>(
@@ -140,10 +145,26 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   bool _isEventCreateSuccess(AgendaState state) {
-    if (state is AgendaEventCreateSuccess) {
+    if (state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess) {
       return true;
     }
     return false;
+  }
+  
+  void _buildFailSnackBar(){
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          "Ocorreu um erro ao carregar a agenda",
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500,
+            color: Colors.white
+          ),
+        ),
+      )
+    );
   }
 
   void _dispatchAgendaLoadEvent() {

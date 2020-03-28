@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class HomeCardTile extends StatelessWidget {
-  String title;
-  String textBody;
+  final title;
+  final textBody;
+
+  String get getTitle => this.title;
+  String get getTextBdy => this.textBody;
 
   HomeCardTile({@required this.title, @required this.textBody});
 

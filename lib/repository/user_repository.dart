@@ -3,31 +3,31 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserRepository {
-  final firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   void firebaseSignOut(){
-    this.firebaseAuth.signOut();
+    this._firebaseAuth.signOut();
   }
 
   Future<AuthResult> signUp({
     @required String email,
     @required String pass})
      async {
-    return await this.firebaseAuth.createUserWithEmailAndPassword(
+    return await this._firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: pass);
   }
 
   Future<AuthResult> signIn({
      @required String email, 
      @required String pass}) async {
-    return await this.firebaseAuth.signInWithEmailAndPassword(
+    return await this._firebaseAuth.signInWithEmailAndPassword(
         email: email, password: pass);
   }
 
   Future resetPassword({
     @required String email
   }) async {
-    return await this.firebaseAuth.sendPasswordResetEmail(email: email);
+    return await this._firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<IdTokenResult> getToken() async {
@@ -41,11 +41,11 @@ class UserRepository {
   }
 
   Future<void> logOut() async {
-    await this.firebaseAuth.signOut();
+    await this._firebaseAuth.signOut();
   }
 
   Future<FirebaseUser> getUser() async {
-    return await this.firebaseAuth.currentUser();
+    return await this._firebaseAuth.currentUser();
   }
 
   Future<DocumentSnapshot> getUserData(String uid) async{

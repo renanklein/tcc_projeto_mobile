@@ -49,13 +49,20 @@ void main(){
       authenticationBloc.add(AppStarted());
     });
 
-    test("When user is not null, should emit authenticated",(){
+    test("When user is not null, but token is null, should emit unauthenticated",(){
       final expectedState = [
-        AuthenticationUninitialized(),
-        AuthenticationAuthenticated()
+        AuthenticationProcessing(),
+        AuthenticationUnauthenticated()
       ];
 
       when(userRepository.getUser()).thenAnswer((_) => Future.value());
+
+      expectLater(
+        authenticationBloc,
+        emitsInOrder(expectedState)
+      );
     });
+
+    authenticationBloc.add(LoggedIn(token : null));
   });
 }

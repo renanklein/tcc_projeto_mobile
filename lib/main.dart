@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:tcc_projeto_app/route_generator.dart';
 import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
-import 'package:tcc_projeto_app/ui/screens/home_screen.dart';
-import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
-import 'package:tcc_projeto_app/route_generator.dart';
+import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class MyApp extends StatefulWidget {
@@ -52,6 +51,13 @@ class _MyAppState extends State<MyApp> {
       create: (context) => this.authenticationBloc,
       child: MaterialApp(
         title: "Projeto tcc",
+
+        /*localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [const Locale('pt', 'BR')],*/
+
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blueGrey),
         onGenerateRoute: RouteGenerator.generateRoute,
@@ -59,9 +65,9 @@ class _MyAppState extends State<MyApp> {
           bloc: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
-              return Dashboard();
+              return LoginScreen();
             } else if (state is AuthenticationAuthenticated) {
-              return HomeScreen();
+              return Dashboard();
             } else if (state is AuthenticationProcessing ||
                 state is AuthenticationUninitialized) {
               return LayoutUtils.buildCircularProgressIndicator(context);

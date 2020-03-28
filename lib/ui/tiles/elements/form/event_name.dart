@@ -10,7 +10,7 @@ class EventNameField extends StatelessWidget {
       controller: eventNameController,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
           hintText: "Nome do evento"),
     );
   }

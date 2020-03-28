@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 part 'agenda_event.dart';
 part 'agenda_state.dart';
@@ -29,7 +30,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventHourRange.add(event.eventStart);
       eventHourRange.add(event.eventEnd);
 
-      this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
+      await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
       
       yield AgendaEventCreateSuccess();
      }
@@ -47,6 +48,26 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         yield AgendaLoadSuccess(events);
       }catch(error){
         yield AgendaLoadFail();
+      }
+    }
+
+    else if (event is AgendaEditButtonPressed){
+      try{
+        yield AgendaEventProcessing();
+
+        var updatedEvent = {
+          "id" : event.eventId,
+          "begin" : ConvertUtils.fromTimeOfDay(event.eventStart),
+          "end" : ConvertUtils.fromTimeOfDay(event.eventEnd),
+          "description" : event.eventName
+        };
+
+        await this.agendaRepository.updateEvent(event.eventDay, event.eventId, updatedEvent);
+
+        yield AgendaEventEditSuccess();
+        
+      }catch(error){
+        yield AgendaEventEditFail();
       }
     }
   }

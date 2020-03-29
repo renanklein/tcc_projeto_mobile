@@ -9,13 +9,11 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
-  final agendaBloc;
   final selectedDay;
 
   EventEditorScreen(
       {@required this.event,
       @required this.isEdit,
-      @required this.agendaBloc,
       @required this.selectedDay});
 
   @override
@@ -23,6 +21,7 @@ class EventEditorScreen extends StatefulWidget {
 }
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
+  AgendaBloc agendaBloc;
   TextEditingController _eventNameController;
   TextEditingController _eventBeginningHourController;
   TextEditingController _eventEndingHourController;
@@ -31,10 +30,12 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
   DateTime get selectedDay => this.widget.selectedDay;
-  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
   @override
   void initState() {
+
+    this.agendaBloc = BlocProvider.of<AgendaBloc>(context);
+    
     this._eventNameController = new TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 

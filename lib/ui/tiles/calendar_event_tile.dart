@@ -11,14 +11,12 @@ class CalendarEventTile extends StatelessWidget {
   final eventHourStart;
   final eventHourEnd;
   final selectedDay;
-  final agendaBloc;
   CalendarEventTile(
       {@required this.eventId,
       @required this.eventText,
       @required this.eventHourStart,
       @required this.eventHourEnd,
-      @required this.selectedDay,
-      @required this.agendaBloc});
+      @required this.selectedDay});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +50,6 @@ class CalendarEventTile extends StatelessWidget {
             builder: (context) => EventEditorScreen(
                   event: event,
                   isEdit: true,
-                  agendaBloc: this.agendaBloc,
                   selectedDay: this.selectedDay,
         )));
       },

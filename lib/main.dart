@@ -22,9 +22,7 @@ void main() async{
   Injector injector = Injector.appInstance;
 
   injector.registerSingleton<UserRepository>((_) => UserRepository());
-  
-  var user = await injector.getDependency<UserRepository>().getUser();
-  injector.registerSingleton((_) => AgendaRepository(userId: user.uid));
+  injector.registerSingleton((_) => AgendaRepository());
 
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }

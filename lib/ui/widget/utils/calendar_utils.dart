@@ -32,7 +32,7 @@ class CalendarUtils {
   }
 
   static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaBloc agendaEventBloc) {
+      DateTime _selectedDay) {
     if (_selectedDayDescriptions == null) {
       return Column();
     }
@@ -54,8 +54,7 @@ class CalendarUtils {
             eventHourStart: TimeOfDay(
                 hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
             eventHourEnd:
-                TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
-            agendaBloc: agendaEventBloc,
+                TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1]))
           ),
         );
       }).toList()),

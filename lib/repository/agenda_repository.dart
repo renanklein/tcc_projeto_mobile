@@ -1,25 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class AgendaRepository {
   final firestore = Firestore.instance;
-  String userId;
+  String _userId;
   Map<DateTime, dynamic> _events;
-  AgendaRepository({@required this.userId});
 
   set events(Map<DateTime, dynamic> events) => this._events = events;
+  set userId(String uid) => this._userId = uid;
 
   Future<void> addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
     var filteredDate = ConvertUtils.removeTime(eventday);
     List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(_retrieveListOfEvents(filteredDate, _events));
-    int lastId = int.tryParse(dayEventsAsList.last["id"]);
-    int eventId = lastId + 1 ?? 1;
+    int eventId =  dayEventsAsList.isEmpty ? 1  : int.parse(dayEventsAsList.last["id"]) + 1;
 
     _addNewEvent({
-      "id" : eventId,
+      "id" : eventId.toString(),
       "description": name,
       "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
       "end": ConvertUtils.fromTimeOfDay(eventDuration[1])
@@ -27,7 +25,7 @@ class AgendaRepository {
 
     await Firestore.instance
         .collection("agenda")
-        .document(this.userId)
+        .document(this._userId)
         .collection("events")
         .document(eventsKey)
         .setData({"events": dayEventsAsList})
@@ -39,7 +37,7 @@ class AgendaRepository {
     var events;
     await Firestore.instance
         .collection("agenda")
-        .document(this.userId)
+        .document(this._userId)
         .collection("events")
         .getDocuments()
         .then((resp) {
@@ -66,7 +64,7 @@ class AgendaRepository {
 
     await firestore
       .collection("agenda")
-      .document(this.userId)
+      .document(this._userId)
       .collection("events")
       .document(ConvertUtils.dayFromDateTime(filteredDate))
       .updateData({

@@ -45,7 +45,6 @@ void main() async{
 
 class _MyAppState extends State<MyApp> {
   AuthenticationBloc authenticationBloc;
-  final _userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
   void initState() {
@@ -56,6 +55,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    authenticationBloc.close();
     super.dispose();
   }
 

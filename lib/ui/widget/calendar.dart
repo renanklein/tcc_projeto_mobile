@@ -48,6 +48,7 @@ class _UserCalendarState extends State<UserCalendar> {
   @override
   void dispose() {
     _controller.dispose();
+    this._agendaBloc.close();
     super.dispose();
   }
 

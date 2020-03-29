@@ -31,19 +31,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    this._authenticationBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => this._authenticationBloc,
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is AuthenticationUnauthenticated) {
-            return LoginScreen(
-            );
-          }
-        },
+        listener: (context, state) {},
         child: BlocBuilder(
           bloc: this._authenticationBloc,
           builder: (context, state) {
+            if(state is AuthenticationUnauthenticated){
+              return LoginScreen();
+            }
+
             return Scaffold(
               appBar: AppBar(
                 title: Text("Menu principal"),

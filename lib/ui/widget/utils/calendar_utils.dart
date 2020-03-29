@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/ui/tiles/calendar_event_tile.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class CalendarUtils {

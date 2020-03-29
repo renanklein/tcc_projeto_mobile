@@ -29,6 +29,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   UserRepository get userRepository => this.widget.userRepository;
 
+
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
@@ -40,6 +41,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
+    this.authenticationBloc.close();
+    this.signupBloc.close();
     super.dispose();
   }
 

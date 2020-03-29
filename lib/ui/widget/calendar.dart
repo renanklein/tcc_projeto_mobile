@@ -32,11 +32,15 @@ class _UserCalendarState extends State<UserCalendar> {
   void initState() {
     this._events = new Map<DateTime, List<dynamic>>();
     var injector = Injector.appInstance;
+
     this._agendaRepository = injector.getDependency<AgendaRepository>();
     this._agendaRepository.events = this._events;
     this._agendaRepository.userId = this.uid;
+
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
+
     _dispatchAgendaLoadEvent();
+    
     this._controller = new CalendarController();
     super.initState();
   }
@@ -63,6 +67,7 @@ class _UserCalendarState extends State<UserCalendar> {
                         event: null,
                         isEdit: false,
                         selectedDay: this._selectedDay,
+                        agendaRepository: this._agendaRepository,
                   ))
                 );
               }
@@ -119,7 +124,8 @@ class _UserCalendarState extends State<UserCalendar> {
                           ),
                           CalendarUtils.buildEventList(
                               this._selectedDayDescriptions,
-                              this._selectedDay)
+                              this._selectedDay,
+                              this._agendaRepository)
                         ],
                       ));
                 },
@@ -150,7 +156,7 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   bool _isEventCreateSuccess(AgendaState state) {
-    if (state is AgendaEventEditSuccess || state is AgendaEventEditSuccess) {
+    if (state is AgendaEventEditSuccess || state is AgendaEventEditSuccess || state is AgendaEventDeleteSuccess) {
       return true;
     }
     return false;

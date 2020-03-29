@@ -35,3 +35,13 @@ class AgendaEditButtonPressed extends AgendaEvent{
     @required this.eventStart,
     @required this.eventEnd});
 }
+
+class AgendaDeleteButtonPressed extends AgendaEvent{
+  String eventId;
+  DateTime eventDay;
+
+  AgendaDeleteButtonPressed({
+    @required this.eventId,
+    @required this.eventDay
+  });
+}

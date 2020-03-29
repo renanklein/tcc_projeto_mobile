@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
+import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
 
@@ -11,12 +14,15 @@ class CalendarEventTile extends StatelessWidget {
   final eventHourStart;
   final eventHourEnd;
   final selectedDay;
+  final agendaRepository;
+
   CalendarEventTile(
       {@required this.eventId,
       @required this.eventText,
       @required this.eventHourStart,
       @required this.eventHourEnd,
-      @required this.selectedDay});
+      @required this.selectedDay,
+      @required this.agendaRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +57,19 @@ class CalendarEventTile extends StatelessWidget {
                   event: event,
                   isEdit: true,
                   selectedDay: this.selectedDay,
+                  agendaRepository: this.agendaRepository,
         )));
+      },
+
+      onLongPress: (){
+        var agendaBloc = new AgendaBloc(agendaRepository:  Injector.appInstance.getDependency<AgendaRepository>());
+
+        agendaBloc.add(AgendaDeleteButtonPressed(
+          eventDay: this.selectedDay,
+          eventId: this.eventId
+        ));
+
+        agendaBloc.close();
       },
     );
   }

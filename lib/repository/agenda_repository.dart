@@ -72,6 +72,29 @@ class AgendaRepository {
       });
   }
 
+  Future removeEvent(DateTime eventDay, String eventId) async{
+    var events = await getEvents();
+
+    var filteredDate = ConvertUtils.removeTime(eventDay);
+
+    var dayEvent = events[filteredDate];
+
+    var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
+
+    var oldEvent = listEvents.where((event) => event["id"] == eventId).toList().first;
+
+    listEvents.remove(oldEvent);
+
+    await firestore
+      .collection("agenda")
+      .document(this._userId)
+      .collection("events")
+      .document(ConvertUtils.dayFromDateTime(filteredDate))
+      .updateData({
+       "events" : listEvents 
+      });
+  }
+
   //documentId -> epoch date
   //dayEvents -> list of events
   Map<DateTime, List<String>> _retriveEventsForAgenda(

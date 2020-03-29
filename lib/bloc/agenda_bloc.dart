@@ -70,5 +70,17 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         yield AgendaEventEditFail();
       }
     }
+
+    else if(event is AgendaDeleteButtonPressed){
+     try{
+        yield AgendaEventProcessing();
+
+        await this.agendaRepository.removeEvent(event.eventDay, event.eventId);
+
+        yield AgendaEventDeleteSuccess();
+     }catch(error){
+       yield AgendaEventDeleteFail();
+     }
+    }
   }
 }

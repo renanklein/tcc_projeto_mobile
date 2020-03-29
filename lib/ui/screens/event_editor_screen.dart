@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/ui/tiles/elements/form/event_date.dart';
 import 'package:tcc_projeto_app/ui/tiles/elements/form/event_name.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:injector/injector.dart';
 
 class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
   final selectedDay;
+  final agendaRepository;
 
   EventEditorScreen(
       {@required this.event,
       @required this.isEdit,
-      @required this.selectedDay});
+      @required this.selectedDay,
+      @required this.agendaRepository});
 
   @override
   _EventEditorScreenState createState() => _EventEditorScreenState();
@@ -30,12 +34,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
   DateTime get selectedDay => this.widget.selectedDay;
+  AgendaRepository get agendaRepository => this.widget.agendaRepository;
 
   @override
   void initState() {
-
-    this.agendaBloc = BlocProvider.of<AgendaBloc>(context);
-    
+    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);    
     this._eventNameController = new TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 

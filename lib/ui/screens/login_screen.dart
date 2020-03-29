@@ -30,9 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.loginBloc = LoginBloc(
-        userRepository: _userRepository,
-        authenticationBloc: this.authenticationBloc);
+    this.loginBloc = Injector.appInstance.getDependency<LoginBloc>();
     super.initState();
   }
 

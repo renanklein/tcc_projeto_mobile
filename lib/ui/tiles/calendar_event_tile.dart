@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/repository/agenda_repository.dart';
+import 'package:tcc_projeto_app/ui/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
 
@@ -47,10 +48,10 @@ class CalendarEventTile extends StatelessWidget {
       ),
       onTap: () {
         var event = {
-          "id" : this.eventId,
-          "description" : this.eventText,
-          "begin" : this.eventHourStart,
-          "end" : this.eventHourEnd
+          "id": this.eventId,
+          "description": this.eventText,
+          "begin": this.eventHourStart,
+          "end": this.eventHourEnd
         };
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => EventEditorScreen(
@@ -58,18 +59,21 @@ class CalendarEventTile extends StatelessWidget {
                   isEdit: true,
                   selectedDay: this.selectedDay,
                   agendaRepository: this.agendaRepository,
-        )));
+                )));
       },
-
-      onLongPress: (){
-        var agendaBloc = new AgendaBloc(agendaRepository:  Injector.appInstance.getDependency<AgendaRepository>());
-
-        agendaBloc.add(AgendaDeleteButtonPressed(
-          eventDay: this.selectedDay,
-          eventId: this.eventId
-        ));
-
-        agendaBloc.close();
+      onLongPress: () {
+        showBottomSheet(
+            context: context,
+            elevation: 2.0,
+            backgroundColor: Colors.transparent,
+            builder: (context) {
+              return EventExcludeBottomSheet(
+                eventId: this.eventId,
+                eventDay: this.selectedDay,
+                agendaRepository:
+                    Injector.appInstance.getDependency<AgendaRepository>(),
+              );
+            });
       },
     );
   }

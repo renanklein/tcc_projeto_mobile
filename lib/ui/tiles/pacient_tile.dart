@@ -9,59 +9,66 @@ class PacientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(15.0)),
         color: Color(0xFF84FFFF),
-        elevation: 4.0,
-        margin: EdgeInsets.symmetric(horizontal: 20.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Container(
-          height: 124,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  constraints: BoxConstraints.expand(
-                    width: MediaQuery.of(context).size.width / 4,
-                    height: 95.0,
-                  ),
-                  decoration: BoxDecoration(color: Colors.grey),
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 30.0,
+        border: Border.all(
+          color: Colors.black,
+          width: 2.0,
+          style: BorderStyle.solid,
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              constraints: BoxConstraints.expand(
+                width: 90,
+                height: 90,
+              ),
+              decoration:
+                  BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+              child: Image.network(
+                  imgPath),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.60,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1A237E),
                   ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Center(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
-                      ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    textBody,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w300,
+                      color: Color(0xFF1A237E),
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      textBody,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xFF1A237E),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }

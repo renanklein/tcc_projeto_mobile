@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/ui/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
 import 'package:tcc_projeto_app/ui/screens/home_screen.dart';
+import 'package:tcc_projeto_app/ui/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/ui/screens/view_pacient_screen.dart';
 import 'package:tcc_projeto_app/ui/screens/wait_list.dart';
 import 'package:tcc_projeto_app/ui/widget/calendar.dart';
@@ -28,6 +29,12 @@ class RouteGenerator{
         break;
       case '/waitList':
         return MaterialPageRoute(builder: (_) => WaitList());
+        break;
+      case '/pacientDetail':
+        return MaterialPageRoute(builder: (_) => PacientDetailScreen());
+        break;
+      case '/newPacientDetail':
+        //return MaterialPageRoute(builder: (_) => NewPacientDetailScreen());
         break;
       default:
         return _errorRoute();

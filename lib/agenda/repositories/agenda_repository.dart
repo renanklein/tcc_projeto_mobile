@@ -59,6 +59,8 @@ class AgendaRepository {
 
     var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
 
+    newEvent["status"] = oldEvent["status"];
+
     listEvents.remove(oldEvent);
 
     listEvents.add(newEvent);

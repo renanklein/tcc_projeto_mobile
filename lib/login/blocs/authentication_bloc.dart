@@ -4,7 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';

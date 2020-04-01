@@ -20,7 +20,8 @@ class AgendaRepository {
       "id" : eventId.toString(),
       "description": name,
       "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
-      "end": ConvertUtils.fromTimeOfDay(eventDuration[1])
+      "end": ConvertUtils.fromTimeOfDay(eventDuration[1]),
+      "status" : "created"
     }, dayEventsAsList);
 
     await Firestore.instance

@@ -1,7 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+
 
 class MockUserRepository extends Mock implements UserRepository{}
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/model/agenda_model.dart';
+import 'package:tcc_projeto_app/agenda/models/agenda_model.dart';
 
 class EventButtons extends StatefulWidget {
   final eventText;

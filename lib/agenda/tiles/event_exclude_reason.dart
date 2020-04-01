@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
-import 'package:tcc_projeto_app/repository/agenda_repository.dart';
-import 'package:tcc_projeto_app/ui/tiles/elements/form/event_reason.dart';
+import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventExcludeBottomSheet extends StatefulWidget {

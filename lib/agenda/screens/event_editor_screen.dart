@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/repository/agenda_repository.dart';
-import 'package:tcc_projeto_app/ui/tiles/elements/form/event_date.dart';
-import 'package:tcc_projeto_app/ui/tiles/elements/form/event_name.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
+import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 

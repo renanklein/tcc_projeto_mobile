@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/ui/widget/drawer.dart';
-import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
-import 'package:tcc_projeto_app/model/user_model.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/home/drawer.dart';
+import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 
-import 'login_screen.dart';
 
 class Dashboard extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();

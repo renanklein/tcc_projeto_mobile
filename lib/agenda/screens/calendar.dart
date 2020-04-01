@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tcc_projeto_app/ui/widget/utils/calendar_utils.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
-import 'package:tcc_projeto_app/repository/agenda_repository.dart';
-import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
+import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
+import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserCalendar extends StatefulWidget {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
-import 'package:tcc_projeto_app/bloc/signup_bloc.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
+import 'package:tcc_projeto_app/home/screen/home_screen.dart';
+import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
+import 'package:tcc_projeto_app/login/blocs/signup_bloc.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 import 'elements/email_field.dart';
 import 'elements/name_field.dart';
 import 'elements/password_field.dart';
-import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
-import 'package:tcc_projeto_app/repository/agenda_repository.dart';
-import 'package:tcc_projeto_app/ui/tiles/event_exclude_reason.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
+import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
+import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
 
-import 'elements/events/event_avatar.dart';
-import 'elements/events/event_description.dart';
+
+
 
 class CalendarEventTile extends StatelessWidget {
   final eventId;

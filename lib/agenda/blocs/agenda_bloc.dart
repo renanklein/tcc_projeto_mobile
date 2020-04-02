@@ -75,7 +75,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
      try{
         yield AgendaEventProcessing();
 
-        await this.agendaRepository.removeEvent(event.eventDay, event.eventId);
+        await this.agendaRepository.removeEvent(event.eventDay, event.eventId, event.reason);
 
         yield AgendaEventDeleteSuccess();
      }catch(error){

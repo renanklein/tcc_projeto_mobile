@@ -65,8 +65,8 @@ class CalendarEventTile extends StatelessWidget {
       onLongPress: () {
         showBottomSheet(
             context: context,
-            elevation: 2.0,
-            backgroundColor: Colors.transparent,
+            elevation: 1.0,
+            backgroundColor: Theme.of(context).primaryColor,
             builder: (context) {
               return EventExcludeBottomSheet(
                 eventId: this.eventId,

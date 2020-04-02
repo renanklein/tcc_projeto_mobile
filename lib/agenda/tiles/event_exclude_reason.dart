@@ -106,8 +106,11 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
         onPressed: () {
           this.agendaBloc.add(AgendaDeleteButtonPressed(
             eventId: this.eventId,
-            eventDay: this.eventDay
+            eventDay: this.eventDay,
+            reason: this._eventReasonController.text
           ));
+
+          Navigator.of(context).pop();
         },
       ),
     );

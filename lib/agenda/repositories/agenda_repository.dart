@@ -75,7 +75,7 @@ class AgendaRepository {
       });
   }
 
-  Future removeEvent(DateTime eventDay, String eventId) async{
+  Future removeEvent(DateTime eventDay, String eventId, String reason) async{
     var events = await getEvents();
 
     var filteredDate = ConvertUtils.removeTime(eventDay);
@@ -87,6 +87,11 @@ class AgendaRepository {
     var oldEvent = listEvents.where((event) => event["id"] == eventId).toList().first;
 
     listEvents.remove(oldEvent);
+
+    oldEvent["status"] = "canceled";
+    oldEvent["reason"] = reason;
+
+    listEvents.add(oldEvent);
 
     await firestore
       .collection("agenda")

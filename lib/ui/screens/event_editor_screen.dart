@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/ui/tiles/elements/form/event_date.dart';
 import 'package:tcc_projeto_app/ui/tiles/elements/form/event_name.dart';
 import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:injector/injector.dart';
 
 class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
-  final agendaBloc;
   final selectedDay;
+  final agendaRepository;
 
   EventEditorScreen(
       {@required this.event,
       @required this.isEdit,
-      @required this.agendaBloc,
-      @required this.selectedDay});
+      @required this.selectedDay,
+      @required this.agendaRepository});
 
   @override
   _EventEditorScreenState createState() => _EventEditorScreenState();
 }
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
+  AgendaBloc agendaBloc;
   TextEditingController _eventNameController;
   TextEditingController _eventBeginningHourController;
   TextEditingController _eventEndingHourController;
@@ -31,84 +34,95 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
   DateTime get selectedDay => this.widget.selectedDay;
-  AgendaBloc get agendaBloc => this.widget.agendaBloc;
+  AgendaRepository get agendaRepository => this.widget.agendaRepository;
 
   @override
   void initState() {
+    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);
     this._eventNameController = new TextEditingController(
-        text: this.event == null ? "" : this.event["description"]);
+      text: this.event == null ? "" : this.event["description"],
+    );
 
     this._eventBeginningHourController = new TextEditingController(
-        text: this.event == null
-            ? ""
-            : ConvertUtils.fromTimeOfDay(this.event["begin"]));
+      text: this.event == null
+          ? ""
+          : ConvertUtils.fromTimeOfDay(
+              this.event["begin"],
+            ),
+    );
 
     this._eventEndingHourController = new TextEditingController(
-        text: this.event == null
-            ? ""
-            : ConvertUtils.fromTimeOfDay(this.event["end"]));
+      text: this.event == null
+          ? ""
+          : ConvertUtils.fromTimeOfDay(
+              this.event["end"],
+            ),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Agenda"),
-          elevation: 0.0,
-        ),
-        body: BlocProvider(
-            create: (_) => this.agendaBloc,
-            child: BlocListener<AgendaBloc, AgendaState>(
-              listener: (context, state) {
-                if (_verifySuccessState(state)) {
-                  Future.delayed(Duration(seconds: 1));
-                  Navigator.of(context).pop();
-                } else if (_verifyFailState(state)) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text(
-                      "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ));
-                }
-              },
-              child: BlocBuilder<AgendaBloc, AgendaState>(
-                builder: (context, state) {
-                  if (state is AgendaEventProcessing) {
-                    return LayoutUtils.buildCircularProgressIndicator(context);
-                  }
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Agenda"),
+        elevation: 0.0,
+      ),
+      body: BlocProvider(
+        create: (_) => this.agendaBloc,
+        child: BlocListener<AgendaBloc, AgendaState>(
+          listener: (context, state) {
+            if (_verifySuccessState(state)) {
+              Future.delayed(Duration(seconds: 1));
+              Navigator.of(context).pop();
+            } else if (_verifyFailState(state)) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                    "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              );
+            }
+          },
+          child: BlocBuilder<AgendaBloc, AgendaState>(
+            builder: (context, state) {
+              if (state is AgendaEventProcessing) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              }
 
-                  return Form(
-                    child: ListView(
-                      padding: EdgeInsets.all(16.0),
-                      children: <Widget>[
-                        EventNameField(
-                            eventNameController: this._eventNameController),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        EventDateField(
-                          eventDateController:
-                              this._eventBeginningHourController,
-                          eventHint: "Horário de início",
-                        ),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        EventDateField(
-                          eventDateController: this._eventEndingHourController,
-                          eventHint: "Horário de término",
-                        ),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        _buildCreateEventButton()
-                      ],
+              return Form(
+                child: ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: <Widget>[
+                    EventNameField(
+                        eventNameController: this._eventNameController),
+                    LayoutUtils.buildVerticalSpacing(20.0),
+                    EventDateField(
+                      eventDateController: this._eventBeginningHourController,
+                      eventHint: "Horário de início",
                     ),
-                  );
-                },
-              ),
-            )));
+                    LayoutUtils.buildVerticalSpacing(20.0),
+                    EventDateField(
+                      eventDateController: this._eventEndingHourController,
+                      eventHint: "Horário de término",
+                    ),
+                    LayoutUtils.buildVerticalSpacing(20.0),
+                    _buildCreateEventButton(),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildCreateEventButton() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/ui/tiles/home_card_tile.dart';
+import 'package:tcc_projeto_app/ui/widget/calendar.dart';
 import 'package:tcc_projeto_app/ui/widget/drawer.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/model/user_model.dart';
@@ -30,18 +31,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    this._authenticationBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => this._authenticationBloc,
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is AuthenticationUnauthenticated) {
-            return LoginScreen();
-          }
-        },
+        listener: (context, state) {},
         child: BlocBuilder(
           bloc: this._authenticationBloc,
           builder: (context, state) {
+            if(state is AuthenticationUnauthenticated){
+              return LoginScreen();
+            }
+
             return Scaffold(
               appBar: AppBar(
                 title: Text("Menu principal"),
@@ -58,8 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                   ),
                   color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/calendar');                    
+                  onPressed: () async{
+                    var user  = await this.userRepository.getUser();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UserCalendar(uid: user.uid,)));
                   },
                 ),
               ),

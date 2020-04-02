@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/repository/agenda_repository.dart';
 import 'package:tcc_projeto_app/ui/tiles/calendar_event_tile.dart';
-import 'package:tcc_projeto_app/bloc/agenda_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class CalendarUtils {
@@ -32,7 +32,7 @@ class CalendarUtils {
   }
 
   static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaBloc agendaEventBloc) {
+      DateTime _selectedDay, AgendaRepository agendaRepository) {
     if (_selectedDayDescriptions == null) {
       return Column();
     }
@@ -55,7 +55,7 @@ class CalendarUtils {
                 hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
             eventHourEnd:
                 TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
-            agendaBloc: agendaEventBloc,
+                agendaRepository: agendaRepository,
           ),
         );
       }).toList()),

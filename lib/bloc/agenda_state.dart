@@ -29,6 +29,14 @@ class AgendaEventEditFail extends AgendaState{
 
 }
 
+class AgendaEventDeleteSuccess extends AgendaState{
+
+}
+
+class AgendaEventDeleteFail extends AgendaState{
+  
+}
+
 class AgendaLoadSuccess extends AgendaState{
   Map<DateTime, List<dynamic>> _eventsLoaded;
 

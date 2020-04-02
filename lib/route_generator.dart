@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/repository/pacient_repository.dart';
 import 'package:tcc_projeto_app/ui/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
 import 'package:tcc_projeto_app/ui/screens/home_screen.dart';
@@ -7,9 +8,11 @@ import 'package:tcc_projeto_app/ui/screens/view_pacient_screen.dart';
 import 'package:tcc_projeto_app/ui/screens/wait_list.dart';
 import 'package:tcc_projeto_app/ui/widget/calendar.dart';
 
-class RouteGenerator{
-  static Route<dynamic> generateRoute(RouteSettings settings){
+class RouteGenerator {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
+
+    PacientRepository pacientRepository = new PacientRepository();
 
     switch (settings.name) {
       case '/':
@@ -22,10 +25,13 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_) => ViewPacientcreen());
         break;
       case '/calendar':
-        return MaterialPageRoute(builder: (_) => UserCalendar());
+        return MaterialPageRoute(
+            builder: (_) => UserCalendar(
+                  uid: null,
+                ));
         break;
       case '/createPacient':
-        return MaterialPageRoute(builder: (_) => CreatePacient());
+        return MaterialPageRoute(builder: (_) => CreatePacientScreen(pacientRepository: pacientRepository,));
         break;
       case '/waitList':
         return MaterialPageRoute(builder: (_) => WaitList());
@@ -42,7 +48,7 @@ class RouteGenerator{
     }
   }
 
-  static Route<dynamic> _errorRoute(){
+  static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(

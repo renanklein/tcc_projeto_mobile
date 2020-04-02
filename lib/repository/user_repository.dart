@@ -72,3 +72,15 @@ class UserRepository {
   }
 
 }
+/*
+Future<bool> isUserLoggedIn() async {
+    var user = await _firebaseAuth.currentUser();
+    await _populateCurrentUser(user);
+    return user != null;
+  }
+
+  Future _populateCurrentUser(FirebaseUser user) async {
+    if (user != null) {
+      _currentUser = await _firestoreService.getUser(user.uid);
+    }
+  }*/

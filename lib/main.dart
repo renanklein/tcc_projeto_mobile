@@ -10,6 +10,11 @@ import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
+import 'bloc/login_bloc.dart';
+import 'bloc/signup_bloc.dart';
+
+
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -21,27 +26,37 @@ void main() async {
   Injector injector = Injector.appInstance;
 
   injector.registerSingleton<UserRepository>((_) => UserRepository());
+  injector.registerSingleton((_) => AgendaRepository());
 
-  var user = await injector.getDependency<UserRepository>().getUser();
-  injector.registerSingleton((_) => AgendaRepository(userId: user.uid));
+  injector.registerDependency((_) => AuthenticationBloc(
+    userRepository: injector.getDependency<UserRepository>()));
+
+  injector.registerDependency((_) => LoginBloc(
+    userRepository: injector.getDependency<UserRepository>(),
+    authenticationBloc: injector.getDependency<AuthenticationBloc>()
+  ));
+
+  injector.registerDependency((_) => SignupBloc(
+    userRepository: injector.getDependency<UserRepository>(),
+    authenticationBloc: injector.getDependency<AuthenticationBloc>()
+  ));
 
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
 class _MyAppState extends State<MyApp> {
   AuthenticationBloc authenticationBloc;
-  final _userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
   void initState() {
-    this.authenticationBloc =
-        AuthenticationBloc(userRepository: _userRepository);
+    this.authenticationBloc = Injector.appInstance.getDependency<AuthenticationBloc>();
     this.authenticationBloc.add(AppStarted());
     super.initState();
   }
 
   @override
   void dispose() {
+    authenticationBloc.close();
     super.dispose();
   }
 

@@ -30,7 +30,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventHourRange.add(event.eventStart);
       eventHourRange.add(event.eventEnd);
 
-      await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
+      await this.agendaRepository.addEvent(name: event.eventName, eventday: event.eventDay, eventDuration: eventHourRange);
       
       yield AgendaEventCreateSuccess();
      }
@@ -69,6 +69,18 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       }catch(error){
         yield AgendaEventEditFail();
       }
+    }
+
+    else if(event is AgendaDeleteButtonPressed){
+     try{
+        yield AgendaEventProcessing();
+
+        await this.agendaRepository.removeEvent(event.eventDay, event.eventId);
+
+        yield AgendaEventDeleteSuccess();
+     }catch(error){
+       yield AgendaEventDeleteFail();
+     }
     }
   }
 }

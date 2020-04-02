@@ -25,19 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
 
-  UserRepository get _userRepository => this.widget.userRepository;
-
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.loginBloc = LoginBloc(
-        userRepository: _userRepository,
-        authenticationBloc: this.authenticationBloc);
+    this.loginBloc = Injector.appInstance.getDependency<LoginBloc>();
     super.initState();
   }
 
   @override
   void dispose() {
+    this.loginBloc.close();
+    this.authenticationBloc.close();
     super.dispose();
   }
 

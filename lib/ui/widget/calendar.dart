@@ -9,6 +9,10 @@ import 'package:tcc_projeto_app/ui/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserCalendar extends StatefulWidget {
+  final uid;
+
+  UserCalendar({@required this.uid});
+
   @override
   _UserCalendarState createState() => _UserCalendarState();
 }
@@ -22,14 +26,21 @@ class _UserCalendarState extends State<UserCalendar> {
   CalendarController _controller;
   DateTime _selectedDay;
 
+  String get uid => this.widget.uid;
+
   @override
   void initState() {
     this._events = new Map<DateTime, List<dynamic>>();
     var injector = Injector.appInstance;
+
     this._agendaRepository = injector.getDependency<AgendaRepository>();
     this._agendaRepository.events = this._events;
+    this._agendaRepository.userId = this.uid;
+
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
+
     _dispatchAgendaLoadEvent();
+    
     this._controller = new CalendarController();
     super.initState();
   }
@@ -37,6 +48,7 @@ class _UserCalendarState extends State<UserCalendar> {
   @override
   void dispose() {
     _controller.dispose();
+    this._agendaBloc.close();
     super.dispose();
   }
 
@@ -55,8 +67,8 @@ class _UserCalendarState extends State<UserCalendar> {
                   MaterialPageRoute(builder: (context) => EventEditorScreen(
                         event: null,
                         isEdit: false,
-                        agendaBloc: this._agendaBloc,
                         selectedDay: this._selectedDay,
+                        agendaRepository: this._agendaRepository,
                   ))
                 );
               }
@@ -114,7 +126,7 @@ class _UserCalendarState extends State<UserCalendar> {
                           CalendarUtils.buildEventList(
                               this._selectedDayDescriptions,
                               this._selectedDay,
-                              this._agendaBloc)
+                              this._agendaRepository)
                         ],
                       ));
                 },
@@ -145,7 +157,7 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   bool _isEventCreateSuccess(AgendaState state) {
-    if (state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess) {
+    if (state is AgendaEventEditSuccess || state is AgendaEventEditSuccess || state is AgendaEventDeleteSuccess) {
       return true;
     }
     return false;

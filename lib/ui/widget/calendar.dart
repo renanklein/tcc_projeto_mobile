@@ -40,7 +40,7 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
 
     _dispatchAgendaLoadEvent();
-    
+
     this._controller = new CalendarController();
     super.initState();
   }
@@ -61,18 +61,16 @@ class _UserCalendarState extends State<UserCalendar> {
           title: Text("Agenda"),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => EventEditorScreen(
-                        event: null,
-                        isEdit: false,
-                        selectedDay: this._selectedDay,
-                        agendaRepository: this._agendaRepository,
-                  ))
-                );
-              }
-            )
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EventEditorScreen(
+                            event: null,
+                            isEdit: false,
+                            selectedDay: this._selectedDay,
+                            agendaRepository: this._agendaRepository,
+                          )));
+                })
           ],
           elevation: 0.0,
         ),
@@ -81,15 +79,14 @@ class _UserCalendarState extends State<UserCalendar> {
             child: BlocListener<AgendaBloc, AgendaState>(
               listener: (context, state) {
                 if (_isEventCreateSuccess(state)) {
-                 _dispatchAgendaLoadEvent();
-                }
-                else if(state is AgendaLoadSuccess){
+                  _dispatchAgendaLoadEvent();
+                } else if (state is AgendaLoadSuccess) {
                   this._events = state.eventsLoaded;
                   this._agendaRepository.events = this._events;
                   this._selectedDay = DateTime.now();
-                  this._selectedDayDescriptions = this._events[this._selectedDay];
-                }
-                else if(state is AgendaLoadFail){
+                  this._selectedDayDescriptions =
+                      this._events[this._selectedDay];
+                } else if (state is AgendaLoadFail) {
                   _buildFailSnackBar();
                 }
               },
@@ -157,26 +154,23 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   bool _isEventCreateSuccess(AgendaState state) {
-    if (state is AgendaEventEditSuccess || state is AgendaEventEditSuccess || state is AgendaEventDeleteSuccess) {
+    if (state is AgendaEventEditSuccess ||
+        state is AgendaEventEditSuccess ||
+        state is AgendaEventDeleteSuccess) {
       return true;
     }
     return false;
   }
-  
-  void _buildFailSnackBar(){
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Ocorreu um erro ao carregar a agenda",
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w500,
-            color: Colors.white
-          ),
-        ),
-      )
-    );
+
+  void _buildFailSnackBar() {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        "Ocorreu um erro ao carregar a agenda",
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+      ),
+    ));
   }
 
   void _dispatchAgendaLoadEvent() {

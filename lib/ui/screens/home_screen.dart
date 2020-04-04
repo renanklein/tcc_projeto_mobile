@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder(
           bloc: this._authenticationBloc,
           builder: (context, state) {
-            if(state is AuthenticationUnauthenticated){
+            if (state is AuthenticationUnauthenticated) {
               return LoginScreen();
             }
 
@@ -65,10 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                   ),
                   color: Theme.of(context).primaryColor,
-                  onPressed: () async{
-                    var user  = await this.userRepository.getUser();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserCalendar(uid: user.uid,)));
+                  onPressed: () async {
+                    var user = await this.userRepository.getUser();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => UserCalendar(),
+                      ),
+                    );
                   },
                 ),
               ),

@@ -1,31 +1,33 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/bloc/pacient_bloc.dart';
-import 'package:tcc_projeto_app/model/user_model.dart';
+import 'package:tcc_projeto_app/model/create_pacient_model.dart';
+import 'package:tcc_projeto_app/model/pacient_model.dart';
 import 'package:tcc_projeto_app/repository/pacient_repository.dart';
-import 'package:tcc_projeto_app/repository/user_repository.dart';
 import 'package:tcc_projeto_app/ui/screens/login_screen.dart';
 import 'package:tcc_projeto_app/ui/widget/drawer.dart';
+import 'package:flutter/widgets.dart';
 
-class CreatePacientScreen extends StatefulWidget {  
-  final pacientRepository;
+class CreatePacientScreen extends StatefulWidget {
+  final pacientRepository =
+      Injector.appInstance.getDependency<PacientRepository>();
 
-  CreatePacientScreen({
-    @required this.pacientRepository,
-  });
+  CreatePacientScreen();
 
   @override
   _CreatePacientScreenState createState() => _CreatePacientScreenState();
 }
 
 class _CreatePacientScreenState extends State<CreatePacientScreen> {
-  UserModel model;
-  AuthenticationBloc _authenticationBloc;
+  CreatePacientModel _createPacientModel;
   PacientBloc pacientBloc;
-  UserRepository _userRepository;
+  AuthenticationBloc _authenticationBloc;
+
+  PacientRepository get pacientRepository => this.widget.pacientRepository;
 
   final formKey = new GlobalKey<FormState>();
 
@@ -38,8 +40,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   final dtNascController = TextEditingController();
   final sexoController = TextEditingController();
 
-  //String get uid => this.widget.uid;
-
   @override
   void dispose() {
     nomeController.dispose();
@@ -51,8 +51,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     sexoController.dispose();
     super.dispose();
   }
-
-  PacientRepository get pacientRepository => this.widget.pacientRepository;
 
   @override
   void initState() {
@@ -125,6 +123,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 'Insira o CPF do paciente',
                                 'Por Favor, insira um CPF válido',
                               ),
+                              //menudropdown
                               PacienteFormField(
                                 sexoController,
                                 'Sexo:',
@@ -148,18 +147,22 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   ),
                                   onPressed: () async {
                                     if (_createPacientKey.currentState
-                                        .validate()) {
-                                      var user =
-                                          await this._userRepository.getUser();
+                                            .validate() &&
+                                        !_createPacientModel.busy) {
+                                      var user = await this
+                                          ._createPacientModel
+                                          .currentUser;
                                       pacientRepository.createPacient(
-                                        userId: user.uid,
-                                        nome: nomeController.text,
-                                        email: emailController.text,
-                                        telefone: telefoneController.text,
-                                        identidade: identidadeController.text,
-                                        cpf: cpfController.text,
-                                        dtNascimento: dtNascController.text,
-                                        sexo: sexoController.text,
+                                        pacient: PacientModel(
+                                          userId: user.uid,
+                                          nome: nomeController.text,
+                                          email: emailController.text,
+                                          telefone: telefoneController.text,
+                                          identidade: identidadeController.text,
+                                          cpf: cpfController.text,
+                                          dtNascimento: dtNascController.text,
+                                          sexo: sexoController.text,
+                                        ),
                                       );
                                     }
                                   },

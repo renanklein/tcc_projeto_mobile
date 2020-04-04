@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/ui/tiles/pacient_tile.dart';
 
-class ViewPacientcreen extends StatefulWidget {
+class ListPacientScreen extends StatefulWidget {
   @override
-  _ViewPacientcreenState createState() => _ViewPacientcreenState();
+  _ListPacientScreenState createState() => _ListPacientScreenState();
 }
 
-class _ViewPacientcreenState extends State<ViewPacientcreen> {
+class _ListPacientScreenState extends State<ListPacientScreen> {
   final searchBarController = TextEditingController();
 
   @override
@@ -73,7 +73,8 @@ class _ViewPacientcreenState extends State<ViewPacientcreen> {
               },
               child: PacientTile(
                 title: 'Pedro',
-                textBody: 'pla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla pla ',
+                textBody:
+                    'pla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla plapla pla pla pla ',
                 imgPath:
                     'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
               ),

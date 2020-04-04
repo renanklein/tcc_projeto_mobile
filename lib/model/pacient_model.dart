@@ -20,7 +20,6 @@ class PacientModel {
     @required String cpf,
     @required String dtNascimento,
     @required String sexo,
-
   }) {
     this._userId = userId;
     this._nome = nome;
@@ -60,4 +59,9 @@ class PacientModel {
       sexo: map['sexo'],
     );
   }
+
+  String get email => this._email;
+  String get nome => this._nome;
+  String get userUid => this._userId;
+  //set userUid(String uid) => this._userId = uid;
 }

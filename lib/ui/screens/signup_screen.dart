@@ -29,7 +29,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   UserRepository get userRepository => this.widget.userRepository;
 
-
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
@@ -69,8 +68,9 @@ class _SignupScreenState extends State<SignupScreen> {
               child: BlocBuilder(
                   bloc: signupBloc,
                   builder: (context, state) {
-                    if(state is SignupProcessing){
-                      return LayoutUtils.buildCircularProgressIndicator(context);
+                    if (state is SignupProcessing) {
+                      return LayoutUtils.buildCircularProgressIndicator(
+                          context);
                     }
                     return Form(
                       key: formKey,
@@ -159,6 +159,6 @@ class _SignupScreenState extends State<SignupScreen> {
     this.scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text("Falha ao criar o usuário"),
           backgroundColor: Colors.red,
-      ));
+        ));
   }
 }

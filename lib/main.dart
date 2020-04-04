@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:tcc_projeto_app/repository/pacient_repository.dart';
 import 'package:tcc_projeto_app/route_generator.dart';
 import 'package:tcc_projeto_app/ui/screens/dashboard.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
@@ -13,8 +14,6 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'bloc/login_bloc.dart';
 import 'bloc/signup_bloc.dart';
 
-
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -25,23 +24,44 @@ void main() async {
 
   Injector injector = Injector.appInstance;
 
-  injector.registerSingleton<UserRepository>((_) => UserRepository());
-  injector.registerSingleton((_) => AgendaRepository());
+  injector.registerSingleton<UserRepository>(
+    (_) => UserRepository(),
+  );
+  injector.registerSingleton<RouteGenerator>(
+    (_) => RouteGenerator(),
+  );
+  injector.registerSingleton<AgendaRepository>(
+    (_) => AgendaRepository(),
+  );
+  injector.registerSingleton<PacientRepository>(
+    (_) => PacientRepository(),
+  );
 
-  injector.registerDependency((_) => AuthenticationBloc(
-    userRepository: injector.getDependency<UserRepository>()));
+  injector.registerDependency(
+    (_) => AuthenticationBloc(
+      userRepository: injector.getDependency<UserRepository>(),
+    ),
+  );
 
-  injector.registerDependency((_) => LoginBloc(
-    userRepository: injector.getDependency<UserRepository>(),
-    authenticationBloc: injector.getDependency<AuthenticationBloc>()
-  ));
+  injector.registerDependency(
+    (_) => LoginBloc(
+      userRepository: injector.getDependency<UserRepository>(),
+      authenticationBloc: injector.getDependency<AuthenticationBloc>(),
+    ),
+  );
 
-  injector.registerDependency((_) => SignupBloc(
-    userRepository: injector.getDependency<UserRepository>(),
-    authenticationBloc: injector.getDependency<AuthenticationBloc>()
-  ));
+  injector.registerDependency(
+    (_) => SignupBloc(
+      userRepository: injector.getDependency<UserRepository>(),
+      authenticationBloc: injector.getDependency<AuthenticationBloc>(),
+    ),
+  );
 
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  initializeDateFormatting().then(
+    (_) => runApp(
+      MyApp(),
+    ),
+  );
 }
 
 class _MyAppState extends State<MyApp> {
@@ -49,7 +69,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    this.authenticationBloc = Injector.appInstance.getDependency<AuthenticationBloc>();
+    this.authenticationBloc =
+        Injector.appInstance.getDependency<AuthenticationBloc>();
     this.authenticationBloc.add(AppStarted());
     super.initState();
   }

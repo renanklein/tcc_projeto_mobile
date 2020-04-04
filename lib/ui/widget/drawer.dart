@@ -18,7 +18,7 @@ class _UserDrawerState extends State<UserDrawer> {
   AuthenticationBloc authenticationBloc;
 
   UserRepository get userRepository => this.widget.userRepository;
-  
+
   UserModel userModel;
 
   @override
@@ -44,7 +44,7 @@ class _UserDrawerState extends State<UserDrawer> {
                 future: _setUserModel(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                   return LayoutUtils.buildCircularProgressIndicator(context);
+                    return LayoutUtils.buildCircularProgressIndicator(context);
                   } else {
                     return ListView(
                       children: <Widget>[
@@ -79,10 +79,7 @@ class _UserDrawerState extends State<UserDrawer> {
   }
 
   Future<void> _setUserModel() async {
-    final user = await this.userRepository.getUser();
-    final userData = await this.userRepository.getUserData(user.uid);
-    this.userModel =
-        UserModel(email: userData.data["email"], name: userData.data["name"]);
+    this.userModel = await this.userRepository.getUserModel();
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
@@ -101,7 +98,7 @@ class _UserDrawerState extends State<UserDrawer> {
                 _buildUserName(model),
               ],
             ),
-             _buildSignoutButton(authenticationBloc)
+            _buildSignoutButton(authenticationBloc)
           ],
         ),
       ),
@@ -140,8 +137,8 @@ class _UserDrawerState extends State<UserDrawer> {
       ),
       onPressed: () async {
         this.authenticationBloc.add(LoggedOut());
-        await Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => LoginScreen()));
+        await Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginScreen()));
       },
     );
   }

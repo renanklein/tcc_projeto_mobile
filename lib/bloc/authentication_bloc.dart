@@ -9,7 +9,8 @@ import 'package:tcc_projeto_app/repository/user_repository.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   UserRepository userRepository;
   String token;
 
@@ -22,32 +23,28 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-
-    if(event is AppStarted){
+    if (event is AppStarted) {
       final user = await this.userRepository.getUser();
-       if(user == null){
-         yield AuthenticationUnauthenticated();
-       } else{
-         yield AuthenticationAuthenticated();
-       }
-    }
-
-    else if(event is LoggedIn){
+      if (user == null) {
+        yield AuthenticationUnauthenticated();
+      } else {
+        yield AuthenticationAuthenticated();
+      }
+    } else if (event is LoggedIn) {
       yield AuthenticationProcessing();
-      
+
       final token = event.token;
 
-      if(token == null || token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0){
-          yield AuthenticationUnauthenticated();
+      if (token == null ||
+          token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0) {
+        yield AuthenticationUnauthenticated();
       }
 
       yield AuthenticationAuthenticated();
-    }
-
-    else if(event is LoggedOut) {
-       yield AuthenticationProcessing();
-       await this.userRepository.logOut();
-       yield AuthenticationUnauthenticated();
+    } else if (event is LoggedOut) {
+      yield AuthenticationProcessing();
+      await this.userRepository.logOut();
+      yield AuthenticationUnauthenticated();
     }
   }
 }

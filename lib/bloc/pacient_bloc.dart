@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/model/pacient_model.dart';
 import 'package:tcc_projeto_app/repository/pacient_repository.dart';
 
 part 'pacient_event.dart';
@@ -25,14 +26,16 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield CreatePacientEventProcessing();
 
         await this.pacientRepository.createPacient(
-            userId: event.userId,
-            nome: event.nome,
-            email: event.email,
-            telefone: event.telefone,
-            identidade: event.identidade,
-            cpf: event.cpf,
-            dtNascimento: event.dtNascimento,
-            sexo: event.sexo);
+              pacient: PacientModel(
+                  userId: event.userId,
+                  nome: event.nome,
+                  email: event.email,
+                  telefone: event.telefone,
+                  identidade: event.identidade,
+                  cpf: event.cpf,
+                  dtNascimento: event.dtNascimento,
+                  sexo: event.sexo),
+            );
 
         yield CreatePacientEventSuccess();
       } catch (error) {
@@ -42,13 +45,14 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield PacientLoading();
 
-        var pacients = await this.pacientRepository.getPacients();
+        var pacients = await this.pacientRepository.getPacientsList();
 
         //yield PacientLoadEventSuccess(events);
       } catch (error) {
         yield PacientLoadEventFail();
       }
-    } /* else if (event is PacientEditButtonPressed) {
+    }
+    /* else if (event is PacientEditButtonPressed) {
       try {
         yield PacientEventProcessing();
 

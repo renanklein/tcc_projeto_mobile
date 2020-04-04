@@ -3,38 +3,36 @@ import 'package:mockito/mockito.dart';
 import 'package:tcc_projeto_app/bloc/authentication_bloc.dart';
 import 'package:tcc_projeto_app/repository/user_repository.dart';
 
-class MockUserRepository extends Mock implements UserRepository{}
+class MockUserRepository extends Mock implements UserRepository {}
 
-void main(){
-
+void main() {
   AuthenticationBloc authenticationBloc;
   MockUserRepository userRepository;
 
-  setUp((){
+  setUp(() {
     userRepository = MockUserRepository();
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
   });
 
-  tearDown((){
+  tearDown(() {
     authenticationBloc.close();
   });
 
-  test('When bloc initialize, state should be initial', (){
+  test('When bloc initialize, state should be initial', () {
     expect(authenticationBloc.initialState, AuthenticationUninitialized());
   });
 
-  test("When bloc closes, it does not emit new states",(){
+  test("When bloc closes, it does not emit new states", () {
     //arrange/assert
-    expectLater(authenticationBloc, 
-      emitsInOrder([AuthenticationUninitialized(), emitsDone])
-    );
+    expectLater(authenticationBloc,
+        emitsInOrder([AuthenticationUninitialized(), emitsDone]));
 
     //act
     authenticationBloc.close();
   });
 
-  group("AppStarted", (){
-    test("When user is null, should emit unauthenticated", (){
+  group("AppStarted", () {
+    test("When user is null, should emit unauthenticated", () {
       //arrange
       final expectedStates = [
         AuthenticationUninitialized(),
@@ -43,13 +41,14 @@ void main(){
 
       when(userRepository.getUser()).thenAnswer((_) => Future.value(null));
 
-      expectLater(authenticationBloc, 
-        emitsInOrder(expectedStates));
+      expectLater(authenticationBloc, emitsInOrder(expectedStates));
 
       authenticationBloc.add(AppStarted());
     });
 
-    test("When user is not null, but token is null, should emit unauthenticated",(){
+    test(
+        "When user is not null, but token is null, should emit unauthenticated",
+        () {
       final expectedState = [
         AuthenticationProcessing(),
         AuthenticationUnauthenticated()
@@ -57,12 +56,9 @@ void main(){
 
       when(userRepository.getUser()).thenAnswer((_) => Future.value());
 
-      expectLater(
-        authenticationBloc,
-        emitsInOrder(expectedState)
-      );
+      expectLater(authenticationBloc, emitsInOrder(expectedState));
     });
 
-    authenticationBloc.add(LoggedIn(token : null));
+    authenticationBloc.add(LoggedIn(token: null));
   });
 }

@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    this._authenticationBloc.close();
     super.dispose();
   }
 

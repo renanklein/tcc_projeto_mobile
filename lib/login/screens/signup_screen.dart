@@ -115,7 +115,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                     this.signupBloc.add(SignupButtonPressed(
                                         name: this._nameController.text,
                                         email: this._emailController.text,
-                                        password: this._passController.text));
+                                        password: this._passController.text,
+                                        context: context));
                                   }
                                 },
                               ))

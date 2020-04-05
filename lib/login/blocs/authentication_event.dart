@@ -12,8 +12,9 @@ class AppStarted extends AuthenticationEvent{
 
 class LoggedIn extends AuthenticationEvent{
   IdTokenResult token;
+  BuildContext context;
 
-  LoggedIn({@required IdTokenResult token});
+  LoggedIn({@required this.token, @required this.context});
 }
 
 class LoggedOut extends AuthenticationEvent{}

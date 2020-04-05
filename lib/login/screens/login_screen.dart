@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               passController: this.passController),
                           _buildForgetPasswordFlatButton(),
                           LayoutUtils.buildVerticalSpacing(20.0),
-                          _buildLoginScreenButton()
+                          _buildLoginScreenButton(context)
                         ],
                       ),
                     );
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginScreenButton() {
+  Widget _buildLoginScreenButton(BuildContext context) {
     return SizedBox(
         height: 44.0,
         child: RaisedButton(
@@ -131,7 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
             if (formKey.currentState.validate()) {
               this.loginBloc.add(LoginButtonPressed(
                   email: this.emailController.text,
-                  password: this.passController.text));
+                  password: this.passController.text,
+                  context: context));
             }
           },
         ));

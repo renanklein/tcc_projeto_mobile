@@ -67,6 +67,6 @@ void main(){
       );
     });
 
-    authenticationBloc.add(LoggedIn(token : null));
+    authenticationBloc.add(LoggedIn(token : null, context: context));
   });
 }

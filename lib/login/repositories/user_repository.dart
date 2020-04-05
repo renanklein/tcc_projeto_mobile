@@ -65,12 +65,10 @@ class UserRepository {
 
   Future<void> setupFcmNotification(FirebaseUser user) async {
     var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
-
     var fcmToken = await fcm.getToken();
-
     await Firestore.instance
-        .collection("users")
-        .document(user.uid)
-        .setData({"fcmToken": fcmToken}, merge: true);
+          .collection("users")
+          .document(user.uid)
+          .setData({"fcmToken": fcmToken}, merge: true);
   }
 }

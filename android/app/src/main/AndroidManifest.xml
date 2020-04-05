@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="internalOnly"
     package="br.tcc.app">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that

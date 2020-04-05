@@ -30,11 +30,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final user = await this.userRepository.getUser();
        if(user == null){
          yield AuthenticationUnauthenticated();
-
+       } else{
          await this.userRepository.setupFcmNotification(user);
          await _configureNotificationsType(event.context);
-         
-       } else{
          yield AuthenticationAuthenticated();
        }
     }

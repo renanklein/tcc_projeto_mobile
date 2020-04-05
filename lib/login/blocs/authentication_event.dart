@@ -5,7 +5,9 @@ abstract class AuthenticationEvent extends Equatable {
 }
 
 class AppStarted extends AuthenticationEvent{
+  BuildContext context;
 
+  AppStarted({@required this.context});
 }
 
 class LoggedIn extends AuthenticationEvent{

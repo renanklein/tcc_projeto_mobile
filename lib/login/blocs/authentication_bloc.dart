@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 
 
@@ -23,11 +26,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-
     if(event is AppStarted){
       final user = await this.userRepository.getUser();
        if(user == null){
          yield AuthenticationUnauthenticated();
+
+         await this.userRepository.setupFcmNotification(user);
+         await _configureNotificationsType(event.context);
+         
        } else{
          yield AuthenticationAuthenticated();
        }
@@ -50,5 +56,36 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
        await this.userRepository.logOut();
        yield AuthenticationUnauthenticated();
     }
+  }
+
+  Future<void> _configureNotificationsType(BuildContext context){
+    var _fcm  = Injector.appInstance.getDependency<FirebaseMessaging>();
+    _fcm.configure(
+      onMessage:  (Map<String, dynamic> message) async{
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: message["notification"]["title"],
+              subtitle: message["notification"]["subtitle"],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          )
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async{
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async{
+        print("onResume: $message");
+      }
+    );
   }
 }

@@ -41,8 +41,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    this.authenticationBloc.close();
-    this.signupBloc.close();
     super.dispose();
   }
 

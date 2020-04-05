@@ -21,27 +21,28 @@ export const sendTopic = functions.firestore
         await fcm.sendToTopic("events", payload);
     });
 
-export const sendUser =  functions.firestore
-.document("agenda/{agendaId}/events/{eventsId}")
-.onWrite(async snapshot => {
-    const event = snapshot.after.data();
+export const sendUser = functions.firestore
+    .document("agenda/{agendaId}")
+    .onWrite(async snapshot => {
+        // agendaId == userId
+        const userId = snapshot.after.id;
 
-    const querySnapshot = await db
-      .collection('users')
-      .doc()
-      .collection('fcmToken')
-      .get();
+        const querySnapshot = await db
+            .collection("users")
+            .doc(userId)
+            .collection("tokens")
+            .get();
 
-    const tokens = querySnapshot.docs.map(snap => snap.id);
+        const tokens = querySnapshot.docs.map(snap => snap.id)
 
-    const payload: admin.messaging.MessagingPayload = {
-        notification: {
-            title: "Ocorreu uma mudança nesta consulta",
-            body: `${event}`,
-            icon: "../../assets/images/seringa_icone.png",
-            click_action: "FLUTTER_NOTIFICATION_CLICK"
-        }
-    };
-    await fcm.sendToDevice(tokens, payload);
-});
+        const payload: admin.messaging.MessagingPayload = {
+            notification: {
+                title: "Notificação de consultas",
+                body: "Ocorreu uma mudança em sua agenda",
+                icon: "../../assets/images/seringa_icone.png",
+                click_action: "FLUTTER_NOTIFICATION_CLICK"
+            }
+        };
+        await fcm.sendToDevice(tokens, payload);
+    });
 

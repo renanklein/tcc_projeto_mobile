@@ -23,13 +23,12 @@ class _UserDrawerState extends State<UserDrawer> {
 
   @override
   void initState() {
-    this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    this.authenticationBloc = Injector.appInstance.getDependency<AuthenticationBloc>();
     super.initState();
   }
 
   @override
   void dispose() {
-    this.authenticationBloc.close();
     super.dispose();
   }
 

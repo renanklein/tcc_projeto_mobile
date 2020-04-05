@@ -67,8 +67,10 @@ class UserRepository {
     var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
     var fcmToken = await fcm.getToken();
     await Firestore.instance
-          .collection("users")
-          .document(user.uid)
-          .setData({"fcmToken": fcmToken}, merge: true);
+        .collection("users")
+        .document(user.uid)
+        .collection("tokens")
+        .document(fcmToken)
+        .setData({"token": fcmToken});
   }
 }

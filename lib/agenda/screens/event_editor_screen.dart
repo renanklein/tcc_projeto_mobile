@@ -37,7 +37,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);    
+    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);
     this._eventNameController = new TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
@@ -52,11 +52,12 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
             : ConvertUtils.fromTimeOfDay(this.event["end"]));
     super.initState();
   }
+
   @override
   void dispose() {
-    this.agendaBloc.close();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +166,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
+
+    Navigator.of(context).pop();
   }
 
   bool _verifySuccessState(AgendaState state) {

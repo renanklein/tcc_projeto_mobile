@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
@@ -31,7 +33,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventHourRange.add(event.eventEnd);
 
       await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
-      
+
+      var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
       yield AgendaEventCreateSuccess();
      }
      catch(error){

@@ -20,7 +20,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc loginBloc;
-  AuthenticationBloc authenticationBloc;
   final emailController = new TextEditingController();
   final passController = new TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -28,14 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     this.loginBloc = Injector.appInstance.getDependency<LoginBloc>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

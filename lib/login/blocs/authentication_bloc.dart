@@ -48,6 +48,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           yield AuthenticationUnauthenticated();
       }
 
+      final user = await this.userRepository.getUser();
+      await this.userRepository.setupFcmNotification(user);
+      await _configureNotificationsType(event.context);
+
       yield AuthenticationAuthenticated();
     }
 
@@ -58,7 +62,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Future<void> _configureNotificationsType(BuildContext context){
+  Future<void> _configureNotificationsType(BuildContext context) async{
     var _fcm  = Injector.appInstance.getDependency<FirebaseMessaging>();
     _fcm.configure(
       onMessage:  (Map<String, dynamic> message) async{
@@ -87,5 +91,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         print("onResume: $message");
       }
     );
+
   }
 }

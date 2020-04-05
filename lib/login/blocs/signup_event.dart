@@ -8,6 +8,7 @@ class SignupButtonPressed extends SignupEvent {
   String name;
   String email;
   String password;
+  BuildContext context;
 
-  SignupButtonPressed({@required this.name ,@required this.email, @required this.password});
+  SignupButtonPressed({@required this.name ,@required this.email, @required this.password, @required this.context});
 }

@@ -18,6 +18,7 @@ class AgendaRepository {
 
     _addNewEvent({
       "id" : eventId.toString(),
+      "userId" : this._userId,
       "description": name,
       "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
       "end": ConvertUtils.fromTimeOfDay(eventDuration[1]),

@@ -20,8 +20,8 @@ class ConvertUtils {
     List<String> eventsParsed = new List<String>();
 
     events.forEach((event) {
-      eventsParsed.add(
-          "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]}");
+       eventsParsed.add(
+          "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
     });
 
     return eventsParsed;
@@ -41,7 +41,8 @@ class ConvertUtils {
           "description": eventsData[1],
           "begin": eventsData[2],
           "end": eventsData[3],
-          "status": eventsData[4]
+          "status": eventsData[4],
+          "userId" : eventsData[5]
         });
       }
     });

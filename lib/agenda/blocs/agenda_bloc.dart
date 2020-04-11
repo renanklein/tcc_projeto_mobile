@@ -34,7 +34,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
 
-      var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
       yield AgendaEventCreateSuccess();
      }
      catch(error){

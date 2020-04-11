@@ -69,8 +69,6 @@ class UserRepository {
     await Firestore.instance
         .collection("users")
         .document(user.uid)
-        .collection("tokens")
-        .document(fcmToken)
-        .setData({"token": fcmToken});
+        .setData({"notificationToken": fcmToken}, merge: true);
   }
 }

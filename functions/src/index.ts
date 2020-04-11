@@ -22,18 +22,25 @@ export const sendTopic = functions.firestore
     });
 
 export const sendUser = functions.firestore
-    .document("agenda/{agendaId}")
+    .document("agenda/{agendaId}/events/{eventsId}")
     .onWrite(async snapshot => {
-        // agendaId == userId
-        const userId = snapshot.after.id;
+        const listIds: string[] = [];
+        const tokens: string[] = [];
+        const events = snapshot.after.data()!["events"];
 
-        const querySnapshot = await db
-            .collection("users")
-            .doc(userId)
-            .collection("tokens")
-            .get();
+        events.forEach((el: any) => {
+            listIds.push(el["userId"]);
+        });
 
-        const tokens = querySnapshot.docs.map(snap => snap.id)
+       const querySnapshot = await db
+        .collection("users")
+        .where(admin.firestore.FieldPath.documentId(), "in", listIds)
+        .get();
+
+        querySnapshot.docs.forEach((doc) => {
+            const token = doc.data()["notificationToken"];
+            tokens.push(token);
+        });
 
         const payload: admin.messaging.MessagingPayload = {
             notification: {

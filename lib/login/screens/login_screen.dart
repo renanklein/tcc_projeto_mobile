@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
-import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/signup_screen.dart';

@@ -32,7 +32,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
          yield AuthenticationUnauthenticated();
        } else{
          await this.userRepository.setupFcmNotification(user);
-         await _configureNotificationsType(event.context);
          yield AuthenticationAuthenticated();
        }
     }
@@ -48,7 +47,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       final user = await this.userRepository.getUser();
       await this.userRepository.setupFcmNotification(user);
-      await _configureNotificationsType(event.context);
 
       yield AuthenticationAuthenticated();
     }
@@ -60,35 +58,5 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Future<void> _configureNotificationsType(BuildContext context) async{
-    var _fcm  = Injector.appInstance.getDependency<FirebaseMessaging>();
-    _fcm.configure(
-      onMessage:  (Map<String, dynamic> message) async{
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: message["notification"]["title"],
-              subtitle: message["notification"]["subtitle"],
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("OK"),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          )
-        );
-      },
-      onLaunch: (Map<String, dynamic> message) async{
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async{
-        print("onResume: $message");
-      }
-    );
-
-  }
+ 
 }

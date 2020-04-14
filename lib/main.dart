@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +17,10 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
+  print(message);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -29,8 +32,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    _registerDependencies();
-    this.authenticationBloc = Injector.appInstance.getDependency<AuthenticationBloc>();
+    registerDependencies();
+    configureNotificationsType(context);
+    this.authenticationBloc =
+        Injector.appInstance.getDependency<AuthenticationBloc>();
     this.authenticationBloc.add(AppStarted(context: context));
     super.initState();
   }
@@ -65,16 +70,14 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _registerDependencies() {
+  void registerDependencies() {
     Injector injector = Injector.appInstance;
 
     injector.registerSingleton<UserRepository>((_) => UserRepository());
     injector.registerSingleton((_) => AgendaRepository());
-
-    injector.registerSingleton((_) => FirebaseMessaging());
-
     injector.registerDependency((_) => AuthenticationBloc(
         userRepository: injector.getDependency<UserRepository>()));
+    injector.registerSingleton((_) => FirebaseMessaging());
 
     injector.registerDependency((_) => LoginBloc(
         userRepository: injector.getDependency<UserRepository>(),
@@ -85,4 +88,18 @@ class _MyAppState extends State<MyApp> {
         authenticationBloc: injector.getDependency<AuthenticationBloc>()));
   }
 
+  void configureNotificationsType(BuildContext context) async {
+    var _fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
+    _fcm.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+        },
+        onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+        },
+        onBackgroundMessage: onBackgroundMessage);
+  }
 }

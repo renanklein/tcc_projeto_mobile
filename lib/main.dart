@@ -47,8 +47,24 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
-      create: (context) => this.authenticationBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (context) => this.authenticationBloc,
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(
+            userRepository: Injector.appInstance.getDependency<UserRepository>(),
+            authenticationBloc: this.authenticationBloc
+          ),
+        ),
+        BlocProvider<SignupBloc>(
+          create: (context) => SignupBloc(
+            userRepository: Injector.appInstance.getDependency<UserRepository>(),
+            authenticationBloc: this.authenticationBloc
+          ),
+        )
+      ],
       child: MaterialApp(
         title: "Projeto tcc",
         debugShowCheckedModeBanner: false,
@@ -75,17 +91,12 @@ class _MyAppState extends State<MyApp> {
 
     injector.registerSingleton<UserRepository>((_) => UserRepository());
     injector.registerSingleton((_) => AgendaRepository());
-    injector.registerDependency((_) => AuthenticationBloc(
-        userRepository: injector.getDependency<UserRepository>()));
+
     injector.registerSingleton((_) => FirebaseMessaging());
 
-    injector.registerDependency((_) => LoginBloc(
-        userRepository: injector.getDependency<UserRepository>(),
-        authenticationBloc: injector.getDependency<AuthenticationBloc>()));
-
-    injector.registerDependency((_) => SignupBloc(
-        userRepository: injector.getDependency<UserRepository>(),
-        authenticationBloc: injector.getDependency<AuthenticationBloc>()));
+    injector.registerSingleton((_) => AuthenticationBloc(
+      userRepository: injector.getDependency<UserRepository>()
+    ));
   }
 
   void configureNotificationsType(BuildContext context) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
@@ -11,13 +12,13 @@ class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
   final selectedDay;
-  final agendaRepository;
+  final refreshAgenda;
 
   EventEditorScreen(
       {@required this.event,
       @required this.isEdit,
       @required this.selectedDay,
-      @required this.agendaRepository});
+      @required this.refreshAgenda});
 
   @override
   _EventEditorScreenState createState() => _EventEditorScreenState();
@@ -33,11 +34,13 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
   DateTime get selectedDay => this.widget.selectedDay;
-  AgendaRepository get agendaRepository => this.widget.agendaRepository;
+  Function get refreshAgenda => this.widget.refreshAgenda;
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);
+    this.agendaBloc = new AgendaBloc(
+        agendaRepository:
+            Injector.appInstance.getDependency<AgendaRepository>());
     this._eventNameController = new TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
@@ -66,57 +69,55 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           title: Text("Agenda"),
           elevation: 0.0,
         ),
-        body: BlocProvider(
-            create: (_) => this.agendaBloc,
-            child: BlocListener<AgendaBloc, AgendaState>(
-              listener: (context, state) {
-                if (_verifySuccessState(state)) {
-                  Future.delayed(Duration(seconds: 1));
-                  Navigator.of(context).pop();
-                } else if (_verifyFailState(state)) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text(
-                      "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ));
+        body: BlocProvider<AgendaBloc>(
+          create: (context) => this.agendaBloc,
+          child: BlocListener<AgendaBloc, AgendaState>(
+            listener: (context, state) {
+              if (_verifySuccessState(state)) {
+               _onSuccessState();
+              } else if (_verifyFailState(state)) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                    "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ));
+              }
+            },
+            child: BlocBuilder<AgendaBloc, AgendaState>(
+              builder: (context, state) {
+                if (state is AgendaEventProcessing) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
                 }
+                return Form(
+                  child: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    children: <Widget>[
+                      EventNameField(
+                          eventNameController: this._eventNameController),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      EventDateField(
+                        eventDateController: this._eventBeginningHourController,
+                        eventHint: "Horário de início",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      EventDateField(
+                        eventDateController: this._eventEndingHourController,
+                        eventHint: "Horário de término",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      _buildCreateEventButton()
+                    ],
+                  ),
+                );
               },
-              child: BlocBuilder<AgendaBloc, AgendaState>(
-                builder: (context, state) {
-                  if (state is AgendaEventProcessing) {
-                    return LayoutUtils.buildCircularProgressIndicator(context);
-                  }
-
-                  return Form(
-                    child: ListView(
-                      padding: EdgeInsets.all(16.0),
-                      children: <Widget>[
-                        EventNameField(
-                            eventNameController: this._eventNameController),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        EventDateField(
-                          eventDateController:
-                              this._eventBeginningHourController,
-                          eventHint: "Horário de início",
-                        ),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        EventDateField(
-                          eventDateController: this._eventEndingHourController,
-                          eventHint: "Horário de término",
-                        ),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        _buildCreateEventButton()
-                      ],
-                    ),
-                  );
-                },
-              ),
-            )));
+            ),
+          ),
+        ));
   }
 
   Widget _buildCreateEventButton() {
@@ -166,12 +167,17 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
-
-    Navigator.of(context).pop();
   }
 
-  bool _verifySuccessState(AgendaState state) {
-    return state is AgendaEventEditSuccess || state is AgendaEventCreateSuccess;
+
+  void _onSuccessState() {
+    Future.delayed(Duration(seconds: 1));
+    Navigator.of(context).pop();
+    this.refreshAgenda();
+  }
+
+  bool _verifySuccessState(AgendaState state){
+    return state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess;
   }
 
   bool _verifyFailState(AgendaState state) {

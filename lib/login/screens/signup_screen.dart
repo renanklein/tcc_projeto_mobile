@@ -33,9 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.signupBloc = SignupBloc(
-        userRepository: userRepository,
-        authenticationBloc: this.authenticationBloc);
+    this.signupBloc = BlocProvider.of<SignupBloc>(context);
     super.initState();
   }
 
@@ -53,9 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: BlocProvider(
-          create: (context) => this.signupBloc,
-          child: BlocListener<SignupBloc, SignupState>(
+        body: BlocListener<SignupBloc, SignupState>(
               listener: (context, state) {
                 if (state is SignupSigned) {
                   onSuccess();
@@ -124,7 +120,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     );
                   })),
-        ));
+        );
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {

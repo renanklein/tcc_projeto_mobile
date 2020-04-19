@@ -10,7 +10,6 @@ import 'elements/email_field.dart';
 import 'elements/password_field.dart';
 import 'elements/login_logo.dart';
 
-
 class LoginScreen extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
   @override
@@ -26,69 +25,64 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    this.loginBloc = Injector.appInstance.getDependency<LoginBloc>();
+    this.loginBloc = BlocProvider.of<LoginBloc>(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          title: Text("Login"),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                "Criar Conta",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignupScreen()));
-              },
-            )
-          ],
-        ),
-        body: BlocProvider(
-          create: (context) => this.loginBloc,
-          child: BlocListener<LoginBloc, LoginState>(
-              listener: (context, state) {
-                if (state is LoginSucceded) {
-                  onSuccess();
-                } else if (state is LoginFailure) {
-                  onFail();
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: Text("Login"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              "Criar Conta",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SignupScreen()));
+            },
+          )
+        ],
+      ),
+      body: BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginSucceded) {
+              onSuccess();
+            } else if (state is LoginFailure) {
+              onFail();
+            }
+          },
+          child: BlocBuilder<LoginBloc, LoginState>(
+              bloc: this.loginBloc,
+              builder: (context, state) {
+                if (state is LoginProcessing) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-              },
-              child: BlocBuilder<LoginBloc, LoginState>(
-                  bloc: this.loginBloc,
-                  builder: (context, state) {
-                    if (state is LoginProcessing) {
-                      return LayoutUtils.buildCircularProgressIndicator(
-                          context);
-                    }
-                    return Form(
-                      key: formKey,
-                      child: ListView(
-                        padding: EdgeInsets.all(16.0),
-                        children: <Widget>[
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginLogo(),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginEmailField(
-                              emailController: this.emailController),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginPasswordField(
-                              passController: this.passController),
-                          _buildForgetPasswordFlatButton(),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          _buildLoginScreenButton(context)
-                        ],
-                      ),
-                    );
-                  })),
-        ));
+                return Form(
+                  key: formKey,
+                  child: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    children: <Widget>[
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginLogo(),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginEmailField(emailController: this.emailController),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginPasswordField(passController: this.passController),
+                      _buildForgetPasswordFlatButton(),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      _buildLoginScreenButton(context)
+                    ],
+                  ),
+                );
+              })),
+    );
   }
 
   Widget _buildForgetPasswordFlatButton() {

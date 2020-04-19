@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-
-
-
 
 class CalendarEventTile extends StatelessWidget {
   final eventId;
@@ -17,6 +12,7 @@ class CalendarEventTile extends StatelessWidget {
   final eventHourEnd;
   final selectedDay;
   final agendaRepository;
+  final refreshAgenda;
 
   CalendarEventTile(
       {@required this.eventId,
@@ -24,7 +20,8 @@ class CalendarEventTile extends StatelessWidget {
       @required this.eventHourStart,
       @required this.eventHourEnd,
       @required this.selectedDay,
-      @required this.agendaRepository});
+      @required this.agendaRepository,
+      @required this.refreshAgenda});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +41,26 @@ class CalendarEventTile extends StatelessWidget {
                 eventText: eventText,
                 eventHourStart: eventHourStart,
                 eventHourEnd: eventHourEnd,
+              ),
+              LayoutUtils.buildHorizontalSpacing(30.0),
+              IconButton(
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  showBottomSheet(
+                      context: context,
+                      elevation: 1.0,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      builder: (context) {
+                        return EventExcludeBottomSheet(
+                          eventId: this.eventId,
+                          eventDay: this.selectedDay,
+                          refreshAgenda: this.refreshAgenda,
+                        );
+                      });
+                },
               )
             ]),
       ),
@@ -59,22 +76,8 @@ class CalendarEventTile extends StatelessWidget {
                   event: event,
                   isEdit: true,
                   selectedDay: this.selectedDay,
-                  agendaRepository: this.agendaRepository,
+                  refreshAgenda: this.refreshAgenda,
                 )));
-      },
-      onLongPress: () {
-        showBottomSheet(
-            context: context,
-            elevation: 1.0,
-            backgroundColor: Theme.of(context).primaryColor,
-            builder: (context) {
-              return EventExcludeBottomSheet(
-                eventId: this.eventId,
-                eventDay: this.selectedDay,
-                agendaRepository:
-                    Injector.appInstance.getDependency<AgendaRepository>(),
-              );
-            });
       },
     );
   }

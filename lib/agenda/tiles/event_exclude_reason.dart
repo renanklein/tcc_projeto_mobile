@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_reason.dart';
@@ -7,15 +9,16 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class EventExcludeBottomSheet extends StatefulWidget {
   final eventDay;
   final eventId;
-  final agendaRepository;
+  final refreshAgenda;
 
   EventExcludeBottomSheet(
       {@required this.eventDay,
       @required this.eventId,
-      @required this.agendaRepository});
+      @required this.refreshAgenda});
 
   @override
-  _EventExcludeBottomSheetState createState() => _EventExcludeBottomSheetState();
+  _EventExcludeBottomSheetState createState() =>
+      _EventExcludeBottomSheetState();
 }
 
 class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
@@ -25,13 +28,16 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
 
   DateTime get eventDay => this.widget.eventDay;
   String get eventId => this.widget.eventId;
-  AgendaRepository get agendaRepository => this.widget.agendaRepository;
+  Function get refreshAgenda => this.widget.refreshAgenda;
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(agendaRepository: this.agendaRepository);
+    this.agendaBloc = new AgendaBloc(
+        agendaRepository:
+            Injector.appInstance.getDependency<AgendaRepository>());
     super.initState();
   }
+
   @override
   void dispose() {
     this.agendaBloc.close();
@@ -41,35 +47,54 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 5, left: 15.0, right: 15.0, bottom: 20.0),
-      padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-      height: 160,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Form(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: EventReason(
-                reasonController: this._eventReasonController,
-              ),
-            ),
-            LayoutUtils.buildVerticalSpacing(20.0),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                _buildCancelButton(),
-                _buildExcludeButton()
-              ],
-            )
-          ],
+        margin: EdgeInsets.only(top: 5, left: 15.0, right: 15.0, bottom: 20.0),
+        padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        height: 160,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15.0),
         ),
-      ),
-    );
+        child: BlocProvider<AgendaBloc>(
+          create: (create) => this.agendaBloc,
+          child: BlocListener<AgendaBloc, AgendaState>(
+            listener: (context, state) {
+              if (state is AgendaEventDeleteSuccess) {
+                Future.delayed(Duration(seconds: 1));
+                Navigator.of(context).pop();
+                this.refreshAgenda();
+              }
+            },
+            child: BlocBuilder<AgendaBloc, AgendaState>(
+              bloc: this.agendaBloc,
+              builder: (context, state) {
+                if (state is AgendaEventProcessing) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
+                }
+                return Form(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: EventReason(
+                          reasonController: this._eventReasonController,
+                        ),
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          _buildCancelButton(),
+                          _buildExcludeButton()
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ));
   }
 
   Widget _buildCancelButton() {
@@ -105,12 +130,9 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
         ),
         onPressed: () {
           this.agendaBloc.add(AgendaDeleteButtonPressed(
-            eventId: this.eventId,
-            eventDay: this.eventDay,
-            reason: this._eventReasonController.text
-          ));
-
-          Navigator.of(context).pop();
+              eventId: this.eventId,
+              eventDay: this.eventDay,
+              reason: this._eventReasonController.text));
         },
       ),
     );

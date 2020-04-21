@@ -32,7 +32,8 @@ class CalendarUtils {
   }
 
   static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaRepository agendaRepository) {
+      DateTime _selectedDay, AgendaRepository agendaRepository,
+      Function refreshAgenda) {
     if (_selectedDayDescriptions == null) {
       return Column();
     }
@@ -55,7 +56,8 @@ class CalendarUtils {
                 hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
             eventHourEnd:
                 TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
-                agendaRepository: agendaRepository,
+            agendaRepository: agendaRepository,
+            refreshAgenda: refreshAgenda,
           ),
         );
       }).toList()),

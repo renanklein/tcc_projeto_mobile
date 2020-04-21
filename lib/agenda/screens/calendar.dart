@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
@@ -36,7 +37,6 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaRepository = injector.getDependency<AgendaRepository>();
     this._agendaRepository.events = this._events;
     this._agendaRepository.userId = this.uid;
-
     this._agendaBloc = new AgendaBloc(agendaRepository: this._agendaRepository);
 
     _dispatchAgendaLoadEvent();
@@ -48,90 +48,87 @@ class _UserCalendarState extends State<UserCalendar> {
   @override
   void dispose() {
     _controller.dispose();
-    this._agendaBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Agenda"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => EventEditorScreen(
-                      event: null,
-                      isEdit: false,
-                      selectedDay: this._selectedDay,
-                      agendaRepository: this._agendaRepository,
-                    ),
-                  ),
-                );
-              })
-        ],
-        elevation: 0.0,
-      ),
-      body: BlocProvider(
-        create: (context) => this._agendaBloc,
-        child: BlocListener<AgendaBloc, AgendaState>(
-          listener: (context, state) {
-            if (_isEventCreateSuccess(state)) {
-              _dispatchAgendaLoadEvent();
-            } else if (state is AgendaLoadSuccess) {
-              this._events = state.eventsLoaded;
-              this._agendaRepository.events = this._events;
-              this._selectedDay = DateTime.now();
-              this._selectedDayDescriptions = this._events[this._selectedDay];
-            } else if (state is AgendaLoadFail) {
-              _buildFailSnackBar();
-            }
-          },
-          child: BlocBuilder<AgendaBloc, AgendaState>(
-            bloc: this._agendaBloc,
-            builder: (context, state) {
-              if (_isLoadingState(state)) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              }
-              return Container(
-                color: Theme.of(context).primaryColor,
-                child: ListView(
-                  children: <Widget>[
-                    TableCalendar(
-                      locale: "pt_BR",
-                      onDaySelected: (date, events) {
-                        setState(() {
-                          this._selectedDay = date;
-                          this._selectedDayDescriptions = events;
-                        });
-                      },
-                      events: this._events,
-                      calendarController: _controller,
-                      startingDayOfWeek: StartingDayOfWeek.monday,
-                      calendarStyle: _buildCalendarStyle(),
-                      headerStyle: _buildHeaderStyle(),
-                      builders: CalendarBuilders(
-                          markersBuilder: (context, date, events, _) {
-                        return <Widget>[
-                          CalendarUtils.buildEventMarker(date, events)
-                        ];
-                      }),
-                    ),
-                    CalendarUtils.buildEventList(this._selectedDayDescriptions,
-                        this._selectedDay, this._agendaRepository)
-                  ],
-                ),
-              );
-            },
-          ),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Agenda"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EventEditorScreen(
+                            event: null,
+                            isEdit: false,
+                            selectedDay: this._selectedDay,
+                            refreshAgenda: this.refresh,
+                          )));
+                })
+          ],
+          elevation: 0.0,
         ),
-      ),
-    );
+        body: BlocProvider<AgendaBloc>(
+          create: (context) => this._agendaBloc,
+          child: BlocListener<AgendaBloc, AgendaState>(
+            listener: (context, state) {
+              if (_isEventCreateSuccess(state)) {
+                _dispatchAgendaLoadEvent();
+              } else if (state is AgendaLoadSuccess) {
+                this._events = state.eventsLoaded;
+                this._agendaRepository.events = this._events;
+                this._selectedDay = DateTime.now();
+                this._selectedDayDescriptions = this._events[this._selectedDay];
+              } else if (state is AgendaLoadFail) {
+                _buildFailSnackBar();
+              }
+            },
+            child: BlocBuilder<AgendaBloc, AgendaState>(
+              bloc: this._agendaBloc,
+              builder: (context, state) {
+                if (_isLoadingState(state)) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
+                }
+                return Container(
+                    color: Theme.of(context).primaryColor,
+                    child: ListView(
+                      children: <Widget>[
+                        TableCalendar(
+                          locale: "pt_BR",
+                          onDaySelected: (date, events) {
+                            setState(() {
+                              this._selectedDay = date;
+                              this._selectedDayDescriptions = events;
+                            });
+                          },
+                          events: this._events,
+                          calendarController: _controller,
+                          startingDayOfWeek: StartingDayOfWeek.monday,
+                          calendarStyle: _buildCalendarStyle(),
+                          headerStyle: _buildHeaderStyle(),
+                          builders: CalendarBuilders(
+                              markersBuilder: (context, date, events, _) {
+                            return <Widget>[
+                              CalendarUtils.buildEventMarker(date, events)
+                            ];
+                          }),
+                        ),
+                        CalendarUtils.buildEventList(
+                            this._selectedDayDescriptions,
+                            this._selectedDay,
+                            this._agendaRepository,
+                            this.refresh)
+                      ],
+                    ));
+              },
+            ),
+          ),
+        ));
   }
 
   CalendarStyle _buildCalendarStyle() {
@@ -180,5 +177,11 @@ class _UserCalendarState extends State<UserCalendar> {
 
   void _dispatchAgendaLoadEvent() {
     this._agendaBloc.add(AgendaLoad());
+  }
+
+  void refresh() {
+    setState(() {
+      _dispatchAgendaLoadEvent();
+    });
   }
 }

@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             .signIn(email: event.email, pass: event.password);
 
         final tokenResponse = await this.userRepository.getToken();
-        this.authenticationBloc.add(LoggedIn(token: tokenResponse));
+        this.authenticationBloc.add(LoggedIn(token: tokenResponse, context: event.context));
         yield LoginSucceded();
       } catch (error) {
         yield LoginFailure();

@@ -14,7 +14,7 @@ class AgendaEventProcessing extends AgendaState{
 }
 
 class AgendaEventCreateSuccess extends AgendaState{
-  
+ 
 }
 
 class AgendaEventCreateFail extends AgendaState{
@@ -22,7 +22,7 @@ class AgendaEventCreateFail extends AgendaState{
 }
 
 class AgendaEventEditSuccess extends AgendaState{
-
+  
 }
 
 class AgendaEventEditFail extends AgendaState{

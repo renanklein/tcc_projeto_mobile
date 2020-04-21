@@ -1,48 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 
 class UserRepository {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  UserModel _currentUser;
-  UserModel get currentUser => _currentUser;
-
-  Future<AuthResult> signUp({
-    @required String email,
-    @required String pass,
-  }) async {
-    return await this._firebaseAuth.createUserWithEmailAndPassword(
-          email: email,
-          password: pass,
-        );
-  }
-
-  Future<AuthResult> signIn({
-    @required String email,
-    @required String pass,
-  }) async {
-    return await this._firebaseAuth.signInWithEmailAndPassword(
-          email: email,
-          password: pass,
-        );
-  }
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   void firebaseSignOut() {
-    this._firebaseAuth.signOut();
+    this.firebaseAuth.signOut();
   }
 
-  Future<void> logOut() async {
-    await this._firebaseAuth.signOut();
+  Future<AuthResult> signUp(
+      {@required String email, @required String pass}) async {
+    return await this
+        .firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: pass);
   }
 
-  Future resetPassword({
-    @required String email,
-  }) async {
-    return await this._firebaseAuth.sendPasswordResetEmail(
-          email: email,
-        );
+  Future<AuthResult> signIn(
+      {@required String email, @required String pass}) async {
+    return await this
+        .firebaseAuth
+        .signInWithEmailAndPassword(email: email, password: pass);
+  }
+
+  Future resetPassword({@required String email}) async {
+    return await this.firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<IdTokenResult> getToken() async {
@@ -55,25 +40,37 @@ class UserRepository {
     return await user.getIdToken();
   }
 
+  Future<void> logOut() async {
+    await this.firebaseAuth.signOut();
+  }
+
   Future<FirebaseUser> getUser() async {
-    return await this._firebaseAuth.currentUser();
+    return await this.firebaseAuth.currentUser();
   }
 
   Future<DocumentSnapshot> getUserData(String uid) async {
     return await Firestore.instance.collection("users").document(uid).get();
   }
 
-  Future<void> sendUserData({
-    @required String name,
-    @required String email,
-    @required String uid,
-  }) async {
+  Future<void> sendUserData(
+      {@required String name,
+      @required String email,
+      @required String uid}) async {
     final userData = {"name": name, "email": email};
 
     await Firestore.instance
         .collection("users")
         .document(uid)
         .setData(userData);
+  }
+
+  Future<void> setupFcmNotification(FirebaseUser user) async {
+    var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
+    var fcmToken = await fcm.getToken();
+    await Firestore.instance
+        .collection("users")
+        .document(user.uid)
+        .setData({"notificationToken": fcmToken}, merge: true);
   }
 
   Future<UserModel> getUserModel() async {

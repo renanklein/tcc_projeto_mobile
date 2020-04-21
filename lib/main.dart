@@ -1,9 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
+import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/signup_bloc.dart';
@@ -18,43 +20,12 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
+  print(message);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  Injector injector = Injector.appInstance;
-
-  injector.registerSingleton<UserRepository>(
-    (_) => UserRepository(),
-  );
-  injector.registerSingleton<RouteGenerator>(
-    (_) => RouteGenerator(),
-  );
-  injector.registerSingleton<AgendaRepository>(
-    (_) => AgendaRepository(),
-  );
-  injector.registerSingleton<PacientRepository>(
-    (_) => PacientRepository(),
-  );
-
-  injector.registerDependency(
-    (_) => AuthenticationBloc(
-      userRepository: injector.getDependency<UserRepository>(),
-    ),
-  );
-
-  injector.registerDependency(
-    (_) => LoginBloc(
-      userRepository: injector.getDependency<UserRepository>(),
-      authenticationBloc: injector.getDependency<AuthenticationBloc>(),
-    ),
-  );
-
-  injector.registerDependency(
-    (_) => SignupBloc(
-      userRepository: injector.getDependency<UserRepository>(),
-      authenticationBloc: injector.getDependency<AuthenticationBloc>(),
-    ),
-  );
 
   initializeDateFormatting().then(
     (_) => runApp(
@@ -68,22 +39,39 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    registerDependencies();
+    configureNotificationsType(context);
     this.authenticationBloc =
         Injector.appInstance.getDependency<AuthenticationBloc>();
-    this.authenticationBloc.add(AppStarted());
+    this.authenticationBloc.add(AppStarted(context: context));
     super.initState();
   }
 
   @override
   void dispose() {
-    authenticationBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
-      create: (context) => this.authenticationBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (context) => this.authenticationBloc,
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(
+              userRepository:
+                  Injector.appInstance.getDependency<UserRepository>(),
+              authenticationBloc: this.authenticationBloc),
+        ),
+        BlocProvider<SignupBloc>(
+          create: (context) => SignupBloc(
+              userRepository:
+                  Injector.appInstance.getDependency<UserRepository>(),
+              authenticationBloc: this.authenticationBloc),
+        )
+      ],
       child: MaterialApp(
         title: "Projeto tcc",
 
@@ -111,5 +99,46 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void registerDependencies() {
+    Injector injector = Injector.appInstance;
+
+    injector.registerSingleton<UserRepository>(
+      (_) => UserRepository(),
+    );
+
+    injector.registerSingleton<PacientRepository>(
+      (_) => PacientRepository(),
+    );
+
+    injector.registerSingleton(
+      (_) => AgendaRepository(),
+    );
+
+    injector.registerSingleton(
+      (_) => FirebaseMessaging(),
+    );
+
+    injector.registerSingleton(
+      (_) => AuthenticationBloc(
+        userRepository: injector.getDependency<UserRepository>(),
+      ),
+    );
+  }
+
+  void configureNotificationsType(BuildContext context) async {
+    var _fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
+    _fcm.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+        },
+        onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+        },
+        onBackgroundMessage: onBackgroundMessage);
   }
 }

@@ -22,16 +22,14 @@ class AgendaRepository {
     int eventId =
         dayEventsAsList.isEmpty ? 1 : int.parse(dayEventsAsList.last["id"]) + 1;
 
-    _addNewEvent(
-      {
-        "id": eventId.toString(),
-        "description": name,
-        "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
-        "end": ConvertUtils.fromTimeOfDay(eventDuration[1]),
-        "status": "created",
-      },
-      dayEventsAsList,
-    );
+    _addNewEvent({
+      "id": eventId.toString(),
+      "userId": this._userId,
+      "description": name,
+      "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
+      "end": ConvertUtils.fromTimeOfDay(eventDuration[1]),
+      "status": "created"
+    }, dayEventsAsList);
 
     await Firestore.instance
         .collection("agenda")

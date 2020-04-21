@@ -4,30 +4,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tcc_projeto_app/home/drawer.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
-import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
-import 'package:tcc_projeto_app/pacient/models/create_pacient_model.dart';
-import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CreatePacientScreen extends StatefulWidget {
-  final pacientRepository =
-      Injector.appInstance.getDependency<PacientRepository>();
-
-  CreatePacientScreen();
-
   @override
   _CreatePacientScreenState createState() => _CreatePacientScreenState();
 }
 
 class _CreatePacientScreenState extends State<CreatePacientScreen> {
-  CreatePacientModel _createPacientModel;
-  PacientBloc pacientBloc;
-  AuthenticationBloc _authenticationBloc;
+  PacientBloc _pacientBloc;
+  PacientRepository _pacientRepository;
+  UserModel _userModel;
 
-  PacientRepository get pacientRepository => this.widget.pacientRepository;
+  final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   final formKey = new GlobalKey<FormState>();
 
@@ -41,6 +35,16 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   final sexoController = TextEditingController();
 
   @override
+  void initState() {
+    var injector = Injector.appInstance;
+    this._pacientRepository = injector.getDependency<PacientRepository>();
+    this._pacientBloc =
+        new PacientBloc(pacientRepository: this._pacientRepository);
+
+    super.initState();
+  }
+
+  @override
   void dispose() {
     nomeController.dispose();
     emailController.dispose();
@@ -52,36 +56,31 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.pacientBloc =
-        new PacientBloc(pacientRepository: this.pacientRepository);
-    super.initState();
+  Future<void> _setUserModel() async {
+    this._userModel = await this.userRepository.getUserModel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => this._authenticationBloc,
-      child: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is AuthenticationUnauthenticated) {
-            return LoginScreen();
-          }
-        },
-        child: BlocBuilder(
-          bloc: this._authenticationBloc,
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Cadastrar Paciente"),
-                centerTitle: true,
-                backgroundColor: Theme.of(context).primaryColor,
-                elevation: 0.0,
-              ),
-              drawer: UserDrawer(),
-              body: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cadastrar Paciente"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0.0,
+      ),
+      body: BlocProvider(
+        create: (context) => this._pacientBloc,
+        child: BlocListener<PacientBloc, PacientState>(
+          listener: (context, state) {
+            if (state is AuthenticationUnauthenticated) {}
+          },
+          child: BlocBuilder<PacientBloc, PacientState>(
+            builder: (context, state) {
+              if (state is CreatePacientEventProcessing) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              }
+              return SafeArea(
                 child: Form(
                   key: _createPacientKey,
                   child: Center(
@@ -136,6 +135,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 'Entre com a Data de Nascimento',
                                 'Digite apenas números sem espaços (DiaMêsAno)',
                               ),
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: MaterialButton(
@@ -147,14 +147,16 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   ),
                                   onPressed: () async {
                                     if (_createPacientKey.currentState
-                                            .validate() &&
-                                        !_createPacientModel.busy) {
-                                      var user = await this
-                                          ._createPacientModel
-                                          .currentUser;
-                                      pacientRepository.createPacient(
-                                        pacient: PacientModel(
-                                          userId: user.uid,
+                                            .validate()
+                                        //&& _createPacientModel.busy != null
+                                        ) {
+                                      //var user = await this._createPacientModel.currentUser;
+
+                                      await _setUserModel();
+
+                                      _pacientBloc.add(
+                                        PacientCreateButtonPressed(
+                                          userId: _userModel.uid,
                                           nome: nomeController.text,
                                           email: emailController.text,
                                           telefone: telefoneController.text,
@@ -176,9 +178,9 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

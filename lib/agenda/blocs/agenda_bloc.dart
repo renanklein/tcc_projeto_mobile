@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +29,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         eventHourRange.add(event.eventEnd);
 
         await this.agendaRepository.addEvent(
-              name: event.eventName,
-              eventday: event.eventDay,
-              eventDuration: eventHourRange,
-            );
+            name: event.eventName,
+            eventday: event.eventDay,
+            eventDuration: eventHourRange);
 
         yield AgendaEventCreateSuccess();
       } catch (error) {

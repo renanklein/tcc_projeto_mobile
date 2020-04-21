@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
-import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/signup_screen.dart';
@@ -19,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc loginBloc;
-  AuthenticationBloc authenticationBloc;
   final emailController = new TextEditingController();
   final passController = new TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -27,77 +25,64 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.loginBloc = Injector.appInstance.getDependency<LoginBloc>();
+    this.loginBloc = BlocProvider.of<LoginBloc>(context);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    this.loginBloc.close();
-    this.authenticationBloc.close();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          title: Text("Login"),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                "Criar Conta",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignupScreen()));
-              },
-            )
-          ],
-        ),
-        body: BlocProvider(
-          create: (context) => this.loginBloc,
-          child: BlocListener<LoginBloc, LoginState>(
-              listener: (context, state) {
-                if (state is LoginSucceded) {
-                  onSuccess();
-                } else if (state is LoginFailure) {
-                  onFail();
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: Text("Login"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              "Criar Conta",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SignupScreen()));
+            },
+          )
+        ],
+      ),
+      body: BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginSucceded) {
+              onSuccess();
+            } else if (state is LoginFailure) {
+              onFail();
+            }
+          },
+          child: BlocBuilder<LoginBloc, LoginState>(
+              bloc: this.loginBloc,
+              builder: (context, state) {
+                if (state is LoginProcessing) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-              },
-              child: BlocBuilder<LoginBloc, LoginState>(
-                  bloc: this.loginBloc,
-                  builder: (context, state) {
-                    if (state is LoginProcessing) {
-                      return LayoutUtils.buildCircularProgressIndicator(
-                          context);
-                    }
-                    return Form(
-                      key: formKey,
-                      child: ListView(
-                        padding: EdgeInsets.all(16.0),
-                        children: <Widget>[
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginLogo(),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginEmailField(
-                              emailController: this.emailController),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginPasswordField(
-                              passController: this.passController),
-                          _buildForgetPasswordFlatButton(),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          _buildLoginScreenButton()
-                        ],
-                      ),
-                    );
-                  })),
-        ));
+                return Form(
+                  key: formKey,
+                  child: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    children: <Widget>[
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginLogo(),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginEmailField(emailController: this.emailController),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginPasswordField(passController: this.passController),
+                      _buildForgetPasswordFlatButton(),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      _buildLoginScreenButton(context)
+                    ],
+                  ),
+                );
+              })),
+    );
   }
 
   Widget _buildForgetPasswordFlatButton() {
@@ -117,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginScreenButton() {
+  Widget _buildLoginScreenButton(BuildContext context) {
     return SizedBox(
         height: 44.0,
         child: RaisedButton(
@@ -132,15 +117,19 @@ class _LoginScreenState extends State<LoginScreen> {
             if (formKey.currentState.validate()) {
               this.loginBloc.add(LoginButtonPressed(
                   email: this.emailController.text,
-                  password: this.passController.text));
+                  password: this.passController.text,
+                  context: context));
             }
           },
         ));
   }
 
   void onSuccess() {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => Dashboard(),
+      ),
+    );
   }
 
   void onFail() {

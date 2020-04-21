@@ -32,16 +32,12 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    this.signupBloc = SignupBloc(
-        userRepository: userRepository,
-        authenticationBloc: this.authenticationBloc);
+    this.signupBloc = BlocProvider.of<SignupBloc>(context);
     super.initState();
   }
 
   @override
   void dispose() {
-    this.authenticationBloc.close();
-    this.signupBloc.close();
     super.dispose();
   }
 
@@ -54,9 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: BlocProvider(
-          create: (context) => this.signupBloc,
-          child: BlocListener<SignupBloc, SignupState>(
+        body: BlocListener<SignupBloc, SignupState>(
               listener: (context, state) {
                 if (state is SignupSigned) {
                   onSuccess();
@@ -117,7 +111,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                     this.signupBloc.add(SignupButtonPressed(
                                         name: this._nameController.text,
                                         email: this._emailController.text,
-                                        password: this._passController.text));
+                                        password: this._passController.text,
+                                        context: context));
                                   }
                                 },
                               ))
@@ -125,7 +120,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     );
                   })),
-        ));
+        );
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
-import 'package:tcc_projeto_app/home/screen/wait_list.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
+import 'package:tcc_projeto_app/pacient/screens/wait_list_screen.dart';
 
 class RouteGenerator {
   GlobalKey<NavigatorState> _navigationKey = GlobalKey<NavigatorState>();

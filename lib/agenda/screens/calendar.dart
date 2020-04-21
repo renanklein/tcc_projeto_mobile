@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -62,13 +63,13 @@ class _UserCalendarState extends State<UserCalendar> {
             IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EventEditorScreen(
-                            event: null,
-                            isEdit: false,
-                            selectedDay: this._selectedDay,
-                            refreshAgenda: this.refresh,
-                          )));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => EventEditorScreen(
+                              event: null,
+                              isEdit: false,
+                              selectedDay: this._selectedDay,
+                              refreshAgenda: this.refresh,)));
                 })
           ],
           elevation: 0.0,
@@ -163,23 +164,21 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   void _buildFailSnackBar() {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Ocorreu um erro ao carregar a agenda",
-          style: TextStyle(
-              fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
-        ),
+    Scaffold.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        "Ocorreu um erro ao carregar a agenda",
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
       ),
-    );
+    ));
   }
 
   void _dispatchAgendaLoadEvent() {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh() {
+  void refresh(){
     setState(() {
       _dispatchAgendaLoadEvent();
     });

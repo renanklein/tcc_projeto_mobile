@@ -16,26 +16,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   AuthenticationBloc authenticationBloc;
 
   LoginBloc({@required this.userRepository, @required this.authenticationBloc})
-      : assert(userRepository != null && authenticationBloc != null);
+    : assert(userRepository != null && authenticationBloc != null);
 
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if (event is LoginButtonPressed) {
-      try {
+    if(event is LoginButtonPressed){
+      try{
         yield LoginProcessing();
-        await this
-            .userRepository
-            .signIn(email: event.email, pass: event.password);
-
+        await this.userRepository.signIn(email: event.email, pass: event.password);
+        
         final tokenResponse = await this.userRepository.getToken();
         this.authenticationBloc.add(LoggedIn(token: tokenResponse, context: event.context));
         yield LoginSucceded();
-      } catch (error) {
+      }
+      catch(error){
         yield LoginFailure();
       }
-    } else if (event is LoginResetPasswordButtonPressed) {
+    }
+
+    else if (event is LoginResetPasswordButtonPressed){
       await this.userRepository.resetPassword(email: event.email);
       yield LoginPasswordReset();
     }

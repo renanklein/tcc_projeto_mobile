@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/login/tiles/pacient_tile.dart';
+import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 
 class ListPacientScreen extends StatefulWidget {
   @override

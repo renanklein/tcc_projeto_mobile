@@ -42,24 +42,17 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
     this._eventNameController = new TextEditingController(
-      text: this.event == null ? "" : this.event["description"],
-    );
+        text: this.event == null ? "" : this.event["description"]);
 
     this._eventBeginningHourController = new TextEditingController(
-      text: this.event == null
-          ? ""
-          : ConvertUtils.fromTimeOfDay(
-              this.event["begin"],
-            ),
-    );
+        text: this.event == null
+            ? ""
+            : ConvertUtils.fromTimeOfDay(this.event["begin"]));
 
     this._eventEndingHourController = new TextEditingController(
-      text: this.event == null
-          ? ""
-          : ConvertUtils.fromTimeOfDay(
-              this.event["end"],
-            ),
-    );
+        text: this.event == null
+            ? ""
+            : ConvertUtils.fromTimeOfDay(this.event["end"]));
     super.initState();
   }
 
@@ -81,7 +74,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           child: BlocListener<AgendaBloc, AgendaState>(
             listener: (context, state) {
               if (_verifySuccessState(state)) {
-                _onSuccessState();
+               _onSuccessState();
               } else if (_verifyFailState(state)) {
                 Scaffold.of(context).showSnackBar(SnackBar(
                   backgroundColor: Colors.red,
@@ -176,13 +169,14 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     }
   }
 
+
   void _onSuccessState() {
     Future.delayed(Duration(seconds: 1));
     Navigator.of(context).pop();
     this.refreshAgenda();
   }
 
-  bool _verifySuccessState(AgendaState state) {
+  bool _verifySuccessState(AgendaState state){
     return state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess;
   }
 

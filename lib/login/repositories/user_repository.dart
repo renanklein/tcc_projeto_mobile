@@ -6,7 +6,7 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 
 class UserRepository {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final firebaseAuth = FirebaseAuth.instance;
 
   void firebaseSignOut() {
     this.firebaseAuth.signOut();

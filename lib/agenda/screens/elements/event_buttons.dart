@@ -7,18 +7,18 @@ class EventButtons extends StatefulWidget {
   final eventKey;
   final isEdit;
   final agendaModel;
-  EventButtons({
-    @required this.eventText,
-    @required this.eventDate,
-    @required this.isEdit,
-    @required this.agendaModel,
-    this.eventKey,
-  });
+  EventButtons(
+      {@required this.eventText,
+      @required this.eventDate,
+      @required this.isEdit,
+      @required this.agendaModel,
+      this.eventKey});
   @override
   _EventButtonsState createState() => _EventButtonsState();
 }
 
 class _EventButtonsState extends State<EventButtons> {
+  
   String get eventText => this.widget.eventText;
   String get eventDate => this.widget.eventDate;
   DateTime get eventKey => this.widget.eventKey;
@@ -30,7 +30,10 @@ class _EventButtonsState extends State<EventButtons> {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[_buildCancelButton(), _buildEditButton()],
+      children: <Widget>[
+        _buildCancelButton(),
+        _buildEditButton()
+      ],
     );
   }
 

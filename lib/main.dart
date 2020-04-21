@@ -1,10 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
-import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
@@ -27,11 +26,7 @@ Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  initializeDateFormatting().then(
-    (_) => runApp(
-      MyApp(),
-    ),
-  );
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
 class _MyAppState extends State<MyApp> {
@@ -74,23 +69,16 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         title: "Projeto tcc",
-
-        /*localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: [const Locale('pt', 'BR')],*/
-
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blueGrey),
-        onGenerateRoute: RouteGenerator.generateRoute,
+        //onGenerateRoute: RouteGenerator.generateRoute,
         home: BlocBuilder(
           bloc: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
               return LoginScreen();
             } else if (state is AuthenticationAuthenticated) {
-              return Dashboard();
+              return HomeScreen();
             } else if (state is AuthenticationProcessing ||
                 state is AuthenticationUninitialized) {
               return LayoutUtils.buildCircularProgressIndicator(context);
@@ -107,9 +95,11 @@ class _MyAppState extends State<MyApp> {
     injector.registerSingleton<UserRepository>(
       (_) => UserRepository(),
     );
-
     injector.registerSingleton<PacientRepository>(
       (_) => PacientRepository(),
+    );
+    injector.registerSingleton<RouteGenerator>(
+      (_) => RouteGenerator(),
     );
 
     injector.registerSingleton(
@@ -120,11 +110,8 @@ class _MyAppState extends State<MyApp> {
       (_) => FirebaseMessaging(),
     );
 
-    injector.registerSingleton(
-      (_) => AuthenticationBloc(
-        userRepository: injector.getDependency<UserRepository>(),
-      ),
-    );
+    injector.registerSingleton((_) => AuthenticationBloc(
+        userRepository: injector.getDependency<UserRepository>()));
   }
 
   void configureNotificationsType(BuildContext context) async {

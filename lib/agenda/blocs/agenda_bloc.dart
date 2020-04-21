@@ -9,6 +9,7 @@ part 'agenda_event.dart';
 part 'agenda_state.dart';
 
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
+
   AgendaRepository agendaRepository;
 
   AgendaBloc({@required this.agendaRepository});
@@ -20,64 +21,65 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   Stream<AgendaState> mapEventToState(
     AgendaEvent event,
   ) async* {
-    if (event is AgendaCreateButtonPressed) {
-      try {
-        yield AgendaEventProcessing();
+    if(event is AgendaCreateButtonPressed){
+     try{
+      yield AgendaEventProcessing();
 
-        var eventHourRange = new List<TimeOfDay>();
-        eventHourRange.add(event.eventStart);
-        eventHourRange.add(event.eventEnd);
+      var eventHourRange = new List<TimeOfDay>();
+      eventHourRange.add(event.eventStart);
+      eventHourRange.add(event.eventEnd);
 
-        await this.agendaRepository.addEvent(
-            name: event.eventName,
-            eventday: event.eventDay,
-            eventDuration: eventHourRange);
+      await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
 
-        yield AgendaEventCreateSuccess();
-      } catch (error) {
-        yield AgendaEventCreateFail();
-      }
-    } else if (event is AgendaLoad) {
-      try {
+      yield AgendaEventCreateSuccess();
+     }
+     catch(error){
+       yield AgendaEventCreateFail();
+     }
+    }
+
+    else if(event is AgendaLoad){
+      try{
         yield AgendaLoading();
 
         var events = await this.agendaRepository.getEvents();
 
         yield AgendaLoadSuccess(events);
-      } catch (error) {
+      }catch(error){
         yield AgendaLoadFail();
       }
-    } else if (event is AgendaEditButtonPressed) {
-      try {
+    }
+
+    else if (event is AgendaEditButtonPressed){
+      try{
         yield AgendaEventProcessing();
 
         var updatedEvent = {
-          "id": event.eventId,
-          "begin": ConvertUtils.fromTimeOfDay(event.eventStart),
-          "end": ConvertUtils.fromTimeOfDay(event.eventEnd),
-          "description": event.eventName
+          "id" : event.eventId,
+          "begin" : ConvertUtils.fromTimeOfDay(event.eventStart),
+          "end" : ConvertUtils.fromTimeOfDay(event.eventEnd),
+          "description" : event.eventName
         };
 
-        await this
-            .agendaRepository
-            .updateEvent(event.eventDay, event.eventId, updatedEvent);
+        await this.agendaRepository.updateEvent(event.eventDay, event.eventId, updatedEvent);
 
         yield AgendaEventEditSuccess();
-      } catch (error) {
+        
+      }catch(error){
         yield AgendaEventEditFail();
       }
-    } else if (event is AgendaDeleteButtonPressed) {
-      try {
+    }
+
+    else if(event is AgendaDeleteButtonPressed){
+     try{
         yield AgendaEventProcessing();
 
-        await this
-            .agendaRepository
-            .removeEvent(event.eventDay, event.eventId, event.reason);
+        await this.agendaRepository.removeEvent(event.eventDay, event.eventId, event.reason);
 
         yield AgendaEventDeleteSuccess();
-      } catch (error) {
-        yield AgendaEventDeleteFail();
-      }
+     }catch(error){
+       yield AgendaEventDeleteFail();
+     }
     }
   }
 }

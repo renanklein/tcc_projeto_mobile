@@ -66,7 +66,7 @@ class AgendaAvailableTimeSuccess extends AgendaState{
     this._occupedTimes = times;
   }
 
-  List<String> get occupedTime => this._occupedTimes;
+  List<String> get occupedTimes => this._occupedTimes;
 }
 
 class AgendaAvailableTimeFail extends AgendaState{

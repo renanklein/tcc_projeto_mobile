@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
-import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -30,6 +30,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   TextEditingController _eventNameController;
   TextEditingController _eventBeginningHourController;
   TextEditingController _eventEndingHourController;
+  String eventHour;
   final formKey = new GlobalKey<FormState>();
 
   Map get event => this.widget.event;
@@ -57,6 +58,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
 
+    this.eventHour = this.event == null ? null : "${this.event["begin"]} - ${this.event["end"]}";
     super.initState();
   }
 
@@ -80,38 +82,53 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               if (_verifySuccessState(state)) {
                 _onSuccessState();
               } else if (_verifyFailState(state)) {
-                _displayFailSnackbar("Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento");
-              }
-              else if(state is AgendaAvailableTimeFail){
-                _displayFailSnackbar("Ocorreu um erro ao carregar os horário vagos");
+                Scaffold.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                      "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    )));
+              } else if (state is AgendaAvailableTimeFail) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                      "Ocorreu um erro ao carregar os horário vagos",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    )));
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
               builder: (context, state) {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
+                } else if (state is AgendaAvailableTimeSuccess) {
+                  return Form(
+                    child: ListView(
+                      padding: EdgeInsets.all(16.0),
+                      children: <Widget>[
+                        EventNameField(
+                            eventNameController: this._eventNameController),
+                        LayoutUtils.buildVerticalSpacing(20.0),
+
+                        EventHourField(
+                          occupedHours: state.occupedTimes,
+                          eventHour: this.eventHour,
+                        ),
+
+                        LayoutUtils.buildVerticalSpacing(20.0),
+                        _buildCreateEventButton()
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container();
                 }
-                return Form(
-                  child: ListView(
-                    padding: EdgeInsets.all(16.0),
-                    children: <Widget>[
-                      EventNameField(
-                          eventNameController: this._eventNameController),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      EventDateField(
-                        eventDateController: this._eventBeginningHourController,
-                        eventHint: "Horário de início",
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      EventDateField(
-                        eventDateController: this._eventEndingHourController,
-                        eventHint: "Horário de término",
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      _buildCreateEventButton()
-                    ],
-                  ),
-                );
               },
             ),
           ),
@@ -170,17 +187,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
-  }
-
-  void _displayFailSnackbar(String errorMessage) {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.red,
-      content: Text(
-        errorMessage,
-        style: TextStyle(
-            fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w500),
-      ),
-    ));
   }
 
   void _onSuccessState() {

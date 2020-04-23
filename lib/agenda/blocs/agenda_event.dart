@@ -47,3 +47,11 @@ class AgendaDeleteButtonPressed extends AgendaEvent{
     @required this.reason
   });
 }
+
+class AgendaEventAvailableTimeLoad extends AgendaEvent{
+    DateTime day;
+
+    AgendaEventAvailableTimeLoad({
+      @required this.day
+    });
+}

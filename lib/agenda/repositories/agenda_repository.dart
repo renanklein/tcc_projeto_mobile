@@ -49,6 +49,21 @@ class AgendaRepository {
     return events;
   }
 
+  Future<List<String>> getOccupedDayTimes(String day) async{
+    var occupedHours;
+    await firestore
+      .collection("agenda")
+      .document(this._userId)
+      .collection("events")
+      .document(day)
+      .get()
+      .then((resp) =>{
+        occupedHours = ConvertUtils.getOccupedHours(resp.data["events"])
+      });
+
+      return occupedHours;
+  }
+
   Future<void> updateEvent(DateTime eventDay, String eventId, Map newEvent) async{
     var events = await getEvents();
 

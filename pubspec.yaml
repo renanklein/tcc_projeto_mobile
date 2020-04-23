@@ -33,7 +33,7 @@ dependencies:
   flutter_datetime_picker: ^1.3.5
   firebase_messaging: ^5.0.2
   firebase_core: ^0.4.0
-  collection: any
+  f_datetimerangepicker: ^0.1.3
   
 
 dev_dependencies:

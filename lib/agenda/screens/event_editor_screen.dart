@@ -26,6 +26,7 @@ class EventEditorScreen extends StatefulWidget {
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
   AgendaBloc agendaBloc;
+  List<String> occupedHours;
   TextEditingController _eventNameController;
   TextEditingController _eventBeginningHourController;
   TextEditingController _eventEndingHourController;
@@ -53,6 +54,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         text: this.event == null
             ? ""
             : ConvertUtils.fromTimeOfDay(this.event["end"]));
+
+    this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
+
     super.initState();
   }
 
@@ -74,23 +78,17 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           child: BlocListener<AgendaBloc, AgendaState>(
             listener: (context, state) {
               if (_verifySuccessState(state)) {
-               _onSuccessState();
+                _onSuccessState();
               } else if (_verifyFailState(state)) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Text(
-                    "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ));
+                _displayFailSnackbar("Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento");
+              }
+              else if(state is AgendaAvailableTimeFail){
+                _displayFailSnackbar("Ocorreu um erro ao carregar os horário vagos");
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
               builder: (context, state) {
-                if (state is AgendaEventProcessing) {
+                if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
                 return Form(
@@ -139,6 +137,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     );
   }
 
+  bool _isLoadingState(AgendaState state) {
+    return state is AgendaEventProcessing ||
+        state is AgendaAvailableTimeLoading;
+  }
+
   void _createOrEditEvent() {
     var eventBeginningHour =
         _retriveTimeAsString(this._eventBeginningHourController.text);
@@ -169,6 +172,16 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     }
   }
 
+  void _displayFailSnackbar(String errorMessage) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        errorMessage,
+        style: TextStyle(
+            fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w500),
+      ),
+    ));
+  }
 
   void _onSuccessState() {
     Future.delayed(Duration(seconds: 1));
@@ -176,7 +189,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     this.refreshAgenda();
   }
 
-  bool _verifySuccessState(AgendaState state){
+  bool _verifySuccessState(AgendaState state) {
     return state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess;
   }
 

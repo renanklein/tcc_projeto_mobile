@@ -56,4 +56,16 @@ class ConvertUtils {
     return DateTime(int.parse(splitedDocumentId[0]),
         int.parse(splitedDocumentId[1]), int.parse(splitedDocumentId[2]));
   }
+
+  static List<String> getOccupedHours(List<Map<String, dynamic>> events){
+    var occupedHours = new List<String>();
+
+    events.forEach((event){
+      var occupedHour = "${event["begin"]} - ${event["end"]}";
+
+      occupedHours.add(occupedHour);
+    });
+
+    return occupedHours;
+  }
 }

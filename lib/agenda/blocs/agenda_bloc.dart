@@ -81,5 +81,20 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
        yield AgendaEventDeleteFail();
      }
     }
+
+    else if (event is AgendaEventAvailableTimeLoad){
+      try{
+        yield AgendaAvailableTimeLoading();
+
+      var day = ConvertUtils.dayFromDateTime(event.day);
+
+      var occupedHours = await agendaRepository.getOccupedDayTimes(day);
+
+      yield AgendaAvailableTimeSuccess(occupedHours);
+      
+      } catch(error){
+        yield AgendaAvailableTimeFail();
+      }
+    }
   }
 }

@@ -55,4 +55,22 @@ class AgendaLoading extends AgendaState{
   
 }
 
+class AgendaAvailableTimeLoading extends AgendaState{
+
+}
+
+class AgendaAvailableTimeSuccess extends AgendaState{
+  List<String> _occupedTimes;
+
+  AgendaAvailableTimeSuccess(List<String> times){
+    this._occupedTimes = times;
+  }
+
+  List<String> get occupedTime => this._occupedTimes;
+}
+
+class AgendaAvailableTimeFail extends AgendaState{
+
+}
+
 

@@ -61,9 +61,10 @@ class ConvertUtils {
     var occupedHours = new List<String>();
 
     events.forEach((event){
-      var occupedHour = "${event["begin"]} - ${event["end"]}";
-
-      occupedHours.add(occupedHour);
+      if(event["status"] != "canceled"){
+        var occupedHour = "${event["begin"]} - ${event["end"]}";
+        occupedHours.add(occupedHour);
+      }
     });
 
     return occupedHours;

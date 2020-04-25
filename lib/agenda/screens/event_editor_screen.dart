@@ -150,8 +150,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   void _createOrEditEvent() {
-    var eventStart = this._eventHourController.text.split("-")[0];
-    var eventEnd = this._eventHourController.text.split("-")[1];
+    var eventStart = this._eventHourController.text.split("-")[0].trim();
+    var eventEnd = this._eventHourController.text.split("-")[1].trim();
 
     if (this.widget.isEdit) {
       agendaBloc.add(AgendaEditButtonPressed(

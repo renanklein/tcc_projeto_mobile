@@ -18,7 +18,9 @@ class _EventHourFieldState extends State<EventHourField> {
 
   @override
   void initState() {
-    this.currentValue = this.hourController.text == "" ? _getTotalHours().first : this.hourController.text;
+    if(this.hourController.text == ""){
+      this.hourController.text =  _getAvailableHours().first;
+    }
     super.initState();
   }
 
@@ -99,8 +101,10 @@ class _EventHourFieldState extends State<EventHourField> {
       return totalHours;
     }
 
+    this.occupedHours.remove(this.hourController.text);
+
     this.occupedHours.forEach((occupedHour){
-      var moda = totalHours.remove(occupedHour);
+      totalHours.remove(occupedHour);
     });
 
     return totalHours;

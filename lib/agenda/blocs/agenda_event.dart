@@ -7,8 +7,8 @@ abstract class AgendaEvent extends Equatable {
 class AgendaCreateButtonPressed extends AgendaEvent{
   String eventName;
   DateTime eventDay;
-  TimeOfDay eventStart;
-  TimeOfDay eventEnd;
+  String eventStart;
+  String eventEnd;
 
   AgendaCreateButtonPressed({
     @required this.eventName, 
@@ -25,8 +25,8 @@ class AgendaEditButtonPressed extends AgendaEvent{
   String eventId;
   String eventName;
   DateTime eventDay;
-  TimeOfDay eventStart;
-  TimeOfDay eventEnd;
+  String eventStart;
+  String eventEnd;
 
   AgendaEditButtonPressed({
     @required this.eventId,

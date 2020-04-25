@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class AgendaRepository {
@@ -10,7 +9,7 @@ class AgendaRepository {
   set events(Map<DateTime, dynamic> events) => this._events = events;
   set userId(String uid) => this._userId = uid;
 
-  Future<void> addEvent(String name, DateTime eventday, List<TimeOfDay> eventDuration) async {
+  Future<void> addEvent(String name, DateTime eventday, List<String> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
     var filteredDate = ConvertUtils.removeTime(eventday);
     List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(_retrieveListOfEvents(filteredDate, _events));
@@ -20,8 +19,8 @@ class AgendaRepository {
       "id" : eventId.toString(),
       "userId" : this._userId,
       "description": name,
-      "begin": ConvertUtils.fromTimeOfDay(eventDuration[0]),
-      "end": ConvertUtils.fromTimeOfDay(eventDuration[1]),
+      "begin": eventDuration[0],
+      "end": eventDuration[1],
       "status" : "created"
     }, dayEventsAsList);
 

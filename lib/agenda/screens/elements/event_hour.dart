@@ -4,8 +4,8 @@ import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
 
 class EventHourField extends StatefulWidget {
   final occupedHours;
-  final eventHour;
-  EventHourField({@required this.occupedHours, @required this.eventHour});
+  final hourController;
+  EventHourField({@required this.occupedHours, @required this.hourController});
 
   @override
   _EventHourFieldState createState() => _EventHourFieldState();
@@ -13,16 +13,21 @@ class EventHourField extends StatefulWidget {
 
 class _EventHourFieldState extends State<EventHourField> {
   List<String> get occupedHours => this.widget.occupedHours;
-  String get eventHour => this.widget.eventHour;
+  TextEditingController get hourController => this.widget.hourController;
+  String currentValue;
+
+  @override
+  void initState() {
+    this.currentValue = this.hourController.text == "" ? _getTotalHours().first : this.hourController.text;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    
-    var currentValue = this.eventHour == null ? _getTotalHours().first : this.eventHour;
-
     return DropdownButtonFormField(
         hint: Text("-- Selecione um horário --"),
-        value: currentValue,
+        value: this.currentValue,
+        isDense: true,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
             border:
@@ -30,12 +35,13 @@ class _EventHourFieldState extends State<EventHourField> {
         items: _getAvailableHours().map((hour) {
           return DropdownMenuItem(
             value: hour,
-            child: Text(hour),
+            child: Text(hour)
           );
         }).toList(),
         onChanged: (newValue) {
           setState(() {
             currentValue = newValue;
+            this.hourController.text = newValue;
           });
         });
   }
@@ -55,43 +61,47 @@ class _EventHourFieldState extends State<EventHourField> {
     );
   }
 
-  ScrollController _initilizeController() {}
-
   List<String> _getTotalHours() {
     return <String>[
-      "08:00 - 08:30"
-          "08:30 - 09:00"
-          "09:00 - 09:30"
-          "09:30 - 10:00"
-          "10:00 - 10:30"
-          "10:30 - 11:00"
-          "11:00 - 11:30"
-          "11:30 - 12:00"
-          "12:00 - 12:30"
-          "12:30 - 13:00"
-          "13:00 - 13:30"
-          "13:30 - 14:00"
-          "14:00 - 14:30"
-          "14:30 - 15:00"
-          "14:00 - 14:30"
-          "14:30 - 15:00"
-          "14:00 - 14:30"
-          "14:30 - 15:00"
-          "15:00 - 15:30"
-          "15:30 - 16:00"
-          "16:00 - 16:30"
-          "16:30 - 17:00"
-          "17:00 - 17:30"
-          "17:30 - 18:00"
-          "18:00 - 18:30"
-          "18:30 - 19:00"
+      "08:00 - 08:30",
+      "08:30 - 09:00",
+      "09:00 - 09:30",
+      "09:30 - 10:00",
+      "10:00 - 10:30",
+      "10:30 - 11:00",
+      "11:00 - 11:30",
+      "11:30 - 12:00",
+      "12:00 - 12:30",
+      "12:30 - 13:00",
+      "13:00 - 13:30",
+      "13:30 - 14:00",
+      "14:00 - 14:30",
+      "14:30 - 15:00",
+      "15:00 - 15:30",
+      "15:30 - 16:00",
+      "16:00 - 16:30",
+      "16:30 - 17:00",
+      "17:00 - 17:30",
+      "17:30 - 18:00",
+      "18:00 - 18:30",
+      "18:30 - 19:00",
+      "19:00 - 19:30",
+      "19:30 - 20:00",
+      "20:00 - 20:30",
+      "20:30 - 21:00"
     ];
   }
 
   List<String> _getAvailableHours() {
     var totalHours = _getTotalHours();
 
-    totalHours.remove(this.widget.occupedHours);
+    if(this.occupedHours == null){
+      return totalHours;
+    }
+
+    this.occupedHours.forEach((occupedHour){
+      var moda = totalHours.remove(occupedHour);
+    });
 
     return totalHours;
   }

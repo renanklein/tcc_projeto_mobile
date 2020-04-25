@@ -10,8 +10,8 @@ class EventDescription extends StatelessWidget {
     @required this.eventHourStart,
     @required this.eventHourEnd});
   
-  TimeOfDay get eventStart => this.eventHourStart;
-  TimeOfDay get eventEnd => this.eventHourEnd;
+  String get eventStart => this.eventHourStart;
+  String get eventEnd => this.eventHourEnd;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -32,13 +32,10 @@ class EventDescription extends StatelessWidget {
 
   Widget _buildEventTimeRange() {
     return Text(
-      "${_timeOfDayAsString(this.eventHourStart)} - ${_timeOfDayAsString(this.eventHourEnd)}",
+      "${this.eventStart} - ${this.eventEnd}",
       style: TextStyle(
           color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14.0),
     );
   }
 
-  String _timeOfDayAsString(TimeOfDay time){
-    return "${time.hour} : ${time.minute}";
-  }
 }

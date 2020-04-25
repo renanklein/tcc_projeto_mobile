@@ -57,7 +57,7 @@ class ConvertUtils {
         int.parse(splitedDocumentId[1]), int.parse(splitedDocumentId[2]));
   }
 
-  static List<String> getOccupedHours(List<Map<String, dynamic>> events){
+  static List<String> getOccupedHours(List events){
     var occupedHours = new List<String>();
 
     events.forEach((event){

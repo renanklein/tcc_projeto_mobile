@@ -5,7 +5,6 @@ import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
-import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventEditorScreen extends StatefulWidget {
@@ -28,9 +27,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   AgendaBloc agendaBloc;
   List<String> occupedHours;
   TextEditingController _eventNameController;
-  TextEditingController _eventBeginningHourController;
-  TextEditingController _eventEndingHourController;
-  String eventHour;
+  TextEditingController _eventHourController;
   final formKey = new GlobalKey<FormState>();
 
   Map get event => this.widget.event;
@@ -43,22 +40,15 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     this.agendaBloc = new AgendaBloc(
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
+
     this._eventNameController = new TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
-    this._eventBeginningHourController = new TextEditingController(
-        text: this.event == null
-            ? ""
-            : ConvertUtils.fromTimeOfDay(this.event["begin"]));
-
-    this._eventEndingHourController = new TextEditingController(
-        text: this.event == null
-            ? ""
-            : ConvertUtils.fromTimeOfDay(this.event["end"]));
-
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
-
-    this.eventHour = this.event == null ? null : "${this.event["begin"]} - ${this.event["end"]}";
+    this._eventHourController = new TextEditingController(
+      text: null
+    );
+    this._eventHourController.text = this.event == null ? null : "${this.event["begin"]} - ${this.event["end"]}";
     super.initState();
   }
 
@@ -118,7 +108,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
                         EventHourField(
                           occupedHours: state.occupedTimes,
-                          eventHour: this.eventHour,
+                          hourController:  this._eventHourController,
                         ),
 
                         LayoutUtils.buildVerticalSpacing(20.0),
@@ -160,18 +150,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   void _createOrEditEvent() {
-    var eventBeginningHour =
-        _retriveTimeAsString(this._eventBeginningHourController.text);
-    var eventEndingHour =
-        _retriveTimeAsString(this._eventEndingHourController.text);
-
-    var eventStart = TimeOfDay(
-        hour: int.parse(eventBeginningHour[0]),
-        minute: int.parse(eventBeginningHour[1]));
-
-    var eventEnd = TimeOfDay(
-        hour: int.parse(eventEndingHour[0]),
-        minute: int.parse(eventEndingHour[1]));
+    var eventStart = this._eventHourController.text.split("-")[0];
+    var eventEnd = this._eventHourController.text.split("-")[1];
 
     if (this.widget.isEdit) {
       agendaBloc.add(AgendaEditButtonPressed(

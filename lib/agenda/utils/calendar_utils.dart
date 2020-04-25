@@ -43,8 +43,8 @@ class CalendarUtils {
       child: Column(
           children: dayEvents.map((event) {
         var eventId = event["id"];
-        var beginHourSplited = event["begin"].split(":");
-        var endHourSplited = event["end"].split(":");
+        var beginHour = event["begin"];
+        var endHour = event["end"];
         var description = event["description"];
 
         return ListTile(
@@ -52,10 +52,8 @@ class CalendarUtils {
             eventId: eventId,
             eventText: description,
             selectedDay: _selectedDay,
-            eventHourStart: TimeOfDay(
-                hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
-            eventHourEnd:
-                TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
+            eventHourStart: beginHour,
+            eventHourEnd: endHour,
             agendaRepository: agendaRepository,
             refreshAgenda: refreshAgenda,
           ),

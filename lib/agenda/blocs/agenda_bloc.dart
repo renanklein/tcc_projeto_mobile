@@ -25,7 +25,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
      try{
       yield AgendaEventProcessing();
 
-      var eventHourRange = new List<TimeOfDay>();
+      var eventHourRange = new List<String>();
       eventHourRange.add(event.eventStart);
       eventHourRange.add(event.eventEnd);
 
@@ -56,8 +56,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         var updatedEvent = {
           "id" : event.eventId,
-          "begin" : ConvertUtils.fromTimeOfDay(event.eventStart),
-          "end" : ConvertUtils.fromTimeOfDay(event.eventEnd),
+          "begin" : event.eventStart,
+          "end" : event.eventEnd,
           "description" : event.eventName
         };
 

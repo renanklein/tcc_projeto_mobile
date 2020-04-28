@@ -73,4 +73,12 @@ class AgendaAvailableTimeFail extends AgendaState{
 
 }
 
+class AgendaEventConfirmSuccess extends AgendaState{
+
+}
+
+class AgendaEventConfirmFail extends AgendaState{
+
+}
+
 

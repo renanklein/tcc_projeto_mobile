@@ -55,3 +55,7 @@ class AgendaEventAvailableTimeLoad extends AgendaEvent{
       @required this.day
     });
 }
+
+class AgendaEventConfirmButtomPressed extends AgendaEvent{
+
+}

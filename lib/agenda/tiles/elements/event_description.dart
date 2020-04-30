@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class EventDescription extends StatelessWidget {
   final eventText;
+  final eventStatus;
   final eventHourStart;
   final eventHourEnd;
 
   EventDescription({
     @required this.eventText,
+    @required this.eventStatus,
     @required this.eventHourStart,
     @required this.eventHourEnd});
   
@@ -18,7 +20,7 @@ class EventDescription extends StatelessWidget {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[_buildEventTitle(), _buildEventTimeRange()]),
+          children: <Widget>[_buildEventTitle(), _buildEventStatus(),_buildEventTimeRange()]),
     );
   }
 
@@ -38,4 +40,11 @@ class EventDescription extends StatelessWidget {
     );
   }
 
+  Widget _buildEventStatus(){
+    return Text(
+      this.eventStatus,
+      style: TextStyle(
+        color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 14.0),
+    );
+  }
 }

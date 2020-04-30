@@ -21,19 +21,21 @@ class AgendaLoad extends AgendaEvent{
   
 }
 
-class AgendaEditButtonPressed extends AgendaEvent{
+class AgendaEditButtonPressed extends AgendaEvent{ 
   String eventId;
   String eventName;
   DateTime eventDay;
   String eventStart;
   String eventEnd;
+  String eventStatus;
 
   AgendaEditButtonPressed({
     @required this.eventId,
     @required this.eventName, 
     @required this.eventDay,
     @required this.eventStart,
-    @required this.eventEnd});
+    @required this.eventEnd,
+    @required this.eventStatus});
 }
 
 class AgendaDeleteButtonPressed extends AgendaEvent{
@@ -57,5 +59,13 @@ class AgendaEventAvailableTimeLoad extends AgendaEvent{
 }
 
 class AgendaEventConfirmButtomPressed extends AgendaEvent{
+  final event;
+  final eventDay;
+  
+  AgendaEventConfirmButtomPressed({
+    @required this.event,
+    @required this.eventDay
+  });
+
 
 }

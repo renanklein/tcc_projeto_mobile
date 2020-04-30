@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
@@ -31,6 +32,7 @@ class CalendarEventTile extends StatelessWidget {
               LayoutUtils.buildHorizontalSpacing(15.0),
               EventDescription(
                 eventText: this.event["description"],
+                eventStatus: this.event["status"],
                 eventHourStart: this.event["begin"],
                 eventHourEnd: this.event["end"],
               ),
@@ -66,7 +68,16 @@ class CalendarEventTile extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: (){
-                  
+                  showBottomSheet(
+                    context: context, 
+                    elevation: 1.0,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    builder: (context){
+                      return EventConfirmBottomSheet(
+                        event: this.event, 
+                        eventDay: this.selectedDay, 
+                        refreshAgenda: this.refreshAgenda);
+                  });
                 },
               ),
               LayoutUtils.buildHorizontalSpacing(3.0),

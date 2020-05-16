@@ -23,7 +23,6 @@ class ConvertUtils {
        eventsParsed.add(
           "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
     });
-
     return eventsParsed;
   }
 

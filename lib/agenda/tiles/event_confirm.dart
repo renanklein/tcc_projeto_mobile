@@ -24,8 +24,8 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
   Map get event => this.widget.event;
   DateTime get eventDay => this.widget.eventDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
-
   AgendaBloc _agendaBloc;
+
   @override
   void initState() {
     this._agendaBloc = AgendaBloc(

@@ -31,8 +31,10 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaRepository agendaRepository,
+  static Widget buildEventList(
+      List _selectedDayDescriptions,
+      DateTime _selectedDay,
+      AgendaRepository agendaRepository,
       Function refreshAgenda) {
     if (_selectedDayDescriptions == null) {
       return Column();
@@ -42,19 +44,10 @@ class CalendarUtils {
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
           children: dayEvents.map((event) {
-        var eventId = event["id"];
-        var beginHour = event["begin"];
-        var endHour = event["end"];
-        var description = event["description"];
-
         return ListTile(
           title: CalendarEventTile(
-            eventId: eventId,
-            eventText: description,
+            event: event,
             selectedDay: _selectedDay,
-            eventHourStart: beginHour,
-            eventHourEnd: endHour,
-            agendaRepository: agendaRepository,
             refreshAgenda: refreshAgenda,
           ),
         );

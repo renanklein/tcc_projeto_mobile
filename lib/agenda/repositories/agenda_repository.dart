@@ -63,7 +63,7 @@ class AgendaRepository {
       return occupedHours;
   }
 
-  Future<void> updateEvent(DateTime eventDay, String eventId, Map newEvent) async{
+  Future<void> updateEvent(DateTime eventDay, Map newEvent, String status, [String reason]) async{
     var events = await getEvents();
 
     var filteredDate = ConvertUtils.removeTime(eventDay);
@@ -75,9 +75,13 @@ class AgendaRepository {
     var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
 
     newEvent["status"] = oldEvent["status"];
+    
+    if(reason != null) {
+      newEvent["reason"] = reason;
+    }
 
     listEvents.remove(oldEvent);
-
+    newEvent["status"] = status;
     listEvents.add(newEvent);
 
     await firestore

@@ -2,31 +2,39 @@ import 'package:flutter/material.dart';
 
 class EventDescription extends StatelessWidget {
   final eventText;
+  final eventStatus;
   final eventHourStart;
   final eventHourEnd;
 
-  EventDescription({
-    @required this.eventText,
-    @required this.eventHourStart,
-    @required this.eventHourEnd});
-  
+  EventDescription(
+      {@required this.eventText,
+      @required this.eventStatus,
+      @required this.eventHourStart,
+      @required this.eventHourEnd});
+
   String get eventStart => this.eventHourStart;
   String get eventEnd => this.eventHourEnd;
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[_buildEventTitle(), _buildEventTimeRange()]),
+      child: ListView(
+          children: <Widget>[
+            _buildEventTitle(),
+            _buildEventStatus(),
+            _buildEventTimeRange()
+          ]),
     );
   }
 
   Widget _buildEventTitle() {
-    return Text(
-      this.eventText,
-      style: TextStyle(
-          color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 20.0),
+    return Container(
+      padding: EdgeInsets.only(top: 5.0),
+      child: Text(
+          this.eventText,
+          strutStyle: StrutStyle(),
+          style: TextStyle(
+              color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 15.0),
+        ),
     );
   }
 
@@ -38,4 +46,14 @@ class EventDescription extends StatelessWidget {
     );
   }
 
+  Widget _buildEventStatus() {
+    return Container(
+      padding: EdgeInsets.only(bottom: 2.0),
+      child: Text(
+        this.eventStatus,
+        style: TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 14.0),
+      ),
+    );
+  }
 }

@@ -45,9 +45,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         text: this.event == null ? "" : this.event["description"]);
 
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
-    this._eventHourController = new TextEditingController(
-      text: null
-    );
+    this._eventHourController = new TextEditingController();
     this._eventHourController.text = this.event == null ? null : "${this.event["begin"]} - ${this.event["end"]}";
     super.initState();
   }
@@ -105,12 +103,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                         EventNameField(
                             eventNameController: this._eventNameController),
                         LayoutUtils.buildVerticalSpacing(20.0),
-
                         EventHourField(
                           occupedHours: state.occupedTimes,
                           hourController:  this._eventHourController,
                         ),
-
                         LayoutUtils.buildVerticalSpacing(20.0),
                         _buildCreateEventButton()
                       ],
@@ -159,7 +155,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
           eventStart: eventStart,
-          eventEnd: eventEnd));
+          eventEnd: eventEnd,
+          eventStatus: this.event["status"]));
     } else {
       agendaBloc.add(AgendaCreateButtonPressed(
           eventDay: this.selectedDay,
@@ -181,9 +178,5 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _verifyFailState(AgendaState state) {
     return state is AgendaEventCreateFail || state is AgendaEventEditFail;
-  }
-
-  List<String> _retriveTimeAsString(String time) {
-    return time.split(':');
   }
 }

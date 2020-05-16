@@ -2,25 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CalendarEventTile extends StatelessWidget {
-  final eventId;
-  final eventText;
-  final eventHourStart;
-  final eventHourEnd;
+  final event;
   final selectedDay;
-  final agendaRepository;
   final refreshAgenda;
 
   CalendarEventTile(
-      {@required this.eventId,
-      @required this.eventText,
-      @required this.eventHourStart,
-      @required this.eventHourEnd,
+      {@required this.event,
       @required this.selectedDay,
-      @required this.agendaRepository,
       @required this.refreshAgenda});
 
   @override
@@ -38,42 +31,18 @@ class CalendarEventTile extends StatelessWidget {
               EventAvatar(),
               LayoutUtils.buildHorizontalSpacing(15.0),
               EventDescription(
-                eventText: eventText,
-                eventHourStart: eventHourStart,
-                eventHourEnd: eventHourEnd,
+                eventText: this.event["description"],
+                eventStatus: this.event["status"],
+                eventHourStart: this.event["begin"],
+                eventHourEnd: this.event["end"],
               ),
-              LayoutUtils.buildHorizontalSpacing(30.0),
-              IconButton(
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  showBottomSheet(
-                      context: context,
-                      elevation: 1.0,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      builder: (context) {
-                        return EventExcludeBottomSheet(
-                          eventId: this.eventId,
-                          eventDay: this.selectedDay,
-                          refreshAgenda: this.refreshAgenda,
-                        );
-                      });
-                },
-              )
+              ..._buildEventsButtons(context)
             ]),
       ),
       onTap: () {
-        var event = {
-          "id": this.eventId,
-          "description": this.eventText,
-          "begin": this.eventHourStart,
-          "end": this.eventHourEnd
-        };
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => EventEditorScreen(
-                  event: event,
+                  event: this.event,
                   isEdit: true,
                   selectedDay: this.selectedDay,
                   refreshAgenda: this.refreshAgenda,
@@ -87,5 +56,52 @@ class CalendarEventTile extends StatelessWidget {
         color: Colors.black,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(15.0));
+  }
+
+  List<Widget> _buildEventsButtons(BuildContext context){
+    if(this.event["status"] != "confirmed"){
+      return <Widget>[
+         LayoutUtils.buildHorizontalSpacing(30.0),
+              IconButton(
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.grey,
+                ),
+                onPressed: (){
+                  showBottomSheet(
+                    context: context, 
+                    elevation: 1.0,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    builder: (context){
+                      return EventConfirmBottomSheet(
+                        event: this.event, 
+                        eventDay: this.selectedDay, 
+                        refreshAgenda: this.refreshAgenda);
+                  });
+                },
+              ),
+              LayoutUtils.buildHorizontalSpacing(3.0),
+              IconButton(
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  showBottomSheet(
+                      context: context,
+                      elevation: 1.0,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      builder: (context) {
+                        return EventExcludeBottomSheet(
+                          eventId: this.event["id"],
+                          eventDay: this.selectedDay,
+                          refreshAgenda: this.refreshAgenda,
+                        );
+                      });
+                },
+              )
+      ];
+    }
+    return <Widget>[Container()];
   }
 }

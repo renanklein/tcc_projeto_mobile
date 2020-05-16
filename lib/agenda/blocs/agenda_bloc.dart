@@ -61,7 +61,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
           "description" : event.eventName
         };
 
-        await this.agendaRepository.updateEvent(event.eventDay, event.eventId, updatedEvent);
+        await this.agendaRepository.updateEvent(event.eventDay, updatedEvent, event.eventStatus);
 
         yield AgendaEventEditSuccess();
         
@@ -81,7 +81,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
        yield AgendaEventDeleteFail();
      }
     }
-
     else if (event is AgendaEventAvailableTimeLoad){
       try{
         yield AgendaAvailableTimeLoading();
@@ -94,6 +93,19 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       
       } catch(error){
         yield AgendaAvailableTimeFail();
+      }
+    }
+
+    else if(event is AgendaEventConfirmButtomPressed){
+      try{
+        yield AgendaEventProcessing();
+
+        this.agendaRepository.updateEvent(event.eventDay, event.event, "confirmed");
+
+        yield AgendaEventConfirmSuccess();
+        
+      }catch(error){
+        yield AgendaEventConfirmFail();
       }
     }
   }

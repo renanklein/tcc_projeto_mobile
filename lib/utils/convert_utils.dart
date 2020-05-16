@@ -23,7 +23,6 @@ class ConvertUtils {
        eventsParsed.add(
           "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
     });
-
     return eventsParsed;
   }
 
@@ -35,7 +34,7 @@ class ConvertUtils {
 
     events.forEach((eventString) {
       var eventsData = eventString.split(";");
-      if (eventsData[4] == "created") {
+      if (eventsData[4] != "canceled") {
         eventsParsed.add({
           "id": eventsData[0],
           "description": eventsData[1],

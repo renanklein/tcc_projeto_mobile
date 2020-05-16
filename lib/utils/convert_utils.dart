@@ -35,7 +35,7 @@ class ConvertUtils {
 
     events.forEach((eventString) {
       var eventsData = eventString.split(";");
-      if (eventsData[4] == "created") {
+      if (eventsData[4] != "canceled") {
         eventsParsed.add({
           "id": eventsData[0],
           "description": eventsData[1],

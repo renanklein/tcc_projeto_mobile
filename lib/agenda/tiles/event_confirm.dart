@@ -69,15 +69,20 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
                 return Form(
                   child: ListView(
                   children: <Widget>[
-                    Text(
-                      "Deseja confirmar esse evento ?",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey
+                    LayoutUtils.buildVerticalSpacing(28.0),
+                    Center(
+                      child: Text(
+                        "Deseja confirmar esse evento ?",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey
+                        ),
                       ),
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         _buildCancelButton(),
                         _buildConfirmButtom()

@@ -1,5 +1,7 @@
 # tcc_projeto_app
 
+[![CircleCI Status](https://circleci.com/gh/pingcap/tidb.svg?style=shield)](https://app.circleci.com/pipelines/github/renanklein/tcc_projeto_mobile)
+
 A new Flutter project.
 
 ## Getting Started

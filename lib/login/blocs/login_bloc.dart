@@ -35,7 +35,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield LoginFailure();
       }
     }
-
     else if (event is LoginResetPasswordButtonPressed){
       await this.userRepository.resetPassword(email: event.email);
       yield LoginPasswordReset();

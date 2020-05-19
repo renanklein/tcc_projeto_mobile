@@ -5,12 +5,13 @@ jobs:
   build:
     docker:
       - image: cirrusci/flutter:latest
+
     branches:
       only: master
     
     steps:
       - checkout
-
+      
       - run:
           name: Flutter doctor
           command: flutter doctor
@@ -27,7 +28,7 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      -build:
+      - build:
         filters:
           branches:
             only: master

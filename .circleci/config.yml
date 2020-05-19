@@ -23,3 +23,11 @@ jobs:
           name: Building app
           command: flutter build apk
 
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      -build:
+        filters:
+          branches:
+            only: master

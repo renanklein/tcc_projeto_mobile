@@ -19,7 +19,7 @@ jobs:
       
       - run:
           name: Building app
-          command: flutter build apk
+          command: flutter build
 
 workflows:
   version: 2

@@ -34,6 +34,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           email: event.email, 
           uid: signupResult.user.uid
         );
+        
         final token = await signupResult.user.getIdToken(); 
         
         this.authenticationBloc.add(LoggedIn(token: token, context: event.context));

@@ -69,8 +69,6 @@ void main(){
         SignupFailed()
       ];
 
-      when(userRepository.sendUserData(name: null, email: null, uid: null)).thenThrow(Exception());
-
       expectLater(signupBloc, emitsInOrder(expectedStates));
 
       signupBloc.add(SignupButtonPressed(

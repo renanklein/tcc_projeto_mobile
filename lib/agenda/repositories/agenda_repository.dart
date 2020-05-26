@@ -9,20 +9,22 @@ class AgendaRepository {
   set events(Map<DateTime, dynamic> events) => this._events = events;
   set userId(String uid) => this._userId = uid;
 
-  Future<void> addEvent(String name, DateTime eventday, List<String> eventDuration) async {
+  Future<Map> addEvent(String name, DateTime eventday, List<String> eventDuration) async {
     String eventsKey = ConvertUtils.dayFromDateTime(eventday);
     var filteredDate = ConvertUtils.removeTime(eventday);
     List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(_retrieveListOfEvents(filteredDate, _events));
     int eventId =  dayEventsAsList.isEmpty ? 1  : int.parse(dayEventsAsList.last["id"]) + 1;
 
-    _addNewEvent({
+    var newEvent = {
       "id" : eventId.toString(),
       "userId" : this._userId,
       "description": name,
       "begin": eventDuration[0],
       "end": eventDuration[1],
       "status" : "created"
-    }, dayEventsAsList);
+    };
+
+    _addNewEvent(newEvent, dayEventsAsList);
 
     await Firestore.instance
         .collection("agenda")
@@ -32,6 +34,8 @@ class AgendaRepository {
         .setData({"events": dayEventsAsList})
         .then((resp) => {})
         .catchError((error) => {});
+
+        return newEvent;
   }
 
   Future<Map<DateTime, List>> getEvents() async {

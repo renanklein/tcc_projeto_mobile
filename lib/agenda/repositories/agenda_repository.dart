@@ -61,7 +61,9 @@ class AgendaRepository {
       .document(day)
       .get()
       .then((resp) =>{
-        occupedHours = ConvertUtils.getOccupedHours(resp.data["events"])
+        if(resp.data != null && resp.data.containsKey("events")){
+           occupedHours = ConvertUtils.getOccupedHours(resp.data["events"])
+        }
       });
 
       return occupedHours;

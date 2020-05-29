@@ -38,7 +38,7 @@ class AgendaRepository {
         return newEvent;
   }
 
-  Future<Map<DateTime, List>> getEvents() async {
+  Future<Map<DateTime, List>> getEvents({String eventStatus}) async {
     var events;
     await Firestore.instance
         .collection("agenda")
@@ -135,8 +135,12 @@ class AgendaRepository {
       var dateFromEpoch = ConvertUtils.documentIdToDateTime(snapshot.documentID);
       var dayEvents = snapshot.data.values.first;
 
-      events.addAll(
-          {dateFromEpoch: ConvertUtils.toStringListOfEvents(dayEvents)});
+      var eventsAsListOfString = ConvertUtils.toStringListOfEvents(dayEvents);
+      if(eventsAsListOfString.isNotEmpty){
+        events.addAll({
+          dateFromEpoch : eventsAsListOfString
+        });
+      }
     });
 
     return events;

@@ -20,8 +20,10 @@ class ConvertUtils {
     List<String> eventsParsed = new List<String>();
 
     events.forEach((event) {
-       eventsParsed.add(
+       if(event["status"] != "canceled"){
+         eventsParsed.add(
           "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
+       }
     });
     return eventsParsed;
   }

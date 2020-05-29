@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
+import 'package:tcc_projeto_app/utils/utils.dart';
 
 class AgendaRepository {
   final firestore = Firestore.instance;
@@ -10,32 +11,27 @@ class AgendaRepository {
   set userId(String uid) => this._userId = uid;
 
   Future<Map> addEvent(String name, DateTime eventday, List<String> eventDuration) async {
-    String eventsKey = ConvertUtils.dayFromDateTime(eventday);
-    var filteredDate = ConvertUtils.removeTime(eventday);
-    List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(_retrieveListOfEvents(filteredDate, _events));
-    int eventId =  dayEventsAsList.isEmpty ? 1  : int.parse(dayEventsAsList.last["id"]) + 1;
-
-    var newEvent = {
-      "id" : eventId.toString(),
+    
+    var eventParameters = {
       "userId" : this._userId,
-      "description": name,
-      "begin": eventDuration[0],
-      "end": eventDuration[1],
-      "status" : "created"
+      "name" : name,
+      "eventDay" : eventday,
+      "eventDuration": eventDuration,
+      "events" : this._events
     };
 
-    _addNewEvent(newEvent, dayEventsAsList);
+    var inputParameters = Utils.buildNewEvent(eventParameters);
 
     await Firestore.instance
         .collection("agenda")
         .document(this._userId)
         .collection("events")
-        .document(eventsKey)
-        .setData({"events": dayEventsAsList})
+        .document(inputParameters["eventsKey"])
+        .setData({"events": inputParameters["dayEventsAsList"]})
         .then((resp) => {})
         .catchError((error) => {});
 
-        return newEvent;
+        return inputParameters["newEvent"];
   }
 
   Future<Map<DateTime, List>> getEvents({String eventStatus}) async {
@@ -46,7 +42,7 @@ class AgendaRepository {
         .collection("events")
         .getDocuments()
         .then((resp) {
-      events = _retriveEventsForAgenda(resp.documents);
+      events = Utils.retriveEventsForAgenda(resp.documents);
     });
 
     return events;
@@ -71,15 +67,11 @@ class AgendaRepository {
 
   Future<void> updateEvent(DateTime eventDay, Map newEvent, String status, [String reason]) async{
     var events = await getEvents();
-
     var filteredDate = ConvertUtils.removeTime(eventDay);
-
     var dayEvent = events[filteredDate];
-
     var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
 
     var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
-
     newEvent["status"] = oldEvent["status"];
     
     if(reason != null) {
@@ -104,13 +96,11 @@ class AgendaRepository {
     var events = await getEvents();
 
     var filteredDate = ConvertUtils.removeTime(eventDay);
-
     var dayEvent = events[filteredDate];
 
     var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
 
     var oldEvent = listEvents.where((event) => event["id"] == eventId).toList().first;
-
     listEvents.remove(oldEvent);
 
     oldEvent["status"] = "canceled";
@@ -128,41 +118,4 @@ class AgendaRepository {
       });
   }
 
-  //documentId -> epoch date
-  //dayEvents -> list of events
-  Map<DateTime, List<String>> _retriveEventsForAgenda(
-      List<DocumentSnapshot> documents) {
-    Map<DateTime, List<String>> events = new Map<DateTime, List<String>>();
-    documents.forEach((snapshot) { 
-      var dateFromEpoch = ConvertUtils.documentIdToDateTime(snapshot.documentID);
-      var dayEvents = snapshot.data.values.first;
-
-      var eventsAsListOfString = ConvertUtils.toStringListOfEvents(dayEvents);
-      if(eventsAsListOfString.isNotEmpty){
-        events.addAll({
-          dateFromEpoch : eventsAsListOfString
-        });
-      }
-    });
-
-    return events;
-  }
-
-  bool _verifyIfExistsEventInThatDay(DateTime eventDay, Map events) {
-    return events[eventDay] != null;
-  }
-
-  List<dynamic> _retrieveListOfEvents(DateTime eventDay, dynamic events) {
-
-    bool existsEventsInThatDay = _verifyIfExistsEventInThatDay(eventDay, events);
-    List dayEvents = new List();
-    if (existsEventsInThatDay) {
-      events[eventDay].forEach((event) => dayEvents.add(event));
-    }
-    return dayEvents;
-  }
-
-  void _addNewEvent(Map event, List<dynamic> events) {
-    events.add(event);
-  }
 }

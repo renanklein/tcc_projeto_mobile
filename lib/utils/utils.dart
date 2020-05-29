@@ -61,4 +61,27 @@ class Utils{
       "newEvent" : newEvent
     };
   }
+  
+  static Map buildUpdateEvent(Map eventParameters){
+    var filteredDate = ConvertUtils.removeTime(eventParameters["eventDay"]);
+    var dayEvent = eventParameters["events"][filteredDate];
+    var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
+    var newEvent = eventParameters["newEvent"];
+
+    var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
+    newEvent["status"] = oldEvent["status"];
+    
+    if(eventParameters["reason"] != null) {
+      newEvent["reason"] = eventParameters["reason"];
+    }
+
+    listEvents.remove(oldEvent);
+    newEvent["status"] = eventParameters["status"];
+    listEvents.add(newEvent);
+
+    return {
+      "filteredDate" : filteredDate,
+      "events" : listEvents
+    };
+  }
 }

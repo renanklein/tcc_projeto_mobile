@@ -67,28 +67,24 @@ class AgendaRepository {
 
   Future<void> updateEvent(DateTime eventDay, Map newEvent, String status, [String reason]) async{
     var events = await getEvents();
-    var filteredDate = ConvertUtils.removeTime(eventDay);
-    var dayEvent = events[filteredDate];
-    var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
 
-    var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
-    newEvent["status"] = oldEvent["status"];
-    
-    if(reason != null) {
-      newEvent["reason"] = reason;
-    }
+    var eventParameters = {
+      "events" : events,
+      "eventDay" : eventDay,
+      "newEvent": newEvent,
+      "status" : status,
+      "reason": reason
+    };
 
-    listEvents.remove(oldEvent);
-    newEvent["status"] = status;
-    listEvents.add(newEvent);
+    var inputParameters = Utils.buildUpdateEvent(eventParameters);
 
     await firestore
       .collection("agenda")
       .document(this._userId)
       .collection("events")
-      .document(ConvertUtils.dayFromDateTime(filteredDate))
+      .document(ConvertUtils.dayFromDateTime(inputParameters["filteredDate"]))
       .updateData({
-       "events" : listEvents 
+       "events" : inputParameters["events"] 
       });
   }
 

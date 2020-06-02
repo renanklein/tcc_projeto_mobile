@@ -9,33 +9,12 @@ class AgendaInitial extends AgendaState {
   List<Object> get props => [];
 }
 
-class AgendaEventProcessing extends AgendaState{
+class EventProcessing extends AgendaState{}
 
-}
+class EventProcessingSuccess extends AgendaState{}
 
-class AgendaEventCreateSuccess extends AgendaState{
- 
-}
+class EventProcessingFail extends AgendaState{}
 
-class AgendaEventCreateFail extends AgendaState{
-  
-}
-
-class AgendaEventEditSuccess extends AgendaState{
-  
-}
-
-class AgendaEventEditFail extends AgendaState{
-
-}
-
-class AgendaEventDeleteSuccess extends AgendaState{
-
-}
-
-class AgendaEventDeleteFail extends AgendaState{
-  
-}
 
 class AgendaLoadSuccess extends AgendaState{
   Map<DateTime, List<dynamic>> _eventsLoaded;
@@ -73,12 +52,5 @@ class AgendaAvailableTimeFail extends AgendaState{
 
 }
 
-class AgendaEventConfirmSuccess extends AgendaState{
-
-}
-
-class AgendaEventConfirmFail extends AgendaState{
-
-}
 
 

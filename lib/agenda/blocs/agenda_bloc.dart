@@ -23,7 +23,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   ) async* {
     if(event is AgendaCreateButtonPressed){
      try{
-      yield AgendaEventProcessing();
+      yield EventProcessing();
 
       var eventHourRange = new List<String>();
       eventHourRange.add(event.eventStart);
@@ -31,10 +31,10 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
 
-      yield AgendaEventCreateSuccess();
+      yield EventProcessingSuccess();
      }
      catch(error){
-       yield AgendaEventCreateFail();
+       yield EventProcessingFail();
      }
     }
 
@@ -52,7 +52,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
     else if (event is AgendaEditButtonPressed){
       try{
-        yield AgendaEventProcessing();
+        yield EventProcessing();
 
         var updatedEvent = {
           "id" : event.eventId,
@@ -63,22 +63,22 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         await this.agendaRepository.updateEvent(event.eventDay, updatedEvent, event.eventStatus);
 
-        yield AgendaEventEditSuccess();
+        yield EventProcessingSuccess();
         
       }catch(error){
-        yield AgendaEventEditFail();
+        yield EventProcessingFail();
       }
     }
 
     else if(event is AgendaDeleteButtonPressed){
      try{
-        yield AgendaEventProcessing();
+        yield EventProcessing();
 
         await this.agendaRepository.removeEvent(event.eventDay, event.eventId, event.reason);
 
-        yield AgendaEventDeleteSuccess();
+        yield EventProcessingSuccess();
      }catch(error){
-       yield AgendaEventDeleteFail();
+       yield EventProcessingFail();
      }
     }
     else if (event is AgendaEventAvailableTimeLoad){
@@ -98,14 +98,14 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
     else if(event is AgendaEventConfirmButtomPressed){
       try{
-        yield AgendaEventProcessing();
+        yield EventProcessing();
 
         this.agendaRepository.updateEvent(event.eventDay, event.event, "confirmed");
 
-        yield AgendaEventConfirmSuccess();
+        yield EventProcessingSuccess();
         
       }catch(error){
-        yield AgendaEventConfirmFail();
+        yield EventProcessingFail();
       }
     }
   }

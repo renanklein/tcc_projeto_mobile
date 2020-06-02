@@ -147,16 +147,14 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   bool _isLoadingState(AgendaState state) {
-    if (state is AgendaEventProcessing || state is AgendaLoading) {
+    if (state is EventProcessing || state is AgendaLoading) {
       return true;
     }
     return false;
   }
 
   bool _isEventCreateSuccess(AgendaState state) {
-    if (state is AgendaEventEditSuccess ||
-        state is AgendaEventEditSuccess ||
-        state is AgendaEventDeleteSuccess) {
+    if (state is EventProcessingSuccess) {
       return true;
     }
     return false;

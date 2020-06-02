@@ -54,7 +54,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
           create: (context) => this._agendaBloc,
           child: BlocListener<AgendaBloc, AgendaState>(
             listener: (context, state) {
-              if (state is AgendaEventConfirmSuccess) {
+              if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
                 Navigator.of(context).pop();
                 this.refreshAgenda();
@@ -63,7 +63,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
             child: BlocBuilder<AgendaBloc, AgendaState>(
               bloc: this._agendaBloc,
               builder: (context, state) {
-                if (state is AgendaEventProcessing) {
+                if (state is EventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
                 return Form(

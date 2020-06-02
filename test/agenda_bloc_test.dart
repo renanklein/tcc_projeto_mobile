@@ -25,8 +25,8 @@ void main(){
     test("When an event was dispached and no exception was thrown, it should be emit AgendaEventCreateSuccess", (){
       var expectedStates = [
         AgendaInitial(),
-        AgendaEventProcessing(),
-        AgendaEventCreateSuccess()
+        EventProcessing(),
+        EventProcessingSuccess()
       ];
 
       when(fakeAgendaRepository.addEvent("", DateTime(2020), [""])).thenAnswer((_) => Future.value(null));
@@ -44,25 +44,6 @@ void main(){
       ));
     });
 
-    // test("When an event was dispached and an exception was thrown, it should emit AgendaEventCreateFail", (){
-    //   var expectedStates = [
-    //     AgendaInitial(),
-    //     AgendaEventProcessing(),
-    //     AgendaEventCreateFail()
-    //   ];
-
-    //   when(fakeAgendaRepository.addEvent("", DateTime(2020), [""])).thenThrow(Exception());
-
-    //   agendaBloc.add(AgendaCreateButtonPressed(
-    //     eventDay: DateTime(2020),
-    //     eventStart: "",
-    //     eventEnd: "",
-    //     eventName: ""
-    //   ));
-
-    //   expectLater(agendaBloc, emitsInOrder(expectedStates));
-
-    // });
   });
 
   group("AgendaLoad event", (){
@@ -102,8 +83,8 @@ void main(){
     test("When event is AgendaEditButtonPressed and no exception was thrown, it should emit AgendaEventEditSuccess", (){
       var expectedStates = [
         AgendaInitial(),
-        AgendaEventProcessing(),
-        AgendaEventEditSuccess()
+        EventProcessing(),
+        EventProcessingSuccess()
       ];
 
       when(fakeAgendaRepository.updateEvent(DateTime(2020), Map(), "state")).thenAnswer((_) => Future.value());
@@ -127,8 +108,8 @@ void main(){
     test("When event is AgendaDeleteButtonPressed and no exception was thrown, it should emit AgendaEventDeleteSuccess", (){
       var expectedStates = [
         AgendaInitial(),
-        AgendaEventProcessing(),
-        AgendaEventDeleteSuccess()
+        EventProcessing(),
+        EventProcessingSuccess()
       ];
 
       when(fakeAgendaRepository.removeEvent(DateTime(2020), "id", "reason")).thenAnswer((_) => Future.value(null));
@@ -165,8 +146,8 @@ void main(){
     test("When event is Agenda EventConfirm and no exception was catched, it shoul emit AgendaEventConfirmSuccess", (){
       var expectedStates = [
         AgendaInitial(),
-        AgendaEventProcessing(),
-        AgendaEventConfirmSuccess()
+        EventProcessing(),
+        EventProcessingSuccess()
       ];
 
       when(fakeAgendaRepository.updateEvent(DateTime(2020), Map(), "status")).thenAnswer((_) => Future.value());

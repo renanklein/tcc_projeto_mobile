@@ -141,7 +141,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   bool _isLoadingState(AgendaState state) {
-    return state is AgendaEventProcessing ||
+    return state is EventProcessing ||
         state is AgendaAvailableTimeLoading;
   }
 
@@ -173,10 +173,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   bool _verifySuccessState(AgendaState state) {
-    return state is AgendaEventCreateSuccess || state is AgendaEventEditSuccess;
+    return state is EventProcessingSuccess;
   }
 
   bool _verifyFailState(AgendaState state) {
-    return state is AgendaEventCreateFail || state is AgendaEventEditFail;
+    return state is EventProcessingFail;
   }
 }

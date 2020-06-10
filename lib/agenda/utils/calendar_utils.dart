@@ -35,25 +35,25 @@ class CalendarUtils {
       List _selectedDayDescriptions,
       DateTime _selectedDay,
       AgendaRepository agendaRepository,
-      Function refreshAgenda) {
+      Function refreshAgenda,
+      BuildContext context) {
     if (_selectedDayDescriptions == null) {
       return Column();
     }
     List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
     
-    return ListView(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      physics: ScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      children: dayEvents.map((event){
+      child: Column(
+          children: dayEvents.map((event) {
         return ListTile(
           title: CalendarEventTile(
             event: event,
             selectedDay: _selectedDay,
             refreshAgenda: refreshAgenda,
-          )
+          ),
         );
-      }).toList(),
+      }).toList()),
     );
   }
 }

@@ -124,7 +124,8 @@ class _UserCalendarState extends State<UserCalendar> {
                             this._selectedDayDescriptions,
                             this._selectedDay,
                             this._agendaRepository,
-                            this.refresh)
+                            this.refresh,
+                            context)
                       ],
                     ));
               },

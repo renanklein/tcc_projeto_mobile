@@ -145,12 +145,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
     fieldsList.add(EventNameField(eventNameController: this._eventNameController));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
-
-    if (!this.isEdit) {
-      fieldsList.add(EventDate(selectedDay: this.selectedDay));
-      fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
-    }
-
+    fieldsList.add(EventDate(selectedDay: this.selectedDay));
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
     fieldsList.add(
       EventHourField(
         occupedHours: state.occupedTimes,

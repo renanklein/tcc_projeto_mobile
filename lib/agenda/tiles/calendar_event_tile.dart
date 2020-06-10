@@ -83,7 +83,7 @@ class CalendarEventTile extends StatelessWidget {
               LayoutUtils.buildHorizontalSpacing(3.0),
               IconButton(
                 icon: Icon(
-                  Icons.cancel,
+                  Icons.close,
                   color: Colors.grey,
                 ),
                 onPressed: () {

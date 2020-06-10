@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
 
 class EventHourField extends StatefulWidget {
   final occupedHours;
@@ -46,21 +45,6 @@ class _EventHourFieldState extends State<EventHourField> {
             this.hourController.text = newValue;
           });
         });
-  }
-
-  DateTimeRangePicker showTimeRangePicker() {
-    return DateTimeRangePicker(
-      mode: DateTimeRangePickerMode.time,
-      interval: 30,
-      startText: "Início",
-      endText: "Fim",
-      doneText: "Confirmar",
-      cancelText: "Voltar",
-      minimumTime: DateTime(2020, 04, 19, 08, 30),
-      maximumTime: DateTime(2020, 04, 19, 18, 30),
-      initialStartTime: DateTime(2020, 04, 19, 08, 30),
-      initialEndTime: DateTime(2020, 04, 19, 18, 30),
-    );
   }
 
   List<String> _getTotalHours() {

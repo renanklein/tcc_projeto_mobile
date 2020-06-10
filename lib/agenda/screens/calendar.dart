@@ -97,6 +97,8 @@ class _UserCalendarState extends State<UserCalendar> {
                 return Container(
                     color: Theme.of(context).primaryColor,
                     child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
                       children: <Widget>[
                         TableCalendar(
                           locale: "pt_BR",

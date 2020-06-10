@@ -40,18 +40,20 @@ class CalendarUtils {
       return Column();
     }
     List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
-    return Padding(
+    
+    return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Column(
-          children: dayEvents.map((event) {
+      physics: ScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      children: dayEvents.map((event){
         return ListTile(
           title: CalendarEventTile(
             event: event,
             selectedDay: _selectedDay,
             refreshAgenda: refreshAgenda,
-          ),
+          )
         );
-      }).toList()),
+      }).toList(),
     );
   }
 }

@@ -90,6 +90,7 @@ class _MyAppState extends State<MyApp> {
     Injector injector = Injector.appInstance;
 
     injector.registerSingleton<UserRepository>((_) => UserRepository());
+    
     injector.registerSingleton((_) => AgendaRepository());
 
     injector.registerSingleton((_) => FirebaseMessaging());

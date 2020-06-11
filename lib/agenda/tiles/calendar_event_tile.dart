@@ -53,7 +53,7 @@ class CalendarEventTile extends StatelessWidget {
 
   BoxDecoration _buildContainerDecoration() {
     return BoxDecoration(
-        color: Colors.black,
+        color: this.event["status"] == "confirmed" ? Color.fromARGB(255, 216, 255, 224) : Colors.black,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(15.0));
   }

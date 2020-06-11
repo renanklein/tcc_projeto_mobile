@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -62,17 +63,18 @@ class _UserCalendarState extends State<UserCalendar> {
             IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => EventEditorScreen(
-                              event: null,
-                              isEdit: false,
-                              selectedDay: this._selectedDay,
-                              refreshAgenda: this.refresh,)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EventEditorScreen(
+                            event: null,
+                            isEdit: false,
+                            selectedDay: this._selectedDay,
+                            refreshAgenda: this.refresh,
+                          )));
                 })
           ],
           elevation: 0.0,
         ),
+        backgroundColor: Theme.of(context).primaryColor,
         body: BlocProvider<AgendaBloc>(
           create: (context) => this._agendaBloc,
           child: BlocListener<AgendaBloc, AgendaState>(
@@ -94,40 +96,42 @@ class _UserCalendarState extends State<UserCalendar> {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-                return Container(
-                    color: Theme.of(context).primaryColor,
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: <Widget>[
-                        TableCalendar(
-                          locale: "pt_BR",
-                          onDaySelected: (date, events) {
-                            setState(() {
-                              this._selectedDay = date;
-                              this._selectedDayDescriptions = events;
-                            });
-                          },
-                          events: this._events,
-                          calendarController: _controller,
-                          startingDayOfWeek: StartingDayOfWeek.monday,
-                          calendarStyle: _buildCalendarStyle(),
-                          headerStyle: _buildHeaderStyle(),
-                          builders: CalendarBuilders(
-                              markersBuilder: (context, date, events, _) {
-                            return <Widget>[
-                              CalendarUtils.buildEventMarker(date, events)
-                            ];
-                          }),
-                        ),
+                return CustomScrollView(
+                  slivers: <Widget>[
+                    SliverToBoxAdapter(
+                      child: TableCalendar(
+                        locale: "pt_BR",
+                        onDaySelected: (date, events) {
+                          setState(() {
+                            this._selectedDay = date;
+                            this._selectedDayDescriptions = events;
+                          });
+                        },
+                        events: this._events,
+                        calendarController: _controller,
+                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        calendarStyle: _buildCalendarStyle(),
+                        headerStyle: _buildHeaderStyle(),
+                        builders: CalendarBuilders(
+                            markersBuilder: (context, date, events, _) {
+                          return <Widget>[
+                            CalendarUtils.buildEventMarker(date, events)
+                          ];
+                        }),
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(
                         CalendarUtils.buildEventList(
                             this._selectedDayDescriptions,
                             this._selectedDay,
                             this._agendaRepository,
                             this.refresh,
-                            context)
-                      ],
-                    ));
+                            context),
+                      ),
+                    )
+                  ],
+                );
               },
             ),
           ),
@@ -178,7 +182,7 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh(){
+  void refresh() {
     setState(() {
       _dispatchAgendaLoadEvent();
     });

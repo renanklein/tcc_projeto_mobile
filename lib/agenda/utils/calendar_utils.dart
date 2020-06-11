@@ -31,29 +31,25 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(
+  static List<Widget> buildEventList(
       List _selectedDayDescriptions,
       DateTime _selectedDay,
       AgendaRepository agendaRepository,
       Function refreshAgenda,
       BuildContext context) {
     if (_selectedDayDescriptions == null) {
-      return Column();
+      return <Widget>[];
     }
     List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
-    
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Column(
-          children: dayEvents.map((event) {
-        return ListTile(
-          title: CalendarEventTile(
-            event: event,
-            selectedDay: _selectedDay,
-            refreshAgenda: refreshAgenda,
-          ),
-        );
-      }).toList()),
-    );
+
+    return dayEvents.map((event) {
+      return ListTile(
+        title: CalendarEventTile(
+          event: event,
+          selectedDay: _selectedDay,
+          refreshAgenda: refreshAgenda,
+        ),
+      );
+    }).toList();
   }
 }

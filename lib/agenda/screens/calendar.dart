@@ -96,39 +96,45 @@ class _UserCalendarState extends State<UserCalendar> {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(
-                      child: TableCalendar(
-                        locale: "pt_BR",
-                        onDaySelected: (date, events) {
-                          setState(() {
-                            this._selectedDay = date;
-                            this._selectedDayDescriptions = events;
-                          });
-                        },
-                        events: this._events,
-                        calendarController: _controller,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        calendarStyle: _buildCalendarStyle(),
-                        headerStyle: _buildHeaderStyle(),
-                        builders: CalendarBuilders(
-                            markersBuilder: (context, date, events, _) {
-                          return <Widget>[
-                            CalendarUtils.buildEventMarker(date, events)
-                          ];
-                        }),
-                      ),
+                return Stack(
+                  fit: StackFit.loose,
+                  children: <Widget>[
+                     TableCalendar(
+                      locale: "pt_BR",
+                      onDaySelected: (date, events) {
+                        setState(() {
+                          this._selectedDay = date;
+                          this._selectedDayDescriptions = events;
+                        });
+                      },
+                      events: this._events,
+                      calendarController: _controller,
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      calendarStyle: _buildCalendarStyle(),
+                      headerStyle: _buildHeaderStyle(),
+                      builders: CalendarBuilders(
+                          markersBuilder: (context, date, events, _) {
+                        return <Widget>[
+                          CalendarUtils.buildEventMarker(date, events)
+                        ];
+                      }),
                     ),
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        CalendarUtils.buildEventList(
-                            this._selectedDayDescriptions,
-                            this._selectedDay,
-                            this._agendaRepository,
-                            this.refresh,
-                            context),
-                      ),
+                    DraggableScrollableSheet(
+                      expand: true,
+                      initialChildSize: 0.4,
+                      minChildSize: 0.35,
+                      maxChildSize: 0.4,
+                      builder: (context, controller) {
+                        return ListView(
+                          controller: controller,
+                          children: CalendarUtils.buildEventList(
+                              this._selectedDayDescriptions,
+                              this._selectedDay,
+                              this._agendaRepository,
+                              this.refresh,
+                              context),
+                        );
+                      },
                     )
                   ],
                 );

@@ -33,7 +33,10 @@ class EventDescription extends StatelessWidget {
           this.eventText,
           strutStyle: StrutStyle(),
           style: TextStyle(
-              color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 15.0),
+              color: this.eventStatus == "confirmed" ? Colors.black : Colors.grey,
+              fontWeight: FontWeight.w500, 
+              fontSize: 15.0
+          ),
         ),
     );
   }
@@ -42,7 +45,10 @@ class EventDescription extends StatelessWidget {
     return Text(
       "${this.eventStart} - ${this.eventEnd}",
       style: TextStyle(
-          color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14.0),
+          color: this.eventStatus == "confirmed" ? Colors.black : Colors.grey,
+          fontWeight: FontWeight.w300, 
+          fontSize: 14.0
+      ),
     );
   }
 
@@ -52,7 +58,10 @@ class EventDescription extends StatelessWidget {
       child: Text(
         this.eventStatus,
         style: TextStyle(
-            color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 14.0),
+            color: this.eventStatus == "confirmed" ? Colors.black : Colors.grey,
+            fontWeight: FontWeight.w500, 
+            fontSize: 14.0
+        ),
       ),
     );
   }

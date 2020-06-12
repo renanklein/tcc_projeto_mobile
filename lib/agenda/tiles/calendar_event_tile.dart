@@ -53,53 +53,54 @@ class CalendarEventTile extends StatelessWidget {
 
   BoxDecoration _buildContainerDecoration() {
     return BoxDecoration(
-        color: Colors.black,
+        color:
+            this.event["status"] == "confirmed" ? Colors.green : Colors.black,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(15.0));
   }
 
-  List<Widget> _buildEventsButtons(BuildContext context){
-    if(this.event["status"] != "confirmed"){
+  List<Widget> _buildEventsButtons(BuildContext context) {
+    if (this.event["status"] != "confirmed") {
       return <Widget>[
-         LayoutUtils.buildHorizontalSpacing(30.0),
-              IconButton(
-                icon: Icon(
-                  Icons.check,
-                  color: Colors.grey,
-                ),
-                onPressed: (){
-                  showBottomSheet(
-                    context: context, 
-                    elevation: 1.0,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    builder: (context){
-                      return EventConfirmBottomSheet(
-                        event: this.event, 
-                        eventDay: this.selectedDay, 
-                        refreshAgenda: this.refreshAgenda);
-                  });
-                },
-              ),
-              LayoutUtils.buildHorizontalSpacing(3.0),
-              IconButton(
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  showBottomSheet(
-                      context: context,
-                      elevation: 1.0,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      builder: (context) {
-                        return EventExcludeBottomSheet(
-                          eventId: this.event["id"],
-                          eventDay: this.selectedDay,
-                          refreshAgenda: this.refreshAgenda,
-                        );
-                      });
-                },
-              )
+        LayoutUtils.buildHorizontalSpacing(30.0),
+        IconButton(
+          icon: Icon(
+            Icons.check,
+            color: Colors.grey,
+          ),
+          onPressed: () {
+            showBottomSheet(
+                context: context,
+                elevation: 1.0,
+                backgroundColor: Theme.of(context).primaryColor,
+                builder: (context) {
+                  return EventConfirmBottomSheet(
+                      event: this.event,
+                      eventDay: this.selectedDay,
+                      refreshAgenda: this.refreshAgenda);
+                });
+          },
+        ),
+        LayoutUtils.buildHorizontalSpacing(3.0),
+        IconButton(
+          icon: Icon(
+            Icons.close,
+            color: Colors.grey,
+          ),
+          onPressed: () {
+            showBottomSheet(
+                context: context,
+                elevation: 1.0,
+                backgroundColor: Theme.of(context).primaryColor,
+                builder: (context) {
+                  return EventExcludeBottomSheet(
+                    eventId: this.event["id"],
+                    eventDay: this.selectedDay,
+                    refreshAgenda: this.refreshAgenda,
+                  );
+                });
+          },
+        )
       ];
     }
     return <Widget>[Container()];

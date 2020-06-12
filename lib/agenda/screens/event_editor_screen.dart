@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -46,7 +47,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
     this._eventHourController = new TextEditingController();
-    this._eventHourController.text = this.event == null ? null : "${this.event["begin"]} - ${this.event["end"]}";
+    this._eventHourController.text = this.event == null
+        ? null
+        : "${this.event["begin"]} - ${this.event["end"]}";
     super.initState();
   }
 
@@ -100,14 +103,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                     child: ListView(
                       padding: EdgeInsets.all(16.0),
                       children: <Widget>[
-                        EventNameField(
-                            eventNameController: this._eventNameController),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        EventHourField(
-                          occupedHours: state.occupedTimes,
-                          hourController:  this._eventHourController,
-                        ),
-                        LayoutUtils.buildVerticalSpacing(20.0),
+                        ..._buildFields(state),
                         _buildCreateEventButton()
                       ],
                     ),
@@ -141,8 +137,25 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   bool _isLoadingState(AgendaState state) {
-    return state is EventProcessing ||
-        state is AgendaAvailableTimeLoading;
+    return state is EventProcessing || state is AgendaAvailableTimeLoading;
+  }
+
+  List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
+    var fieldsList = <Widget>[];
+
+    fieldsList.add(EventNameField(eventNameController: this._eventNameController));
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    fieldsList.add(EventDate(selectedDay: this.selectedDay));
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    fieldsList.add(
+      EventHourField(
+        occupedHours: state.occupedTimes,
+        hourController: this._eventHourController,
+      ),
+    );
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+
+    return fieldsList;
   }
 
   void _createOrEditEvent() {

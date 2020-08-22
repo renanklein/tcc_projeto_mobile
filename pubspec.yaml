@@ -33,6 +33,8 @@ dependencies:
   flutter_datetime_picker: ^1.3.5
   firebase_messaging: ^5.0.2
   firebase_core: ^0.4.0
+  image_cripto: ^1.1.0
+  path_provider: ^1.6.14
   
 
 dev_dependencies:

@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blueGrey),
         home: BlocBuilder(
-          bloc: this.authenticationBloc,
+          cubit: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
               return LoginScreen();
@@ -87,6 +87,9 @@ class _MyAppState extends State<MyApp> {
                 state is AuthenticationUninitialized) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
+            return Container(
+              child: LayoutUtils.buildCircularProgressIndicator(context),
+            );
           },
         ),
       ),

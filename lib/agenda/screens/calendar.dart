@@ -91,7 +91,7 @@ class _UserCalendarState extends State<UserCalendar> {
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              bloc: this._agendaBloc,
+              cubit: this._agendaBloc,
               builder: (context, state) {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
@@ -99,7 +99,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 return Stack(
                   fit: StackFit.loose,
                   children: <Widget>[
-                     TableCalendar(
+                    TableCalendar(
                       locale: "pt_BR",
                       onDaySelected: (date, events) {
                         setState(() {

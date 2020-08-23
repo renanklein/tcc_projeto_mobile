@@ -15,7 +15,7 @@ class AuthenticationBloc
   UserRepository userRepository;
   String token;
 
-  AuthenticationBloc({@required this.userRepository});
+  AuthenticationBloc({@required this.userRepository}) : super(null);
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();

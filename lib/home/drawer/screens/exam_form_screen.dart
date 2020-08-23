@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class ExamFormScreen extends StatefulWidget {
 class _ExamFormScreenState extends State<ExamFormScreen> {
   ExamBloc _examBloc;
   TextEditingController controller = TextEditingController();
-  File examFile;
+  dynamic examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: BlocListener<ExamBloc, ExamState>(
-          bloc: this._examBloc,
+          cubit: this._examBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
               onSuccess();
@@ -51,7 +51,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
             }
           },
           child: BlocBuilder<ExamBloc, ExamState>(
-              bloc: this._examBloc,
+              cubit: this._examBloc,
               builder: (context, state) {
                 if (state is ExamProcessing) {
                   return Center(
@@ -73,7 +73,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                       LayoutUtils.buildVerticalSpacing(20.0),
                       RaisedButton(
                         onPressed: () async {
-                          await _setExamFile();
+                          _setExamFile();
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32.0),
@@ -122,8 +122,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         ));
   }
 
-  Future _setExamFile() async {
-    this.examFile = await FilePicker.getFile(type: FileType.any);
+  void _setExamFile() async {
+    bool isPermissionGranted = await Permission.storage.request().isGranted;
+
+    if (isPermissionGranted) {
+      var moda = await FilePicker.getFile(type: FileType.any);
+      this.examFile = moda;
+    }
   }
 
   Widget _createSubmitButton() {

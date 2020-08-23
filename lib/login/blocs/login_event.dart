@@ -1,19 +1,24 @@
 part of 'login_bloc.dart';
 
-abstract class LoginEvent extends Equatable {
+abstract class LoginEvent extends Equatable {}
+
+class LoginButtonPressed extends LoginEvent {
+  final email;
+  final password;
+  final context;
+
+  LoginButtonPressed(
+      {@required this.email, @required this.password, @required this.context});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
 }
 
-class LoginButtonPressed extends LoginEvent{
-  String email;
-  String password;
-  BuildContext context;
-
-  LoginButtonPressed({@required this.email, @required this.password, @required this.context});
-}
-
-class LoginResetPasswordButtonPressed extends LoginEvent{
-  String email;
+class LoginResetPasswordButtonPressed extends LoginEvent {
+  final email;
 
   LoginResetPasswordButtonPressed({@required this.email});
-}
 
+  @override
+  List<Object> get props => throw UnimplementedError();
+}

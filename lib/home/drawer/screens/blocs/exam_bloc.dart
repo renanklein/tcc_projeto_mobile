@@ -15,13 +15,12 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
   final _encripKey = encryptLib.Key.fromSecureRandom(16);
   final examRepository;
 
-  ExamBloc({@required this.examRepository});
+  ExamBloc({@required this.examRepository}) : super(null);
 
   @override
   Stream<ExamState> mapEventToState(
     ExamEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is SaveExam) {
       try {
         yield ExamProcessing();

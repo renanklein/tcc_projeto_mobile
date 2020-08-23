@@ -64,14 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) async{
+          listener: (context, state) async {
             if (state is AuthenticationUnauthenticated) {
-              await Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
+              await Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginScreen()));
             }
           },
           child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            bloc: this.authenticationBloc,
+            cubit: this.authenticationBloc,
             builder: (context, state) {
               return Container(
                 color: Theme.of(context).primaryColor,

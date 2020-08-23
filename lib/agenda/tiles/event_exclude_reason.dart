@@ -65,7 +65,7 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              bloc: this.agendaBloc,
+              cubit: this.agendaBloc,
               builder: (context, state) {
                 if (state is EventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

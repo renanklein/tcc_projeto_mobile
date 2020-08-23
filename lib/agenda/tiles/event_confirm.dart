@@ -61,23 +61,22 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              bloc: this._agendaBloc,
+              cubit: this._agendaBloc,
               builder: (context, state) {
                 if (state is EventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
                 return Form(
-                  child: ListView(
+                    child: ListView(
                   children: <Widget>[
                     LayoutUtils.buildVerticalSpacing(28.0),
                     Center(
                       child: Text(
                         "Deseja confirmar esse evento ?",
                         style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey
-                        ),
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey),
                       ),
                     ),
                     Row(

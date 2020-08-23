@@ -39,7 +39,7 @@ class _UserDrawerState extends State<UserDrawer> {
     return Drawer(
         elevation: 16.0,
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            bloc: this.authenticationBloc,
+            cubit: this.authenticationBloc,
             builder: (context, state) {
               return FutureBuilder(
                 future: _setUserModel(),

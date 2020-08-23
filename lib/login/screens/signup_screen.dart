@@ -29,7 +29,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   UserRepository get userRepository => this.widget.userRepository;
 
-
   @override
   void initState() {
     this.authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
@@ -45,82 +44,81 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          title: Text("Criar Conta"),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: BlocListener<SignupBloc, SignupState>(
-              listener: (context, state) {
-                if (state is SignupSigned) {
-                  onSuccess();
-                  redirectToHomePage();
-                } else if (state is SignupFailed) {
-                  onFail();
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: Text("Criar Conta"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: BlocListener<SignupBloc, SignupState>(
+          listener: (context, state) {
+            if (state is SignupSigned) {
+              onSuccess();
+              redirectToHomePage();
+            } else if (state is SignupFailed) {
+              onFail();
+            }
+          },
+          child: BlocBuilder(
+              cubit: signupBloc,
+              builder: (context, state) {
+                if (state is SignupProcessing) {
+                  return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-              },
-              child: BlocBuilder(
-                  bloc: signupBloc,
-                  builder: (context, state) {
-                    if(state is SignupProcessing){
-                      return LayoutUtils.buildCircularProgressIndicator(context);
-                    }
-                    return Form(
-                      key: formKey,
-                      child: ListView(
-                        padding: EdgeInsets.all(16.0),
-                        children: <Widget>[
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginNameField(
-                            nameController: this._nameController,
-                          ),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginEmailField(
-                            emailController: this._emailController,
-                          ),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          LoginPasswordField(
-                              passController: this._passController),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          DropdownButtonFormField(
-                            items: _getDropdownMenuItems(),
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0)),
-                            ),
-                            onChanged: (_) {},
-                          ),
-                          LayoutUtils.buildVerticalSpacing(20.0),
-                          SizedBox(
-                              height: 44.0,
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                child: Text("Criar Conta",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0)),
-                                onPressed: () {
-                                  if (this.formKey.currentState.validate()) {
-                                    this.signupBloc.add(SignupButtonPressed(
-                                        name: this._nameController.text,
-                                        email: this._emailController.text,
-                                        password: this._passController.text,
-                                        context: context));
-                                  }
-                                },
-                              ))
-                        ],
+                return Form(
+                  key: formKey,
+                  child: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    children: <Widget>[
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginNameField(
+                        nameController: this._nameController,
                       ),
-                    );
-                  })),
-        );
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginEmailField(
+                        emailController: this._emailController,
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      LoginPasswordField(passController: this._passController),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      DropdownButtonFormField(
+                        items: _getDropdownMenuItems(),
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0)),
+                        ),
+                        onChanged: (_) {},
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      SizedBox(
+                          height: 44.0,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            color: Theme.of(context).primaryColor,
+                            textColor: Colors.white,
+                            child: Text("Criar Conta",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0)),
+                            onPressed: () {
+                              if (this.formKey.currentState.validate()) {
+                                this.signupBloc.add(SignupButtonPressed(
+                                    name: this._nameController.text,
+                                    email: this._emailController.text,
+                                    password: this._passController.text,
+                                    context: context));
+                              }
+                            },
+                          ))
+                    ],
+                  ),
+                );
+              })),
+    );
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {
@@ -154,6 +152,6 @@ class _SignupScreenState extends State<SignupScreen> {
     this.scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text("Falha ao criar o usuário"),
           backgroundColor: Colors.red,
-      ));
+        ));
   }
 }

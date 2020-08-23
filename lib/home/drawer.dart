@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
@@ -18,12 +19,13 @@ class _UserDrawerState extends State<UserDrawer> {
   AuthenticationBloc authenticationBloc;
 
   UserRepository get userRepository => this.widget.userRepository;
-  
+
   UserModel userModel;
 
   @override
   void initState() {
-    this.authenticationBloc = Injector.appInstance.getDependency<AuthenticationBloc>();
+    this.authenticationBloc =
+        Injector.appInstance.getDependency<AuthenticationBloc>();
     super.initState();
   }
 
@@ -43,7 +45,7 @@ class _UserDrawerState extends State<UserDrawer> {
                 future: _setUserModel(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                   return LayoutUtils.buildCircularProgressIndicator(context);
+                    return LayoutUtils.buildCircularProgressIndicator(context);
                   } else {
                     return ListView(
                       children: <Widget>[
@@ -55,7 +57,7 @@ class _UserDrawerState extends State<UserDrawer> {
                         DrawerTile(
                             icon: Icons.event_note,
                             text: "Exames",
-                            onTapCallback: null),
+                            onTapCallback: _navigateToExameScreen),
                         DrawerTile(
                             icon: Icons.assignment,
                             text: "Anamnese",
@@ -100,7 +102,7 @@ class _UserDrawerState extends State<UserDrawer> {
                 _buildUserName(model),
               ],
             ),
-             _buildSignoutButton(authenticationBloc)
+            _buildSignoutButton(authenticationBloc)
           ],
         ),
       ),
@@ -139,9 +141,14 @@ class _UserDrawerState extends State<UserDrawer> {
       ),
       onPressed: () async {
         this.authenticationBloc.add(LoggedOut());
-        await Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => LoginScreen()));
+        await Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginScreen()));
       },
     );
+  }
+
+  void _navigateToExameScreen() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ExamScreen()));
   }
 }

@@ -13,6 +13,9 @@ part 'exam_state.dart';
 
 class ExamBloc extends Bloc<ExamEvent, ExamState> {
   final _encripKey = encryptLib.Key.fromSecureRandom(16);
+  final examRepository;
+
+  ExamBloc({@required this.examRepository});
 
   @override
   Stream<ExamState> mapEventToState(
@@ -39,5 +42,5 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
 
   @override
   // TODO: implement initialState
-  ExamState get initialState => throw UnimplementedError();
+  ExamState get initialState => ExamInitial();
 }

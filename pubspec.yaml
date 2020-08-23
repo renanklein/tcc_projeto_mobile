@@ -35,6 +35,7 @@ dependencies:
   firebase_core: ^0.4.0
   image_cripto: ^1.1.0
   path_provider: ^1.6.14
+  file_picker: ^1.13.3
   
 
 dev_dependencies:

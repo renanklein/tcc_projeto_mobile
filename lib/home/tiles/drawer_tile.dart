@@ -30,7 +30,9 @@ class DrawerTile extends StatelessWidget {
           )
         ],
       ),
-      onTap: () {},
+      onTap: () {
+        this.onTapCallback();
+      },
     );
   }
 }

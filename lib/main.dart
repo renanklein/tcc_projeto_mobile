@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
@@ -54,15 +56,20 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(
-            userRepository: Injector.appInstance.getDependency<UserRepository>(),
-            authenticationBloc: this.authenticationBloc
-          ),
+              userRepository:
+                  Injector.appInstance.getDependency<UserRepository>(),
+              authenticationBloc: this.authenticationBloc),
         ),
         BlocProvider<SignupBloc>(
           create: (context) => SignupBloc(
-            userRepository: Injector.appInstance.getDependency<UserRepository>(),
-            authenticationBloc: this.authenticationBloc
-          ),
+              userRepository:
+                  Injector.appInstance.getDependency<UserRepository>(),
+              authenticationBloc: this.authenticationBloc),
+        ),
+        BlocProvider<ExamBloc>(
+          create: (context) => ExamBloc(
+              examRepository:
+                  Injector.appInstance.getDependency<ExamRepository>()),
         )
       ],
       child: MaterialApp(
@@ -90,14 +97,15 @@ class _MyAppState extends State<MyApp> {
     Injector injector = Injector.appInstance;
 
     injector.registerSingleton<UserRepository>((_) => UserRepository());
-    
+
+    injector.registerSingleton<ExamRepository>((_) => ExamRepository());
+
     injector.registerSingleton((_) => AgendaRepository());
 
     injector.registerSingleton((_) => FirebaseMessaging());
 
     injector.registerSingleton((_) => AuthenticationBloc(
-      userRepository: injector.getDependency<UserRepository>()
-    ));
+        userRepository: injector.getDependency<UserRepository>()));
   }
 
   void configureNotificationsType(BuildContext context) async {

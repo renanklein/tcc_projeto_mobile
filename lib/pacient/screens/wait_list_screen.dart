@@ -33,7 +33,7 @@ class _WaitListState extends State<WaitList> {
           }
         },
         child: BlocBuilder(
-          bloc: this._authenticationBloc,
+          cubit: this._authenticationBloc,
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(

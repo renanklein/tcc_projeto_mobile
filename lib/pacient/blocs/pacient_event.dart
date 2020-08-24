@@ -3,14 +3,14 @@ part of 'pacient_bloc.dart';
 abstract class PacientEvent extends Equatable {}
 
 class PacientCreateButtonPressed extends PacientEvent {
-  String userId;
-  String nome;
-  String email;
-  String telefone;
-  String identidade;
-  String cpf;
-  String dtNascimento;
-  String sexo;
+  final userId;
+  final nome;
+  final email;
+  final telefone;
+  final identidade;
+  final cpf;
+  final dtNascimento;
+  final sexo;
 
   PacientCreateButtonPressed({
     @required this.userId,
@@ -22,18 +22,24 @@ class PacientCreateButtonPressed extends PacientEvent {
     @required this.dtNascimento,
     @required this.sexo,
   });
+
+  @override
+  List<Object> get props => throw UnimplementedError();
 }
 
-class PacientLoad extends PacientEvent {}
+class PacientLoad extends PacientEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
 
 class PacientEditButtonPressed extends PacientEvent {
-  String nome;
-  String email;
-  String telefone;
-  String identidade;
-  String cpf;
-  String dtNascimento;
-  String sexo;
+  final nome;
+  final email;
+  final telefone;
+  final identidade;
+  final cpf;
+  final dtNascimento;
+  final sexo;
 
   PacientEditButtonPressed({
     @required this.nome,
@@ -44,12 +50,18 @@ class PacientEditButtonPressed extends PacientEvent {
     @required this.dtNascimento,
     @required this.sexo,
   });
+
+  @override
+  List<Object> get props => throw UnimplementedError();
 }
 
 class PacientDeleteButtonPressed extends PacientEvent {
-  String pacientId;
+  final pacientId;
 
   PacientDeleteButtonPressed({
     @required this.pacientId,
   });
+
+  @override
+  List<Object> get props => throw UnimplementedError();
 }

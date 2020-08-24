@@ -13,9 +13,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   UserRepository userRepository;
   AuthenticationBloc authenticationBloc;
 
-  SignupBloc(
-      {@required this.userRepository,
-      @required this.authenticationBloc});
+  SignupBloc({@required this.userRepository, @required this.authenticationBloc})
+      : super(null);
 
   @override
   SignupState get initialState => SignupInitial();
@@ -28,18 +27,19 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       try {
         yield SignupProcessing();
 
-        final signupResult = await this.userRepository.signUp(email: event.email, pass: event.password);
+        final signupResult = await this
+            .userRepository
+            .signUp(email: event.email, pass: event.password);
         await this.userRepository.sendUserData(
-          name: event.name, 
-          email: event.email, 
-          uid: signupResult.user.uid
-        );
-        final token = await signupResult.user.getIdToken(); 
-        
-        this.authenticationBloc.add(LoggedIn(token: token, context: event.context));
+            name: event.name, email: event.email, uid: signupResult.user.uid);
+
+        final token = await signupResult.user.getIdToken();
+
+        this
+            .authenticationBloc
+            .add(LoggedIn(token: token, context: event.context));
 
         yield SignupSigned();
-
       } catch (error) {
         yield SignupFailed();
       }

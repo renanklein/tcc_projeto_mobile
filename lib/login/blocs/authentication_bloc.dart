@@ -7,15 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 
-
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   UserRepository userRepository;
   String token;
 
-  AuthenticationBloc({@required this.userRepository});
+  AuthenticationBloc({@required this.userRepository}) : super(null);
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();
@@ -24,37 +24,31 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-    if(event is AppStarted){
+    if (event is AppStarted) {
       final user = await this.userRepository.getUser();
-       if(user == null){
-         yield AuthenticationUnauthenticated();
-       } else{
-         await this.userRepository.setupFcmNotification(user);
-         yield AuthenticationAuthenticated();
-       }
-    }
-
-    else if(event is LoggedIn){
+      if (user == null) {
+        yield AuthenticationUnauthenticated();
+      } else {
+        await this.userRepository.setupFcmNotification(user);
+        yield AuthenticationAuthenticated();
+      }
+    } else if (event is LoggedIn) {
       yield AuthenticationProcessing();
-      
+
       final token = event.token;
 
-      if(token == null || token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0){
-          yield AuthenticationUnauthenticated();
+      if (token == null ||
+          token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0) {
+        yield AuthenticationUnauthenticated();
+      } else {
+        final user = await this.userRepository.getUser();
+        await this.userRepository.setupFcmNotification(user);
+        yield AuthenticationAuthenticated();
       }
-
-      final user = await this.userRepository.getUser();
-      await this.userRepository.setupFcmNotification(user);
-
-      yield AuthenticationAuthenticated();
-    }
-
-    else if(event is LoggedOut) {
-       yield AuthenticationProcessing();
-       await this.userRepository.logOut();
-       yield AuthenticationUnauthenticated();
+    } else if (event is LoggedOut) {
+      yield AuthenticationProcessing();
+      await this.userRepository.logOut();
+      yield AuthenticationUnauthenticated();
     }
   }
-
- 
 }

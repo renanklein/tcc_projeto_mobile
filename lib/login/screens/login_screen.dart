@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           },
           child: BlocBuilder<LoginBloc, LoginState>(
-              bloc: this.loginBloc,
+              cubit: this.loginBloc,
               builder: (context, state) {
                 if (state is LoginProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

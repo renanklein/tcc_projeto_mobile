@@ -31,36 +31,25 @@ class CalendarUtils {
     );
   }
 
-  static Widget buildEventList(List _selectedDayDescriptions,
-      DateTime _selectedDay, AgendaRepository agendaRepository,
-      Function refreshAgenda) {
+  static List<Widget> buildEventList(
+      List _selectedDayDescriptions,
+      DateTime _selectedDay,
+      AgendaRepository agendaRepository,
+      Function refreshAgenda,
+      BuildContext context) {
     if (_selectedDayDescriptions == null) {
-      return Column();
+      return <Widget>[];
     }
     List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Column(
-          children: dayEvents.map((event) {
-        var eventId = event["id"];
-        var beginHourSplited = event["begin"].split(":");
-        var endHourSplited = event["end"].split(":");
-        var description = event["description"];
 
-        return ListTile(
-          title: CalendarEventTile(
-            eventId: eventId,
-            eventText: description,
-            selectedDay: _selectedDay,
-            eventHourStart: TimeOfDay(
-                hour: int.parse(beginHourSplited[0]), minute: int.parse(beginHourSplited[1])),
-            eventHourEnd:
-                TimeOfDay(hour: int.parse(endHourSplited[0]), minute: int.parse(endHourSplited[1])),
-            agendaRepository: agendaRepository,
-            refreshAgenda: refreshAgenda,
-          ),
-        );
-      }).toList()),
-    );
+    return dayEvents.map((event) {
+      return ListTile(
+        title: CalendarEventTile(
+          event: event,
+          selectedDay: _selectedDay,
+          refreshAgenda: refreshAgenda,
+        ),
+      );
+    }).toList();
   }
 }

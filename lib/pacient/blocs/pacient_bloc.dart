@@ -12,7 +12,7 @@ part 'pacient_state.dart';
 class PacientBloc extends Bloc<PacientEvent, PacientState> {
   PacientRepository pacientRepository;
 
-  PacientBloc({@required this.pacientRepository});
+  PacientBloc({@required this.pacientRepository}) : super(null);
 
   @override
   PacientState get initialState => PacientInicialState();

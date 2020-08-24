@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
@@ -65,24 +68,32 @@ class _MyAppState extends State<MyApp> {
               userRepository:
                   Injector.appInstance.getDependency<UserRepository>(),
               authenticationBloc: this.authenticationBloc),
+        ),
+        BlocProvider<ExamBloc>(
+          create: (context) => ExamBloc(
+              examRepository:
+                  Injector.appInstance.getDependency<ExamRepository>()),
         )
       ],
       child: MaterialApp(
         title: "Projeto tcc",
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blueGrey),
-        //onGenerateRoute: RouteGenerator.generateRoute,
+        onGenerateRoute: RouteGenerator.generateRoute,
         home: BlocBuilder(
-          bloc: this.authenticationBloc,
+          cubit: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
               return LoginScreen();
             } else if (state is AuthenticationAuthenticated) {
-              return HomeScreen();
+              return Dashboard();
             } else if (state is AuthenticationProcessing ||
                 state is AuthenticationUninitialized) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
+            return Container(
+              child: LayoutUtils.buildCircularProgressIndicator(context),
+            );
           },
         ),
       ),
@@ -92,23 +103,15 @@ class _MyAppState extends State<MyApp> {
   void registerDependencies() {
     Injector injector = Injector.appInstance;
 
-    injector.registerSingleton<UserRepository>(
-      (_) => UserRepository(),
-    );
-    injector.registerSingleton<PacientRepository>(
-      (_) => PacientRepository(),
-    );
-    injector.registerSingleton<RouteGenerator>(
-      (_) => RouteGenerator(),
-    );
+    injector.registerSingleton<UserRepository>((_) => UserRepository());
 
-    injector.registerSingleton(
-      (_) => AgendaRepository(),
-    );
+    injector.registerSingleton<PacientRepository>((_) => PacientRepository());
 
-    injector.registerSingleton(
-      (_) => FirebaseMessaging(),
-    );
+    injector.registerSingleton<ExamRepository>((_) => ExamRepository());
+
+    injector.registerSingleton((_) => AgendaRepository());
+
+    injector.registerSingleton((_) => FirebaseMessaging());
 
     injector.registerSingleton((_) => AuthenticationBloc(
         userRepository: injector.getDependency<UserRepository>()));

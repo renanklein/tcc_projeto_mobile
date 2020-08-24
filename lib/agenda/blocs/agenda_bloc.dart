@@ -9,10 +9,9 @@ part 'agenda_event.dart';
 part 'agenda_state.dart';
 
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
-
   AgendaRepository agendaRepository;
 
-  AgendaBloc({@required this.agendaRepository});
+  AgendaBloc({@required this.agendaRepository}) : super(null);
 
   @override
   AgendaState get initialState => AgendaInitial();
@@ -21,65 +20,87 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   Stream<AgendaState> mapEventToState(
     AgendaEvent event,
   ) async* {
-    if(event is AgendaCreateButtonPressed){
-     try{
-      yield AgendaEventProcessing();
+    if (event is AgendaCreateButtonPressed) {
+      try {
+        yield EventProcessing();
 
-      var eventHourRange = new List<TimeOfDay>();
-      eventHourRange.add(event.eventStart);
-      eventHourRange.add(event.eventEnd);
+        var eventHourRange = new List<String>();
+        eventHourRange.add(event.eventStart);
+        eventHourRange.add(event.eventEnd);
 
-      await this.agendaRepository.addEvent(event.eventName, event.eventDay, eventHourRange);
+        await this
+            .agendaRepository
+            .addEvent(event.eventName, event.eventDay, eventHourRange);
 
-      yield AgendaEventCreateSuccess();
-     }
-     catch(error){
-       yield AgendaEventCreateFail();
-     }
-    }
-
-    else if(event is AgendaLoad){
-      try{
+        yield EventProcessingSuccess();
+      } catch (error) {
+        yield EventProcessingFail();
+      }
+    } else if (event is AgendaLoad) {
+      try {
         yield AgendaLoading();
 
         var events = await this.agendaRepository.getEvents();
 
         yield AgendaLoadSuccess(events);
-      }catch(error){
+      } catch (error) {
         yield AgendaLoadFail();
       }
-    }
-
-    else if (event is AgendaEditButtonPressed){
-      try{
-        yield AgendaEventProcessing();
+    } else if (event is AgendaEditButtonPressed) {
+      try {
+        yield EventProcessing();
 
         var updatedEvent = {
-          "id" : event.eventId,
-          "begin" : ConvertUtils.fromTimeOfDay(event.eventStart),
-          "end" : ConvertUtils.fromTimeOfDay(event.eventEnd),
-          "description" : event.eventName
+          "id": event.eventId,
+          "begin": event.eventStart,
+          "end": event.eventEnd,
+          "description": event.eventName
         };
 
-        await this.agendaRepository.updateEvent(event.eventDay, event.eventId, updatedEvent);
+        await this
+            .agendaRepository
+            .updateEvent(event.eventDay, updatedEvent, event.eventStatus);
 
-        yield AgendaEventEditSuccess();
-        
-      }catch(error){
-        yield AgendaEventEditFail();
+        yield EventProcessingSuccess();
+      } catch (error) {
+        yield EventProcessingFail();
       }
-    }
+    } else if (event is AgendaDeleteButtonPressed) {
+      try {
+        yield EventProcessing();
 
-    else if(event is AgendaDeleteButtonPressed){
-     try{
-        yield AgendaEventProcessing();
+        await this
+            .agendaRepository
+            .removeEvent(event.eventDay, event.eventId, event.reason);
 
-        await this.agendaRepository.removeEvent(event.eventDay, event.eventId, event.reason);
+        yield EventProcessingSuccess();
+      } catch (error) {
+        yield EventProcessingFail();
+      }
+    } else if (event is AgendaEventAvailableTimeLoad) {
+      try {
+        yield AgendaAvailableTimeLoading();
 
-        yield AgendaEventDeleteSuccess();
-     }catch(error){
-       yield AgendaEventDeleteFail();
-     }
+        var day = ConvertUtils.dayFromDateTime(event.day);
+
+        var occupedHours = await agendaRepository.getOccupedDayTimes(day);
+
+        yield AgendaAvailableTimeSuccess(occupedHours);
+      } catch (error) {
+        yield AgendaAvailableTimeFail();
+      }
+    } else if (event is AgendaEventConfirmButtomPressed) {
+      try {
+        yield EventProcessing();
+
+        this
+            .agendaRepository
+            .updateEvent(event.eventDay, event.event, "confirmed");
+
+        yield EventProcessingSuccess();
+      } catch (error) {
+        yield EventProcessingFail();
+      }
     }
   }
 }

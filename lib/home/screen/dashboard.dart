@@ -7,7 +7,6 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 
-
 class Dashboard extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
@@ -44,7 +43,7 @@ class _DashboardState extends State<Dashboard> {
           }
         },
         child: BlocBuilder(
-          bloc: this._authenticationBloc,
+          cubit: this._authenticationBloc,
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(

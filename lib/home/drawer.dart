@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/home/drawer/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -38,7 +40,7 @@ class _UserDrawerState extends State<UserDrawer> {
     return Drawer(
         elevation: 16.0,
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            bloc: this.authenticationBloc,
+            cubit: this.authenticationBloc,
             builder: (context, state) {
               return FutureBuilder(
                 future: _setUserModel(),
@@ -50,15 +52,14 @@ class _UserDrawerState extends State<UserDrawer> {
                       children: <Widget>[
                         _createDrawerHeader(this.userModel, context),
                         DrawerTile(
-                            icon: Icons.person,
-                            text: "Pacientes",
-                            onTapCallback: null
-                            //Navigator.pushNamed(context, '/pacients'),
-                            ),
+                          icon: Icons.person,
+                          text: "Pacientes",
+                          onTapCallback: _navigateToPacientScreen,
+                        ),
                         DrawerTile(
                             icon: Icons.event_note,
                             text: "Exames",
-                            onTapCallback: null),
+                            onTapCallback: _navigateToExameScreen),
                         DrawerTile(
                             icon: Icons.assignment,
                             text: "Anamnese",
@@ -145,6 +146,21 @@ class _UserDrawerState extends State<UserDrawer> {
         await Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => LoginScreen()));
       },
+    );
+  }
+
+  void _navigateToExameScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ExamScreen(),
+      ),
+    );
+  }
+
+  void _navigateToPacientScreen() {
+    Navigator.of(context).pushNamed(
+      '/pacients',
+      arguments: 'Dashboard',
     );
   }
 }

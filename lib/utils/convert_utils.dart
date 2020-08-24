@@ -20,10 +20,11 @@ class ConvertUtils {
     List<String> eventsParsed = new List<String>();
 
     events.forEach((event) {
-       eventsParsed.add(
+       if(event["status"] != "canceled"){
+         eventsParsed.add(
           "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
+       }
     });
-
     return eventsParsed;
   }
 
@@ -35,7 +36,7 @@ class ConvertUtils {
 
     events.forEach((eventString) {
       var eventsData = eventString.split(";");
-      if (eventsData[4] == "created") {
+      if (eventsData[4] != "canceled") {
         eventsParsed.add({
           "id": eventsData[0],
           "description": eventsData[1],
@@ -55,5 +56,18 @@ class ConvertUtils {
 
     return DateTime(int.parse(splitedDocumentId[0]),
         int.parse(splitedDocumentId[1]), int.parse(splitedDocumentId[2]));
+  }
+
+  static List<String> getOccupedHours(List events){
+    var occupedHours = new List<String>();
+
+    events.forEach((event){
+      if(event["status"] != "canceled"){
+        var occupedHour = "${event["begin"]} - ${event["end"]}";
+        occupedHours.add(occupedHour);
+      }
+    });
+
+    return occupedHours;
   }
 }

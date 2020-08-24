@@ -12,7 +12,7 @@ class RouteGenerator {
 
   GlobalKey<NavigatorState> get navigationKey => _navigationKey;
 
-  bool pop() {
+  void pop() {
     return _navigationKey.currentState.pop();
   }
 

@@ -1,6 +1,8 @@
-import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/home/drawer/screens/blocs/exam_bloc.dart';
@@ -15,7 +17,7 @@ class ExamFormScreen extends StatefulWidget {
 class _ExamFormScreenState extends State<ExamFormScreen> {
   ExamBloc _examBloc;
   TextEditingController controller = TextEditingController();
-  dynamic examFile;
+  File _examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
@@ -44,8 +46,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
               onSuccess();
-              Future.delayed(Duration(seconds: 1));
-              Navigator.of(context).pop();
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             }
@@ -126,8 +126,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     bool isPermissionGranted = await Permission.storage.request().isGranted;
 
     if (isPermissionGranted) {
-      var moda = await FilePicker.getFile(type: FileType.any);
-      this.examFile = moda;
+      this._examFile = await FilePicker.getFile();
     }
   }
 
@@ -144,8 +143,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
-          if (this.examFile != null) {
-            this._examBloc.add(SaveExam(exam: this.examFile));
+          if (this._examFile != null) {
+            this._examBloc.add(SaveExam(
+                exam: this._examFile, pacientName: this.controller.text));
           } else {
             onFail("Por favor escolha seu exame");
           }

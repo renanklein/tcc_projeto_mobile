@@ -9,9 +9,21 @@ class ExamInitial extends ExamState {}
 
 class ExamProcessing extends ExamState {}
 
+class GetExamsSuccess extends ExamState {
+  final exams;
+
+  GetExamsSuccess({@required this.exams});
+}
+
 class ExamProcessingSuccess extends ExamState {
   File encriptedFile;
   ExamProcessingSuccess({@required this.encriptedFile});
+}
+
+class DecriptExamSuccess extends ExamState {
+  final decriptedBytes;
+
+  DecriptExamSuccess({@required this.decriptedBytes});
 }
 
 class ExamProcessingFail extends ExamState {}

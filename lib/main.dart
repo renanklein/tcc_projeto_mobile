@@ -13,6 +13,7 @@ import 'package:tcc_projeto_app/login/blocs/login_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/signup_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -59,20 +60,23 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(
-              userRepository:
-                  Injector.appInstance.getDependency<UserRepository>(),
-              authenticationBloc: this.authenticationBloc),
+            userRepository:
+                Injector.appInstance.getDependency<UserRepository>(),
+            authenticationBloc: this.authenticationBloc,
+          ),
         ),
         BlocProvider<SignupBloc>(
           create: (context) => SignupBloc(
-              userRepository:
-                  Injector.appInstance.getDependency<UserRepository>(),
-              authenticationBloc: this.authenticationBloc),
+            userRepository:
+                Injector.appInstance.getDependency<UserRepository>(),
+            authenticationBloc: this.authenticationBloc,
+          ),
         ),
         BlocProvider<ExamBloc>(
           create: (context) => ExamBloc(
-              examRepository:
-                  Injector.appInstance.getDependency<ExamRepository>()),
+            examRepository:
+                Injector.appInstance.getDependency<ExamRepository>(),
+          ),
         )
       ],
       child: MaterialApp(
@@ -107,6 +111,9 @@ class _MyAppState extends State<MyApp> {
 
     injector.registerSingleton<PacientRepository>((_) => PacientRepository());
 
+    injector
+        .registerSingleton<MedRecordRepository>((_) => MedRecordRepository());
+
     injector.registerSingleton<ExamRepository>((_) => ExamRepository());
 
     injector.registerSingleton((_) => AgendaRepository());
@@ -114,7 +121,8 @@ class _MyAppState extends State<MyApp> {
     injector.registerSingleton((_) => FirebaseMessaging());
 
     injector.registerSingleton((_) => AuthenticationBloc(
-        userRepository: injector.getDependency<UserRepository>()));
+          userRepository: injector.getDependency<UserRepository>(),
+        ));
   }
 
   void configureNotificationsType(BuildContext context) async {

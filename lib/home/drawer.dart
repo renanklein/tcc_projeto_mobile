@@ -57,22 +57,26 @@ class _UserDrawerState extends State<UserDrawer> {
                           onTapCallback: _navigateToPacientScreen,
                         ),
                         DrawerTile(
-                            icon: Icons.event_note,
-                            text: "Exames",
-                            onTapCallback: _navigateToExameScreen),
+                          icon: Icons.event_note,
+                          text: "Exames",
+                          onTapCallback: _navigateToExameScreen,
+                        ),
                         DrawerTile(
-                            icon: Icons.assignment,
-                            text: "Anamnese",
-                            onTapCallback: null),
+                          icon: Icons.assignment,
+                          text: "Prontuario",
+                          onTapCallback: _navigateToMedRecordScreen,
+                        ),
                         DrawerTile(
-                            icon: Icons.info,
-                            text: "Relatorios",
-                            onTapCallback: null),
+                          icon: Icons.info,
+                          text: "Relatorios",
+                          onTapCallback: null,
+                        ),
                         Divider(),
                         DrawerTile(
-                            icon: Icons.bug_report,
-                            text: "Relatar Erros",
-                            onTapCallback: null),
+                          icon: Icons.bug_report,
+                          text: "Relatar Erros",
+                          onTapCallback: null,
+                        ),
                       ],
                     );
                   }
@@ -84,8 +88,10 @@ class _UserDrawerState extends State<UserDrawer> {
   Future<void> _setUserModel() async {
     final user = await this.userRepository.getUser();
     final userData = await this.userRepository.getUserData(user.uid);
-    this.userModel =
-        UserModel(email: userData.data["email"], name: userData.data["name"]);
+    this.userModel = UserModel(
+      email: userData.data["email"],
+      name: userData.data["name"],
+    );
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
@@ -160,7 +166,14 @@ class _UserDrawerState extends State<UserDrawer> {
   void _navigateToPacientScreen() {
     Navigator.of(context).pushNamed(
       '/pacients',
-      arguments: 'Dashboard',
+      arguments: 'drawer',
+    );
+  }
+
+  void _navigateToMedRecordScreen() {
+    Navigator.of(context).pushNamed(
+      '/medRecord',
+      arguments: 'drawer',
     );
   }
 }

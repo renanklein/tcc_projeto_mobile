@@ -69,7 +69,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      body: BlocProvider(
+      body: BlocProvider<PacientBloc>(
         create: (context) => this._pacientBloc,
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {

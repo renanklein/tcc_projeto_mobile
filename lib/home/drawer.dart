@@ -91,6 +91,7 @@ class _UserDrawerState extends State<UserDrawer> {
     this.userModel = UserModel(
       email: userData.data["email"],
       name: userData.data["name"],
+      uid: user.uid,
     );
   }
 

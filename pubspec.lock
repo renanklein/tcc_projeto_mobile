@@ -112,7 +112,7 @@ packages:
       name: datetime_picker_formfield
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "1.0.0"
   encrypt:
     dependency: transitive
     description:
@@ -295,7 +295,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.8"
+    version: "0.16.1"
   js:
     dependency: transitive
     description:
@@ -511,6 +511,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  vertical_tabs:
+    dependency: "direct main"
+    description:
+      name: vertical_tabs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   xdg_directories:
     dependency: transitive
     description:

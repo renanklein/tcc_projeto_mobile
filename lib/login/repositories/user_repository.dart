@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
 
 class UserRepository {
   final firebaseAuth = FirebaseAuth.instance;
@@ -70,5 +71,18 @@ class UserRepository {
         .collection("users")
         .document(user.uid)
         .setData({"notificationToken": fcmToken}, merge: true);
+  }
+
+  Future<UserModel> getUserModel() async {
+    final user = await this.getUser();
+    if (user == null) {
+      return null;
+    }
+    final userData = await this.getUserData(user.uid);
+    return UserModel(
+      email: userData.data["email"],
+      name: userData.data["name"],
+      uid: user.uid,
+    );
   }
 }

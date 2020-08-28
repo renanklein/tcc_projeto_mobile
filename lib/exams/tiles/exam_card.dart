@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 
 class ExamCard extends StatelessWidget {
   final title;

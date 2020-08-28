@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:encrypt/encrypt.dart' as encryptLib;
 import 'package:path_provider/path_provider.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 part 'exam_event.dart';
 part 'exam_state.dart';

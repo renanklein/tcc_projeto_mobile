@@ -4,10 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/blocs/exam_bloc.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/exam_form_screen.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/tiles/exam_card.dart';
+import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
+import 'package:tcc_projeto_app/exams/exam_form_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {

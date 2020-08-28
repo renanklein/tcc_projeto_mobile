@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/exam_screen.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
@@ -89,9 +89,9 @@ class _UserDrawerState extends State<UserDrawer> {
     final user = await this.userRepository.getUser();
     final userData = await this.userRepository.getUserData(user.uid);
     this.userModel = UserModel(
-      email: userData.data["email"],
-      name: userData.data["name"],
-    );
+        email: userData.data["email"],
+        name: userData.data["name"],
+        uid: user.uid);
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {

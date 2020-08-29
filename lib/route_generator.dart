@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
+import 'package:tcc_projeto_app/exams/exam_form_screen.dart';
 import 'package:tcc_projeto_app/exams/exam_screen.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
@@ -34,7 +35,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case '/exam':
-        return MaterialPageRoute(builder: (_) => ExamScreen());
+        return MaterialPageRoute(builder: (_) => ExamFormScreen());
         break;
       case '/pacients':
         return MaterialPageRoute(builder: (_) => ListPacientScreen());

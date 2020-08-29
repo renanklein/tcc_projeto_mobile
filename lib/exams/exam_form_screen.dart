@@ -6,6 +6,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
+import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -16,7 +19,16 @@ class ExamFormScreen extends StatefulWidget {
 
 class _ExamFormScreenState extends State<ExamFormScreen> {
   ExamBloc _examBloc;
-  TextEditingController controller = TextEditingController();
+  TextEditingController pacientNameController = TextEditingController();
+  TextEditingController examDateController = TextEditingController();
+  TextEditingController requestingDoctorController = TextEditingController();
+  TextEditingController examTypeController = TextEditingController();
+  TextEditingController examinationUnitController = TextEditingController();
+  TextEditingController examResponsableController = TextEditingController();
+  TextEditingController examDescriptionController = TextEditingController();
+  TextEditingController diagnosticHypothesisController =
+      TextEditingController();
+  TextEditingController otherPacientInformation = TextEditingController();
   File _examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
@@ -67,8 +79,48 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                     children: [
                       LayoutUtils.buildVerticalSpacing(20.0),
                       Field(
-                        textController: controller,
+                        textController: pacientNameController,
                         fieldPlaceholder: "Nome do paciente",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      DateTimeFormField(
+                        fieldPlaceholder: "Data de Realização",
+                        dateTimeController: examDateController,
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: examTypeController,
+                        fieldPlaceholder: "Tipo de exame",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: examinationUnitController,
+                        fieldPlaceholder: "Unidade de Realização do Exame",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: requestingDoctorController,
+                        fieldPlaceholder: "Médico Solicitante",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: examResponsableController,
+                        fieldPlaceholder: "Responsável pelo Exame",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: examDescriptionController,
+                        fieldPlaceholder: "Descrição do exame",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: diagnosticHypothesisController,
+                        fieldPlaceholder: "Hipótese Diagnóstica",
+                      ),
+                      LayoutUtils.buildVerticalSpacing(20.0),
+                      Field(
+                        textController: otherPacientInformation,
+                        fieldPlaceholder: "Outras Informações do paciente",
                       ),
                       LayoutUtils.buildVerticalSpacing(20.0),
                       RaisedButton(
@@ -144,8 +196,24 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         ),
         onPressed: () {
           if (this._examFile != null) {
+            var cardExamInfo = CardExamInfo(
+                examDate: this.examDateController.text,
+                examType: this.examTypeController.text);
+
+            var examDetails = ExamDetails(
+                requestingDoctor: this.requestingDoctorController.text,
+                examDate: this.examDateController.text,
+                pacientName: this.pacientNameController.text,
+                diagnosticHypothesis: this.diagnosticHypothesisController.text,
+                examDescription: this.examDescriptionController.text,
+                examResponsable: this.examResponsableController.text,
+                otherPacientInformation: this.otherPacientInformation.text,
+                examinationUnit: this.examinationUnitController.text);
+
             this._examBloc.add(SaveExam(
-                exam: this._examFile, pacientName: this.controller.text));
+                examDetails: examDetails,
+                examFile: _examFile,
+                cardExamInfo: cardExamInfo));
           } else {
             onFail("Por favor escolha seu exame");
           }

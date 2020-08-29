@@ -6,20 +6,25 @@ abstract class ExamEvent extends Equatable {
 }
 
 class SaveExam extends ExamEvent {
-  final exam;
-  final pacientName;
+  final cardExamInfo;
+  final examDetails;
+  final examFile;
 
-  SaveExam({@required this.exam, @required this.pacientName});
+  SaveExam(
+      {@required this.cardExamInfo,
+      @required this.examDetails,
+      @required this.examFile});
 
-  File get getExam => this.exam;
-  String get getPacientName => this.pacientName;
+  CardExamInfo get getCardExamInfo => this.cardExamInfo;
+  ExamDetails get getExamDetails => this.examDetails;
+  File get getExamFile => this.examFile;
 }
 
 // TODO: Alterar evento se necessário
 class GetExams extends ExamEvent {}
 
 class DecriptExam extends ExamEvent {
-  final fileName;
+  final filePath;
 
-  DecriptExam({@required this.fileName});
+  DecriptExam({@required this.filePath});
 }

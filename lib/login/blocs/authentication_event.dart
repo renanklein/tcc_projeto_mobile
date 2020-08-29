@@ -8,7 +8,7 @@ class AppStarted extends AuthenticationEvent {
   AppStarted({@required this.context});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoggedIn extends AuthenticationEvent {
@@ -18,10 +18,10 @@ class LoggedIn extends AuthenticationEvent {
   LoggedIn({@required this.token, @required this.context});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoggedOut extends AuthenticationEvent {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

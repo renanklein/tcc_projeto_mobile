@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 
 class ExamCard extends StatelessWidget {
-  final title;
-  final textBody;
-  final fileName;
+  final cardExamInfo;
+  final filePath;
   final examBloc;
 
   ExamCard(
-      {@required this.title,
-      @required this.textBody,
-      @required this.fileName,
+      {@required this.cardExamInfo,
+      @required this.filePath,
       @required this.examBloc});
 
-  String get getTitle => this.title;
-  String get getTextBody => this.textBody;
-  String get getFilePath => this.fileName;
+  CardExamInfo get getCardExamInfo => this.cardExamInfo;
+  String get getFilePath => this.filePath;
   ExamBloc get getExamBloc => this.examBloc;
 
   @override
@@ -33,22 +31,14 @@ class ExamCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text(
-                title,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-              Text(
-                textBody,
+                getCardExamInfo.examType,
                 style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.w300,
                     color: Colors.grey),
               ),
               Text(
-                "Nome de arquivo criptografado : $fileName",
+                getCardExamInfo.examDate,
                 style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.w300,
@@ -61,6 +51,7 @@ class ExamCard extends StatelessWidget {
   }
 
   Widget _buildDecriptFileButton(BuildContext context) {
+    /// TODO : IMPLEMENTAR TELA DE DETALHES DO EXAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return SizedBox(
       height: 30.0,
       child: RaisedButton(
@@ -73,7 +64,7 @@ class ExamCard extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
-          this.examBloc.add(DecriptExam(fileName: fileName));
+          this.examBloc.add(DecriptExam(filePath: filePath));
         },
       ),
     );

@@ -15,5 +15,5 @@ class SignupButtonPressed extends SignupEvent {
       @required this.context});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

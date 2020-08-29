@@ -10,9 +10,18 @@ class ExamInitial extends ExamState {}
 class ExamProcessing extends ExamState {}
 
 class GetExamsSuccess extends ExamState {
-  final exams;
+  final cardExamInfo;
+  final examDetails;
+  final filePath;
 
-  GetExamsSuccess({@required this.exams});
+  GetExamsSuccess(
+      {@required this.cardExamInfo,
+      @required this.examDetails,
+      @required this.filePath});
+
+  CardExamInfo get getCardExamInfo => this.cardExamInfo;
+  ExamDetails get getExamDetails => this.examDetails;
+  String get getFilePath => this.filePath;
 }
 
 class ExamProcessingSuccess extends ExamState {

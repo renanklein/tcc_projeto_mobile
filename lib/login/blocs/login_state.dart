@@ -9,20 +9,20 @@ class LoginInitial extends LoginState {
 
 class LoginSucceded extends LoginState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoginProcessing extends LoginState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoginFailure extends LoginState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoginPasswordReset extends LoginState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

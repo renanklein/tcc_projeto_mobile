@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 
 class ExamCard extends StatelessWidget {
   final cardExamInfo;
+  final examDetails;
   final filePath;
   final examBloc;
 
   ExamCard(
       {@required this.cardExamInfo,
+      @required this.examDetails,
       @required this.filePath,
       @required this.examBloc});
 
@@ -51,7 +54,6 @@ class ExamCard extends StatelessWidget {
   }
 
   Widget _buildDecriptFileButton(BuildContext context) {
-    /// TODO : IMPLEMENTAR TELA DE DETALHES DO EXAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return SizedBox(
       height: 30.0,
       child: RaisedButton(
@@ -63,8 +65,13 @@ class ExamCard extends StatelessWidget {
           "Exibir Exame",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        onPressed: () {
-          this.examBloc.add(DecriptExam(filePath: filePath));
+        onPressed: () async {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ExamDetailsScreen(
+                    examDetails: this.examDetails,
+                    examBloc: this.examBloc,
+                    filePath: this.filePath,
+                  )));
         },
       ),
     );

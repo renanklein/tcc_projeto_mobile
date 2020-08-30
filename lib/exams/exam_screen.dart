@@ -84,18 +84,11 @@ class _ExamScreenState extends State<ExamScreen> {
     if (_existsExamInfo()) {
       return <Widget>[
         ExamCard(
-          examBloc: examBloc,
+          examBloc: this.examBloc,
           filePath: this.filePath,
-          cardExamInfo: cardExamInfo,
+          cardExamInfo: this.cardExamInfo,
+          examDetails: this.examDetails,
         ),
-        LayoutUtils.buildHorizontalSpacing(10.0),
-        this.isDecripted
-            ? Container(
-                child: _showDecriptedImage(),
-                height: 150,
-                width: 150,
-              )
-            : Container()
       ];
     }
     return <Widget>[
@@ -111,13 +104,6 @@ class _ExamScreenState extends State<ExamScreen> {
         ),
       )
     ];
-  }
-
-  Widget _showDecriptedImage() {
-    String dir = this.filePath;
-    final file = File(dir);
-    file.writeAsBytesSync(this.decriptedBytes);
-    return Image.file(file);
   }
 
   bool _existsExamInfo() {

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
@@ -18,7 +19,7 @@ class ExamFormScreen extends StatefulWidget {
 }
 
 class _ExamFormScreenState extends State<ExamFormScreen> {
-  ExamBloc _examBloc;
+  MedRecordBloc _examBloc;
   TextEditingController pacientNameController = TextEditingController();
   TextEditingController examDateController = TextEditingController();
   TextEditingController requestingDoctorController = TextEditingController();
@@ -33,7 +34,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    this._examBloc = BlocProvider.of<ExamBloc>(context);
+    this._examBloc = BlocProvider.of<MedRecordBloc>(context);
     super.initState();
   }
 
@@ -53,16 +54,18 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           elevation: 0.0,
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: BlocListener<ExamBloc, ExamState>(
+        body: BlocListener<MedRecordBloc, MedRecordState>(
           cubit: this._examBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
-              onSuccess();
+              Future.delayed(Duration(seconds: 2));
+              Navigator.of(context).pop();
+              refresh();
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             }
           },
-          child: BlocBuilder<ExamBloc, ExamState>(
+          child: BlocBuilder<MedRecordBloc, MedRecordState>(
               cubit: this._examBloc,
               builder: (context, state) {
                 if (state is ExamProcessing) {
@@ -220,5 +223,11 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         },
       ),
     );
+  }
+
+  void refresh() {
+    setState(() {
+      this._examBloc.add(GetExams());
+    });
   }
 }

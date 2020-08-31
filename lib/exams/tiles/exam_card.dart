@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 
 class ExamCard extends StatelessWidget {
   final cardExamInfo;
@@ -17,7 +17,7 @@ class ExamCard extends StatelessWidget {
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   String get getFilePath => this.filePath;
-  ExamBloc get getExamBloc => this.examBloc;
+  MedRecordBloc get getExamBloc => this.examBloc;
 
   @override
   Widget build(BuildContext context) {

@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tcc_projeto_app/exams/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
-import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
-import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 
@@ -28,8 +27,10 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
   void initState() {
     var injector = Injector.appInstance;
     this._medRecordRepository = injector.getDependency<MedRecordRepository>();
-    this._medRecordBloc =
-        new MedRecordBloc(medRecordRepository: this._medRecordRepository);
+    var examRepository = injector.getDependency<ExamRepository>();
+    this._medRecordBloc = new MedRecordBloc(
+        medRecordRepository: this._medRecordRepository,
+        examRepository: examRepository);
 
     super.initState();
   }

@@ -1,13 +1,12 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {
@@ -17,7 +16,7 @@ class ExamScreen extends StatefulWidget {
 
 class _ExamScreenState extends State<ExamScreen> {
   bool isDecripted = false;
-  ExamBloc examBloc;
+  MedRecordBloc examBloc;
   CardExamInfo cardExamInfo;
   ExamDetails examDetails;
   String filePath;
@@ -25,8 +24,8 @@ class _ExamScreenState extends State<ExamScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    this.examBloc = BlocProvider.of<ExamBloc>(context);
-    this.examBloc.add(GetExams());
+    this.examBloc = BlocProvider.of<MedRecordBloc>(context);
+    _loadExamCards();
     super.initState();
   }
 
@@ -38,7 +37,7 @@ class _ExamScreenState extends State<ExamScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ExamBloc, ExamState>(
+    return BlocListener<MedRecordBloc, MedRecordState>(
       cubit: examBloc,
       listener: (context, state) {
         if (state is ExamProcessingFail) {
@@ -52,7 +51,7 @@ class _ExamScreenState extends State<ExamScreen> {
           this.decriptedBytes = state.decriptedBytes;
         }
       },
-      child: BlocBuilder<ExamBloc, ExamState>(
+      child: BlocBuilder<MedRecordBloc, MedRecordState>(
         cubit: examBloc,
         builder: (context, state) {
           if (state is ExamProcessing) {
@@ -108,5 +107,9 @@ class _ExamScreenState extends State<ExamScreen> {
 
   bool _existsExamInfo() {
     return this.cardExamInfo != null && this.examDetails != null;
+  }
+
+  void _loadExamCards() {
+    this.examBloc.add(GetExams());
   }
 }

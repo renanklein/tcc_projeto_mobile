@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
@@ -11,10 +9,11 @@ class ExamDetailsScreen extends StatefulWidget {
   final examBloc;
   final filePath;
 
-  ExamDetailsScreen(
-      {@required this.examDetails,
-      @required this.examBloc,
-      @required this.filePath});
+  ExamDetailsScreen({
+    @required this.examDetails,
+    @required this.examBloc,
+    @required this.filePath,
+  });
 
   @override
   _ExamDetailsScreenState createState() => _ExamDetailsScreenState();
@@ -22,7 +21,7 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
-  ExamBloc get examBloc => this.widget.examBloc;
+  MedRecordBloc get examBloc => this.widget.examBloc;
   String get filePath => this.widget.filePath;
   bool isDecripted = false;
   Image examImage;
@@ -46,7 +45,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
           title: Text("Detalhes do Exame"),
           centerTitle: true,
         ),
-        body: BlocListener<ExamBloc, ExamState>(
+        body: BlocListener<MedRecordBloc, MedRecordState>(
           cubit: this.examBloc,
           listener: (context, state) {
             if (state is DecriptExamSuccess) {
@@ -56,7 +55,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
               onFail("Erro ao exibir detalhes do exame");
             }
           },
-          child: BlocBuilder<ExamBloc, ExamState>(
+          child: BlocBuilder<MedRecordBloc, MedRecordState>(
             cubit: this.examBloc,
             builder: (context, state) {
               if (state is ExamProcessing) {

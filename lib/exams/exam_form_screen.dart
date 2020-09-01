@@ -19,7 +19,7 @@ class ExamFormScreen extends StatefulWidget {
 }
 
 class _ExamFormScreenState extends State<ExamFormScreen> {
-  MedRecordBloc _examBloc;
+  MedRecordBloc _medRecordBloc;
   TextEditingController pacientNameController = TextEditingController();
   TextEditingController examDateController = TextEditingController();
   TextEditingController requestingDoctorController = TextEditingController();
@@ -34,13 +34,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    this._examBloc = BlocProvider.of<MedRecordBloc>(context);
+    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     super.initState();
   }
 
   @override
   void dispose() {
-    this._examBloc.close();
+    this._medRecordBloc.close();
     super.dispose();
   }
 
@@ -55,18 +55,17 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: BlocListener<MedRecordBloc, MedRecordState>(
-          cubit: this._examBloc,
+          cubit: this._medRecordBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
               Future.delayed(Duration(seconds: 2));
               Navigator.of(context).pop();
-              refresh();
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
-              cubit: this._examBloc,
+              cubit: this._medRecordBloc,
               builder: (context, state) {
                 if (state is ExamProcessing) {
                   return Center(
@@ -213,7 +212,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 otherPacientInformation: this.otherPacientInformation.text,
                 examinationUnit: this.examinationUnitController.text);
 
-            this._examBloc.add(SaveExam(
+            this._medRecordBloc.add(SaveExam(
                 examDetails: examDetails,
                 examFile: _examFile,
                 cardExamInfo: cardExamInfo));
@@ -223,11 +222,5 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         },
       ),
     );
-  }
-
-  void refresh() {
-    setState(() {
-      this._examBloc.add(GetExams());
-    });
   }
 }

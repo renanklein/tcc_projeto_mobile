@@ -6,12 +6,12 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
-  final examBloc;
+  final medRecordBloc;
   final filePath;
 
   ExamDetailsScreen({
     @required this.examDetails,
-    @required this.examBloc,
+    @required this.medRecordBloc,
     @required this.filePath,
   });
 
@@ -21,20 +21,20 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
-  MedRecordBloc get examBloc => this.widget.examBloc;
+  MedRecordBloc get medRecordBloc => this.widget.medRecordBloc;
   String get filePath => this.widget.filePath;
   bool isDecripted = false;
   Image examImage;
 
   @override
   void initState() {
-    this.examBloc.add(DecriptExam(filePath: this.filePath));
+    this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
     super.initState();
   }
 
   @override
   void dispose() {
-    this.examBloc.close();
+    this.medRecordBloc.close();
     super.dispose();
   }
 
@@ -46,7 +46,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
           centerTitle: true,
         ),
         body: BlocListener<MedRecordBloc, MedRecordState>(
-          cubit: this.examBloc,
+          cubit: this.medRecordBloc,
           listener: (context, state) {
             if (state is DecriptExamSuccess) {
               this.examImage = Image.memory(state.decriptedBytes);
@@ -56,7 +56,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
-            cubit: this.examBloc,
+            cubit: this.medRecordBloc,
             builder: (context, state) {
               if (state is ExamProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);

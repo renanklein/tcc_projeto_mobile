@@ -16,7 +16,7 @@ class ExamScreen extends StatefulWidget {
 
 class _ExamScreenState extends State<ExamScreen> {
   bool isDecripted = false;
-  MedRecordBloc examBloc;
+  MedRecordBloc medRecordBloc;
   CardExamInfo cardExamInfo;
   ExamDetails examDetails;
   String filePath;
@@ -24,24 +24,23 @@ class _ExamScreenState extends State<ExamScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    this.examBloc = BlocProvider.of<MedRecordBloc>(context);
+    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     _loadExamCards();
     super.initState();
   }
 
   @override
   void dispose() {
-    this.examBloc.close();
+    this.medRecordBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<MedRecordBloc, MedRecordState>(
-      cubit: examBloc,
+      cubit: medRecordBloc,
       listener: (context, state) {
         if (state is ExamProcessingFail) {
-          onFail("Ocorreu um erro");
         } else if (state is GetExamsSuccess) {
           this.cardExamInfo = state.cardExamInfo;
           this.examDetails = state.examDetails;
@@ -52,7 +51,7 @@ class _ExamScreenState extends State<ExamScreen> {
         }
       },
       child: BlocBuilder<MedRecordBloc, MedRecordState>(
-        cubit: examBloc,
+        cubit: medRecordBloc,
         builder: (context, state) {
           if (state is ExamProcessing) {
             return LayoutUtils.buildCircularProgressIndicator(context);
@@ -83,7 +82,7 @@ class _ExamScreenState extends State<ExamScreen> {
     if (_existsExamInfo()) {
       return <Widget>[
         ExamCard(
-          examBloc: this.examBloc,
+          medRecordBloc: this.medRecordBloc,
           filePath: this.filePath,
           cardExamInfo: this.cardExamInfo,
           examDetails: this.examDetails,
@@ -110,6 +109,6 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void _loadExamCards() {
-    this.examBloc.add(GetExams());
+    this.medRecordBloc.add(GetExams());
   }
 }

@@ -73,13 +73,27 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
         create: (context) => this._pacientBloc,
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {
-            if (state is AuthenticationUnauthenticated) {}
+            if (state is AuthenticationUnauthenticated) {
+              Navigator.pushNamed(context, '/');
+            } else if (state is CreatePacientEventSuccess) {
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  "Paciente criado com sucesso",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+              );
+              Navigator.popAndPushNamed(context, '/pacients');
+            }
           },
-          child: BlocBuilder<PacientBloc, PacientState>(
-            builder: (context, state) {
-              if (state is CreatePacientEventProcessing) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              }
+          child:
+              BlocBuilder<PacientBloc, PacientState>(builder: (context, state) {
+            if (state is CreatePacientEventProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            } else {
               return SafeArea(
                 child: Form(
                   key: _createPacientKey,
@@ -179,8 +193,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                   ),
                 ),
               );
-            },
-          ),
+            }
+          }),
         ),
       ),
     );

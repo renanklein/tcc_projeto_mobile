@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
@@ -157,25 +158,30 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
 Widget _showMedRecord(index, context) {
   switch (index) {
     case 2:
-      return RaisedButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(
-            '/exam',
-            arguments: 'medRecord',
-          );
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        color: Theme.of(context).primaryColor,
-        child: Text(
-          "Clique aqui para inserir um exame",
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+      return Column(
+        children: <Widget>[
+          Expanded(child: ExamScreen()),
+          RaisedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                '/exam',
+                arguments: 'medRecord',
+              );
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            color: Theme.of(context).primaryColor,
+            child: Text(
+              "Clique aqui para inserir um exame",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
+        ],
       );
       break;
 

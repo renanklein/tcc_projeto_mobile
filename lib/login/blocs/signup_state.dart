@@ -9,20 +9,20 @@ class SignupInitial extends SignupState {
 
 class SignupUnsigned extends SignupState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class SignupProcessing extends SignupState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class SignupSigned extends SignupState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class SignupFailed extends SignupState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

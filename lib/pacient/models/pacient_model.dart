@@ -64,4 +64,5 @@ class PacientModel {
   String get nome => this._nome;
   String get userUid => this._userId;
   //set userUid(String uid) => this._userId = uid;
+
 }

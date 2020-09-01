@@ -15,12 +15,12 @@ class AgendaCreateButtonPressed extends AgendaEvent {
       @required this.eventEnd});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AgendaLoad extends AgendaEvent {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AgendaEditButtonPressed extends AgendaEvent {
@@ -40,7 +40,7 @@ class AgendaEditButtonPressed extends AgendaEvent {
       @required this.eventStatus});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AgendaDeleteButtonPressed extends AgendaEvent {
@@ -52,7 +52,7 @@ class AgendaDeleteButtonPressed extends AgendaEvent {
       {@required this.eventId, @required this.eventDay, @required this.reason});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AgendaEventAvailableTimeLoad extends AgendaEvent {
@@ -61,7 +61,7 @@ class AgendaEventAvailableTimeLoad extends AgendaEvent {
   AgendaEventAvailableTimeLoad({@required this.day});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AgendaEventConfirmButtomPressed extends AgendaEvent {
@@ -72,5 +72,5 @@ class AgendaEventConfirmButtomPressed extends AgendaEvent {
       {@required this.event, @required this.eventDay});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

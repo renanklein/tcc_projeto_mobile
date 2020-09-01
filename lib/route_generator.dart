@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
-import 'package:tcc_projeto_app/home/drawer/screens/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
+import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
@@ -19,7 +22,10 @@ class RouteGenerator {
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    String uid;
     final args = settings.arguments;
+    final userRepo = Injector.appInstance.getDependency<UserRepository>();
+    userRepo.getUser().then((user) => uid = user.uid);
 
     switch (settings.name) {
       case '/':
@@ -29,13 +35,16 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case '/exam':
-        return MaterialPageRoute(builder: (_) => ExamScreen());
+        return MaterialPageRoute(builder: (_) => ExamFormScreen());
         break;
       case '/pacients':
         return MaterialPageRoute(builder: (_) => ListPacientScreen());
         break;
       case '/calendar':
-        return MaterialPageRoute(builder: (_) => UserCalendar());
+        return MaterialPageRoute(
+            builder: (_) => UserCalendar(
+                  uid: uid,
+                ));
         break;
       case '/createPacient':
         return MaterialPageRoute(builder: (_) => CreatePacientScreen());

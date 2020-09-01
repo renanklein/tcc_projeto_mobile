@@ -11,7 +11,7 @@ class LoginButtonPressed extends LoginEvent {
       {@required this.email, @required this.password, @required this.context});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoginResetPasswordButtonPressed extends LoginEvent {
@@ -20,5 +20,5 @@ class LoginResetPasswordButtonPressed extends LoginEvent {
   LoginResetPasswordButtonPressed({@required this.email});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

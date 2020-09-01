@@ -9,20 +9,20 @@ class AuthenticationUninitialized extends AuthenticationState {
 
 class AuthenticationFailed extends AuthenticationState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AuthenticationUnauthenticated extends AuthenticationState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AuthenticationProcessing extends AuthenticationState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AuthenticationAuthenticated extends AuthenticationState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

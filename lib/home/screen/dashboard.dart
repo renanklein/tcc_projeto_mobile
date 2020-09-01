@@ -96,7 +96,7 @@ class _DashboardState extends State<Dashboard> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              '/calendar',
+                              '/home',
                               arguments: 'Dashboard',
                             );
                           },

@@ -53,76 +53,78 @@ class _DashboardState extends State<Dashboard> {
                 elevation: 0.0,
               ),
               drawer: UserDrawer(),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/createPacient',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.library_add,
-                            'Cadastrar Paciente',
-                            0xFF1A237E,
+              body: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                '/createPacient',
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _DashboardItem(
+                              Icons.library_add,
+                              'Cadastrar Paciente',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/pacients',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                              Icons.archive, 'Listar Pacientes', 0xFF1A237E),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                '/pacients',
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _DashboardItem(
+                                Icons.archive, 'Listar Pacientes', 0xFF1A237E),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/home',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.event,
-                            'Eventos',
-                            0xFF1A237E,
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                '/home',
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _DashboardItem(
+                              Icons.event,
+                              'Eventos',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/waitList',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.library_add,
-                            'Banco de Encaixe',
-                            0xFF1A237E,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                '/waitList',
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _DashboardItem(
+                              Icons.library_add,
+                              'Banco de Encaixe',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

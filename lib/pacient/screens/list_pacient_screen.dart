@@ -14,6 +14,7 @@ class ListPacientScreen extends StatefulWidget {
 class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
+  List<PacientModel> _pacientsList;
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -69,6 +70,8 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           listener: (context, state) {
             if (state is CreatePacientEventSuccess) {
               _pacientBloc.add(PacientLoad());
+            } else if (state is PacientLoadEventSuccess) {
+              _pacientsList = state.pacientsLoaded;
             } else if (state is PacientLoadEventFail) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
@@ -99,13 +102,11 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                             PacientSearchBar(_searchBarController,
                                 'Digite um nome aqui para pesquisar'),
                             Expanded(
-                              child: _pacientRepository.pacientsList != null
+                              child: _pacientsList != null
                                   ? ListView.builder(
-                                      itemCount: _pacientRepository
-                                          .pacientsList.length,
+                                      itemCount: _pacientsList.length,
                                       itemBuilder: (context, index) => _ListPacientView(
-                                          _pacientRepository
-                                              .pacientsList[index].nome,
+                                          _pacientsList[index].nome,
                                           'teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste',
                                           'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
                                     )

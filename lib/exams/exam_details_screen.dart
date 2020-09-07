@@ -88,6 +88,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -95,6 +96,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -102,6 +104,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -109,6 +112,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -152,6 +156,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       return <Widget>[
         TextField(
             readOnly: true,
+            minLines: 1,
             maxLines: 5,
             keyboardType: TextInputType.multiline,
             decoration: _buildFieldDecoration(
@@ -159,11 +164,13 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         LayoutUtils.buildVerticalSpacing(20.0),
         TextField(
             readOnly: true,
+            minLines: 1,
             decoration: _buildFieldDecoration(
                 "Data do exam: ${this.examDetails.getExamDate}")),
         LayoutUtils.buildVerticalSpacing(20.0),
         TextField(
             readOnly: true,
+            minLines: 1,
             maxLines: 5,
             keyboardType: TextInputType.multiline,
             decoration: _buildFieldDecoration(
@@ -171,6 +178,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         LayoutUtils.buildVerticalSpacing(20.0),
         TextField(
             readOnly: true,
+            minLines: 1,
             maxLines: 5,
             keyboardType: TextInputType.multiline,
             decoration: _buildFieldDecoration(

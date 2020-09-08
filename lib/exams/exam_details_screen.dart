@@ -6,12 +6,10 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
-  final medRecordBloc;
   final filePath;
 
   ExamDetailsScreen({
     @required this.examDetails,
-    @required this.medRecordBloc,
     @required this.filePath,
   });
 
@@ -21,7 +19,7 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
-  MedRecordBloc get medRecordBloc => this.widget.medRecordBloc;
+  MedRecordBloc medRecordBloc;
   String get filePath => this.widget.filePath;
   bool hidePressed = false;
   String hideButtonTitle;
@@ -30,14 +28,14 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
 
   @override
   void initState() {
-    this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
     this.hideButtonTitle = this.hidePressed ? "Hide" : "Show";
+    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
+    this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
     super.initState();
   }
 
   @override
   void dispose() {
-    this.medRecordBloc.close();
     super.dispose();
   }
 

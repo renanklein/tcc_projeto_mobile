@@ -7,7 +7,8 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
-import 'package:tcc_projeto_app/route_generator.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -157,10 +158,9 @@ class _UserDrawerState extends State<UserDrawer> {
   }
 
   void _navigateToExameScreen() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ExamScreen(),
-      ),
+    Navigator.of(context).pushNamed(
+      '/medRecord',
+      arguments: 'examScreen',
     );
   }
 

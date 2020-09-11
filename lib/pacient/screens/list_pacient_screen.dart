@@ -69,6 +69,16 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {
             if (state is CreatePacientEventSuccess) {
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  "Paciente criado com sucesso",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+              );
               _pacientBloc.add(PacientLoad());
             } else if (state is PacientLoadEventSuccess) {
               _pacientsList = state.pacientsLoaded;
@@ -107,7 +117,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                       itemCount: _pacientsList.length,
                                       itemBuilder: (context, index) => _ListPacientView(
                                           _pacientsList[index].nome,
-                                          'teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste',
+                                          'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
                                           'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
                                     )
                                   : Center(
@@ -140,7 +150,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed(
-                  '/pacientDetail',
+                  '/medRecord',
                   arguments: 'Dashboard',
                 );
               },

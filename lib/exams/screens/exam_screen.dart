@@ -1,13 +1,12 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {
@@ -17,7 +16,7 @@ class ExamScreen extends StatefulWidget {
 
 class _ExamScreenState extends State<ExamScreen> {
   bool isDecripted = false;
-  ExamBloc examBloc;
+  MedRecordBloc medRecordBloc;
   CardExamInfo cardExamInfo;
   ExamDetails examDetails;
   String filePath;
@@ -25,24 +24,23 @@ class _ExamScreenState extends State<ExamScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    this.examBloc = BlocProvider.of<ExamBloc>(context);
-    this.examBloc.add(GetExams());
+    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
+    _loadExamCards();
     super.initState();
   }
 
   @override
   void dispose() {
-    this.examBloc.close();
+    this.medRecordBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ExamBloc, ExamState>(
-      cubit: examBloc,
+    return BlocListener<MedRecordBloc, MedRecordState>(
+      cubit: medRecordBloc,
       listener: (context, state) {
         if (state is ExamProcessingFail) {
-          onFail("Ocorreu um erro");
         } else if (state is GetExamsSuccess) {
           this.cardExamInfo = state.cardExamInfo;
           this.examDetails = state.examDetails;
@@ -52,8 +50,8 @@ class _ExamScreenState extends State<ExamScreen> {
           this.decriptedBytes = state.decriptedBytes;
         }
       },
-      child: BlocBuilder<ExamBloc, ExamState>(
-        cubit: examBloc,
+      child: BlocBuilder<MedRecordBloc, MedRecordState>(
+        cubit: medRecordBloc,
         builder: (context, state) {
           if (state is ExamProcessing) {
             return LayoutUtils.buildCircularProgressIndicator(context);
@@ -84,7 +82,7 @@ class _ExamScreenState extends State<ExamScreen> {
     if (_existsExamInfo()) {
       return <Widget>[
         ExamCard(
-          examBloc: this.examBloc,
+          medRecordBloc: this.medRecordBloc,
           filePath: this.filePath,
           cardExamInfo: this.cardExamInfo,
           examDetails: this.examDetails,
@@ -108,5 +106,9 @@ class _ExamScreenState extends State<ExamScreen> {
 
   bool _existsExamInfo() {
     return this.cardExamInfo != null && this.examDetails != null;
+  }
+
+  void _loadExamCards() {
+    this.medRecordBloc.add(GetExams());
   }
 }

@@ -76,17 +76,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
             if (state is AuthenticationUnauthenticated) {
               Navigator.pushNamed(context, '/');
             } else if (state is CreatePacientEventSuccess) {
-              SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                  "Paciente criado com sucesso",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                ),
-              );
-              Navigator.popAndPushNamed(context, '/pacients');
+              Navigator.pop(context);
             }
           },
           child:
@@ -161,11 +151,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   ),
                                   onPressed: () async {
                                     if (_createPacientKey.currentState
-                                            .validate()
-                                        //&& _createPacientModel.busy != null
-                                        ) {
-                                      //var user = await this._createPacientModel.currentUser;
-
+                                        .validate()) {
                                       await _setUserModel();
 
                                       _pacientBloc.add(

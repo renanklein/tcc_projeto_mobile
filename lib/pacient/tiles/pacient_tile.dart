@@ -31,8 +31,7 @@ class PacientTile extends StatelessWidget {
               ),
               decoration:
                   BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
-              child: Image.network(
-                  imgPath),
+              child: Image.network(imgPath),
             ),
           ),
           Container(
@@ -43,7 +42,7 @@ class PacientTile extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.fade,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 25.0,
@@ -55,7 +54,7 @@ class PacientTile extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     textBody,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.fade,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15.0,

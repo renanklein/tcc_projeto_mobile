@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
-import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
-import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 
 class ListMedRecordScreen extends StatefulWidget {
+  final String index;
+
+  ListMedRecordScreen({@required this.index});
+
   @override
   _ListMedRecordScreenState createState() => _ListMedRecordScreenState();
 }
@@ -22,14 +25,26 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
   MedRecordRepository _medRecordRepository;
   UserModel _userModel;
 
+  String get index => this.widget.index;
+
+  int _selectedIndex;
+
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
   void initState() {
     var injector = Injector.appInstance;
     this._medRecordRepository = injector.getDependency<MedRecordRepository>();
-    this._medRecordBloc =
-        new MedRecordBloc(medRecordRepository: this._medRecordRepository);
+    var examRepository = injector.getDependency<ExamRepository>();
+    this._medRecordBloc = new MedRecordBloc(
+        medRecordRepository: this._medRecordRepository,
+        examRepository: examRepository);
+
+    if (index != null) {
+      _selectedIndex = _parseIndex(index);
+    } else {
+      _selectedIndex = 0;
+    }
 
     super.initState();
   }
@@ -43,8 +58,6 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
   Future<void> _setUserModel() async {
     this._userModel = await this.userRepository.getUserModel();
   }
-
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -153,40 +166,55 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
       ),
     );
   }
-}
 
-Widget _showMedRecord(index, context) {
-  switch (index) {
-    case 2:
-      return Column(
-        children: <Widget>[
-          Expanded(child: ExamScreen()),
-          RaisedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/exam',
-                arguments: 'medRecord',
-              );
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
-            ),
-            color: Theme.of(context).primaryColor,
-            child: Text(
-              "Clique aqui para inserir um exame",
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+  Widget _showMedRecord(index, context) {
+    switch (index) {
+      case 2:
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Flexible(child: ExamScreen()),
+            RaisedButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(
+                      '/exam',
+                      arguments: 'medRecord',
+                    )
+                    .then((value) => {this._medRecordBloc.add(GetExams())});
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+              color: Theme.of(context).primaryColor,
+              child: Text(
+                "Clique aqui para inserir um exame",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-        ],
-      );
-      break;
+          ],
+        );
+        break;
 
-    default:
-      return Text('selectedIndex: $index');
-      break;
+      default:
+        return Text('selectedIndex: $index');
+        break;
+    }
+  }
+
+  _parseIndex(index) {
+    switch (index) {
+      case 'examScreen':
+        return 2;
+        break;
+      default:
+        return 0;
+        break;
+    }
   }
 }

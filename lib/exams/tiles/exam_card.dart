@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 
 class ExamCard extends StatelessWidget {
   final cardExamInfo;
   final examDetails;
   final filePath;
-  final examBloc;
+  final medRecordBloc;
 
   ExamCard(
       {@required this.cardExamInfo,
       @required this.examDetails,
       @required this.filePath,
-      @required this.examBloc});
+      @required this.medRecordBloc});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   String get getFilePath => this.filePath;
-  ExamBloc get getExamBloc => this.examBloc;
+  MedRecordBloc get get_medRecordBloc => this.medRecordBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class ExamCard extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
                     examDetails: this.examDetails,
-                    examBloc: this.examBloc,
+                    medRecordBloc: this.medRecordBloc,
                     filePath: this.filePath,
                   )));
         },

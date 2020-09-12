@@ -81,10 +81,19 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var examInfoList = await this.examRepository.getExam();
 
+        List examCards = [];
+        List examDetails = [];
+        List examFilePaths = [];
+
+        for (int i = 0; i < examInfoList.length; i += 3) {
+          examCards.add(examInfoList[i]);
+          examDetails.add(examInfoList[i + 1]);
+          examFilePaths.add(examInfoList[i + 2]);
+        }
         yield GetExamsSuccess(
-            cardExamInfo: examInfoList.first,
-            examDetails: examInfoList[1],
-            filePath: examInfoList.last);
+            cardExamInfos: examCards,
+            examDetailsList: examDetails,
+            filePaths: examFilePaths);
       } catch (error) {
         yield ExamProcessingFail();
       }

@@ -17,22 +17,17 @@ class ExamScreen extends StatefulWidget {
 class _ExamScreenState extends State<ExamScreen> {
   bool isDecripted = false;
   MedRecordBloc medRecordBloc;
-  CardExamInfo cardExamInfo;
-  ExamDetails examDetails;
-  String filePath;
+  List cardExamInfos;
+  List examDetailsList;
+  List filePaths;
   Uint8List decriptedBytes = Uint8List(0);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     _loadExamCards();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    this.medRecordBloc.close();
-    super.dispose();
   }
 
   @override
@@ -42,9 +37,9 @@ class _ExamScreenState extends State<ExamScreen> {
       listener: (context, state) {
         if (state is ExamProcessingFail) {
         } else if (state is GetExamsSuccess) {
-          this.cardExamInfo = state.cardExamInfo;
-          this.examDetails = state.examDetails;
-          this.filePath = state.filePath;
+          this.cardExamInfos = state.cardExamInfos;
+          this.examDetailsList = state.examDetailsList;
+          this.filePaths = state.filePaths;
         } else if (state is DecriptExamSuccess) {
           this.isDecripted = true;
           this.decriptedBytes = state.decriptedBytes;
@@ -80,14 +75,19 @@ class _ExamScreenState extends State<ExamScreen> {
 
   List<Widget> _buildScreenBody() {
     if (_existsExamInfo()) {
-      return <Widget>[
-        ExamCard(
-          medRecordBloc: this.medRecordBloc,
-          filePath: this.filePath,
-          cardExamInfo: this.cardExamInfo,
-          examDetails: this.examDetails,
-        ),
-      ];
+      List<Widget> examCards = [];
+      for (int i = 0; i < this.cardExamInfos.length; i++) {
+        examCards.add(
+          ExamCard(
+            medRecordBloc: this.medRecordBloc,
+            filePath: this.filePaths[i],
+            cardExamInfo: this.cardExamInfos[i],
+            examDetails: this.examDetailsList[i],
+          ),
+        );
+        examCards.add(LayoutUtils.buildVerticalSpacing(15.0));
+      }
+      return examCards;
     }
     return <Widget>[
       Container(
@@ -105,7 +105,9 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   bool _existsExamInfo() {
-    return this.cardExamInfo != null && this.examDetails != null;
+    return this.cardExamInfos != null &&
+        this.examDetailsList != null &&
+        this.filePaths != null;
   }
 
   void _loadExamCards() {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 
@@ -10,8 +11,16 @@ class ExamRepository {
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
       String filePath) async {
     var user = await _getUser();
+    List exams = [];
 
-    await this._firestore.collection("exams").document(user.uid).setData({
+    var snapshot =
+        await this._firestore.collection("exams").document(user.uid).get();
+
+    if (snapshot.data.containsKey("exams")) {
+      exams = snapshot.data["exams"];
+    }
+
+    exams.add({
       "filePath": filePath,
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,
@@ -23,31 +32,44 @@ class ExamRepository {
       "diagnosticHypothesis": examDetails.getDiagnosticHypothesis,
       "otherPacientInformation": examDetails.getOtherPacientInformation
     });
+
+    await this
+        ._firestore
+        .collection("exams")
+        .document(user.uid)
+        .setData({"exams": exams});
   }
 
   //TODO: Alterar esse método depois !!!!!!!!!!!!!!!!!!!!!!
   Future<List> getExam() async {
     var user = await _getUser();
 
+    List exams;
+    List displayableExams = [];
+
     var examSnapshot =
         await this._firestore.collection("exams").document(user.uid).get();
 
-    return [
-      CardExamInfo(
-          examDate: examSnapshot.data["examDate"],
-          examType: examSnapshot.data["examType"]),
-      ExamDetails(
-          pacientName: examSnapshot.data["pacientName"],
-          examinationUnit: examSnapshot.data["examinationUnit"],
-          requestingDoctor: examSnapshot.data["requestingDoctor"],
-          examResponsable: examSnapshot.data["examResponsable"],
-          examDate: examSnapshot.data["examDate"],
-          examDescription: examSnapshot.data["examDescription"],
-          diagnosticHypothesis: examSnapshot.data["diagnosticHypothesis"],
-          otherPacientInformation:
-              examSnapshot.data["otherPacientInformation"]),
-      examSnapshot.data["filePath"]
-    ];
+    if (examSnapshot.data.containsKey("exams")) {
+      exams = examSnapshot.data["exams"];
+    }
+    exams.forEach((exam) {
+      displayableExams.add(
+          CardExamInfo(examDate: exam["examDate"], examType: exam["examType"]));
+      displayableExams.add(ExamDetails(
+          pacientName: exam["pacientName"],
+          examinationUnit: exam["examinationUnit"],
+          requestingDoctor: exam["requestingDoctor"],
+          examResponsable: exam["examResponsable"],
+          examDate: exam["examDate"],
+          examDescription: exam["examDescription"],
+          diagnosticHypothesis: exam["diagnosticHypothesis"],
+          otherPacientInformation: exam["otherPacientInformation"]));
+
+      displayableExams.add(exam["filePath"]);
+    });
+
+    return displayableExams;
   }
 
   Future<FirebaseUser> _getUser() async {

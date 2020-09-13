@@ -22,6 +22,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   MedRecordBloc medRecordBloc;
   String get filePath => this.widget.filePath;
   bool hidePressed = false;
+  bool hideImagePressed = false;
   String hideButtonTitle;
   bool isDecripted = false;
   Image examImage;
@@ -84,6 +85,8 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       this.isDecripted ? _buildExameImageWidget() : Container(),
       LayoutUtils.buildVerticalSpacing(20.0),
+      _showHideImageButton(),
+      LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
           minLines: 1,
@@ -145,8 +148,33 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
     ));
   }
 
+  Widget _showHideImageButton() {
+    return Visibility(
+      visible: true,
+      child: IconButton(
+          color: Theme.of(context).primaryColor,
+          iconSize: 50.0,
+          icon: this.hideImagePressed
+              ? Icon(Icons.arrow_drop_down)
+              : Icon(Icons.arrow_drop_up),
+          onPressed: () {
+            setState(() {
+              this.hideImagePressed = !this.hideImagePressed;
+            });
+          }),
+    );
+  }
+
   Widget _buildExameImageWidget() {
-    return Container(child: this.examImage);
+    if (!this.hideImagePressed) {
+      return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+          ),
+          child: this.examImage);
+    }
+
+    return Container();
   }
 
   List<Widget> _showOtherFields() {

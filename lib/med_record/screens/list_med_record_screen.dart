@@ -158,32 +158,35 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
   Widget _showMedRecord(index, context) {
     switch (index) {
       case 2:
-        return Column(
-          children: <Widget>[
-            Expanded(child: ExamScreen()),
-            RaisedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(
-                      '/exam',
-                      arguments: 'medRecord',
-                    )
-                    .then((value) => {this._medRecordBloc.add(GetExams())});
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
-              ),
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                "Clique aqui para inserir um exame",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              Expanded(child: ExamScreen()),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(
+                        '/exam',
+                        arguments: 'medRecord',
+                      )
+                      .then((value) => {this._medRecordBloc.add(GetExams())});
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Clique aqui para inserir um exame",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
         break;
 

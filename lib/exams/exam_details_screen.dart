@@ -167,11 +167,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
 
   Widget _buildExameImageWidget() {
     if (!this.hideImagePressed) {
-      return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: this.examImage);
+      return Container(child: this.examImage);
     }
 
     return Container();

@@ -16,7 +16,7 @@ class ExamRepository {
     var snapshot =
         await this._firestore.collection("exams").document(user.uid).get();
 
-    if (snapshot.data.containsKey("exams")) {
+    if (snapshot.data != null && snapshot.data.containsKey("exams")) {
       exams = snapshot.data["exams"];
     }
 

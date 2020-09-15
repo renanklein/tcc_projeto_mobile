@@ -11,21 +11,26 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 
-class ListMedRecordScreen extends StatefulWidget {
+class MedRecordScreen extends StatefulWidget {
   final String index;
+  final String pacientHash;
 
-  ListMedRecordScreen({@required this.index});
+  MedRecordScreen({
+    @required this.index,
+    @required this.pacientHash,
+  });
 
   @override
-  _ListMedRecordScreenState createState() => _ListMedRecordScreenState();
+  _MedRecordScreenState createState() => _MedRecordScreenState();
 }
 
-class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
+class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
   UserModel _userModel;
 
   String get index => this.widget.index;
+  String get pacientHash => this.widget.pacientHash;
 
   int _selectedIndex;
 
@@ -44,6 +49,12 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
       _selectedIndex = _parseIndex(index);
     } else {
       _selectedIndex = 0;
+    }
+
+    if (pacientHash != null) {
+      _medRecordBloc.add(MedRecordLoad(
+        hash: pacientHash,
+      ));
     }
 
     super.initState();

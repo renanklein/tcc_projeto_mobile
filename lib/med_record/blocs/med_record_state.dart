@@ -43,13 +43,13 @@ class DeleteMedRecordEventFail extends MedRecordState {
 }
 
 class MedRecordLoadEventSuccess extends MedRecordState {
-  Map<String, List<dynamic>> _medRecordsLoaded;
+  Map<String, List<dynamic>> _medRecordLoaded;
 
   MedRecordLoadEventSuccess(Map<String, List<dynamic>> medRecords) {
-    this._medRecordsLoaded = medRecords;
+    this._medRecordLoaded = medRecords;
   }
 
-  Map<String, List<dynamic>> get medRecordsLoaded => this._medRecordsLoaded;
+  Map<String, List<dynamic>> get medRecordLoaded => this._medRecordLoaded;
 
   @override
   List<Object> get props => [];
@@ -67,61 +67,5 @@ class MedRecordLoading extends MedRecordState {
 
 class MedRecordEventProcessing extends MedRecordState {
   @override
-  List<Object> get props => [];
-}
-
-class ExamInitial extends MedRecordState {
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class ExamProcessing extends MedRecordState {
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class GetExamsSuccess extends MedRecordState {
-  final cardExamInfo;
-  final examDetails;
-  final filePath;
-
-  GetExamsSuccess(
-      {@required this.cardExamInfo,
-      @required this.examDetails,
-      @required this.filePath});
-
-  CardExamInfo get getCardExamInfo => this.cardExamInfo;
-  ExamDetails get getExamDetails => this.examDetails;
-  String get getFilePath => this.filePath;
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class ExamProcessingSuccess extends MedRecordState {
-  File encriptedFile;
-  ExamProcessingSuccess({@required this.encriptedFile});
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class DecriptExamSuccess extends MedRecordState {
-  final decriptedBytes;
-
-  DecriptExamSuccess({@required this.decriptedBytes});
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class ExamProcessingFail extends MedRecordState {
-  @override
-  // TODO: implement props
   List<Object> get props => [];
 }

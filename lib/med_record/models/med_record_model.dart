@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MedRecordModel {
-  //final _nome;
+  String _pacientHash;
 
-  MedRecordModel(
-      //@required final userId,
-      ) {
-    //this._userId = userId;
+  MedRecordModel({
+    @required String pacientHash,
+  }) {
+    this._pacientHash = pacientHash;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      //'userId': _userId,
+      'pacientHash': _pacientHash,
     };
   }
 
@@ -19,9 +19,8 @@ class MedRecordModel {
     if (map == null) return null;
 
     return MedRecordModel(
-        //userId: map['userId'],
-
-        );
+      pacientHash: 'teste',
+    );
   }
 
   //String get email => this._email;

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class PacientRepository extends ChangeNotifier {

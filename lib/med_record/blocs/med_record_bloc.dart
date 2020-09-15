@@ -10,10 +10,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 
 part 'med_record_event.dart';
 part 'med_record_state.dart';
+part 'exam_state.dart';
+part 'exam_event.dart';
 
 class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   MedRecordRepository medRecordRepository;
@@ -34,6 +37,10 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield CreateMedRecordEventProcessing();
 
+        await medRecordRepository.updateMedRecord(
+            pacientHash: event.pacientHash,
+            medRecordModel: MedRecordModel(pacientHash: '22'));
+
         yield CreateMedRecordEventSuccess();
       } catch (error) {
         yield CreateMedRecordEventFail();
@@ -42,9 +49,11 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield MedRecordLoading();
 
-        //ar events = await this.medRecordRepository.getEvents();
+        medRecordRepository.pacientHash = event.hash;
 
-        //yield MedRecordLoadSuccess(events);
+        var medRecord = await this.medRecordRepository.getMedRecordByCpf();
+
+        yield MedRecordLoadEventSuccess(medRecord);
       } catch (error) {
         yield MedRecordLoadEventFail();
       }
@@ -81,10 +90,19 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var examInfoList = await this.examRepository.getExam();
 
+        List examCards = [];
+        List examDetails = [];
+        List examFilePaths = [];
+
+        for (int i = 0; i < examInfoList.length; i += 3) {
+          examCards.add(examInfoList[i]);
+          examDetails.add(examInfoList[i + 1]);
+          examFilePaths.add(examInfoList[i + 2]);
+        }
         yield GetExamsSuccess(
-            cardExamInfo: examInfoList.first,
-            examDetails: examInfoList[1],
-            filePath: examInfoList.last);
+            cardExamInfo: examCards,
+            examDetails: examDetails,
+            filePaths: examFilePaths);
       } catch (error) {
         yield ExamProcessingFail();
       }

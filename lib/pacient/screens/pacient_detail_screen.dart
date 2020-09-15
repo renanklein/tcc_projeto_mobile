@@ -56,7 +56,7 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
                   },
                 ),
               ),
-              body: SafeArea(child: PacientDetail(context)),
+              body: SafeArea(child: pacientDetail(context)),
             );
           },
         ),
@@ -65,16 +65,16 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
   }
 }
 
-Widget PacientDetail(context) {
+Widget pacientDetail(context) {
   return Row(
     children: <Widget>[
-      PacientTabs(),
-      PacientProfile(context),
+      pacientTabs(),
+      pacientProfile(context),
     ],
   );
 }
 
-Widget PacientTabs() {
+Widget pacientTabs() {
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     children: <Widget>[
@@ -121,7 +121,7 @@ Widget PacientTabs() {
   );
 }
 
-Widget PacientProfile(context) {
+Widget pacientProfile(context) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
     child: Column(

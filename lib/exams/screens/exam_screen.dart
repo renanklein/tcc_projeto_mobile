@@ -7,6 +7,8 @@ import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {
@@ -44,7 +46,7 @@ class _ExamScreenState extends State<ExamScreen> {
         } else if (state is GetExamsSuccess) {
           this.cardExamInfo = state.cardExamInfo;
           this.examDetails = state.examDetails;
-          this.filePath = state.filePath;
+          this.filePath = state.filePaths;
         } else if (state is DecriptExamSuccess) {
           this.isDecripted = true;
           this.decriptedBytes = state.decriptedBytes;

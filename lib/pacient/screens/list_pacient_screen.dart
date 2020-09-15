@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class ListPacientScreen extends StatefulWidget {
   @override
@@ -68,8 +69,11 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
         create: (context) => this._pacientBloc,
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {
-            if (state is CreatePacientEventSuccess) {
-              SnackBar(
+            if (state is PacientLoadEventSuccess) {
+              _pacientsList = state.pacientsLoaded;
+            } else if (state is CreatePacientEventSuccess) {
+              _pacientBloc.add(PacientLoad());
+              return SnackBar(
                 backgroundColor: Colors.green,
                 content: Text(
                   "Paciente criado com sucesso",
@@ -79,9 +83,6 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                       color: Colors.white),
                 ),
               );
-              _pacientBloc.add(PacientLoad());
-            } else if (state is PacientLoadEventSuccess) {
-              _pacientsList = state.pacientsLoaded;
             } else if (state is PacientLoadEventFail) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
@@ -101,46 +102,64 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           child: BlocBuilder<PacientBloc, PacientState>(
               cubit: this._pacientBloc,
               builder: (context, state) {
-                return SafeArea(
-                  child: Center(
-                    child: Padding(
+                if (state is PacientLoadEventSuccess && _pacientsList != null) {
+                  return SafeArea(
+                    child: Center(
+                        child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.98,
-                        child: Column(
-                          children: <Widget>[
-                            PacientSearchBar(_searchBarController,
+                          width: MediaQuery.of(context).size.width * 0.98,
+                          child: Column(children: <Widget>[
+                            pacientSearchBar(_searchBarController,
                                 'Digite um nome aqui para pesquisar'),
                             Expanded(
-                              child: _pacientsList != null
-                                  ? ListView.builder(
-                                      itemCount: _pacientsList.length,
-                                      itemBuilder: (context, index) => _ListPacientView(
-                                          _pacientsList[index].nome,
-                                          'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
-                                          'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
-                                    )
-                                  : Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation(
-                                          Theme.of(context).primaryColor,
-                                        ),
-                                      ),
+                                child: ListView.builder(
+                              itemCount: _pacientsList.length,
+                              itemBuilder: (context, index) => listPacientView(
+                                  _pacientsList[index].cpf,
+                                  _pacientsList[index].salt,
+                                  _pacientsList[index].nome,
+                                  'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
+                                  'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
+                            ))
+                          ])),
+                    )),
+                  );
+                } else {
+                  return SafeArea(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.98,
+                          child: Column(
+                            children: <Widget>[
+                              pacientSearchBar(_searchBarController,
+                                  'Digite um nome aqui para pesquisar'),
+                              Expanded(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).primaryColor,
                                     ),
-                            ),
-                          ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
               }),
         ),
       ),
     );
   }
 
-  Widget _ListPacientView(nome, texto, img) {
+  Widget listPacientView(cpf, salt, nome, texto, img) {
+    var _pacientHash = SltPattern.retrivepacientHash(cpf, salt);
     return Container(
       width: MediaQuery.of(context).size.width * 0.93,
       child: Column(
@@ -151,7 +170,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
               onTap: () {
                 Navigator.of(context).pushNamed(
                   '/medRecord',
-                  arguments: 'Dashboard',
+                  arguments: _pacientHash,
                 );
               },
               child: PacientTile(title: nome, textBody: texto, imgPath: img
@@ -165,7 +184,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
   }
 }
 
-Widget PacientSearchBar(controller, hint) {
+Widget pacientSearchBar(controller, hint) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 4.0),
     child: Container(

@@ -38,8 +38,10 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   void initState() {
     var injector = Injector.appInstance;
     this._pacientRepository = injector.getDependency<PacientRepository>();
-    this._pacientBloc =
-        new PacientBloc(pacientRepository: this._pacientRepository);
+
+    this._pacientBloc = new PacientBloc(
+      pacientRepository: this._pacientRepository,
+    );
 
     super.initState();
   }
@@ -75,14 +77,25 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
           listener: (context, state) {
             if (state is AuthenticationUnauthenticated) {
               Navigator.pushNamed(context, '/');
-            } else if (state is CreatePacientEventSuccess) {
-              Navigator.pop(context);
             }
           },
           child:
               BlocBuilder<PacientBloc, PacientState>(builder: (context, state) {
             if (state is CreatePacientEventProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
+            } else if (state is CreatePacientEventSuccess) {
+              _pacientBloc.add(PacientLoad());
+
+              return SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  "Paciente criado com sucesso",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+              );
             } else {
               return SafeArea(
                 child: Form(
@@ -96,44 +109,44 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                           padding: const EdgeInsets.all(15.0),
                           child: ListView(
                             children: <Widget>[
-                              PacienteFormField(
+                              pacienteFormField(
                                 nomeController,
                                 'Nome:',
                                 'Insira o nome do paciente',
                                 'Por Favor, insira um nome',
                               ),
-                              PacienteFormField(
+                              pacienteFormField(
                                 emailController,
                                 'E-mail:',
                                 'Insira o e-mail do paciente',
                                 'Por Favor, insira um e-mail válido',
                               ),
-                              PacienteFormField(
+                              pacienteFormField(
                                 telefoneController,
                                 'Tel.:',
                                 'Insira o número do telefone do paciente',
                                 'Por Favor, insira um número válido',
                               ),
-                              PacienteFormField(
+                              pacienteFormField(
                                 identidadeController,
                                 'Identidade:',
                                 'Insira o número do RG do paciente',
                                 'Por Favor, insira um e-mail válido',
                               ),
-                              PacienteFormField(
+                              pacienteFormField(
                                 cpfController,
                                 'CPF:',
                                 'Insira o CPF do paciente',
                                 'Por Favor, insira um CPF válido',
                               ),
                               //menudropdown
-                              PacienteFormField(
+                              pacienteFormField(
                                 sexoController,
                                 'Sexo:',
                                 'Selecione o sexo do paciente',
                                 '',
                               ),
-                              DateFormField(
+                              dateFormField(
                                 dtNascController,
                                 'Data de Nascimento:',
                                 'Entre com a Data de Nascimento',
@@ -187,7 +200,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   }
 }
 
-Widget PacienteFormField(controller, label, hint, errorText) {
+Widget pacienteFormField(controller, label, hint, errorText) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
@@ -209,7 +222,7 @@ Widget PacienteFormField(controller, label, hint, errorText) {
   );
 }
 
-Widget DateFormField(controller, label, hint, errorText) {
+Widget dateFormField(controller, label, hint, errorText) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
@@ -262,7 +275,7 @@ bool validateData(String value) {
   }
 }
 
-Widget DateField(label, controller) {
+Widget dateField(label, controller) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(

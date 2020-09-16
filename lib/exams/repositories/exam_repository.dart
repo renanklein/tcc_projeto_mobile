@@ -60,7 +60,7 @@ class ExamRepository {
           pacientName: exam["pacientName"],
           examinationUnit: exam["examinationUnit"],
           requestingDoctor: exam["requestingDoctor"],
-          examResponsable: exam["examResponsable"],
+          examResponsable: exam["examResponsible"],
           examDate: exam["examDate"],
           examDescription: exam["examDescription"],
           diagnosticHypothesis: exam["diagnosticHypothesis"],

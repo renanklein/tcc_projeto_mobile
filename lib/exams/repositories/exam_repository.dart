@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 
@@ -16,8 +15,8 @@ class ExamRepository {
     var snapshot =
         await this._firestore.collection("exams").document(user.uid).get();
 
-    if (snapshot.data != null && snapshot.data.containsKey("exams")) {
-      exams = snapshot.data["exams"];
+    if (snapshot.data != null && snapshot.data().containsKey("exams")) {
+      exams = snapshot.data()["exams"];
     }
 
     exams.add({
@@ -50,8 +49,8 @@ class ExamRepository {
     var examSnapshot =
         await this._firestore.collection("exams").document(user.uid).get();
 
-    if (examSnapshot.data.containsKey("exams")) {
-      exams = examSnapshot.data["exams"];
+    if (examSnapshot.data().containsKey("exams")) {
+      exams = examSnapshot.data()["exams"];
     }
     exams.forEach((exam) {
       displayableExams.add(
@@ -72,7 +71,7 @@ class ExamRepository {
     return displayableExams;
   }
 
-  Future<FirebaseUser> _getUser() async {
-    return await FirebaseAuth.instance.currentUser();
+  User _getUser() {
+    return FirebaseAuth.instance.currentUser;
   }
 }

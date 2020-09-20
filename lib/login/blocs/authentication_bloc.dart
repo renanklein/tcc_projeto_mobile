@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -25,7 +24,7 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AppStarted) {
-      final user = await this.userRepository.getUser();
+      final user = this.userRepository.getUser();
       if (user == null) {
         yield AuthenticationUnauthenticated();
       } else {
@@ -41,7 +40,7 @@ class AuthenticationBloc
           token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0) {
         yield AuthenticationUnauthenticated();
       } else {
-        final user = await this.userRepository.getUser();
+        final user = this.userRepository.getUser();
         await this.userRepository.setupFcmNotification(user);
         yield AuthenticationAuthenticated();
       }

@@ -25,7 +25,7 @@ class RouteGenerator {
     String uid;
     final args = settings.arguments;
     final userRepo = Injector.appInstance.getDependency<UserRepository>();
-    userRepo.getUser().then((user) => uid = user.uid);
+    uid = userRepo.getUser().uid;
 
     switch (settings.name) {
       case '/':

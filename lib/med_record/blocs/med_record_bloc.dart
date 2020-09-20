@@ -23,7 +23,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       {@required this.medRecordRepository, @required this.examRepository})
       : super(null);
 
-  @override
   MedRecordState get initialState => MedRecordInicialState();
 
   @override

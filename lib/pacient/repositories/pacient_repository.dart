@@ -5,7 +5,7 @@ import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class PacientRepository {
   final CollectionReference _pacientsCollectionReference =
-      Firestore.instance.collection('pacients');
+      FirebaseFirestore.instance.collection('pacients');
 
   String _userId;
   set userId(String uid) => this._userId = uid;
@@ -26,10 +26,10 @@ class PacientRepository {
 
   Future getPacientsList() async {
     try {
-      var pacientDocuments = await _pacientsCollectionReference.getDocuments();
-      if (pacientDocuments.documents.isNotEmpty) {
-        return pacientDocuments.documents
-            .map((snapshot) => PacientModel.fromMap(snapshot.data))
+      var pacientDocuments = await _pacientsCollectionReference.get();
+      if (pacientDocuments.docs.isNotEmpty) {
+        return pacientDocuments.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
             .where((mappedItem) => mappedItem.nome != null)
             .toList();
       }

@@ -13,7 +13,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
   AgendaBloc({@required this.agendaRepository}) : super(null);
 
-  @override
   AgendaState get initialState => AgendaInitial();
 
   @override

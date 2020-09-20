@@ -47,14 +47,11 @@ class SaveExam extends MedRecordEvent {
   File get getExamFile => this.examFile;
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
-// TODO: Alterar evento se necessário
 class GetExams extends MedRecordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -64,6 +61,5 @@ class DecriptExam extends MedRecordEvent {
   DecriptExam({@required this.filePath});
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }

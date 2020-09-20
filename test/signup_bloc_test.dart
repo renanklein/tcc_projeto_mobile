@@ -12,9 +12,9 @@ class MockAuthenticationBloc extends Mock implements AuthenticationBloc {}
 
 class MockBuildContext extends Mock implements BuildContext {}
 
-class MockAuthResult extends Mock implements AuthResult {}
+class MockAuthResult extends Mock implements UserCredential {}
 
-class MockFirebaseUser extends Mock implements FirebaseUser {}
+class MockFirebaseUser extends Mock implements User {}
 
 void main() {
   MockUserRepository userRepository;

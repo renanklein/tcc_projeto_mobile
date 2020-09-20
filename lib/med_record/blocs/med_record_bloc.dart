@@ -12,11 +12,10 @@ import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:http/http.dart' as http;
 
 part 'med_record_event.dart';
 part 'med_record_state.dart';
-part 'exam_state.dart';
-part 'exam_event.dart';
 part 'diagnosis_state.dart';
 part 'diagnosis_event.dart';
 
@@ -84,16 +83,15 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var examBytes = await event.getExamFile.readAsBytes();
 
         var encoded = base64.encode(examBytes);
-
-        String dir = (await getApplicationDocumentsDirectory()).path;
+        var tempDir = await getTemporaryDirectory();
+        var tempPath = tempDir.path;
         var randomFileName = Random.secure().nextInt(10000);
-        var filePath = "$dir/$randomFileName.txt";
-        var encriptedFile = File("$dir/$randomFileName.txt");
+        var fileName = randomFileName.toString();
+        var encriptedFile = File("$tempPath/$fileName");
         await encriptedFile.writeAsString(encoded);
 
-        await this
-            .examRepository
-            .saveExam(event.getCardExamInfo, event.getExamDetails, filePath);
+        await this.examRepository.saveExam(event.getCardExamInfo,
+            event.getExamDetails, encriptedFile, randomFileName.toString());
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error) {
@@ -107,17 +105,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         List examCards = [];
         List examDetails = [];
-        List examFilePaths = [];
+        List examFileDownloadURLs = [];
 
         for (int i = 0; i < examInfoList.length; i += 3) {
           examCards.add(examInfoList[i]);
           examDetails.add(examInfoList[i + 1]);
-          examFilePaths.add(examInfoList[i + 2]);
+          examFileDownloadURLs.add(examInfoList[i + 2]);
         }
         yield GetExamsSuccess(
             cardExamInfos: examCards,
             examDetailsList: examDetails,
-            filePaths: examFilePaths);
+            fileDownloadURLs: examFileDownloadURLs);
       } catch (error) {
         yield ExamProcessingFail();
       }
@@ -125,10 +123,10 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield ExamProcessing();
 
-        var filePath = event.filePath;
+        var fileDownloadURL = event.fileDownloadURL;
 
-        var file = File(filePath);
-        var bytes = await file.readAsString();
+        var response = await http.get(fileDownloadURL);
+        var bytes = response.body;
         var decriptedBytes = base64.decode(bytes);
 
         yield DecriptExamSuccess(decriptedBytes: decriptedBytes);

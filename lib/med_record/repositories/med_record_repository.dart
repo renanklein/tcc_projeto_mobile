@@ -4,7 +4,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 
 class MedRecordRepository {
   final CollectionReference _medRecordCollectionReference =
-      Firestore.instance.collection('prontuario');
+      FirebaseFirestore.instance.collection('prontuario');
 
   Future updateMedRecord({
     @required String pacientHash,
@@ -12,8 +12,8 @@ class MedRecordRepository {
   }) async {
     try {
       await _medRecordCollectionReference
-          .document(pacientHash)
-          .setData(medRecordModel.toMap());
+          .doc(pacientHash)
+          .set(medRecordModel.toMap());
     } catch (e) {
       return e.toString();
     }
@@ -22,14 +22,14 @@ class MedRecordRepository {
   Future<MedRecordModel> getMedRecordByCpf(String pacientHash) async {
     try {
       MedRecordModel medRecord;
-      var document = _medRecordCollectionReference.document(pacientHash);
+      var document = _medRecordCollectionReference.doc(pacientHash);
       medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
       await document.get().then(
-            (value) => medRecord = MedRecordModel.fromMap(value.data),
+            (value) => medRecord = MedRecordModel.fromMap(value.data()),
           );
 
-      await document.setData({
+      await document.set({
         'Diagnóstico': {
           'problema': {'descrição': 'teste', 'id': '08'},
           'diagnostico': {'descrição': 'teste', 'cid': '8459'},

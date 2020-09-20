@@ -1,26 +1,38 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 
 class ExamRepository {
-  final _firestore = Firestore.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
 
-  //TODO: Alterar esse método depois !!!!!!!!!!!!!!!!!!!!!!
+  Future<String> _uploadExam(File encriptedFile, String fileName) async {
+    var storageRef = this._storage.ref().child(fileName);
+
+    var putFileResult = await storageRef.putFile(encriptedFile).onComplete;
+
+    return await putFileResult.ref.getDownloadURL();
+  }
+
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      String filePath) async {
-    var user = await _getUser();
+      File encriptedFile, String fileName) async {
+    var user = _getUser();
+    var fileDownloadURL = await this._uploadExam(encriptedFile, fileName);
     List exams = [];
 
     var snapshot =
-        await this._firestore.collection("exams").document(user.uid).get();
+        await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (snapshot.data != null && snapshot.data().containsKey("exams")) {
+    if (snapshot.data != null && snapshot.exists) {
       exams = snapshot.data()["exams"];
     }
 
     exams.add({
-      "filePath": filePath,
+      "fileDownloadURL": fileDownloadURL,
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,
       "pacientName": examDetails.getPacientName,
@@ -35,21 +47,20 @@ class ExamRepository {
     await this
         ._firestore
         .collection("exams")
-        .document(user.uid)
-        .setData({"exams": exams});
+        .doc(user.uid)
+        .set({"exams": exams});
   }
 
-  //TODO: Alterar esse método depois !!!!!!!!!!!!!!!!!!!!!!
   Future<List> getExam() async {
-    var user = await _getUser();
+    var user = _getUser();
 
     List exams;
     List displayableExams = [];
 
     var examSnapshot =
-        await this._firestore.collection("exams").document(user.uid).get();
+        await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (examSnapshot.data().containsKey("exams")) {
+    if (examSnapshot.exists) {
       exams = examSnapshot.data()["exams"];
     }
     exams.forEach((exam) {
@@ -65,7 +76,7 @@ class ExamRepository {
           diagnosticHypothesis: exam["diagnosticHypothesis"],
           otherPacientInformation: exam["otherPacientInformation"]));
 
-      displayableExams.add(exam["filePath"]);
+      displayableExams.add(exam["fileDownloadURL"]);
     });
 
     return displayableExams;

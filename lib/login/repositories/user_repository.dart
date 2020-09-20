@@ -58,16 +58,7 @@ class UserRepository {
       @required String uid}) async {
     final userData = {"name": name, "email": email};
 
-<<<<<<< HEAD
-    //TODO: Incluir tipo de usuário, secretária, médico, paciente
-
-    await Firestore.instance
-        .collection("users")
-        .document(uid)
-        .setData(userData);
-=======
     await FirebaseFirestore.instance.collection("users").doc(uid).set(userData);
->>>>>>> :arrow_up: Update firebase dependencies
   }
 
   Future<void> setupFcmNotification(User user) async {

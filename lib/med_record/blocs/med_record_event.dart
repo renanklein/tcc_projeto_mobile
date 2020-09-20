@@ -64,9 +64,9 @@ class GetExams extends MedRecordEvent {
 }
 
 class DecriptExam extends MedRecordEvent {
-  final filePath;
+  final fileDownloadURL;
 
-  DecriptExam({@required this.filePath});
+  DecriptExam({@required this.fileDownloadURL});
 
   @override
   List<Object> get props => [];

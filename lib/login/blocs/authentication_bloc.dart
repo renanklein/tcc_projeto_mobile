@@ -16,7 +16,6 @@ class AuthenticationBloc
 
   AuthenticationBloc({@required this.userRepository}) : super(null);
 
-  @override
   AuthenticationState get initialState => AuthenticationUninitialized();
 
   @override

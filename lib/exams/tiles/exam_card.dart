@@ -6,17 +6,17 @@ import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 class ExamCard extends StatelessWidget {
   final cardExamInfo;
   final examDetails;
-  final filePath;
+  final fileDownloadURL;
   final medRecordBloc;
 
   ExamCard(
       {@required this.cardExamInfo,
       @required this.examDetails,
-      @required this.filePath,
+      @required this.fileDownloadURL,
       @required this.medRecordBloc});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
-  String get getFilePath => this.filePath;
+  String get getDownloadURL => this.fileDownloadURL;
   MedRecordBloc get get_medRecordBloc => this.medRecordBloc;
 
   @override
@@ -66,11 +66,13 @@ class ExamCard extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () async {
-          this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
+          this
+              .medRecordBloc
+              .add(DecriptExam(fileDownloadURL: this.fileDownloadURL));
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
                     examDetails: this.examDetails,
-                    filePath: this.filePath,
+                    fileDownloadURL: this.fileDownloadURL,
                   )));
         },
       ),

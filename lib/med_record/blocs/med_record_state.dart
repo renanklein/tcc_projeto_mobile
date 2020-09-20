@@ -85,16 +85,16 @@ class ExamProcessing extends MedRecordState {
 class GetExamsSuccess extends MedRecordState {
   final cardExamInfos;
   final examDetailsList;
-  final filePaths;
+  final fileDownloadURLs;
 
   GetExamsSuccess(
       {@required this.cardExamInfos,
       @required this.examDetailsList,
-      @required this.filePaths});
+      @required this.fileDownloadURLs});
 
   List<CardExamInfo> get getCardExamInfo => this.cardExamInfos;
   List<ExamDetails> get getExamDetails => this.examDetailsList;
-  List<String> get getFilePath => this.filePaths;
+  List<String> get getFileDownloadURLs => this.fileDownloadURLs;
 
   @override
   // TODO: implement props

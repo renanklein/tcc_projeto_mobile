@@ -17,7 +17,7 @@ class _ExamScreenState extends State<ExamScreen> {
   MedRecordBloc medRecordBloc;
   List cardExamInfos;
   List examDetailsList;
-  List filePaths;
+  List fileDownloadURLs;
   Uint8List decriptedBytes = Uint8List(0);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -37,7 +37,7 @@ class _ExamScreenState extends State<ExamScreen> {
         } else if (state is GetExamsSuccess) {
           this.cardExamInfos = state.cardExamInfos;
           this.examDetailsList = state.examDetailsList;
-          this.filePaths = state.filePaths;
+          this.fileDownloadURLs = state.fileDownloadURLs;
         } else if (state is DecriptExamSuccess) {
           this.isDecripted = true;
           this.decriptedBytes = state.decriptedBytes;
@@ -78,7 +78,7 @@ class _ExamScreenState extends State<ExamScreen> {
         examCards.add(
           ExamCard(
             medRecordBloc: this.medRecordBloc,
-            filePath: this.filePaths[i],
+            fileDownloadURL: this.fileDownloadURLs[i],
             cardExamInfo: this.cardExamInfos[i],
             examDetails: this.examDetailsList[i],
           ),
@@ -105,7 +105,7 @@ class _ExamScreenState extends State<ExamScreen> {
   bool _existsExamInfo() {
     return this.cardExamInfos != null &&
         this.examDetailsList != null &&
-        this.filePaths != null;
+        this.fileDownloadURLs != null;
   }
 
   void _loadExamCards() {

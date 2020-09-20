@@ -24,7 +24,7 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AppStarted) {
-      final user = await this.userRepository.getUser();
+      final user = this.userRepository.getUser();
       if (user == null) {
         yield AuthenticationUnauthenticated();
       } else {
@@ -40,7 +40,7 @@ class AuthenticationBloc
           token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0) {
         yield AuthenticationUnauthenticated();
       } else {
-        final user = await this.userRepository.getUser();
+        final user = this.userRepository.getUser();
         await this.userRepository.setupFcmNotification(user);
         yield AuthenticationAuthenticated();
       }

@@ -26,7 +26,7 @@ class RouteGenerator {
     String uid;
     //final MedRecordArguments mDArgs = settings.arguments as Type;
     final userRepo = Injector.appInstance.getDependency<UserRepository>();
-    userRepo.getUser().then((user) => uid = user.uid);
+    uid = userRepo.getUser().uid;
 
     switch (settings.name) {
       case dashboardRoute:

@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'convert_utils.dart';
 
-class Utils{
-  static Map<DateTime, List<String>> retriveEventsForAgenda(List<DocumentSnapshot> documents) {
+class Utils {
+  static Map<DateTime, List<String>> retriveEventsForAgenda(
+      List<DocumentSnapshot> documents) {
     Map<DateTime, List<String>> events = new Map<DateTime, List<String>>();
 
-    documents.forEach((snapshot) { 
-      var dateFromEpoch = ConvertUtils.documentIdToDateTime(snapshot.documentID);
-      var dayEvents = snapshot.data.values.first;
+    documents.forEach((snapshot) {
+      var dateFromEpoch =
+          ConvertUtils.documentIdToDateTime(snapshot.documentID);
+      var dayEvents = snapshot.data().values.first;
       var eventsAsListOfString = ConvertUtils.toStringListOfEvents(dayEvents);
-      if(eventsAsListOfString.isNotEmpty){
-        events.addAll({
-          dateFromEpoch : eventsAsListOfString
-        });
+      if (eventsAsListOfString.isNotEmpty) {
+        events.addAll({dateFromEpoch: eventsAsListOfString});
       }
     });
 
@@ -25,7 +25,6 @@ class Utils{
   }
 
   static List<dynamic> retrieveListOfEvents(DateTime eventDay, dynamic events) {
-
     bool existsEventsInThatDay = verifyIfExistsEventInThatDay(eventDay, events);
     List dayEvents = new List();
     if (existsEventsInThatDay) {
@@ -38,40 +37,44 @@ class Utils{
     events.add(event);
   }
 
-  static Map buildNewEvent(Map eventParameters){
+  static Map buildNewEvent(Map eventParameters) {
     var filteredDate = ConvertUtils.removeTime(eventParameters["eventDay"]);
     var events = retrieveListOfEvents(filteredDate, eventParameters["events"]);
     List<dynamic> dayEventsAsList = ConvertUtils.toMapListOfEvents(events);
-    int eventId =  dayEventsAsList.isEmpty ? 1  : int.parse(dayEventsAsList.last["id"]) + 1;
+    int eventId =
+        dayEventsAsList.isEmpty ? 1 : int.parse(dayEventsAsList.last["id"]) + 1;
 
     var newEvent = {
-      "id" : eventId.toString(),
-      "userId" : eventParameters["userId"],
+      "id": eventId.toString(),
+      "userId": eventParameters["userId"],
       "description": eventParameters["name"],
       "begin": eventParameters["eventDuration"].first,
       "end": eventParameters["eventDuration"].last,
-      "status" : "created"
+      "status": "created"
     };
 
     Utils.addNewEvent(newEvent, dayEventsAsList);
 
     return {
-      "eventsKey" : ConvertUtils.dayFromDateTime(eventParameters["eventDay"]),
-      "dayEventsAsList" : dayEventsAsList,
-      "newEvent" : newEvent
+      "eventsKey": ConvertUtils.dayFromDateTime(eventParameters["eventDay"]),
+      "dayEventsAsList": dayEventsAsList,
+      "newEvent": newEvent
     };
   }
-  
-  static Map buildUpdateEvent(Map eventParameters){
+
+  static Map buildUpdateEvent(Map eventParameters) {
     var filteredDate = ConvertUtils.removeTime(eventParameters["eventDay"]);
     var dayEvent = eventParameters["events"][filteredDate];
     var listEvents = ConvertUtils.toMapListOfEvents(dayEvent);
     var newEvent = eventParameters["newEvent"];
 
-    var oldEvent = listEvents.where((event) => event["id"] == newEvent["id"]).toList().first;
+    var oldEvent = listEvents
+        .where((event) => event["id"] == newEvent["id"])
+        .toList()
+        .first;
     newEvent["status"] = oldEvent["status"];
-    
-    if(eventParameters["reason"] != null) {
+
+    if (eventParameters["reason"] != null) {
       newEvent["reason"] = eventParameters["reason"];
     }
 
@@ -79,9 +82,6 @@ class Utils{
     newEvent["status"] = eventParameters["status"];
     listEvents.add(newEvent);
 
-    return {
-      "filteredDate" : filteredDate,
-      "events" : listEvents
-    };
+    return {"filteredDate": filteredDate, "events": listEvents};
   }
 }

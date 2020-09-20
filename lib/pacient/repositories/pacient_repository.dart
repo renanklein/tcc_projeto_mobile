@@ -6,7 +6,7 @@ import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class PacientRepository extends ChangeNotifier {
   final CollectionReference _pacientsCollectionReference =
-      Firestore.instance.collection('pacients');
+      FirebaseFirestore.instance.collection('pacients');
 
   List<PacientModel> _pacients;
   List<PacientModel> get pacientsList => _pacients;
@@ -46,9 +46,9 @@ class PacientRepository extends ChangeNotifier {
 
   Stream listenToPacientsRealTime() {
     _pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
-      if (pacientsSnapshot.documents.isNotEmpty) {
-        var pacients = pacientsSnapshot.documents
-            .map((snapshot) => PacientModel.fromMap(snapshot.data))
+      if (pacientsSnapshot.docs.isNotEmpty) {
+        var pacients = pacientsSnapshot.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
             .where((mappedItem) => mappedItem.nome != null)
             .toList();
 

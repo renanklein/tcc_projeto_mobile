@@ -44,7 +44,7 @@ void main() {
           AuthenticationUninitialized(),
           AuthenticationUnauthenticated(),
         ];
-        when(userRepository.getUser()).thenAnswer((_) => Future.value(null));
+        when(userRepository.getUser()).thenAnswer((_) => null);
 
         expectLater(authenticationBloc, emitsInOrder(expectedStates));
 
@@ -57,8 +57,7 @@ void main() {
           AuthenticationAuthenticated()
         ];
 
-        when(userRepository.getUser())
-            .thenAnswer((_) => Future.value(userResponse));
+        when(userRepository.getUser()).thenAnswer((_) => userResponse);
 
         expectLater(authenticationBloc, emitsInOrder(expectedStates));
 

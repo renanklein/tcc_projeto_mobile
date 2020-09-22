@@ -1,5 +1,4 @@
 import 'package:crypto/crypto.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'dart:convert';
 import 'dart:math';

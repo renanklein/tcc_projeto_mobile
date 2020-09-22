@@ -5,8 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
-import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
-import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {

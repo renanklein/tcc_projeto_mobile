@@ -15,10 +15,12 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
   TextEditingController controller = TextEditingController();
   String get fieldValue => this.widget.fieldValue;
   String get fieldPlaceholder => this.widget.fieldPlaceholder;
+  bool isPlaceholder;
 
   @override
   void initState() {
     this.controller.text = this.fieldPlaceholder;
+    this.isPlaceholder = true;
     super.initState();
   }
 
@@ -33,7 +35,13 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
       decoration: _buildFieldDecoration(),
       onTap: () {
         setState(() {
-          this.controller.text = this.fieldValue;
+          if (isPlaceholder) {
+            this.controller.text = this.fieldValue;
+            this.isPlaceholder = false;
+          } else {
+            this.controller.text = this.controller.text = this.fieldPlaceholder;
+            this.isPlaceholder = true;
+          }
         });
       },
     );

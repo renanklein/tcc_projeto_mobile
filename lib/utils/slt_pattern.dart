@@ -1,44 +1,53 @@
 import 'package:crypto/crypto.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'dart:convert';
 import 'dart:math';
 
 class SltPattern {
-  static const String _ppr = '5gN2qTa4RW8esf42wCwudhUWD73d5u2p2VVUCbuE9zU=';
+  static const String _ppr = '5gNA2qTaKmHdP94W8s4wCudEQh7uVE9z';
 
   static final Random _random = Random.secure();
-
-  //final _storage = new FlutterSecureStorage();
 
   static String createCryptoString([int length = 32]) {
     var values = List<int>.generate(length, (i) => _random.nextInt(256));
 
-    return base64Url.encode(values);
+    final String crypto =
+        Uri.encodeComponent(base64Url.encode(values).toString());
+
+    return crypto;
   }
 
   static PacientHashModel pacientHash(id) {
     var salt = createCryptoString();
 
-    var bytes = utf8.encode(_ppr + id + salt);
+    var bytes = utf8.encode('$id$salt');
 
-    //var hmacSha256 = new Hmac(sha256, key);
+    var key = utf8.encode(_ppr);
 
-    //var digest = hmacSha256.convert(bytes);
+    var hmacSha256 = new Hmac(sha256, key);
 
-    var digest = base64Url.encode(bytes);
+    var digest = hmacSha256.convert(bytes);
 
-    PacientHashModel pacientHash = PacientHashModel(hash: digest, salt: salt);
+    PacientHashModel pacientHash =
+        PacientHashModel(hash: digest.toString(), salt: salt);
 
     return pacientHash;
   }
 
   static String retrivepacientHash(id, salt) {
-    var bytes = utf8.encode(_ppr + id + salt);
+    var bytes = utf8.encode('$id$salt');
 
-    var digest = base64Url.encode(bytes);
+    var key = utf8.encode(_ppr);
 
-    return digest;
+    var hmacSha256 = new Hmac(sha256, key);
+
+    var digest = hmacSha256.convert(bytes);
+
+    return digest.toString();
   }
+
+  //final _storage = new FlutterSecureStorage();
 
 /*
 // Read value 

@@ -6,7 +6,7 @@ class MedRecordCreateButtonPressed extends MedRecordEvent {
   final pacientHash;
 
   MedRecordCreateButtonPressed(
-    @required this.pacientHash,
+    this.pacientHash,
   );
 
   @override

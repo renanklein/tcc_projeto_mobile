@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
-import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -27,7 +26,7 @@ class MedRecordScreen extends StatefulWidget {
 class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
-  UserModel _userModel;
+  //UserModel _userModel;
 
   String get index => this.widget.index;
   String get pacientHash => this.widget.pacientHash;
@@ -66,10 +65,11 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     super.dispose();
   }
 
+/*
   Future<void> _setUserModel() async {
     this._userModel = await this.userRepository.getUserModel();
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,34 +181,36 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   Widget _showMedRecord(index, context) {
     switch (index) {
       case 2:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Flexible(child: ExamScreen()),
-            RaisedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(
-                      '/exam',
-                      arguments: 'medRecord',
-                    )
-                    .then((value) => {this._medRecordBloc.add(GetExams())});
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
-              ),
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                "Clique aqui para inserir um exame",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Flexible(child: ExamScreen()),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(
+                        '/exam',
+                        arguments: 'medRecord',
+                      )
+                      .then((value) => {this._medRecordBloc.add(GetExams())});
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Clique aqui para inserir um exame",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
         break;
 

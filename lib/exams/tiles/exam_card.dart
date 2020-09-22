@@ -66,10 +66,10 @@ class ExamCard extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () async {
+          this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
                     examDetails: this.examDetails,
-                    medRecordBloc: this.medRecordBloc,
                     filePath: this.filePath,
                   )));
         },

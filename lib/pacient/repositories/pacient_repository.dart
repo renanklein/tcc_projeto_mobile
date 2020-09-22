@@ -11,8 +11,8 @@ class PacientRepository extends ChangeNotifier {
   List<PacientModel> _pacients;
   List<PacientModel> get pacientsList => _pacients;
 
-  String _userId;
-  set userId(String uid) => this._userId = uid;
+  //String _userId;
+  //set userId(String uid) => this._userId = uid;
 
   final StreamController<List<PacientModel>> _pacientsController =
       StreamController<List<PacientModel>>.broadcast();

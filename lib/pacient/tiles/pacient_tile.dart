@@ -12,7 +12,7 @@ class PacientTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
         color: Color(0xFF84FFFF),
         border: Border.all(
           color: Colors.black,

@@ -26,7 +26,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       {@required this.medRecordRepository, @required this.examRepository})
       : super(null);
 
-  @override
   MedRecordState get initialState => MedRecordInicialState();
 
   @override
@@ -100,8 +99,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
           examFilePaths.add(examInfoList[i + 2]);
         }
         yield GetExamsSuccess(
-            cardExamInfo: examCards,
-            examDetails: examDetails,
+            cardExamInfos: examCards,
+            examDetailsList: examDetails,
             filePaths: examFilePaths);
       } catch (error) {
         yield ExamProcessingFail();

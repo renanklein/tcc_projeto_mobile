@@ -7,12 +7,10 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
-  final medRecordBloc;
   final filePath;
 
   ExamDetailsScreen({
     @required this.examDetails,
-    @required this.medRecordBloc,
     @required this.filePath,
   });
 
@@ -22,20 +20,24 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
-  MedRecordBloc get medRecordBloc => this.widget.medRecordBloc;
+  MedRecordBloc medRecordBloc;
   String get filePath => this.widget.filePath;
+  bool hidePressed = false;
+  bool hideImagePressed = false;
+  String hideButtonTitle;
   bool isDecripted = false;
   Image examImage;
 
   @override
   void initState() {
+    this.hideButtonTitle = this.hidePressed ? "Hide" : "Show";
+    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     this.medRecordBloc.add(DecriptExam(filePath: this.filePath));
     super.initState();
   }
 
   @override
   void dispose() {
-    this.medRecordBloc.close();
     super.dispose();
   }
 
@@ -84,15 +86,11 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       this.isDecripted ? _buildExameImageWidget() : Container(),
       LayoutUtils.buildVerticalSpacing(20.0),
-      TextField(
-          readOnly: true,
-          maxLines: 5,
-          keyboardType: TextInputType.multiline,
-          decoration: _buildFieldDecoration(
-              "Nome do paciente: ${this.examDetails.getPacientName}")),
+      _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -100,18 +98,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
-          decoration: _buildFieldDecoration(
-              "Data do exam: ${this.examDetails.getExamDate}")),
-      LayoutUtils.buildVerticalSpacing(20.0),
-      TextField(
-          readOnly: true,
-          maxLines: 5,
-          keyboardType: TextInputType.multiline,
-          decoration: _buildFieldDecoration(
-              "Responsável pelo exame: ${this.examDetails.getExamResponsable}")),
-      LayoutUtils.buildVerticalSpacing(20.0),
-      TextField(
-          readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -119,13 +106,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
-          maxLines: 5,
-          keyboardType: TextInputType.multiline,
-          decoration: _buildFieldDecoration(
-              "Unidade de realização do exame: ${this.examDetails.getExaminationUnit}")),
-      LayoutUtils.buildVerticalSpacing(20.0),
-      TextField(
-          readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
@@ -133,11 +114,27 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       TextField(
           readOnly: true,
+          minLines: 1,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
           decoration: _buildFieldDecoration(
-              "Médico solicitante: ${this.examDetails.getRequestingDoctor}")),
+              "Unidade de realização do exame: ${this.examDetails.getExaminationUnit}")),
       LayoutUtils.buildVerticalSpacing(20.0),
+      ..._showOtherFields(),
+      Visibility(
+          visible: true,
+          child: IconButton(
+            color: Theme.of(context).primaryColor,
+            iconSize: 50.0,
+            icon: this.hidePressed
+                ? Icon(Icons.arrow_drop_up)
+                : Icon(Icons.arrow_drop_down),
+            onPressed: () {
+              setState(() {
+                this.hidePressed = !this.hidePressed;
+              });
+            },
+          ))
     ];
   }
 
@@ -152,7 +149,66 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
     ));
   }
 
+  Widget _showHideImageButton() {
+    return Visibility(
+      visible: true,
+      child: IconButton(
+          color: Theme.of(context).primaryColor,
+          iconSize: 50.0,
+          icon: this.hideImagePressed
+              ? Icon(Icons.arrow_drop_down)
+              : Icon(Icons.arrow_drop_up),
+          onPressed: () {
+            setState(() {
+              this.hideImagePressed = !this.hideImagePressed;
+            });
+          }),
+    );
+  }
+
   Widget _buildExameImageWidget() {
-    return Container(child: this.examImage);
+    if (!this.hideImagePressed) {
+      return Container(child: this.examImage);
+    }
+
+    return Container();
+  }
+
+  List<Widget> _showOtherFields() {
+    if (this.hidePressed) {
+      return <Widget>[
+        TextField(
+            readOnly: true,
+            minLines: 1,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
+            decoration: _buildFieldDecoration(
+                "Nome do paciente: ${this.examDetails.getPacientName}")),
+        LayoutUtils.buildVerticalSpacing(20.0),
+        TextField(
+            readOnly: true,
+            minLines: 1,
+            decoration: _buildFieldDecoration(
+                "Data do exam: ${this.examDetails.getExamDate}")),
+        LayoutUtils.buildVerticalSpacing(20.0),
+        TextField(
+            readOnly: true,
+            minLines: 1,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
+            decoration: _buildFieldDecoration(
+                "Responsável pelo exame: ${this.examDetails.getExamResponsable}")),
+        LayoutUtils.buildVerticalSpacing(20.0),
+        TextField(
+            readOnly: true,
+            minLines: 1,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
+            decoration: _buildFieldDecoration(
+                "Médico solicitante: ${this.examDetails.getRequestingDoctor}")),
+        LayoutUtils.buildVerticalSpacing(20.0),
+      ];
+    }
+    return <Widget>[Container()];
   }
 }

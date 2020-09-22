@@ -13,17 +13,17 @@ class ExamProcessing extends MedRecordState {
 }
 
 class GetExamsSuccess extends MedRecordState {
-  final cardExamInfo;
-  final examDetails;
+  final cardExamInfos;
+  final examDetailsList;
   final filePaths;
 
   GetExamsSuccess(
-      {@required this.cardExamInfo,
-      @required this.examDetails,
+      {@required this.cardExamInfos,
+      @required this.examDetailsList,
       @required this.filePaths});
 
-  List<CardExamInfo> get getCardExamInfo => this.cardExamInfo;
-  List<ExamDetails> get getExamDetails => this.examDetails;
+  List<CardExamInfo> get getCardExamInfo => this.cardExamInfos;
+  List<ExamDetails> get getExamDetails => this.examDetailsList;
   List<String> get getFilePath => this.filePaths;
 
   @override

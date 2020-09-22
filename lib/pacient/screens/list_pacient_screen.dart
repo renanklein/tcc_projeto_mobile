@@ -113,15 +113,16 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                             pacientSearchBar(_searchBarController,
                                 'Digite um nome aqui para pesquisar'),
                             Expanded(
-                                child: ListView.builder(
-                              itemCount: _pacientsList.length,
-                              itemBuilder: (context, index) => listPacientView(
-                                  _pacientsList[index].cpf,
-                                  _pacientsList[index].salt,
-                                  _pacientsList[index].nome,
-                                  'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
-                                  'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
-                            ))
+                              child: ListView.builder(
+                                itemCount: _pacientsList.length,
+                                itemBuilder: (context, index) => listPacientView(
+                                    _pacientsList[index].cpf,
+                                    _pacientsList[index].salt,
+                                    _pacientsList[index].nome,
+                                    'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
+                                    'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
+                              ),
+                            )
                           ])),
                     )),
                   );
@@ -160,25 +161,27 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
 
   Widget listPacientView(cpf, salt, nome, texto, img) {
     var _pacientHash = SltPattern.retrivepacientHash(cpf, salt);
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.93,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  '/medRecord',
-                  arguments: _pacientHash,
-                );
-              },
-              child: PacientTile(title: nome, textBody: texto, imgPath: img
-                  //'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
-                  ),
+    return Expanded(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.93,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    '/medRecord',
+                    arguments: _pacientHash,
+                  );
+                },
+                child: PacientTile(title: nome, textBody: texto, imgPath: img
+                    //'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
+                    ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -186,7 +189,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
 
 Widget pacientSearchBar(controller, hint) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 4.0),
+    padding: const EdgeInsets.fromLTRB(8.0, 15.0, 8.0, 4.0),
     child: Container(
       child: TextFormField(
         controller: controller,

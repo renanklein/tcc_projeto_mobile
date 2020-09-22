@@ -39,7 +39,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
 
   @override
   void dispose() {
-    this._medRecordBloc.close();
     super.dispose();
   }
 

@@ -23,7 +23,7 @@ class PacientTile extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(6.0, 3.0, 4.0, 4.0),
             child: Container(
               constraints: BoxConstraints.expand(
                 width: 90,
@@ -35,7 +35,7 @@ class PacientTile extends StatelessWidget {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.60,
+            width: MediaQuery.of(context).size.width * 0.65,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,

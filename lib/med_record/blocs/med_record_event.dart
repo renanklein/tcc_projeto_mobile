@@ -14,9 +14,13 @@ class MedRecordCreateButtonPressed extends MedRecordEvent {
 }
 
 class MedRecordLoad extends MedRecordEvent {
-  String hash;
+  String _pacientHash;
 
-  MedRecordLoad({@required String hash});
+  MedRecordLoad({@required String pacientHash}) {
+    this._pacientHash = pacientHash;
+  }
+
+  String get getPacientHash => this._pacientHash;
 
   @override
   List<Object> get props => [];

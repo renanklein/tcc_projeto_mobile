@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
-import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -157,10 +155,14 @@ class _UserDrawerState extends State<UserDrawer> {
     );
   }
 
+// TODO: Verificar o Link de Exame seguindo pela lista de pacientes
+// TODO: Fazer arquivo de link???
+
   void _navigateToExameScreen() {
     Navigator.of(context).pushNamed(
       '/medRecord',
-      arguments: 'examScreen',
+      arguments: MedRecordArguments(
+          index: 'examScreen', pacientCpf: '', pacientSalt: ''),
     );
   }
 
@@ -174,7 +176,7 @@ class _UserDrawerState extends State<UserDrawer> {
   void _navigateToMedRecordScreen() {
     Navigator.of(context).pushNamed(
       '/medRecord',
-      arguments: 'drawer',
+      arguments: MedRecordArguments(index: '', pacientCpf: '', pacientSalt: ''),
     );
   }
 }

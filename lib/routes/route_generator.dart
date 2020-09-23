@@ -11,6 +11,7 @@ import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/wait_list_screen.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 class RouteGenerator {
   GlobalKey<NavigatorState> _navigationKey = GlobalKey<NavigatorState>();
@@ -56,11 +57,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => PacientDetailScreen());
         break;
       case medRecordRoute:
-        var data = settings.arguments as String;
+        var data = settings.arguments as MedRecordArguments;
         return MaterialPageRoute(
             builder: (_) => MedRecordScreen(
-                  index: data,
-                  pacientHash: data,
+                  medRecordArguments: data,
                 ));
         break;
       case '/newPacientDetail':

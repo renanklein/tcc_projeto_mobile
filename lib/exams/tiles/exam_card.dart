@@ -17,7 +17,7 @@ class ExamCard extends StatelessWidget {
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   String get getFilePath => this.filePath;
-  MedRecordBloc get get_medRecordBloc => this.medRecordBloc;
+  MedRecordBloc get getMedRecordBloc => this.medRecordBloc;
 
   @override
   Widget build(BuildContext context) {

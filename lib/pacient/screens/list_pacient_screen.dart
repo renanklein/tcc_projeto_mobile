@@ -5,7 +5,7 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
-import 'package:tcc_projeto_app/utils/slt_pattern.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 class ListPacientScreen extends StatefulWidget {
   @override
@@ -84,6 +84,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 ),
               );
             } else if (state is PacientLoadEventFail) {
+              //TODO: fazer widget
               Scaffold.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.red,
@@ -115,12 +116,10 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                             Expanded(
                               child: ListView.builder(
                                 itemCount: _pacientsList.length,
-                                itemBuilder: (context, index) => listPacientView(
-                                    _pacientsList[index].cpf,
-                                    _pacientsList[index].salt,
-                                    _pacientsList[index].nome,
-                                    'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
-                                    'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg'),
+                                itemBuilder: (context, index) =>
+                                    _listPacientView(
+                                  _pacientsList[index],
+                                ),
                               ),
                             )
                           ])),
@@ -159,29 +158,33 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
     );
   }
 
-  Widget listPacientView(cpf, salt, nome, texto, img) {
-    var _pacientHash = SltPattern.retrivepacientHash(cpf, salt);
-    return Expanded(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.93,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    '/medRecord',
-                    arguments: _pacientHash,
-                  );
-                },
-                child: PacientTile(title: nome, textBody: texto, imgPath: img
-                    //'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
-                    ),
+  Widget _listPacientView(PacientModel pacient) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.93,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  '/medRecord',
+                  arguments: MedRecordArguments(
+                      index: 'index',
+                      pacientCpf: pacient.cpf,
+                      pacientSalt: pacient.salt),
+                );
+              },
+              child: PacientTile(
+                title: pacient.nome,
+                textBody:
+                    'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
+                imgPath:
+                    'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

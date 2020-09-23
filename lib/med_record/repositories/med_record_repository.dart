@@ -5,8 +5,6 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 class MedRecordRepository {
   final CollectionReference _medRecordCollectionReference =
       Firestore.instance.collection('prontuario');
-  String _pacientHash;
-  set pacientHash(String hash) => this._pacientHash = hash;
 
   Future updateMedRecord({
     @required String pacientHash,
@@ -21,10 +19,11 @@ class MedRecordRepository {
     }
   }
 
-  Future getMedRecordByCpf() async {
+  Future<MedRecordModel> getMedRecordByCpf(String pacientHash) async {
     try {
       MedRecordModel medRecord;
-      var document = _medRecordCollectionReference.document(_pacientHash);
+      var document = _medRecordCollectionReference.document(pacientHash);
+      medRecord.setPacientHash = pacientHash;
 
       if (document != null) {
         await document.get().then(

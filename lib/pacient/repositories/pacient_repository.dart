@@ -42,6 +42,8 @@ class PacientRepository extends ChangeNotifier {
     });
   }
 
+// TODO: iterar paciente pelo ID do médico
+
   Stream listenToPacientsRealTime() {
     _pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
       if (pacientsSnapshot.documents.isNotEmpty) {

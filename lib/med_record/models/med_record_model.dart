@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 
 class MedRecordModel {
   String _pacientHash;
+  String _medRecordOverview;
 
   MedRecordModel({
     @required String pacientHash,
+    @required String overview,
   }) {
     this._pacientHash = pacientHash;
+    this._medRecordOverview = overview;
   }
 
   Map<String, dynamic> toMap() {
     return {
       'pacientHash': _pacientHash,
+      'medRecordOverview': _medRecordOverview,
     };
   }
 
@@ -20,9 +24,10 @@ class MedRecordModel {
 
     return MedRecordModel(
       pacientHash: 'teste',
+      overview: map['medRecordOverview'],
     );
   }
 
-  //String get email => this._email;
-  //set userUid(String uid) => this._userId = uid;
+  String get medRecordOverview => this._medRecordOverview;
+  set setPacientHash(String hash) => this._pacientHash = hash;
 }

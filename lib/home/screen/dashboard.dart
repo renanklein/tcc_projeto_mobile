@@ -70,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
                                 arguments: 'Dashboard',
                               );
                             },
-                            child: _DashboardItem(
+                            child: _dashboardItem(
                               Icons.library_add,
                               'Cadastrar Paciente',
                               0xFF1A237E,
@@ -83,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
                                 arguments: 'Dashboard',
                               );
                             },
-                            child: _DashboardItem(
+                            child: _dashboardItem(
                                 Icons.archive, 'Listar Pacientes', 0xFF1A237E),
                           ),
                         ],
@@ -101,7 +101,7 @@ class _DashboardState extends State<Dashboard> {
                                 arguments: 'Dashboard',
                               );
                             },
-                            child: _DashboardItem(
+                            child: _dashboardItem(
                               Icons.event,
                               'Eventos',
                               0xFF1A237E,
@@ -114,7 +114,7 @@ class _DashboardState extends State<Dashboard> {
                                 arguments: 'Dashboard',
                               );
                             },
-                            child: _DashboardItem(
+                            child: _dashboardItem(
                               Icons.library_add,
                               'Banco de Encaixe',
                               0xFF1A237E,
@@ -133,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _DashboardItem(IconData icon, String heading, int color) {
+  Widget _dashboardItem(IconData icon, String heading, int color) {
     return Material(
       color: Color(0xFF84FFFF),
       elevation: 14.0,

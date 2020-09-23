@@ -6,17 +6,18 @@ import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class MedRecordScreen extends StatefulWidget {
-  final String index;
-  final String pacientHash;
+  final MedRecordArguments medRecordArguments;
 
   MedRecordScreen({
-    @required this.index,
-    @required this.pacientHash,
+    @required this.medRecordArguments,
   });
 
   @override
@@ -26,10 +27,10 @@ class MedRecordScreen extends StatefulWidget {
 class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
+  MedRecordModel _medRecordModel;
   //UserModel _userModel;
 
-  String get index => this.widget.index;
-  String get pacientHash => this.widget.pacientHash;
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
 
   int _selectedIndex;
 
@@ -44,15 +45,17 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         medRecordRepository: this._medRecordRepository,
         examRepository: examRepository);
 
-    if (index != null) {
-      _selectedIndex = _parseIndex(index);
+    if (medRecordArguments.index != null) {
+      _selectedIndex = _parseIndex(medRecordArguments.index);
     } else {
       _selectedIndex = 0;
     }
 
-    if (pacientHash != null) {
+    if (medRecordArguments.pacientCpf != null &&
+        medRecordArguments.pacientSalt != null) {
       _medRecordBloc.add(MedRecordLoad(
-        hash: pacientHash,
+        pacientHash: SltPattern.retrivepacientHash(
+            medRecordArguments.pacientCpf, medRecordArguments.pacientSalt),
       ));
     }
 
@@ -70,6 +73,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     this._userModel = await this.userRepository.getUserModel();
   }
 */
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +87,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
-            if (state is AuthenticationUnauthenticated) {}
+            if (state is AuthenticationUnauthenticated) {
+            } else if (state is MedRecordLoadEventSuccess) {
+              _medRecordModel = state.medRecordLoaded;
+            }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             builder: (context, state) {

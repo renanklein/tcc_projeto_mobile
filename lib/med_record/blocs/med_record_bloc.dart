@@ -36,6 +36,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield CreateMedRecordEventProcessing();
 
+        //TODO: Inserção itens Prontuario
+
         await medRecordRepository.updateMedRecord(
             pacientHash: event.pacientHash,
             medRecordModel: MedRecordModel(pacientHash: '22'));

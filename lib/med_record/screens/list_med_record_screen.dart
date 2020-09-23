@@ -30,6 +30,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordModel _medRecordModel;
   //UserModel _userModel;
 
+  //TODO: Implementar modelo de prontuario
+
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
 
   int _selectedIndex;

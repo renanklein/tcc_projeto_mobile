@@ -5,23 +5,23 @@ class PrescriptionModel {
   String _medicine;
   String _dosage;
   String _dosageForm;
-  String _usage;
-  String _duration;
+  String _usageOrientation;
+  String _usageDuration;
   String _date;
 
   PrescriptionModel({
     @required String medicine,
     @required String dosage,
     @required String dosageForm,
-    @required String usage,
-    @required String duration,
+    @required String usageOrientation,
+    @required String usageDuration,
     @required String date,
   }) {
     this._medicine = medicine;
     this._dosage = dosage;
     this._dosageForm = dosageForm;
-    this._usage = usage;
-    this._duration = duration;
+    this._usageOrientation = usageOrientation;
+    this._usageDuration = usageDuration;
     this._date = date;
   }
 
@@ -30,8 +30,8 @@ class PrescriptionModel {
       'medicine': _medicine,
       'dosage': _dosage,
       'dosageForm': _dosageForm,
-      'usage': _usage,
-      'duration': _duration,
+      'usage': _usageOrientation,
+      'duration': _usageDuration,
       'date': _date,
     };
   }
@@ -43,8 +43,8 @@ class PrescriptionModel {
       medicine: map['medicine'],
       dosage: map['dosage'],
       dosageForm: map['dosageForm'],
-      usage: map['usage'],
-      duration: map['duration'],
+      usageOrientation: map['usage'],
+      usageDuration: map['duration'],
       date: map['date'],
     );
   }

@@ -17,14 +17,17 @@ part 'med_record_event.dart';
 part 'med_record_state.dart';
 part 'exam_state.dart';
 part 'exam_event.dart';
+part 'diagnosis_state.dart';
+part 'diagnosis_event.dart';
 
 class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   MedRecordRepository medRecordRepository;
   ExamRepository examRepository;
 
-  MedRecordBloc(
-      {@required this.medRecordRepository, @required this.examRepository})
-      : super(null);
+  MedRecordBloc({
+    @required this.medRecordRepository,
+    this.examRepository,
+  }) : super(null);
 
   MedRecordState get initialState => MedRecordInicialState();
 
@@ -63,6 +66,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     } else if (event is MedRecordDeleteButtonPressed) {
       try {} catch (error) {}
     }
+
+    if (event is DiagnosisCreateButtonPressed) {
+      try {
+        yield DiagnosisCreateEventProcessing();
+
+        yield DiagnosisCreateEventSuccess();
+      } catch (error) {
+        yield DiagnosisCreateEventFail();
+      }
+    }
+
     if (event is SaveExam) {
       try {
         yield ExamProcessing();

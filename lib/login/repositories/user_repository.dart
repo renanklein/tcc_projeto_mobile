@@ -58,6 +58,8 @@ class UserRepository {
       @required String uid}) async {
     final userData = {"name": name, "email": email};
 
+    //TODO: Incluir tipo de usuário, secretária, médico, paciente
+
     await Firestore.instance
         .collection("users")
         .document(uid)

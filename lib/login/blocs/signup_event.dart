@@ -2,6 +2,8 @@ part of 'signup_bloc.dart';
 
 abstract class SignupEvent extends Equatable {}
 
+//TODO: adicionar tipo de usuario, Secretária, Médico, Paciente
+
 class SignupButtonPressed extends SignupEvent {
   final name;
   final email;

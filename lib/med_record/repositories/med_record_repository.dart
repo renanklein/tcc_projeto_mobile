@@ -29,9 +29,9 @@ class MedRecordRepository {
         await document.get().then(
               (value) => medRecord = MedRecordModel.fromMap(value.data),
             );
-        await document.setData({'empty': 'yes'});
+        //await document.setData({'created': 'yes'});
       } else {
-        await document.setData({'empty': 'yes'});
+        await document.setData({'created': DateTime.now().toString()});
       }
       return medRecord;
     } on Exception catch (e) {

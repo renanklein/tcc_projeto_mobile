@@ -128,10 +128,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final paciente = DropdownMenuItem(child: Text("Paciente"));
 
+    final secretaria = DropdownMenuItem(child: Text("Secretária"));
+
     final list = List<DropdownMenuItem>();
 
     list.add(medico);
     list.add(paciente);
+    list.add(secretaria);
 
     return list;
   }

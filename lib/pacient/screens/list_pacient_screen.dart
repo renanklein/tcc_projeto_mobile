@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 class ListPacientScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
     this._pacientBloc =
         new PacientBloc(pacientRepository: this._pacientRepository);
 
-    this._pacientBloc.add(PacientLoad());
+    _loadPacients();
 
     this._searchBarController = new TextEditingController();
 
@@ -45,117 +46,86 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text("Menu principal"),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        elevation: 0.0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: IconButton(
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text("Menu principal"),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0.0,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            color: Theme.of(context).primaryColor,
+            onPressed: () {
+              Navigator.of(context).pushNamed(createPacientRoute);
+            },
           ),
-          color: Theme.of(context).primaryColor,
-          onPressed: () {
-            Navigator.of(context).pushNamed('/createPacient');
-          },
         ),
-      ),
-      body: BlocProvider<PacientBloc>(
-        create: (context) => this._pacientBloc,
-        child: BlocListener<PacientBloc, PacientState>(
-          listener: (context, state) {
-            if (state is PacientLoadEventSuccess) {
-              _pacientsList = state.pacientsLoaded;
-            } else if (state is CreatePacientEventSuccess) {
-              _pacientBloc.add(PacientLoad());
-              return SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                  "Paciente criado com sucesso",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                ),
-              );
-            } else if (state is PacientLoadEventFail) {
-              //TODO: fazer widget
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Text(
-                    "Ocorreu um erro ao buscar a listagem de pacientes",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            }
-          },
-          child: BlocBuilder<PacientBloc, PacientState>(
-              cubit: this._pacientBloc,
-              builder: (context, state) {
-                if (state is PacientLoadEventSuccess && _pacientsList != null) {
-                  return SafeArea(
-                    child: Center(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          width: MediaQuery.of(context).size.width * 0.98,
-                          child: Column(children: <Widget>[
-                            pacientSearchBar(_searchBarController,
-                                'Digite um nome aqui para pesquisar'),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: _pacientsList.length,
-                                itemBuilder: (context, index) =>
-                                    _listPacientView(
-                                  _pacientsList[index],
-                                ),
-                              ),
-                            )
-                          ])),
-                    )),
-                  );
-                } else {
-                  return SafeArea(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.98,
-                          child: Column(
-                            children: <Widget>[
-                              pacientSearchBar(_searchBarController,
-                                  'Digite um nome aqui para pesquisar'),
-                              Expanded(
+        body: BlocProvider<PacientBloc>(
+            create: (context) => this._pacientBloc,
+            child: BlocListener<PacientBloc, PacientState>(
+                listener: (context, state) {
+                  if (state is PacientLoadEventSuccess) {
+                  } else if (state is PacientLoadEventFail) {}
+                },
+                child: BlocBuilder<PacientBloc, PacientState>(
+                    cubit: this._pacientBloc,
+                    builder: (context, state) {
+                      return FutureBuilder(
+                          future: _loadPacients(),
+                          builder: (context, snapshot) {
+                            return SafeArea(
                                 child: Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation(
-                                      Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              }),
-        ),
-      ),
-    );
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.98,
+                                            child: Column(children: <Widget>[
+                                              pacientSearchBar(
+                                                  _searchBarController,
+                                                  'Digite um nome aqui para pesquisar'),
+                                              Expanded(
+                                                child: (state
+                                                            is PacientLoadEventSuccess &&
+                                                        state.pacientsLoaded !=
+                                                            null)
+                                                    ? ListView.builder(
+                                                        itemCount: (state
+                                                                .pacientsLoaded)
+                                                            .length,
+                                                        itemBuilder: (context,
+                                                                index) =>
+                                                            _listPacientView(
+                                                          state.pacientsLoaded[
+                                                              index],
+                                                        ),
+                                                      )
+                                                    : Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation(
+                                                            Theme.of(context)
+                                                                .primaryColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                              )
+                                            ])))));
+                          });
+                    }))));
+  }
+
+  Future _loadPacients() async {
+    await _pacientBloc.add(PacientLoad());
   }
 
   Widget _listPacientView(PacientModel pacient) {
@@ -168,7 +138,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed(
-                  '/medRecord',
+                  medRecordRoute,
                   arguments: MedRecordArguments(
                       index: 'index',
                       pacientCpf: pacient.cpf,
@@ -211,4 +181,19 @@ Widget pacientSearchBar(controller, hint) {
       ),
     ),
   );
+}
+
+Widget onPacientLoadFail() {
+  return Scaffold(
+      body: SnackBar(
+    backgroundColor: Colors.red,
+    content: Text(
+      "Ocorreu um erro ao buscar a listagem de pacientes",
+      style: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
+    ),
+  ));
 }

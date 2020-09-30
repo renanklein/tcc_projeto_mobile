@@ -6,6 +6,7 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
@@ -66,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed(
-                                '/createPacient',
+                                createPacientRoute,
                                 arguments: 'Dashboard',
                               );
                             },
@@ -79,7 +80,7 @@ class _DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed(
-                                '/pacients',
+                                pacientsRoute,
                                 arguments: 'Dashboard',
                               );
                             },
@@ -97,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed(
-                                '/home',
+                                homeRoute,
                                 arguments: 'Dashboard',
                               );
                             },
@@ -110,7 +111,7 @@ class _DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed(
-                                '/waitList',
+                                waitListRoute,
                                 arguments: 'Dashboard',
                               );
                             },

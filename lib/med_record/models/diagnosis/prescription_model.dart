@@ -7,7 +7,6 @@ class PrescriptionModel {
   String _dosageForm;
   String _usageOrientation;
   String _usageDuration;
-  String _date;
 
   PrescriptionModel({
     @required String medicine,
@@ -15,14 +14,12 @@ class PrescriptionModel {
     @required String dosageForm,
     @required String usageOrientation,
     @required String usageDuration,
-    @required String date,
   }) {
     this._medicine = medicine;
     this._dosage = dosage;
     this._dosageForm = dosageForm;
     this._usageOrientation = usageOrientation;
     this._usageDuration = usageDuration;
-    this._date = date;
   }
 
   Map<String, dynamic> toMap() {
@@ -32,7 +29,6 @@ class PrescriptionModel {
       'dosageForm': _dosageForm,
       'usage': _usageOrientation,
       'duration': _usageDuration,
-      'date': _date,
     };
   }
 
@@ -45,7 +41,6 @@ class PrescriptionModel {
       dosageForm: map['dosageForm'],
       usageOrientation: map['usage'],
       usageDuration: map['duration'],
-      date: map['date'],
     );
   }
 

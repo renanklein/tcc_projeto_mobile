@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Menu principal"),
+          title: Text("Eventos Agendados"),
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
@@ -87,8 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _createCardList() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
       child: ListView(
+        //TODO: Mostrar Eventos Agendados
         children: <Widget>[
           HomeCardTile(
             title: "Lorem",

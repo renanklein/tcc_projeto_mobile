@@ -63,7 +63,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Agenda"),
+          title: Text("Agendar Consulta"),
           elevation: 0.0,
         ),
         body: BlocProvider<AgendaBloc>(
@@ -126,8 +126,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         ),
         color: Theme.of(context).primaryColor,
         child: Text(
-          "${this.widget.isEdit ? "Editar" : "Criar"}",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          "${this.widget.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
+          style: TextStyle(
+              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
           _createOrEditEvent();
@@ -143,7 +144,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
     var fieldsList = <Widget>[];
 
-    fieldsList.add(EventNameField(eventNameController: this._eventNameController));
+    fieldsList
+        .add(EventNameField(eventNameController: this._eventNameController));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
     fieldsList.add(EventDate(selectedDay: this.selectedDay));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));

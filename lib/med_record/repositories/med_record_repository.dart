@@ -23,16 +23,20 @@ class MedRecordRepository {
     try {
       MedRecordModel medRecord;
       var document = _medRecordCollectionReference.document(pacientHash);
-      medRecord.setPacientHash = pacientHash;
+      medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
-      if (document != null) {
-        await document.get().then(
-              (value) => medRecord = MedRecordModel.fromMap(value.data),
-            );
-        //await document.setData({'created': 'yes'});
-      } else {
-        await document.setData({'created': DateTime.now().toString()});
-      }
+      await document.get().then(
+            (value) => medRecord = MedRecordModel.fromMap(value.data),
+          );
+
+      await document.setData({
+        'Diagnóstico': {
+          'problema': {'descrição': 'teste', 'id': '08'},
+          'diagnostico': {'descrição': 'teste', 'cid': '8459'},
+          'prescrição': {'droga': 'teste', 'dose': '8459', 'uso': 'oral'},
+        }
+      });
+
       return medRecord;
     } on Exception catch (e) {
       e.toString();

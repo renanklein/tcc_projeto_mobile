@@ -19,7 +19,7 @@ class _ExamScreenState extends State<ExamScreen> {
   List examDetailsList;
   List fileDownloadURLs;
   Uint8List decriptedBytes = Uint8List(0);
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

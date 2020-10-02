@@ -43,13 +43,13 @@ class DeletePacientEventFail extends PacientState {
 }
 
 class PacientLoadEventSuccess extends PacientState {
-  Map<String, List<dynamic>> _pacientsLoaded;
+  List<PacientModel> _pacientsLoaded;
 
-  PacientLoadEventSuccess(Map<String, List<dynamic>> pacients) {
+  PacientLoadEventSuccess(List<PacientModel> pacients) {
     this._pacientsLoaded = pacients;
   }
 
-  Map<String, List<dynamic>> get pacientsLoaded => this._pacientsLoaded;
+  List<PacientModel> get pacientsLoaded => this._pacientsLoaded;
 
   @override
   List<Object> get props => throw UnimplementedError();

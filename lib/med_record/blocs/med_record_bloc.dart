@@ -10,19 +10,23 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:http/http.dart' as http;
 
 part 'med_record_event.dart';
 part 'med_record_state.dart';
+part 'diagnosis_state.dart';
+part 'diagnosis_event.dart';
 
 class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   MedRecordRepository medRecordRepository;
   ExamRepository examRepository;
 
-  MedRecordBloc(
-      {@required this.medRecordRepository, @required this.examRepository})
-      : super(null);
+  MedRecordBloc({
+    @required this.medRecordRepository,
+    this.examRepository,
+  }) : super(null);
 
   MedRecordState get initialState => MedRecordInicialState();
 
@@ -34,6 +38,12 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield CreateMedRecordEventProcessing();
 
+        //TODO: Inserção itens Prontuario
+
+        await medRecordRepository.updateMedRecord(
+            pacientHash: event.pacientHash,
+            medRecordModel: MedRecordModel(pacientHash: '22'));
+
         yield CreateMedRecordEventSuccess();
       } catch (error) {
         yield CreateMedRecordEventFail();
@@ -42,9 +52,11 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield MedRecordLoading();
 
-        //ar events = await this.medRecordRepository.getEvents();
+        MedRecordModel medRecord = await this
+            .medRecordRepository
+            .getMedRecordByCpf(event.getPacientHash);
 
-        //yield MedRecordLoadSuccess(events);
+        yield MedRecordLoadEventSuccess(medRecord: medRecord);
       } catch (error) {
         yield MedRecordLoadEventFail();
       }
@@ -53,6 +65,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     } else if (event is MedRecordDeleteButtonPressed) {
       try {} catch (error) {}
     }
+
+    if (event is DiagnosisCreateButtonPressed) {
+      try {
+        yield DiagnosisCreateEventProcessing();
+
+        yield DiagnosisCreateEventSuccess();
+      } catch (error) {
+        yield DiagnosisCreateEventFail();
+      }
+    }
+
     if (event is SaveExam) {
       try {
         yield ExamProcessing();

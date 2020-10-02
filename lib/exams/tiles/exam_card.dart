@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/exams/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 
 class ExamCard extends StatelessWidget {

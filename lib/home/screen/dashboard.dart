@@ -6,6 +6,7 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
@@ -53,76 +54,78 @@ class _DashboardState extends State<Dashboard> {
                 elevation: 0.0,
               ),
               drawer: UserDrawer(),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/createPacient',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.library_add,
-                            'Cadastrar Paciente',
-                            0xFF1A237E,
+              body: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                createPacientRoute,
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _dashboardItem(
+                              Icons.library_add,
+                              'Cadastrar Paciente',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/pacients',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                              Icons.archive, 'Listar Pacientes', 0xFF1A237E),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                pacientsRoute,
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _dashboardItem(
+                                Icons.archive, 'Listar Pacientes', 0xFF1A237E),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/home',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.event,
-                            'Eventos',
-                            0xFF1A237E,
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                homeRoute,
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _dashboardItem(
+                              Icons.event,
+                              'Eventos',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/waitList',
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _DashboardItem(
-                            Icons.library_add,
-                            'Banco de Encaixe',
-                            0xFF1A237E,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                waitListRoute,
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _dashboardItem(
+                              Icons.library_add,
+                              'Banco de Encaixe',
+                              0xFF1A237E,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -131,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _DashboardItem(IconData icon, String heading, int color) {
+  Widget _dashboardItem(IconData icon, String heading, int color) {
     return Material(
       color: Color(0xFF84FFFF),
       elevation: 14.0,

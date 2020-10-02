@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 part 'pacient_event.dart';
 part 'pacient_state.dart';
@@ -14,7 +16,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
   PacientBloc({@required this.pacientRepository}) : super(null);
 
-  @override
+  //@override
   PacientState get initialState => PacientInicialState();
 
   @override
@@ -25,17 +27,20 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield CreatePacientEventProcessing();
 
+        PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
+
         await this.pacientRepository.createPacient(
-              pacient: PacientModel(
-                  userId: event.userId,
-                  nome: event.nome,
-                  email: event.email,
-                  telefone: event.telefone,
-                  identidade: event.identidade,
-                  cpf: event.cpf,
-                  dtNascimento: event.dtNascimento,
-                  sexo: event.sexo),
-            );
+                pacient: PacientModel(
+              userId: event.userId,
+              nome: event.nome,
+              email: event.email,
+              telefone: event.telefone,
+              identidade: event.identidade,
+              cpf: event.cpf,
+              dtNascimento: event.dtNascimento,
+              sexo: event.sexo,
+              salt: pacientHashModel.salt,
+            ));
 
         yield CreatePacientEventSuccess();
       } catch (error) {
@@ -45,9 +50,9 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield PacientLoading();
 
-        var pacients = await this.pacientRepository.getPacientsList();
+        pacientRepository.listenToPacients();
 
-        //yield PacientLoadEventSuccess(events);
+        yield PacientLoadEventSuccess(pacientRepository.pacientsList);
       } catch (error) {
         yield PacientLoadEventFail();
       }

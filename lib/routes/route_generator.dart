@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
-import 'package:tcc_projeto_app/exams/exam_form_screen.dart';
-import 'package:tcc_projeto_app/exams/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -11,6 +10,8 @@ import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/wait_list_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 class RouteGenerator {
   GlobalKey<NavigatorState> _navigationKey = GlobalKey<NavigatorState>();
@@ -23,40 +24,44 @@ class RouteGenerator {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     String uid;
-    final args = settings.arguments;
+    //final MedRecordArguments mDArgs = settings.arguments as Type;
     final userRepo = Injector.appInstance.getDependency<UserRepository>();
     uid = userRepo.getUser().uid;
 
     switch (settings.name) {
-      case '/':
+      case dashboardRoute:
         return MaterialPageRoute(builder: (_) => Dashboard());
         break;
-      case '/home':
+      case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
-      case '/exam':
-        return MaterialPageRoute(builder: (_) => ExamFormScreen());
+      case examRoute:
+        return MaterialPageRoute(builder: (context) => ExamFormScreen());
         break;
-      case '/pacients':
+      case pacientsRoute:
         return MaterialPageRoute(builder: (_) => ListPacientScreen());
         break;
-      case '/calendar':
+      case calendarRoute:
         return MaterialPageRoute(
             builder: (_) => UserCalendar(
                   uid: uid,
                 ));
         break;
-      case '/createPacient':
+      case createPacientRoute:
         return MaterialPageRoute(builder: (_) => CreatePacientScreen());
         break;
-      case '/waitList':
+      case waitListRoute:
         return MaterialPageRoute(builder: (_) => WaitList());
         break;
-      case '/pacientDetail':
+      case pacientDetailRoute:
         return MaterialPageRoute(builder: (_) => PacientDetailScreen());
         break;
-      case '/medRecord':
-        return MaterialPageRoute(builder: (_) => ListMedRecordScreen());
+      case medRecordRoute:
+        var data = settings.arguments as MedRecordArguments;
+        return MaterialPageRoute(
+            builder: (_) => MedRecordScreen(
+                  medRecordArguments: data,
+                ));
         break;
       case '/newPacientDetail':
         //return MaterialPageRoute(builder: (_) => NewPacientDetailScreen());

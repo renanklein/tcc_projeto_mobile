@@ -15,7 +15,7 @@ import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
-import 'package:tcc_projeto_app/route_generator.dart';
+import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class MyApp extends StatefulWidget {

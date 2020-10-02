@@ -12,7 +12,7 @@ class PacientTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
         color: Color(0xFF84FFFF),
         border: Border.all(
           color: Colors.black,
@@ -23,7 +23,7 @@ class PacientTile extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(6.0, 3.0, 4.0, 4.0),
             child: Container(
               constraints: BoxConstraints.expand(
                 width: 90,
@@ -31,19 +31,18 @@ class PacientTile extends StatelessWidget {
               ),
               decoration:
                   BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
-              child: Image.network(
-                  imgPath),
+              child: Image.network(imgPath),
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.60,
+            width: MediaQuery.of(context).size.width * 0.65,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Text(
                   title,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.fade,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 25.0,
@@ -55,7 +54,7 @@ class PacientTile extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     textBody,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.fade,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15.0,

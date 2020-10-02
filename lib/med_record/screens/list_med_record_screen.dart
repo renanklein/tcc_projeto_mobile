@@ -2,24 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tcc_projeto_app/exams/exam_screen.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
-import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
-class ListMedRecordScreen extends StatefulWidget {
+class MedRecordScreen extends StatefulWidget {
+  final MedRecordArguments medRecordArguments;
+
+  MedRecordScreen({
+    @required this.medRecordArguments,
+  });
+
   @override
-  _ListMedRecordScreenState createState() => _ListMedRecordScreenState();
+  _MedRecordScreenState createState() => _MedRecordScreenState();
 }
 
-class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
+class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
-  UserModel _userModel;
+  MedRecordModel _medRecordModel;
+  //UserModel _userModel;
+
+  //TODO: Implementar modelo de prontuario
+
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
+
+  int _selectedIndex;
 
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
@@ -32,6 +47,20 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
         medRecordRepository: this._medRecordRepository,
         examRepository: examRepository);
 
+    if (medRecordArguments.index != null) {
+      _selectedIndex = _parseIndex(medRecordArguments.index);
+    } else {
+      _selectedIndex = 0;
+    }
+
+    if (medRecordArguments.pacientCpf != null &&
+        medRecordArguments.pacientSalt != null) {
+      _medRecordBloc.add(MedRecordLoad(
+        pacientHash: SltPattern.retrivepacientHash(
+            medRecordArguments.pacientCpf, medRecordArguments.pacientSalt),
+      ));
+    }
+
     super.initState();
   }
 
@@ -41,11 +70,11 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
     super.dispose();
   }
 
+/*
   Future<void> _setUserModel() async {
     this._userModel = await this.userRepository.getUserModel();
   }
-
-  int _selectedIndex = 0;
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +89,10 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
-            if (state is AuthenticationUnauthenticated) {}
+            if (state is AuthenticationUnauthenticated) {
+            } else if (state is MedRecordLoadEventSuccess) {
+              _medRecordModel = state.medRecordLoaded;
+            }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             builder: (context, state) {
@@ -161,8 +193,9 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
         return Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Expanded(child: ExamScreen()),
+              Flexible(child: ExamScreen()),
               RaisedButton(
                 onPressed: () {
                   Navigator.of(context)
@@ -192,6 +225,17 @@ class _ListMedRecordScreenState extends State<ListMedRecordScreen> {
 
       default:
         return Text('selectedIndex: $index');
+        break;
+    }
+  }
+
+  _parseIndex(index) {
+    switch (index) {
+      case 'examScreen':
+        return 2;
+        break;
+      default:
+        return 0;
         break;
     }
   }

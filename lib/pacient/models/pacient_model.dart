@@ -10,9 +10,9 @@ class PacientModel {
   String _sexo;
   String _vinculo = 'paciente';
   String _userId;
+  String _salt;
 
   PacientModel({
-    @required String userId,
     @required String nome,
     @required String email,
     @required String telefone,
@@ -20,8 +20,9 @@ class PacientModel {
     @required String cpf,
     @required String dtNascimento,
     @required String sexo,
+    @required String userId,
+    @required String salt,
   }) {
-    this._userId = userId;
     this._nome = nome;
     this._email = email;
     this._telefone = telefone;
@@ -29,6 +30,8 @@ class PacientModel {
     this._cpf = cpf;
     this._dtNascimento = dtNascimento;
     this._sexo = sexo;
+    this._userId = userId;
+    this._salt = salt;
   }
 
   Map<String, dynamic> toMap() {
@@ -42,6 +45,7 @@ class PacientModel {
       'dtNascimento': _dtNascimento,
       'sexo': _sexo,
       'vinculo': _vinculo,
+      'salt': _salt,
     };
   }
 
@@ -57,11 +61,19 @@ class PacientModel {
       cpf: map['cpf'],
       dtNascimento: map['dtNascimento'],
       sexo: map['sexo'],
+      salt: map['salt'],
     );
+  }
+
+  set salt(String salt) {
+    this._salt = salt;
   }
 
   String get email => this._email;
   String get nome => this._nome;
   String get userUid => this._userId;
+  String get cpf => this._cpf;
+  String get salt => this._salt;
   //set userUid(String uid) => this._userId = uid;
+
 }

@@ -1,14 +1,21 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
-class PacientRepository {
+class PacientRepository extends ChangeNotifier {
   final CollectionReference _pacientsCollectionReference =
       FirebaseFirestore.instance.collection('pacients');
 
-  String _userId;
-  set userId(String uid) => this._userId = uid;
+  List<PacientModel> _pacients;
+  List<PacientModel> get pacientsList => _pacients;
+
+  //String _userId;
+  //set userId(String uid) => this._userId = uid;
+
+  final StreamController<List<PacientModel>> _pacientsController =
+      StreamController<List<PacientModel>>.broadcast();
 
   Future createPacient({
     @required PacientModel pacient,
@@ -17,6 +24,7 @@ class PacientRepository {
       await _pacientsCollectionReference.add(
         pacient.toMap(),
       );
+      notifyListeners();
     } catch (e) {
       return e.toString();
     }
@@ -24,20 +32,31 @@ class PacientRepository {
 
   Future getPacientByName(String name) async {}
 
-  Future getPacientsList() async {
-    try {
-      var pacientDocuments = await _pacientsCollectionReference.get();
-      if (pacientDocuments.docs.isNotEmpty) {
-        return pacientDocuments.docs
+  void listenToPacients() {
+    listenToPacientsRealTime().listen((pacientsData) {
+      List<PacientModel> updatedPacients = pacientsData;
+      if (updatedPacients != null && updatedPacients.length > 0) {
+        _pacients = updatedPacients;
+        notifyListeners();
+      }
+    });
+  }
+
+// TODO: iterar paciente pelo ID do médico
+
+  Stream listenToPacientsRealTime() {
+    _pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
+      if (pacientsSnapshot.docs.isNotEmpty) {
+        var pacients = pacientsSnapshot.docs
             .map((snapshot) => PacientModel.fromMap(snapshot.data()))
             .where((mappedItem) => mappedItem.nome != null)
             .toList();
+
+        _pacientsController.add(pacients);
+        notifyListeners();
       }
-    } catch (e) {
-      if (e is PlatformException) {
-        return e.message;
-      }
-      return e.toString();
-    }
+    });
+
+    return _pacientsController.stream;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExamDetails {
+  //final pacientHash;
   final pacientName;
   final examinationUnit;
   final requestingDoctor;

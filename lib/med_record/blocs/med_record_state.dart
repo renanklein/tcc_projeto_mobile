@@ -43,13 +43,13 @@ class DeleteMedRecordEventFail extends MedRecordState {
 }
 
 class MedRecordLoadEventSuccess extends MedRecordState {
-  Map<String, List<dynamic>> _medRecordsLoaded;
+  MedRecordModel _medRecordLoaded;
 
-  MedRecordLoadEventSuccess(Map<String, List<dynamic>> medRecords) {
-    this._medRecordsLoaded = medRecords;
+  MedRecordLoadEventSuccess({@required MedRecordModel medRecord}) {
+    this._medRecordLoaded = medRecord;
   }
 
-  Map<String, List<dynamic>> get medRecordsLoaded => this._medRecordsLoaded;
+  MedRecordModel get medRecordLoaded => this._medRecordLoaded;
 
   @override
   List<Object> get props => [];

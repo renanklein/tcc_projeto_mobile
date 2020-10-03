@@ -33,6 +33,7 @@ class CalendarEventTile extends StatelessWidget {
               EventDescription(
                 eventText: this.event["description"],
                 eventStatus: this.event["status"],
+                eventPhone: this.event["phone"],
                 eventHourStart: this.event["begin"],
                 eventHourEnd: this.event["end"],
               ),

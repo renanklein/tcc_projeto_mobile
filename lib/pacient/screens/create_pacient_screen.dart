@@ -9,7 +9,6 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
-import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CreatePacientScreen extends StatefulWidget {
   @override
@@ -82,18 +81,11 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
           child:
               BlocBuilder<PacientBloc, PacientState>(builder: (context, state) {
             if (state is CreatePacientEventProcessing) {
-              return LayoutUtils.buildCircularProgressIndicator(context);
-            } else if (state is CreatePacientEventSuccess) {
-              _pacientBloc.add(PacientLoad());
-
-              return SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                  "Paciente criado com sucesso",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).primaryColor,
+                  ),
                 ),
               );
             } else {
@@ -150,7 +142,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 dtNascController,
                                 'Data de Nascimento:',
                                 'Entre com a Data de Nascimento',
-                                'Digite apenas números sem espaços (DiaMêsAno)',
+                                context,
                               ),
 
                               Padding(
@@ -179,6 +171,9 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                           sexo: sexoController.text,
                                         ),
                                       );
+                                      if (state is CreatePacientEventSuccess) {
+                                        _buildSuccessSnackBar(context);
+                                      }
                                     }
                                   },
                                   child: Text('Cadastrar Paciente'),
@@ -198,6 +193,17 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
       ),
     );
   }
+}
+
+void _buildSuccessSnackBar(context) {
+  Scaffold.of(context).showSnackBar(SnackBar(
+    backgroundColor: Colors.green,
+    content: Text(
+      "Paciente Cadastrado com Sucesso",
+      style: TextStyle(
+          fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+    ),
+  ));
 }
 
 Widget pacienteFormField(controller, label, hint, errorText) {
@@ -222,12 +228,11 @@ Widget pacienteFormField(controller, label, hint, errorText) {
   );
 }
 
-Widget dateFormField(controller, label, hint, errorText) {
+Widget dateFormField(controller, label, hint, contexto) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
       controller: controller,
-      keyboardType: TextInputType.numberWithOptions(),
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -235,44 +240,24 @@ Widget dateFormField(controller, label, hint, errorText) {
         labelText: label,
         hintText: hint,
       ),
-      onChanged: (value) {
-        if (value.length >= 8) {
-          if (!validateData(value)) {
-            controller.text = '';
-            return errorText;
-          }
-          String data = controller.text;
-          String novaData =
-              '${data.substring(0, 2)}/${data.substring(2, 4)}/${data.substring(4, 8)}';
-          controller.text = novaData;
-        }
+      onTap: () async {
+        final DateTime datePicked = await showDatePicker(
+            context: contexto,
+            initialDate: new DateTime(1960),
+            firstDate: new DateTime(1890),
+            lastDate: new DateTime.now());
+        var dateFormat = DateFormat("dd/MM/yyyy");
+        if (datePicked != null) controller.text = dateFormat.format(datePicked);
       },
       validator: (value) {
         if (value.isEmpty) {
           controller.text = '';
-          return errorText;
+          return 'Por Favor, escolha uma data.';
         }
         return null;
       },
     ),
   );
-}
-
-bool validateData(String value) {
-  if (value.length > 10) {
-    return false;
-  } else if (int.parse(value.substring(0, 2)) < 1 ||
-      int.parse(value.substring(0, 2)) > 31) {
-    return false;
-  } else if (int.parse(value.substring(2, 4)) < 1 ||
-      int.parse(value.substring(2, 4)) > 12) {
-    return false;
-  } else if (int.parse(value.substring(4, 8)) < 1900 ||
-      int.parse(value.substring(2, 4)) > DateTime.now().year) {
-    return false;
-  } else {
-    return true;
-  }
 }
 
 Widget dateField(label, controller) {

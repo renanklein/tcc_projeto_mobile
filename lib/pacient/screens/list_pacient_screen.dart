@@ -182,18 +182,3 @@ Widget pacientSearchBar(controller, hint) {
     ),
   );
 }
-
-Widget onPacientLoadFail() {
-  return Scaffold(
-      body: SnackBar(
-    backgroundColor: Colors.red,
-    content: Text(
-      "Ocorreu um erro ao buscar a listagem de pacientes",
-      style: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
-    ),
-  ));
-}

@@ -1,10 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
+import 'package:intl/intl.dart';
 
 class MedRecordRepository {
   final CollectionReference _medRecordCollectionReference =
-      Firestore.instance.collection('prontuario');
+      Firestore.instance.collection('medRecord');
+  String _pacientHash;
+
+  set setPacientHash(String hash) => this._pacientHash = hash;
+
+  var date = DateTime.now();
+  var dateFormat = DateFormat("dd/MM/yyyy");
+
+  Future createPacientDiagnosis({
+    @required CompleteDiagnosisModel completeDiagnosisModel,
+    @required String date,
+  }) async {
+    try {
+      await _medRecordCollectionReference.document(_pacientHash).setData({
+        date: completeDiagnosisModel.toMap(),
+      });
+    } on Exception catch (e) {
+      return e.toString();
+    }
+  }
 
   Future updateMedRecord({
     @required String pacientHash,
@@ -29,13 +50,14 @@ class MedRecordRepository {
             (value) => medRecord = MedRecordModel.fromMap(value.data),
           );
 
+//TODO: getCreatedDate
+
+      String dt = dateFormat.format(date);
       await document.setData({
-        'Diagnóstico': {
-          'problema': {'descrição': 'teste', 'id': '08'},
-          'diagnostico': {'descrição': 'teste', 'cid': '8459'},
-          'prescrição': {'droga': 'teste', 'dose': '8459', 'uso': 'oral'},
-        }
+        'created': dt,
       });
+
+      this._pacientHash = pacientHash;
 
       return medRecord;
     } on Exception catch (e) {

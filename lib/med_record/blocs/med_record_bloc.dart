@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 part 'med_record_event.dart';
 part 'med_record_state.dart';
@@ -49,6 +55,34 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       } catch (error) {
         yield CreateMedRecordEventFail();
       }
+    } else if (event is DiagnosisCreateButtonPressed) {
+      try {
+        yield MedRecordEventProcessing();
+
+        var now = new DateTime.now();
+        var dateFormat = DateFormat("dd/MM/yyyy");
+        var hoje = dateFormat.format(now);
+
+        await this.medRecordRepository.createPacientDiagnosis(
+            completeDiagnosisModel: CompleteDiagnosisModel(
+                problem: ProblemModel(
+                    description: event.problemDescription,
+                    problemId: event.problemId),
+                diagnosis: DiagnosisModel(
+                    description: event.diagnosisDescription,
+                    cid: event.diagnosisCid),
+                prescription: PrescriptionModel(
+                    medicine: event.prescriptionMedicine,
+                    dosage: event.prescriptionDosage,
+                    dosageForm: event.prescriptionDosageForm,
+                    usageOrientation: event.prescriptionUsageOrientation,
+                    usageDuration: event.prescriptionUsageDuration)),
+            date: hoje);
+
+        yield MedRecordEventSuccess();
+      } catch (error) {
+        yield MedRecordEventFailure();
+      }
     } else if (event is MedRecordLoad) {
       try {
         yield MedRecordLoading();
@@ -66,17 +100,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     } else if (event is MedRecordDeleteButtonPressed) {
       try {} catch (error) {}
     }
-
-    if (event is DiagnosisCreateButtonPressed) {
-      try {
-        yield DiagnosisCreateEventProcessing();
-
-        yield DiagnosisCreateEventSuccess();
-      } catch (error) {
-        yield DiagnosisCreateEventFail();
-      }
-    }
-
     if (event is SaveExam) {
       try {
         yield ExamProcessing();

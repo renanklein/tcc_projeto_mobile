@@ -3,7 +3,7 @@ const String calendarRoute = '/calendar';
 const String waitListRoute = '/waitlist';
 
 //exams
-const String examRoute = '/exam';
+const String createExamRoute = '/exam';
 
 //home
 const String dashboardRoute = '/';
@@ -11,6 +11,7 @@ const String homeRoute = '/home';
 
 //med Record
 const String medRecordRoute = '/medRecord';
+const String createDiagnosisRoute = '/createDiagnosis';
 
 //pacient
 const String pacientsRoute = '/pacients';

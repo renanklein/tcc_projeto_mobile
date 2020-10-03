@@ -12,8 +12,8 @@ class CompleteDiagnosisModel {
   CompleteDiagnosisModel({
     @required ProblemModel problem,
     @required DiagnosisModel diagnosis,
-    @required DateTime date,
     PrescriptionModel prescription,
+    DateTime date,
   }) {
     this._problemModel = problem;
     this._diagnosisModel = diagnosis;
@@ -26,7 +26,6 @@ class CompleteDiagnosisModel {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
       'prescription': _prescriptionModel.toMap(),
-      'date': _date.toString(),
     };
   }
 
@@ -34,13 +33,13 @@ class CompleteDiagnosisModel {
     if (map == null) return null;
 
     return CompleteDiagnosisModel(
-      problem: map['problem'],
-      diagnosis: map['diagnosis'],
-      prescription: map['prescription'],
-      date: map['date'],
-    );
+        problem: map['problem'],
+        diagnosis: map['diagnosis'],
+        prescription: map['prescription']);
   }
 
-  //String get email => this._email;
+  DateTime get getDate => this._date;
+  set setDate(DateTime dt) => this._date = dt;
+
   //set userUid(String uid) => this._userId = uid;
 }

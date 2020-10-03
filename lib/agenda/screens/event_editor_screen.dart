@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
@@ -13,6 +14,8 @@ class EventEditorScreen extends StatefulWidget {
   final isEdit;
   final selectedDay;
   final refreshAgenda;
+  final isoCode = "BR";
+  final dialCode = "+55";
 
   EventEditorScreen(
       {@required this.event,
@@ -29,10 +32,14 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<String> occupedHours;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
+  TextEditingController _eventPhoneController;
+  PhoneNumber eventPhone;
   final formKey = new GlobalKey<FormState>();
 
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
+  String get isoCode => this.widget.isoCode;
+  String get dialCode => this.widget.dialCode;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
 
@@ -42,11 +49,21 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
 
-    this._eventNameController = new TextEditingController(
+    this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
+    this._eventPhoneController = TextEditingController(
+        text: this.event == null ? "" : this.event["phone"]);
+
+    this._eventPhoneController.text.isNotEmpty
+        ? eventPhone = PhoneNumber(
+            phoneNumber: this._eventPhoneController.text,
+            dialCode: this.dialCode,
+            isoCode: this.isoCode)
+        : eventPhone = null;
+
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
-    this._eventHourController = new TextEditingController();
+    this._eventHourController = TextEditingController();
     this._eventHourController.text = this.event == null
         ? null
         : "${this.event["begin"]} - ${this.event["end"]}";
@@ -156,6 +173,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       ),
     );
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    fieldsList.add(this._buildEventPhoneField());
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
 
     return fieldsList;
   }
@@ -169,6 +188,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventId: this.event["id"].toString(),
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
+          eventPhone: this._eventPhoneController.text,
           eventStart: eventStart,
           eventEnd: eventEnd,
           eventStatus: this.event["status"]));
@@ -176,9 +196,22 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       agendaBloc.add(AgendaCreateButtonPressed(
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
+          eventPhone: this._eventPhoneController.text,
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
+  }
+
+  Widget _buildEventPhoneField() {
+    return InternationalPhoneNumberInput(
+      initialValue: eventPhone,
+      onInputChanged: (phone) {},
+      inputDecoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          hintText: "Telefone"),
+      textFieldController: this._eventPhoneController,
+    );
   }
 
   void _onSuccessState() {

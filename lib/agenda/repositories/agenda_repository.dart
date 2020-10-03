@@ -10,14 +10,15 @@ class AgendaRepository {
   set events(Map<DateTime, dynamic> events) => this._events = events;
   set userId(String uid) => this._userId = uid;
 
-  Future<Map> addEvent(
-      String name, DateTime eventday, List<String> eventDuration) async {
+  Future<Map> addEvent(String name, DateTime eventday, String phone,
+      List<String> eventDuration) async {
     var eventParameters = {
       "userId": this._userId,
       "name": name,
       "eventDay": eventday,
       "eventDuration": eventDuration,
-      "events": this._events
+      "events": this._events,
+      "phone": phone
     };
 
     var inputParameters = Utils.buildNewEvent(eventParameters);
@@ -57,7 +58,7 @@ class AgendaRepository {
         .doc(day)
         .get()
         .then((resp) => {
-              if (resp.data != null && resp.data().containsKey("events"))
+              if (resp.data() != null && resp.data().containsKey("events"))
                 {
                   occupedHours =
                       ConvertUtils.getOccupedHours(resp.data()["events"])

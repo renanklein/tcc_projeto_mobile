@@ -20,10 +20,10 @@ class ConvertUtils {
     List<String> eventsParsed = new List<String>();
 
     events.forEach((event) {
-       if(event["status"] != "canceled"){
-         eventsParsed.add(
-          "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]}");
-       }
+      if (event["status"] != "canceled") {
+        eventsParsed.add(
+            "${event["id"]};${event["description"]};${event["begin"]};${event["end"]};${event["status"]};${event["userId"]};${event["phone"]}");
+      }
     });
     return eventsParsed;
   }
@@ -43,7 +43,8 @@ class ConvertUtils {
           "begin": eventsData[2],
           "end": eventsData[3],
           "status": eventsData[4],
-          "userId" : eventsData[5]
+          "userId": eventsData[5],
+          "phone": eventsData[6]
         });
       }
     });
@@ -58,11 +59,11 @@ class ConvertUtils {
         int.parse(splitedDocumentId[1]), int.parse(splitedDocumentId[2]));
   }
 
-  static List<String> getOccupedHours(List events){
+  static List<String> getOccupedHours(List events) {
     var occupedHours = new List<String>();
 
-    events.forEach((event){
-      if(event["status"] != "canceled"){
+    events.forEach((event) {
+      if (event["status"] != "canceled") {
         var occupedHour = "${event["begin"]} - ${event["end"]}";
         occupedHours.add(occupedHour);
       }

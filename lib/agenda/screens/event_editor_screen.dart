@@ -253,7 +253,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         onPressed: () {
           this.scaffoldKey.currentState.showBottomSheet((context) {
             return EventConfirmBottomSheet(
-                agendaBloc: this.agendaBloc,
                 event: this.event,
                 eventDay: this.selectedDay,
                 refreshAgenda: this.refreshAgenda);
@@ -280,7 +279,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           onPressed: () {
             this.scaffoldKey.currentState.showBottomSheet((context) {
               return EventExcludeBottomSheet(
-                  agendaBloc: this.agendaBloc,
                   eventId: this.event["id"].toString(),
                   eventDay: this.selectedDay,
                   refreshAgenda: this.refreshAgenda);

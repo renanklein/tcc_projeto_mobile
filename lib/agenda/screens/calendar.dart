@@ -190,10 +190,8 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh(bool isConfirmOrCancel) {
-    if (isConfirmOrCancel) {
-      Navigator.of(context).pop();
-    }
+  void refresh() {
+    Navigator.of(context).pop();
     setState(() {
       _dispatchAgendaLoadEvent();
     });

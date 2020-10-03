@@ -12,14 +12,14 @@ class UserRepository {
     this.firebaseAuth.signOut();
   }
 
-  Future<AuthResult> signUp(
+  Future<UserCredential> signUp(
       {@required String email, @required String pass}) async {
     return await this
         .firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: pass);
   }
 
-  Future<AuthResult> signIn(
+  Future<UserCredential> signIn(
       {@required String email, @required String pass}) async {
     return await this
         .firebaseAuth
@@ -30,8 +30,8 @@ class UserRepository {
     return await this.firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<IdTokenResult> getToken() async {
-    final user = await getUser();
+  Future<String> getToken() async {
+    final user = getUser();
 
     if (user == null) {
       return null;
@@ -44,12 +44,12 @@ class UserRepository {
     await this.firebaseAuth.signOut();
   }
 
-  Future<FirebaseUser> getUser() async {
-    return await this.firebaseAuth.currentUser();
+  User getUser() {
+    return this.firebaseAuth.currentUser;
   }
 
   Future<DocumentSnapshot> getUserData(String uid) async {
-    return await Firestore.instance.collection("users").document(uid).get();
+    return await FirebaseFirestore.instance.collection("users").doc(uid).get();
   }
 
   Future<void> sendUserData(
@@ -58,32 +58,27 @@ class UserRepository {
       @required String uid}) async {
     final userData = {"name": name, "email": email};
 
-    //TODO: Incluir tipo de usuário, secretária, médico, paciente
-
-    await Firestore.instance
-        .collection("users")
-        .document(uid)
-        .setData(userData);
+    await FirebaseFirestore.instance.collection("users").doc(uid).set(userData);
   }
 
-  Future<void> setupFcmNotification(FirebaseUser user) async {
+  Future<void> setupFcmNotification(User user) async {
     var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
     var fcmToken = await fcm.getToken();
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(user.uid)
-        .setData({"notificationToken": fcmToken}, merge: true);
+        .doc(user.uid)
+        .set({"notificationToken": fcmToken}, SetOptions(merge: true));
   }
 
   Future<UserModel> getUserModel() async {
-    final user = await this.getUser();
+    final user = this.getUser();
     if (user == null) {
       return null;
     }
     final userData = await this.getUserData(user.uid);
     return UserModel(
-      email: userData.data["email"],
-      name: userData.data["name"],
+      email: userData.data()["email"],
+      name: userData.data()["name"],
       uid: user.uid,
     );
   }

@@ -33,8 +33,8 @@ class MedRecordRepository {
   }) async {
     try {
       await _medRecordCollectionReference
-          .document(pacientHash)
-          .setData(medRecordModel.toMap());
+          .doc(pacientHash)
+          .set(medRecordModel.toMap());
     } catch (e) {
       return e.toString();
     }
@@ -43,11 +43,11 @@ class MedRecordRepository {
   Future<MedRecordModel> getMedRecordByCpf(String pacientHash) async {
     try {
       MedRecordModel medRecord;
-      var document = _medRecordCollectionReference.document(pacientHash);
+      var document = _medRecordCollectionReference.doc(pacientHash);
       medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
       await document.get().then(
-            (value) => medRecord = MedRecordModel.fromMap(value.data),
+            (value) => medRecord = MedRecordModel.fromMap(value.data()),
           );
 
 //TODO: getCreatedDate

@@ -85,13 +85,12 @@ class _UserDrawerState extends State<UserDrawer> {
   }
 
   Future<void> _setUserModel() async {
-    final user = await this.userRepository.getUser();
+    final user = this.userRepository.getUser();
     final userData = await this.userRepository.getUserData(user.uid);
     this.userModel = UserModel(
-      email: userData.data["email"],
-      name: userData.data["name"],
-      uid: user.uid,
-    );
+        email: userData.data()["email"],
+        name: userData.data()["name"],
+        uid: user.uid);
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {

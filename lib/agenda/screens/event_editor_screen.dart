@@ -7,6 +7,8 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventEditorScreen extends StatefulWidget {
@@ -121,7 +123,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                       padding: EdgeInsets.all(16.0),
                       children: <Widget>[
                         ..._buildFields(state),
-                        _buildCreateEventButton()
+                        ..._buildStatusButtons(),
+                        _buildCreateEventButton(),
                       ],
                     ),
                   );
@@ -143,7 +146,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         ),
         color: Theme.of(context).primaryColor,
         child: Text(
-          "${this.widget.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
+          "${this.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
           style: TextStyle(
               fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
@@ -156,6 +159,19 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _isLoadingState(AgendaState state) {
     return state is EventProcessing || state is AgendaAvailableTimeLoading;
+  }
+
+  List<Widget> _buildStatusButtons() {
+    var buttonsList = <Widget>[];
+
+    if (this.isEdit) {
+      buttonsList.add(_buildConfirmButton());
+      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+      buttonsList.add(_buildCancelButton());
+      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    }
+
+    return buttonsList;
   }
 
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
@@ -226,5 +242,66 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _verifyFailState(AgendaState state) {
     return state is EventProcessingFail;
+  }
+
+  Widget _buildConfirmButton() {
+    return SizedBox(
+      height: 44.0,
+      child: Builder(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet((context) {
+              return EventConfirmBottomSheet(
+                  event: this.event,
+                  eventDay: this.selectedDay,
+                  refreshAgenda: this.refreshAgenda);
+            }, backgroundColor: Theme.of(context).primaryColor);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Colors.green[600],
+          child: Text(
+            "Confirmar Evento",
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCancelButton() {
+    return SizedBox(
+      height: 44.0,
+      child: Builder(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet(
+              (context) {
+                return EventExcludeBottomSheet(
+                    eventId: this.event["id"].toString(),
+                    eventDay: this.selectedDay,
+                    refreshAgenda: this.refreshAgenda);
+              },
+              backgroundColor: Theme.of(context).primaryColor,
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Colors.red[300],
+          child: Text(
+            "Cancelar Evento",
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 }

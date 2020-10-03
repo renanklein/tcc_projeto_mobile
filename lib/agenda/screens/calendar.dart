@@ -58,7 +58,7 @@ class _UserCalendarState extends State<UserCalendar> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Agenda"),
+          title: Text("Eventos"),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.add),

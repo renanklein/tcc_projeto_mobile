@@ -9,6 +9,7 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 
 class CreatePacientScreen extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   final formKey = new GlobalKey<FormState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final _createPacientKey = GlobalKey<FormState>();
   final nomeController = TextEditingController();
@@ -64,6 +66,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Cadastrar Paciente"),
         centerTitle: true,
@@ -76,6 +79,13 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
           listener: (context, state) {
             if (state is AuthenticationUnauthenticated) {
               Navigator.pushNamed(context, '/');
+            } else if (state is CreatePacientEventSuccess) {
+              this._scaffoldKey.currentState.showSnackBar(messageSnackBar(
+                    context,
+                    "Paciente Cadastrado com Sucesso",
+                    Colors.green,
+                    Colors.white,
+                  ));
             }
           },
           child:
@@ -171,9 +181,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                           sexo: sexoController.text,
                                         ),
                                       );
-                                      if (state is CreatePacientEventSuccess) {
-                                        _buildSuccessSnackBar(context);
-                                      }
                                     }
                                   },
                                   child: Text('Cadastrar Paciente'),
@@ -193,17 +200,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
       ),
     );
   }
-}
-
-void _buildSuccessSnackBar(context) {
-  Scaffold.of(context).showSnackBar(SnackBar(
-    backgroundColor: Colors.green,
-    content: Text(
-      "Paciente Cadastrado com Sucesso",
-      style: TextStyle(
-          fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
-    ),
-  ));
 }
 
 Widget pacienteFormField(controller, label, hint, errorText) {
@@ -251,7 +247,6 @@ Widget dateFormField(controller, label, hint, contexto) {
       },
       validator: (value) {
         if (value.isEmpty) {
-          controller.text = '';
           return 'Por Favor, escolha uma data.';
         }
         return null;

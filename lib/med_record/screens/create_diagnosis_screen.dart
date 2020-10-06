@@ -15,6 +15,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   MedRecordRepository _medRecordRepository;
 
   final diagnosisFormKey = new GlobalKey<FormState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final _diagnosisScreenKey = GlobalKey<FormState>();
   final problemIdController = TextEditingController();
@@ -56,10 +57,20 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is MedRecordEventSuccess) {
+              this._scaffoldKey.currentState.showSnackBar(messageSnackBar(
+                    context,
+                    "Diagnóstico Cadastrado com Sucesso",
+                    Colors.green,
+                    Colors.white,
+                  ));
+            }
+          },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
               builder: (context, state) {
             //if (state is ) {}

@@ -19,6 +19,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   crypto: ^2.1.4
   datetime_picker_formfield: ^1.0.0

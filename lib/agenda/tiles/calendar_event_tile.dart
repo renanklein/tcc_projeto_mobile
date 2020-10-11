@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
-import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
-import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CalendarEventTile extends StatelessWidget {
   final event;
   final selectedDay;
   final refreshAgenda;
+  final agendaBloc;
 
   CalendarEventTile(
       {@required this.event,
       @required this.selectedDay,
-      @required this.refreshAgenda});
+      @required this.refreshAgenda,
+      @required this.agendaBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +42,7 @@ class CalendarEventTile extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => EventEditorScreen(
+                  agendaBloc: this.agendaBloc,
                   event: this.event,
                   isEdit: true,
                   selectedDay: this.selectedDay,

@@ -65,6 +65,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => EventEditorScreen(
+                            agendaBloc: this._agendaBloc,
                             event: null,
                             isEdit: false,
                             selectedDay: this._selectedDay,
@@ -128,6 +129,7 @@ class _UserCalendarState extends State<UserCalendar> {
                         return ListView(
                           controller: controller,
                           children: CalendarUtils.buildEventList(
+                              this._agendaBloc,
                               this._selectedDayDescriptions,
                               this._selectedDay,
                               this._agendaRepository,
@@ -188,8 +190,10 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh() {
-    Navigator.of(context).pop();
+  void refresh(bool isConfirmOrCancel) {
+    if (isConfirmOrCancel) {
+      Navigator.of(context).pop();
+    }
     setState(() {
       _dispatchAgendaLoadEvent();
     });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/tiles/calendar_event_tile.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
@@ -32,6 +33,7 @@ class CalendarUtils {
   }
 
   static List<Widget> buildEventList(
+      AgendaBloc agendaBloc,
       List _selectedDayDescriptions,
       DateTime _selectedDay,
       AgendaRepository agendaRepository,
@@ -45,6 +47,7 @@ class CalendarUtils {
     return dayEvents.map((event) {
       return ListTile(
         title: CalendarEventTile(
+          agendaBloc: agendaBloc,
           event: event,
           selectedDay: _selectedDay,
           refreshAgenda: refreshAgenda,

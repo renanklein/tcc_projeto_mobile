@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
-import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventConfirmBottomSheet extends StatefulWidget {
   final event;
   final eventDay;
   final refreshAgenda;
+  final agendaBloc;
 
   EventConfirmBottomSheet(
       {@required this.event,
       @required this.eventDay,
-      @required this.refreshAgenda});
+      @required this.refreshAgenda,
+      @required this.agendaBloc});
 
   @override
   _EventConfirmBottomSheetState createState() =>
@@ -24,19 +24,15 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
   Map get event => this.widget.event;
   DateTime get eventDay => this.widget.eventDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
-  AgendaBloc _agendaBloc;
+  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
   @override
   void initState() {
-    this._agendaBloc = AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
     super.initState();
   }
 
   @override
   void dispose() {
-    this._agendaBloc.close();
     super.dispose();
   }
 
@@ -51,17 +47,16 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: BlocProvider(
-          create: (context) => this._agendaBloc,
+          create: (context) => this.agendaBloc,
           child: BlocListener<AgendaBloc, AgendaState>(
             listener: (context, state) {
               if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
-                Navigator.of(context).pop();
-                this.refreshAgenda();
+                this.refreshAgenda(true);
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              cubit: this._agendaBloc,
+              cubit: this.agendaBloc,
               builder: (context, state) {
                 if (state is EventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
@@ -106,7 +101,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
         ),
         onPressed: () {
-          this._agendaBloc.add(AgendaEventConfirmButtomPressed(
+          this.agendaBloc.add(AgendaEventConfirmButtomPressed(
               eventDay: this.eventDay, event: this.event));
         },
       ),

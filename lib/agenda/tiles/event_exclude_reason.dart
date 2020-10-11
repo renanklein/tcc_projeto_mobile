@@ -10,11 +10,13 @@ class EventExcludeBottomSheet extends StatefulWidget {
   final eventDay;
   final eventId;
   final refreshAgenda;
+  final agendaBloc;
 
   EventExcludeBottomSheet(
       {@required this.eventDay,
       @required this.eventId,
-      @required this.refreshAgenda});
+      @required this.refreshAgenda,
+      @required this.agendaBloc});
 
   @override
   _EventExcludeBottomSheetState createState() =>
@@ -24,23 +26,19 @@ class EventExcludeBottomSheet extends StatefulWidget {
 class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
   final _eventReasonController = TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  AgendaBloc agendaBloc;
 
   DateTime get eventDay => this.widget.eventDay;
   String get eventId => this.widget.eventId;
   Function get refreshAgenda => this.widget.refreshAgenda;
+  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
     super.initState();
   }
 
   @override
   void dispose() {
-    this.agendaBloc.close();
     super.dispose();
   }
 
@@ -60,8 +58,7 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
             listener: (context, state) {
               if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
-                Navigator.of(context).pop();
-                this.refreshAgenda();
+                this.refreshAgenda(true);
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(

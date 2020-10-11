@@ -191,7 +191,6 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   void refresh() {
-    Navigator.of(context).pop();
     setState(() {
       _dispatchAgendaLoadEvent();
     });

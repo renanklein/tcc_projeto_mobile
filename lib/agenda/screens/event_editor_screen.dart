@@ -36,7 +36,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
   TextEditingController _eventPhoneController;
-  final scaffoldKey = GlobalKey<ScaffoldState>();
   PhoneNumber eventPhone;
   final formKey = new GlobalKey<FormState>();
 
@@ -79,7 +78,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
           title: Text("Agendar Consulta"),
@@ -164,9 +162,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildStatusButtons() {
     var buttonsList = <Widget>[];
 
-    if (this.isEdit &&
-        (this.event["status"] != "confirmed" &&
-            this.event["status"] != "canceled")) {
+    if (this.isEdit) {
       buttonsList.add(_buildConfirmButton());
       buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
       buttonsList.add(_buildCancelButton());
@@ -249,23 +245,27 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildConfirmButton() {
     return SizedBox(
       height: 44.0,
-      child: RaisedButton(
-        onPressed: () {
-          this.scaffoldKey.currentState.showBottomSheet((context) {
-            return EventConfirmBottomSheet(
-                event: this.event,
-                eventDay: this.selectedDay,
-                refreshAgenda: this.refreshAgenda);
-          }, backgroundColor: Colors.transparent);
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        color: Colors.green[600],
-        child: Text(
-          "Confirmar Evento",
-          style: TextStyle(
-              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+      child: Builder(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet((context) {
+              return EventConfirmBottomSheet(
+                  event: this.event,
+                  eventDay: this.selectedDay,
+                  refreshAgenda: this.refreshAgenda);
+            }, backgroundColor: Theme.of(context).primaryColor);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Colors.green[600],
+          child: Text(
+            "Confirmar Evento",
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
         ),
       ),
     );
@@ -277,12 +277,15 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
-            this.scaffoldKey.currentState.showBottomSheet((context) {
-              return EventExcludeBottomSheet(
-                  eventId: this.event["id"].toString(),
-                  eventDay: this.selectedDay,
-                  refreshAgenda: this.refreshAgenda);
-            }, backgroundColor: Colors.transparent);
+            Scaffold.of(context).showBottomSheet(
+              (context) {
+                return EventExcludeBottomSheet(
+                    eventId: this.event["id"].toString(),
+                    eventDay: this.selectedDay,
+                    refreshAgenda: this.refreshAgenda);
+              },
+              backgroundColor: Theme.of(context).primaryColor,
+            );
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),

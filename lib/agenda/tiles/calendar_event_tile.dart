@@ -18,7 +18,7 @@ class CalendarEventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: AnimatedContainer(
-        height: 65.0,
+        height: 75.0,
         width: 120.0,
         decoration: _buildContainerDecoration(),
         duration: Duration(milliseconds: 3000),

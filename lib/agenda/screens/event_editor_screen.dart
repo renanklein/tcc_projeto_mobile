@@ -18,20 +18,19 @@ class EventEditorScreen extends StatefulWidget {
   final refreshAgenda;
   final isoCode = "BR";
   final dialCode = "+55";
-  final agendaBloc;
 
   EventEditorScreen(
       {@required this.event,
       @required this.isEdit,
       @required this.selectedDay,
-      @required this.refreshAgenda,
-      @required this.agendaBloc});
+      @required this.refreshAgenda});
 
   @override
   _EventEditorScreenState createState() => _EventEditorScreenState();
 }
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
+  AgendaBloc agendaBloc;
   List<String> occupedHours;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
@@ -45,10 +44,13 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   String get dialCode => this.widget.dialCode;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
-  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
   @override
   void initState() {
+    this.agendaBloc = new AgendaBloc(
+        agendaRepository:
+            Injector.appInstance.getDependency<AgendaRepository>());
+
     this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
@@ -253,7 +255,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                   event: this.event,
                   eventDay: this.selectedDay,
                   refreshAgenda: this.refreshAgenda);
-            }, backgroundColor: Theme.of(context).primaryColor);
+            }, backgroundColor: Colors.transparent);
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
@@ -284,7 +286,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                     eventDay: this.selectedDay,
                     refreshAgenda: this.refreshAgenda);
               },
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Colors.transparent,
             );
           },
           shape: RoundedRectangleBorder(

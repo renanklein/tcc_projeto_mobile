@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventConfirmBottomSheet extends StatefulWidget {
   final event;
   final eventDay;
   final refreshAgenda;
-  final agendaBloc;
 
   EventConfirmBottomSheet(
       {@required this.event,
       @required this.eventDay,
-      @required this.refreshAgenda,
-      @required this.agendaBloc});
+      @required this.refreshAgenda});
 
   @override
   _EventConfirmBottomSheetState createState() =>
@@ -21,13 +21,16 @@ class EventConfirmBottomSheet extends StatefulWidget {
 }
 
 class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
+  AgendaBloc agendaBloc;
   Map get event => this.widget.event;
   DateTime get eventDay => this.widget.eventDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
-  AgendaBloc get agendaBloc => this.widget.agendaBloc;
 
   @override
   void initState() {
+    this.agendaBloc = new AgendaBloc(
+        agendaRepository:
+            Injector.appInstance.getDependency<AgendaRepository>());
     super.initState();
   }
 
@@ -52,6 +55,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
             listener: (context, state) {
               if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
+                Navigator.of(context).pop();
                 this.refreshAgenda(true);
               }
             },

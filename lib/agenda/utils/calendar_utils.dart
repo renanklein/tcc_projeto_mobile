@@ -33,7 +33,6 @@ class CalendarUtils {
   }
 
   static List<Widget> buildEventList(
-      AgendaBloc agendaBloc,
       List _selectedDayDescriptions,
       DateTime _selectedDay,
       AgendaRepository agendaRepository,
@@ -47,7 +46,6 @@ class CalendarUtils {
     return dayEvents.map((event) {
       return ListTile(
         title: CalendarEventTile(
-          agendaBloc: agendaBloc,
           event: event,
           selectedDay: _selectedDay,
           refreshAgenda: refreshAgenda,

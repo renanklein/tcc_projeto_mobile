@@ -70,6 +70,16 @@ class MedRecordEventProcessing extends MedRecordState {
   List<Object> get props => [];
 }
 
+class MedRecordEventSuccess extends MedRecordState {
+  @override
+  List<Object> get props => [];
+}
+
+class MedRecordEventFailure extends MedRecordState {
+  @override
+  List<Object> get props => [];
+}
+
 class ExamInitial extends MedRecordState {
   @override
   // TODO: implement props

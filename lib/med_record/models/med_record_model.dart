@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-
 class MedRecordModel {
   String _pacientHash;
   String _medRecordOverview;
 
   MedRecordModel({
-    @required String pacientHash,
-    @required String overview,
+    String pacientHash,
+    String overview,
   }) {
     this._pacientHash = pacientHash;
     this._medRecordOverview = overview;
@@ -14,7 +12,6 @@ class MedRecordModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'pacientHash': _pacientHash,
       'medRecordOverview': _medRecordOverview,
     };
   }
@@ -23,7 +20,6 @@ class MedRecordModel {
     if (map == null) return null;
 
     return MedRecordModel(
-      pacientHash: 'teste',
       overview: map['medRecordOverview'],
     );
   }

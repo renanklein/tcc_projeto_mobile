@@ -16,8 +16,11 @@ class MedRecordCreateButtonPressed extends MedRecordEvent {
 class MedRecordLoad extends MedRecordEvent {
   String _pacientHash;
 
-  MedRecordLoad({@required String pacientHash}) {
-    this._pacientHash = pacientHash;
+  MedRecordLoad({
+    @required String pacientCpf,
+    @required String pacientSalt,
+  }) {
+    this._pacientHash = SltPattern.retrivepacientHash(pacientCpf, pacientSalt);
   }
 
   String get getPacientHash => this._pacientHash;

@@ -8,10 +8,11 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
-import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class MedRecordScreen extends StatefulWidget {
   final MedRecordArguments medRecordArguments;
@@ -50,15 +51,17 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     if (medRecordArguments.index != null) {
       _selectedIndex = _parseIndex(medRecordArguments.index);
     } else {
-      _selectedIndex = 0;
+      _selectedIndex = 1;
     }
 
     if (medRecordArguments.pacientCpf != null &&
         medRecordArguments.pacientSalt != null) {
-      _medRecordBloc.add(MedRecordLoad(
-        pacientHash: SltPattern.retrivepacientHash(
-            medRecordArguments.pacientCpf, medRecordArguments.pacientSalt),
-      ));
+      _medRecordBloc.add(
+        MedRecordLoad(
+          pacientCpf: medRecordArguments.pacientCpf,
+          pacientSalt: medRecordArguments.pacientSalt,
+        ),
+      );
     }
 
     super.initState();
@@ -69,12 +72,6 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     //nomeController.dispose();
     super.dispose();
   }
-
-/*
-  Future<void> _setUserModel() async {
-    this._userModel = await this.userRepository.getUserModel();
-  }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +128,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                                     label: Text('Exames'),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Icon(Icons.healing),
-                                    label: Text('Evolução'),
+                                    icon: Icon(Icons.question_answer),
+                                    label: Text('Diagnóstico'),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Icon(Icons.add_to_home_screen),
-                                    label: Text('Third'),
+                                    icon: Icon(Icons.healing),
+                                    label: Text('Evolução'),
                                   ),
                                   NavigationRailDestination(
                                     icon: Icon(Icons.file_upload),
@@ -200,7 +197,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 onPressed: () {
                   Navigator.of(context)
                       .pushNamed(
-                        '/exam',
+                        createExamRoute,
                         arguments: 'medRecord',
                       )
                       .then((value) => {this._medRecordBloc.add(GetExams())});
@@ -223,6 +220,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         );
         break;
 
+      case 3:
+        return CreateDiagnosisScreen();
+        break;
+
       default:
         return Text('selectedIndex: $index');
         break;
@@ -235,7 +236,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return 2;
         break;
       default:
-        return 0;
+        return 1;
         break;
     }
   }

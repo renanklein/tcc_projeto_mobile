@@ -8,8 +8,7 @@ class Utils {
     Map<DateTime, List<String>> events = new Map<DateTime, List<String>>();
 
     documents.forEach((snapshot) {
-      var dateFromEpoch =
-          ConvertUtils.documentIdToDateTime(snapshot.documentID);
+      var dateFromEpoch = ConvertUtils.documentIdToDateTime(snapshot.id);
       var dayEvents = snapshot.data().values.first;
       var eventsAsListOfString = ConvertUtils.toStringListOfEvents(dayEvents);
       if (eventsAsListOfString.isNotEmpty) {
@@ -50,6 +49,7 @@ class Utils {
       "description": eventParameters["name"],
       "begin": eventParameters["eventDuration"].first,
       "end": eventParameters["eventDuration"].last,
+      "phone": eventParameters["phone"],
       "status": "created"
     };
 

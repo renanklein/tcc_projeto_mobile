@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             color: Theme.of(context).primaryColor,
             onPressed: () async {
-              var user = await this.userRepository.getUser();
+              var user = this.userRepository.getUser();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => UserCalendar(

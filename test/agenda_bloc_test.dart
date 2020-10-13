@@ -28,7 +28,7 @@ void main() {
         () {
       var expectedStates = [EventProcessing(), EventProcessingSuccess()];
 
-      when(fakeAgendaRepository.addEvent("", DateTime(2020), [""]))
+      when(fakeAgendaRepository.addEvent("", DateTime(2020), "", [""]))
           .thenAnswer((_) => Future.value(null));
 
       expectLater(agendaBloc, emitsInOrder(expectedStates));
@@ -37,7 +37,8 @@ void main() {
           eventDay: DateTime(2020),
           eventStart: "",
           eventEnd: "",
-          eventName: ""));
+          eventName: "",
+          eventPhone: ""));
     });
   });
 
@@ -87,7 +88,8 @@ void main() {
           eventStatus: "status",
           eventName: "name",
           eventStart: "start",
-          eventEnd: "end"));
+          eventEnd: "end",
+          eventPhone: "phone"));
     });
   });
 

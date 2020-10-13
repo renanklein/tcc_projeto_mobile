@@ -7,12 +7,14 @@ class AgendaCreateButtonPressed extends AgendaEvent {
   final eventDay;
   final eventStart;
   final eventEnd;
+  final eventPhone;
 
   AgendaCreateButtonPressed(
       {@required this.eventName,
       @required this.eventDay,
       @required this.eventStart,
-      @required this.eventEnd});
+      @required this.eventEnd,
+      @required this.eventPhone});
 
   @override
   List<Object> get props => [];
@@ -30,6 +32,7 @@ class AgendaEditButtonPressed extends AgendaEvent {
   final eventStart;
   final eventEnd;
   final eventStatus;
+  final eventPhone;
 
   AgendaEditButtonPressed(
       {@required this.eventId,
@@ -37,7 +40,8 @@ class AgendaEditButtonPressed extends AgendaEvent {
       @required this.eventDay,
       @required this.eventStart,
       @required this.eventEnd,
-      @required this.eventStatus});
+      @required this.eventStatus,
+      @required this.eventPhone});
 
   @override
   List<Object> get props => [];

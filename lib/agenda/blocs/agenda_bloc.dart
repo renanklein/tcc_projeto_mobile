@@ -27,9 +27,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         eventHourRange.add(event.eventStart);
         eventHourRange.add(event.eventEnd);
 
-        await this
-            .agendaRepository
-            .addEvent(event.eventName, event.eventDay, eventHourRange);
+        await this.agendaRepository.addEvent(
+            event.eventName, event.eventDay, event.eventPhone, eventHourRange);
 
         yield EventProcessingSuccess();
       } catch (error) {
@@ -53,7 +52,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
           "id": event.eventId,
           "begin": event.eventStart,
           "end": event.eventEnd,
-          "description": event.eventName
+          "description": event.eventName,
+          "phone": event.eventPhone
         };
 
         await this

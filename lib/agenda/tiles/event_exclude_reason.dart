@@ -22,9 +22,9 @@ class EventExcludeBottomSheet extends StatefulWidget {
 }
 
 class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
+  AgendaBloc agendaBloc;
   final _eventReasonController = TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  AgendaBloc agendaBloc;
 
   DateTime get eventDay => this.widget.eventDay;
   String get eventId => this.widget.eventId;
@@ -40,7 +40,6 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
 
   @override
   void dispose() {
-    this.agendaBloc.close();
     super.dispose();
   }
 
@@ -61,7 +60,7 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
               if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
                 Navigator.of(context).pop();
-                this.refreshAgenda();
+                this.refreshAgenda(true);
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(

@@ -63,13 +63,15 @@ class _UserCalendarState extends State<UserCalendar> {
             IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EventEditorScreen(
-                            event: null,
-                            isEdit: false,
-                            selectedDay: this._selectedDay,
-                            refreshAgenda: this.refresh,
-                          )));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => EventEditorScreen(
+                                event: null,
+                                isEdit: false,
+                                selectedDay: this._selectedDay,
+                                refreshAgenda: this.refresh,
+                              )))
+                      .then((value) => _dispatchAgendaLoadEvent());
                 })
           ],
           elevation: 0.0,
@@ -188,8 +190,10 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh() {
-    Navigator.of(context).pop();
+  void refresh(bool isConfirmedOrCancel) {
+    if (isConfirmedOrCancel) {
+      Navigator.of(context).pop();
+    }
     setState(() {
       _dispatchAgendaLoadEvent();
     });

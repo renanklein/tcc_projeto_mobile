@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_avatar.dart';
 import 'package:tcc_projeto_app/agenda/tiles/elements/event_description.dart';
-import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
-import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CalendarEventTile extends StatelessWidget {
@@ -20,7 +18,7 @@ class CalendarEventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: AnimatedContainer(
-        height: 65.0,
+        height: 75.0,
         width: 120.0,
         decoration: _buildContainerDecoration(),
         duration: Duration(milliseconds: 3000),
@@ -36,17 +34,19 @@ class CalendarEventTile extends StatelessWidget {
                 eventPhone: this.event["phone"],
                 eventHourStart: this.event["begin"],
                 eventHourEnd: this.event["end"],
-              ),
+              )
             ]),
       ),
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => EventEditorScreen(
-                  event: this.event,
-                  isEdit: true,
-                  selectedDay: this.selectedDay,
-                  refreshAgenda: this.refreshAgenda,
-                )));
+        Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => EventEditorScreen(
+                      event: this.event,
+                      isEdit: true,
+                      selectedDay: this.selectedDay,
+                      refreshAgenda: this.refreshAgenda,
+                    )))
+            .then((_) => this.refreshAgenda(false));
       },
     );
   }

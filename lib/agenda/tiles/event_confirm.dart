@@ -71,7 +71,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
                     LayoutUtils.buildVerticalSpacing(28.0),
                     Center(
                       child: Text(
-                        "Deseja confirmar esse evento ?",
+                        "Deseja confirmar esse agendamento ?",
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,

@@ -57,12 +57,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     this._eventPhoneController = TextEditingController(
         text: this.event == null ? "" : this.event["phone"]);
 
-    this._eventPhoneController.text.isNotEmpty
-        ? eventPhone = PhoneNumber(
-            phoneNumber: this._eventPhoneController.text,
-            dialCode: this.dialCode,
-            isoCode: this.isoCode)
-        : eventPhone = null;
+    this.eventPhone = PhoneNumber(
+        phoneNumber: this._eventPhoneController.text,
+        dialCode: this.dialCode,
+        isoCode: this.isoCode);
 
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
     this._eventHourController = TextEditingController();
@@ -262,7 +260,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.green[600],
           child: Text(
-            "Confirmar Evento",
+            "Confirmar Agendamento",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -294,7 +292,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.red[300],
           child: Text(
-            "Cancelar Evento",
+            "Cancelar Agendamento",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

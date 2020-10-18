@@ -6,7 +6,7 @@ class ConvertUtils {
   }
 
   static String dayFromDateTime(DateTime date) {
-    return "${date.year}-${date.month}-${date.day}";
+    return "${date.day}-${date.month}-${date.year}";
   }
 
   static DateTime removeTime(DateTime date) {

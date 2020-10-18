@@ -103,7 +103,7 @@ class _UserCalendarState extends State<UserCalendar> {
                   children: <Widget>[
                     TableCalendar(
                       locale: "pt_BR",
-                      onDaySelected: (date, events) {
+                      onDaySelected: (date, events, _) {
                         setState(() {
                           this._selectedDay = date;
                           this._selectedDayDescriptions = events;

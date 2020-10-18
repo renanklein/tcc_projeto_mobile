@@ -24,9 +24,12 @@ class CalendarUtils {
     );
   }
 
+// Cor transparente, unica forma de obscurecer os marcadores, lib coloca
+// marcadores por default
   static Widget buildEventMarker(DateTime eventDate, List events) {
     return Container(
-      decoration: BoxDecoration(shape: BoxShape.rectangle, color: Colors.white),
+      decoration:
+          BoxDecoration(shape: BoxShape.rectangle, color: Colors.transparent),
       width: 10.0,
       height: 2.0,
     );

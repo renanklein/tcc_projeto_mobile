@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -22,6 +23,7 @@ class UserCalendar extends StatefulWidget {
 class _UserCalendarState extends State<UserCalendar> {
   AgendaRepository _agendaRepository;
   AgendaBloc _agendaBloc;
+  List<DocumentSnapshot> occupedTimes;
   Map<DateTime, List<dynamic>> _events;
   List _selectedDayDescriptions;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -84,6 +86,7 @@ class _UserCalendarState extends State<UserCalendar> {
               if (_isEventCreateSuccess(state)) {
                 _dispatchAgendaLoadEvent();
               } else if (state is AgendaLoadSuccess) {
+                this.occupedTimes = state.occupedTimes;
                 this._events = state.eventsLoaded;
                 this._agendaRepository.events = this._events;
                 this._selectedDay = DateTime.now();
@@ -127,15 +130,10 @@ class _UserCalendarState extends State<UserCalendar> {
                       minChildSize: 0.35,
                       maxChildSize: 0.4,
                       builder: (context, controller) {
-                        return ListView(
-                          controller: controller,
-                          children: CalendarUtils.buildEventList(
-                              this._selectedDayDescriptions,
-                              this._selectedDay,
-                              this._agendaRepository,
-                              this.refresh,
-                              context),
-                        );
+                        return CalendarUtils.buildEventList(
+                            this._selectedDayDescriptions,
+                            this._selectedDay,
+                            this.refresh);
                       },
                     )
                   ],

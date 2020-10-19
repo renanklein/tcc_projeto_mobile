@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
@@ -46,13 +47,22 @@ void main() {
     test(
         "When event is AgendaLoad and no exception was thrown, it should emit AgendaLoadSuccess",
         () {
-      var expectedStates = [AgendaLoading(), AgendaLoadSuccess(Map())];
+      var expectedStates = [
+        AgendaLoading(),
+        AgendaLoadSuccess(eventsLoaded: Map(), occupedTimes: null)
+      ];
 
       when(fakeAgendaRepository.getEvents())
           .thenAnswer((_) => Future.value(Map()));
 
+      when(fakeAgendaRepository.getOccupedTimes())
+          .thenAnswer((_) => Future.value());
+
       expectLater(agendaBloc, emitsInOrder(expectedStates))
           .then((_) => verify(fakeAgendaRepository.getEvents()).called(1));
+
+      expectLater(agendaBloc, emitsInOrder(expectedStates)).then(
+          (_) => verify(fakeAgendaRepository.getOccupedTimes()).called(1));
 
       agendaBloc.add(AgendaLoad());
     });

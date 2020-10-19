@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
-import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
-import 'package:tcc_projeto_app/agenda/tiles/calendar_event_tile.dart';
+import 'package:tcc_projeto_app/agenda/tiles/calendar_event_list.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class CalendarUtils {
@@ -35,25 +33,14 @@ class CalendarUtils {
     );
   }
 
-  static List<Widget> buildEventList(
-      List _selectedDayDescriptions,
-      DateTime _selectedDay,
-      AgendaRepository agendaRepository,
-      Function refreshAgenda,
-      BuildContext context) {
-    if (_selectedDayDescriptions == null) {
-      return <Widget>[];
-    }
+  static Widget buildEventList(List _selectedDayDescriptions,
+      DateTime _selectedDay, Function refreshAgenda) {
     List dayEvents = ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
 
-    return dayEvents.map((event) {
-      return ListTile(
-        title: CalendarEventTile(
-          event: event,
-          selectedDay: _selectedDay,
-          refreshAgenda: refreshAgenda,
-        ),
-      );
-    }).toList();
+    return CalendarEventList(
+      eventsList: dayEvents,
+      selectedDay: _selectedDay,
+      refreshAgenda: refreshAgenda,
+    );
   }
 }

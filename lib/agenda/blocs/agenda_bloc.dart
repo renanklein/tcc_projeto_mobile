@@ -39,8 +39,12 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         yield AgendaLoading();
 
         var events = await this.agendaRepository.getEvents();
+        var occupedTimesSnapshot =
+            await this.agendaRepository.getOccupedTimes();
+        var occupedTimes = occupedTimesSnapshot.docs.toList();
 
-        yield AgendaLoadSuccess(events);
+        yield AgendaLoadSuccess(
+            occupedTimes: occupedTimes, eventsLoaded: events);
       } catch (error) {
         yield AgendaLoadFail();
       }

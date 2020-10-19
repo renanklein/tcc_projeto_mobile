@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/utils.dart';
 
@@ -66,6 +67,15 @@ class AgendaRepository {
             });
 
     return occupedHours;
+  }
+
+  Future<QuerySnapshot> getOccupedTimes() async {
+    return await firestore
+        .collection("agenda")
+        .doc(this._userId)
+        .collection('events')
+        .snapshots()
+        .first;
   }
 
   Future<void> updateEvent(DateTime eventDay, Map newEvent, String status,

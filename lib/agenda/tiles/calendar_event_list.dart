@@ -24,6 +24,7 @@ class _CalendarEventListState extends State<CalendarEventList> {
   List<Map> get eventsList => this.widget.eventsList;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
+  int tableCellCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +55,8 @@ class _CalendarEventListState extends State<CalendarEventList> {
         event = el;
       }
     });
-    return ListTile(
-      title: GestureDetector(
+    return TableCell(
+      child: GestureDetector(
         child: Text(
           time,
           style: TextStyle(color: hasEvent ? Colors.grey : Colors.white),
@@ -76,7 +77,8 @@ class _CalendarEventListState extends State<CalendarEventList> {
   }
 
   Widget _buildDayTiles(BuildContext context, List<String> occupedTimes) {
-    var dayTiles = <Widget>[];
+    var hourRows = <TableRow>[];
+    var tableRowChildren = <Widget>[];
     bool hasEvent;
     var totalTimes = ConvertUtils.getTotalHours();
     totalTimes.forEach((time) {
@@ -84,12 +86,20 @@ class _CalendarEventListState extends State<CalendarEventList> {
       if (occupedTimes.contains(time)) {
         hasEvent = true;
       }
+      this.tableCellCount++;
+      tableRowChildren.add(_buildTimeTile(time, hasEvent));
 
-      dayTiles.add(_buildTimeTile(time, hasEvent));
+      if (this.tableCellCount % 2 == 0) {
+        var lastRowChild = tableRowChildren.last;
+        tableRowChildren.removeLast();
+        var row = TableRow(children: [tableRowChildren.last, lastRowChild]);
+        tableRowChildren = <Widget>[];
+        hourRows.add(row);
+      }
     });
 
-    return ListView(
-      children: dayTiles,
+    return Table(
+      children: hourRows,
     );
   }
 }

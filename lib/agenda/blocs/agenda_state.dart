@@ -24,9 +24,8 @@ class EventProcessingFail extends AgendaState {
 
 class AgendaLoadSuccess extends AgendaState {
   final eventsLoaded;
-  final occupedTimes;
 
-  AgendaLoadSuccess({@required this.eventsLoaded, @required this.occupedTimes});
+  AgendaLoadSuccess({@required this.eventsLoaded});
 
   @override
   List<Object> get props => [];

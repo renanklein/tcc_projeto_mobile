@@ -49,20 +49,14 @@ void main() {
         () {
       var expectedStates = [
         AgendaLoading(),
-        AgendaLoadSuccess(eventsLoaded: Map(), occupedTimes: null)
+        AgendaLoadSuccess(eventsLoaded: Map())
       ];
 
       when(fakeAgendaRepository.getEvents())
           .thenAnswer((_) => Future.value(Map()));
 
-      when(fakeAgendaRepository.getOccupedTimes())
-          .thenAnswer((_) => Future.value());
-
       expectLater(agendaBloc, emitsInOrder(expectedStates))
           .then((_) => verify(fakeAgendaRepository.getEvents()).called(1));
-
-      expectLater(agendaBloc, emitsInOrder(expectedStates)).then(
-          (_) => verify(fakeAgendaRepository.getOccupedTimes()).called(1));
 
       agendaBloc.add(AgendaLoad());
     });

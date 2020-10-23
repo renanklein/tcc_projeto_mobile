@@ -23,7 +23,6 @@ class UserCalendar extends StatefulWidget {
 class _UserCalendarState extends State<UserCalendar> {
   AgendaRepository _agendaRepository;
   AgendaBloc _agendaBloc;
-  List<DocumentSnapshot> occupedTimes;
   Map<DateTime, List<dynamic>> _events;
   List _selectedDayDescriptions;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -86,7 +85,6 @@ class _UserCalendarState extends State<UserCalendar> {
               if (_isEventCreateSuccess(state)) {
                 _dispatchAgendaLoadEvent();
               } else if (state is AgendaLoadSuccess) {
-                this.occupedTimes = state.occupedTimes;
                 this._events = state.eventsLoaded;
                 this._agendaRepository.events = this._events;
                 this._selectedDay = DateTime.now();
@@ -101,8 +99,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-                return Stack(
-                  fit: StackFit.loose,
+                return ListView(
                   children: <Widget>[
                     TableCalendar(
                       locale: "pt_BR",
@@ -124,18 +121,8 @@ class _UserCalendarState extends State<UserCalendar> {
                         ];
                       }),
                     ),
-                    DraggableScrollableSheet(
-                      expand: true,
-                      initialChildSize: 0.4,
-                      minChildSize: 0.35,
-                      maxChildSize: 0.4,
-                      builder: (context, controller) {
-                        return CalendarUtils.buildEventList(
-                            this._selectedDayDescriptions,
-                            this._selectedDay,
-                            this.refresh);
-                      },
-                    )
+                    CalendarUtils.buildEventList(this._selectedDayDescriptions,
+                        this._selectedDay, this.refresh)
                   ],
                 );
               },

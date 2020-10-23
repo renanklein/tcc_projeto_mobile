@@ -50,22 +50,18 @@ class AgendaRepository {
   }
 
   Future<List<String>> getOccupedDayTimes(String day) async {
-    var occupedHours;
-    await firestore
+    var query = await firestore
         .collection("agenda")
         .doc(this._userId)
         .collection("events")
         .doc(day)
-        .get()
-        .then((resp) => {
-              if (resp.data() != null && resp.data().containsKey("events"))
-                {
-                  occupedHours =
-                      ConvertUtils.getOccupedHours(resp.data()["events"])
-                }
-            });
+        .get();
 
-    return occupedHours;
+    if (query.data() != null && query.data().containsKey("events")) {
+      return ConvertUtils.getOccupedHours(query.data()["events"]);
+    }
+
+    return <String>[];
   }
 
   Future<QuerySnapshot> getOccupedTimes() async {

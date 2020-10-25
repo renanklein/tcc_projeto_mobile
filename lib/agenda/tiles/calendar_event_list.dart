@@ -59,7 +59,8 @@ class _CalendarEventListState extends State<CalendarEventList> {
       child: GestureDetector(
         child: Text(
           time,
-          style: TextStyle(color: hasEvent ? Colors.grey : Colors.white),
+          style: TextStyle(
+              color: hasEvent ? Colors.grey : Colors.white, fontSize: 15.7),
         ),
         onTap: () {
           Navigator.of(context)
@@ -92,14 +93,28 @@ class _CalendarEventListState extends State<CalendarEventList> {
       if (this.tableCellCount % 2 == 0) {
         var lastRowChild = tableRowChildren.last;
         tableRowChildren.removeLast();
-        var row = TableRow(children: [tableRowChildren.last, lastRowChild]);
+        var row = TableRow(
+          children: [tableRowChildren.last, lastRowChild],
+        );
         tableRowChildren = <Widget>[];
         hourRows.add(row);
       }
     });
 
     return Table(
+      border: TableBorder(
+          top: _buildTableBorder(),
+          bottom: _buildTableBorder(),
+          left: _buildTableBorder(),
+          right: _buildTableBorder(),
+          horizontalInside: _buildTableBorder(),
+          verticalInside: _buildTableBorder()),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: hourRows,
     );
+  }
+
+  BorderSide _buildTableBorder() {
+    return BorderSide(color: Colors.white, style: BorderStyle.solid);
   }
 }

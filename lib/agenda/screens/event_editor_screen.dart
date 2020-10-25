@@ -122,6 +122,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                       children: <Widget>[
                         ..._buildFields(state),
                         ..._buildStatusButtons(),
+                        LayoutUtils.buildVerticalSpacing(20.0),
                         _buildCreateEventButton(),
                       ],
                     ),
@@ -163,13 +164,24 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     var buttonsList = <Widget>[];
 
     if (this.isEdit) {
-      buttonsList.add(_buildConfirmButton());
-      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
       buttonsList.add(_buildCancelButton());
-      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+      buttonsList.add(_buildConfirmButton());
+
+      return <Widget>[
+        Center(
+          child: Text("Clique para confirmar ou cancelar a consulta",
+              style: TextStyle(
+                  fontSize: 16.0, color: Theme.of(context).primaryColor)),
+        ),
+        LayoutUtils.buildVerticalSpacing(10.0),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: buttonsList)
+      ];
     }
 
-    return buttonsList;
+    return <Widget>[];
   }
 
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
@@ -245,6 +257,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildConfirmButton() {
     return SizedBox(
       height: 44.0,
+      width: 150.0,
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
@@ -260,7 +273,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.green[600],
           child: Text(
-            "Confirmar Agendamento",
+            "Confirmar",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -274,6 +287,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildCancelButton() {
     return SizedBox(
       height: 44.0,
+      width: 150.0,
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
@@ -292,7 +306,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.red[300],
           child: Text(
-            "Cancelar Agendamento",
+            "Cancelar",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

@@ -117,7 +117,7 @@ class _UserCalendarState extends State<UserCalendar> {
                       builders: CalendarBuilders(
                           markersBuilder: (context, date, events, _) {
                         return <Widget>[
-                          CalendarUtils.buildEventMarker(date, events)
+                          CalendarUtils.buildEventMarker(date, events, context)
                         ];
                       }),
                     ),

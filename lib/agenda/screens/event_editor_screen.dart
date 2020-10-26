@@ -15,6 +15,7 @@ class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
   final selectedDay;
+  final selectedTime;
   final refreshAgenda;
   final isoCode = "BR";
   final dialCode = "+55";
@@ -23,6 +24,7 @@ class EventEditorScreen extends StatefulWidget {
       {@required this.event,
       @required this.isEdit,
       @required this.selectedDay,
+      @required this.selectedTime,
       @required this.refreshAgenda});
 
   @override
@@ -42,6 +44,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   bool get isEdit => this.widget.isEdit;
   String get isoCode => this.widget.isoCode;
   String get dialCode => this.widget.dialCode;
+  String get selectedTime => this.widget.selectedTime;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
 
@@ -194,6 +197,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
     fieldsList.add(
       EventHourField(
+        selectedTime: this.selectedTime,
         occupedHours: state.occupedTimes,
         hourController: this._eventHourController,
       ),

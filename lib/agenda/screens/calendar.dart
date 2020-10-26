@@ -60,21 +60,6 @@ class _UserCalendarState extends State<UserCalendar> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Eventos"),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => EventEditorScreen(
-                                event: null,
-                                isEdit: false,
-                                selectedDay: this._selectedDay,
-                                refreshAgenda: this.refresh,
-                              )))
-                      .then((value) => _dispatchAgendaLoadEvent());
-                })
-          ],
           elevation: 0.0,
         ),
         backgroundColor: Theme.of(context).primaryColor,

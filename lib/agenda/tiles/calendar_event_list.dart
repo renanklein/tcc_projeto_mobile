@@ -67,6 +67,7 @@ class _CalendarEventListState extends State<CalendarEventList> {
               .push(MaterialPageRoute(
                   builder: (context) => EventEditorScreen(
                         event: hasEvent ? event : null,
+                        selectedTime: time,
                         isEdit: hasEvent,
                         selectedDay: this.widget.selectedDay,
                         refreshAgenda: this.widget.refreshAgenda,

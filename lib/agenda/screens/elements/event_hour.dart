@@ -5,7 +5,11 @@ import 'package:tcc_projeto_app/utils/convert_utils.dart';
 class EventHourField extends StatefulWidget {
   final occupedHours;
   final hourController;
-  EventHourField({@required this.occupedHours, @required this.hourController});
+  final selectedTime;
+  EventHourField(
+      {@required this.occupedHours,
+      @required this.hourController,
+      @required this.selectedTime});
 
   @override
   _EventHourFieldState createState() => _EventHourFieldState();
@@ -14,12 +18,14 @@ class EventHourField extends StatefulWidget {
 class _EventHourFieldState extends State<EventHourField> {
   List<String> get occupedHours => this.widget.occupedHours;
   TextEditingController get hourController => this.widget.hourController;
+  String get selectedTime => this.widget.selectedTime;
   String currentValue;
 
   @override
   void initState() {
     if (this.hourController.text == "") {
-      this.hourController.text = _getAvailableHours().first;
+      this.hourController.text = this.selectedTime;
+      this.currentValue = this.selectedTime;
     }
     super.initState();
   }
@@ -27,7 +33,7 @@ class _EventHourFieldState extends State<EventHourField> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-        hint: Text("-- Selecione um horário --"),
+        //hint: Text("-- Selecione um horário --"),
         value: this.currentValue,
         isDense: true,
         decoration: InputDecoration(

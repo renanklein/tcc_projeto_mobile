@@ -23,17 +23,14 @@ class _EventHourFieldState extends State<EventHourField> {
 
   @override
   void initState() {
-    if (this.hourController.text == "") {
-      this.hourController.text = this.selectedTime;
-      this.currentValue = this.selectedTime;
-    }
+    this.hourController.text = this.selectedTime;
+    this.currentValue = this.selectedTime;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-        //hint: Text("-- Selecione um horário --"),
         value: this.currentValue,
         isDense: true,
         decoration: InputDecoration(

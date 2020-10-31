@@ -175,7 +175,7 @@ class _UserCalendarState extends State<UserCalendar> {
     String eventDay = DateFormat("yyyy-MM-dd").format(this._selectedDay);
     List eventsAsList = [];
     this._events.forEach((date, events) {
-      var dateAsString = DateFormat("yyyy-MM-dd").format(this._selectedDay);
+      var dateAsString = DateFormat("yyyy-MM-dd").format(date);
 
       if (eventDay == dateAsString) {
         eventsAsList = events;

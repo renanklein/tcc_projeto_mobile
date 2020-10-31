@@ -49,18 +49,22 @@ class _CalendarEventListState extends State<CalendarEventList> {
 
   Widget _buildTimeTile(String time, bool hasEvent) {
     var event;
+    var tableCellCollor = Colors.white;
     this.eventsList.forEach((el) {
       String eventTime = "${el["begin"]} - ${el["end"]}";
       if (time == eventTime) {
         event = el;
+
+        event["status"] == "confirmed"
+            ? tableCellCollor = Colors.green[300]
+            : tableCellCollor = Colors.grey[400];
       }
     });
     return TableCell(
       child: GestureDetector(
         child: Text(
           time,
-          style: TextStyle(
-              color: hasEvent ? Colors.grey : Colors.white, fontSize: 15.7),
+          style: TextStyle(color: tableCellCollor, fontSize: 15.7),
         ),
         onTap: () {
           Navigator.of(context)

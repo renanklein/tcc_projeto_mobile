@@ -171,7 +171,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildStatusButtons() {
     var buttonsList = <Widget>[];
 
-    if (this.isEdit) {
+    if (this.isEdit && this.event["status"] != "confirmed") {
       buttonsList.add(_buildCancelButton());
       buttonsList.add(_buildConfirmButton());
 

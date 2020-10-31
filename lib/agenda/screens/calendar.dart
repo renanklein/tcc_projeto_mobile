@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
@@ -73,7 +74,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 this._events = state.eventsLoaded;
                 this._agendaRepository.events = this._events;
                 this._selectedDay = DateTime.now();
-                this._selectedDayDescriptions = this._events[this._selectedDay];
+                this._selectedDayDescriptions = _retrieveListOfEvents();
               } else if (state is AgendaLoadFail) {
                 _buildFailSnackBar();
               }
@@ -91,7 +92,8 @@ class _UserCalendarState extends State<UserCalendar> {
                       onDaySelected: (date, events, _) {
                         setState(() {
                           this._selectedDay = date;
-                          this._selectedDayDescriptions = events;
+                          this._selectedDayDescriptions =
+                              _retrieveListOfEvents();
                         });
                       },
                       events: this._events,
@@ -167,5 +169,19 @@ class _UserCalendarState extends State<UserCalendar> {
     setState(() {
       _dispatchAgendaLoadEvent();
     });
+  }
+
+  List _retrieveListOfEvents() {
+    String eventDay = DateFormat("yyyy-MM-dd").format(this._selectedDay);
+    List eventsAsList = [];
+    this._events.forEach((date, events) {
+      var dateAsString = DateFormat("yyyy-MM-dd").format(this._selectedDay);
+
+      if (eventDay == dateAsString) {
+        eventsAsList = events;
+      }
+    });
+
+    return eventsAsList;
   }
 }

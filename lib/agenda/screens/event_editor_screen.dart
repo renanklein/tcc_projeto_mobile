@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_status.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -34,6 +35,7 @@ class EventEditorScreen extends StatefulWidget {
 class _EventEditorScreenState extends State<EventEditorScreen> {
   AgendaBloc agendaBloc;
   List<String> occupedHours;
+  TextEditingController _eventStatusController;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
   TextEditingController _eventPhoneController;
@@ -59,6 +61,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
     this._eventPhoneController = TextEditingController(
         text: this.event == null ? "" : this.event["phone"]);
+
+    this._eventStatusController = TextEditingController(
+        text: this.event == null ? "" : this.event["status"]);
 
     this.eventPhone = PhoneNumber(
         phoneNumber: this._eventPhoneController.text,
@@ -193,6 +198,12 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     fieldsList
         .add(EventNameField(eventNameController: this._eventNameController));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    if (this.isEdit) {
+      fieldsList.add(EventStatus(
+        eventStatus: this._eventStatusController.text,
+      ));
+      fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    }
     fieldsList.add(EventDate(selectedDay: this.selectedDay));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
     fieldsList.add(

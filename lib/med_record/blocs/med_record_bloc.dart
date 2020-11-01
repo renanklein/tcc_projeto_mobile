@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
@@ -155,6 +156,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         yield DecriptExamSuccess(decriptedBytes: decriptedBytes);
       } catch (error) {
         yield ExamProcessingFail();
+      }
+    } else if (event is DinamicExamField) {
+      try {
+        yield DynamicExamFieldProcessing();
+
+        var fieldWidget = ExamDetailsField(
+            fieldPlaceholder: event.fieldName, fieldValue: event.fieldValue);
+
+        yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
+      } catch (e) {
+        yield DynamicExamFieldFail();
       }
     }
   }

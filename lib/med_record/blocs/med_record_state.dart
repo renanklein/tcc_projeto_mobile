@@ -107,7 +107,6 @@ class GetExamsSuccess extends MedRecordState {
   List<String> get getFileDownloadURLs => this.fileDownloadURLs;
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -116,7 +115,6 @@ class ExamProcessingSuccess extends MedRecordState {
   ExamProcessingSuccess({@required this.encriptedFile});
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -126,12 +124,28 @@ class DecriptExamSuccess extends MedRecordState {
   DecriptExamSuccess({@required this.decriptedBytes});
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
 class ExamProcessingFail extends MedRecordState {
   @override
-  // TODO: implement props
+  List<Object> get props => [];
+}
+
+class DynamicExamFieldProcessing extends MedRecordState {
+  @override
+  List<Object> get props => [];
+}
+
+class DynamicExamFieldSuccess extends MedRecordState {
+  final dynamicFieldWidget;
+  DynamicExamFieldSuccess({@required this.dynamicFieldWidget});
+
+  @override
+  List<Object> get props => [];
+}
+
+class DynamicExamFieldFail extends MedRecordState {
+  @override
   List<Object> get props => [];
 }

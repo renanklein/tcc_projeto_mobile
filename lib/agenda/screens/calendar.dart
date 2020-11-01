@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
-import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 

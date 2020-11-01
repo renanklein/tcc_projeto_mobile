@@ -74,3 +74,13 @@ class DecriptExam extends MedRecordEvent {
   @override
   List<Object> get props => [];
 }
+
+class DinamicExamField extends MedRecordEvent {
+  final fieldName;
+  final fieldValue;
+
+  DinamicExamField({@required this.fieldName, @required this.fieldValue});
+
+  @override
+  List<Object> get props => [];
+}

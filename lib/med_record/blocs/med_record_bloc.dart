@@ -88,7 +88,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         MedRecordModel medRecord = await this
             .medRecordRepository
-            .getMedRecordByCpf(event.getPacientHash);
+            .getMedRecordByHash(event.getPacientHash);
 
         yield MedRecordLoadEventSuccess(medRecord: medRecord);
       } catch (error) {

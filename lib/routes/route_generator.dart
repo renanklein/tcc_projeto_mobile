@@ -35,9 +35,9 @@ class RouteGenerator {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
-      case createExamRoute:
-        return MaterialPageRoute(builder: (context) => ExamFormScreen());
-        break;
+      // case createExamRoute:
+      //   return MaterialPageRoute(builder: (context) => ExamFormScreen());
+      //   break;
       case pacientsRoute:
         return MaterialPageRoute(builder: (_) => ListPacientScreen());
         break;

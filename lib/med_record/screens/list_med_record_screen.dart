@@ -10,6 +10,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -196,10 +197,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
               RaisedButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(
-                        createExamRoute,
-                        arguments: 'medRecord',
-                      )
+                      .push(MaterialPageRoute(
+                          builder: (context) => ExamFormScreen(
+                                medRecordArguments: this.medRecordArguments,
+                              )))
                       .then((value) => {this._medRecordBloc.add(GetExams())});
                 },
                 shape: RoundedRectangleBorder(

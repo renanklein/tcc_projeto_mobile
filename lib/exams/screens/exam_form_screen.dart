@@ -9,10 +9,14 @@ import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamFormScreen extends StatefulWidget {
   final dynamicFieldsList = <Widget>[];
+  final medRecordArguments;
+
+  ExamFormScreen({@required this.medRecordArguments});
   @override
   _ExamFormScreenState createState() => _ExamFormScreenState();
 }
@@ -33,6 +37,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
   @override
   void initState() {
     this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
@@ -61,7 +66,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
               Future.delayed(Duration(seconds: 2));
               Navigator.of(context).pop();
             } else if (state is DynamicExamFieldSuccess) {
-              this.dynamicFieldsList.add(state.dynamicFieldWidget);
+              setState(() {
+                this.dynamicFieldsList.add(state.dynamicFieldWidget);
+              });
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             }
@@ -85,7 +92,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                       RaisedButton(
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet(
-                            (context) => ExamDynamicFieldsBottomsheet(),
+                            (context) => ExamDynamicFieldsBottomsheet(
+                              dynamicFieldsList: this.dynamicFieldsList,
+                              refreshForm: this.refreshFields,
+                            ),
                             backgroundColor: Colors.transparent,
                           );
                         },
@@ -198,5 +208,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         },
       ),
     );
+  }
+
+  void refreshFields(List fieldsList, Widget newField) {
+    Navigator.of(context).pop();
+    setState(() {
+      fieldsList.add(newField);
+      fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
+    });
   }
 }

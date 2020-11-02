@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
@@ -7,6 +8,11 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class ExamDynamicFieldsBottomsheet extends StatefulWidget {
   final fieldNameController = TextEditingController();
   final fieldValueController = TextEditingController();
+  final dynamicFieldsList;
+  final refreshForm;
+
+  ExamDynamicFieldsBottomsheet(
+      {@required this.dynamicFieldsList, @required this.refreshForm});
 
   @override
   _ExamDinamicFieldsBottomsheetState createState() =>
@@ -21,6 +27,9 @@ class _ExamDinamicFieldsBottomsheetState
       this.widget.fieldNameController;
   TextEditingController get fieldValueController =>
       this.widget.fieldValueController;
+
+  List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
+  Function get refreshForm => this.widget.refreshForm;
 
   @override
   void initState() {
@@ -58,6 +67,7 @@ class _ExamDinamicFieldsBottomsheetState
                         fieldPlaceholder: "Nome do campo",
                       ),
                     ),
+                    LayoutUtils.buildVerticalSpacing(5.0),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
                       child: Field(
@@ -70,9 +80,12 @@ class _ExamDinamicFieldsBottomsheetState
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: RaisedButton(
                         onPressed: () {
-                          this.medRecordBloc.add(DinamicExamField(
-                              fieldName: this.fieldNameController.text,
-                              fieldValue: this.fieldValueController.text));
+                          var newField = ExamDetailsField(
+                            fieldValue: this.fieldValueController.text,
+                            fieldPlaceholder: this.fieldNameController.text,
+                          );
+
+                          this.refreshForm(this.dynamicFieldsList, newField);
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32.0),

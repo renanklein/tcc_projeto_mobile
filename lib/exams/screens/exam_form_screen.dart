@@ -1,16 +1,21 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:injector/injector.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamFormScreen extends StatefulWidget {
   final dynamicFieldsList = <Widget>[];
@@ -23,30 +28,21 @@ class ExamFormScreen extends StatefulWidget {
 
 class _ExamFormScreenState extends State<ExamFormScreen> {
   MedRecordBloc _medRecordBloc;
-  TextEditingController pacientNameController = TextEditingController();
-  TextEditingController examDateController = TextEditingController();
-  TextEditingController requestingDoctorController = TextEditingController();
-  TextEditingController examTypeController = TextEditingController();
-  TextEditingController examinationUnitController = TextEditingController();
-  TextEditingController examResponsableController = TextEditingController();
-  TextEditingController examDescriptionController = TextEditingController();
-  TextEditingController diagnosticHypothesisController =
-      TextEditingController();
-  TextEditingController otherPacientInformation = TextEditingController();
+  TextEditingController _examTypeController = TextEditingController();
+  TextEditingController _examDateController = TextEditingController();
   File _examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
-  @override
-  void initState() {
-    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
-    super.initState();
-  }
 
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    this._medRecordBloc = MedRecordBloc(
+        medRecordRepository:
+            Injector.appInstance.getDependency<MedRecordRepository>(),
+        examRepository: Injector.appInstance.getDependency<ExamRepository>());
+    super.initState();
   }
 
   @override
@@ -88,6 +84,14 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                   child: Form(
                       child: ListView(
                     children: [
+                      Field(
+                          textController: this._examTypeController,
+                          fieldPlaceholder: "Tipo de Exame"),
+                      LayoutUtils.buildVerticalSpacing(10.0),
+                      Field(
+                          textController: this._examDateController,
+                          fieldPlaceholder: "Data de realização"),
+                      LayoutUtils.buildVerticalSpacing(10.0),
                       ...this.dynamicFieldsList,
                       RaisedButton(
                         onPressed: () {
@@ -185,20 +189,14 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         onPressed: () {
           if (this._examFile != null) {
             var cardExamInfo = CardExamInfo(
-                examDate: this.examDateController.text,
-                examType: this.examTypeController.text);
+                examDate: this._examDateController.text,
+                examType: this._examTypeController.text);
 
-            var examDetails = ExamDetails(
-                requestingDoctor: this.requestingDoctorController.text,
-                examDate: this.examDateController.text,
-                pacientName: this.pacientNameController.text,
-                diagnosticHypothesis: this.diagnosticHypothesisController.text,
-                examDescription: this.examDescriptionController.text,
-                examResponsable: this.examResponsableController.text,
-                otherPacientInformation: this.otherPacientInformation.text,
-                examinationUnit: this.examinationUnitController.text);
+            var examDetails =
+                ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
 
             this._medRecordBloc.add(SaveExam(
+                medRecordArguments: this.medRecordArguments,
                 examDetails: examDetails,
                 examFile: _examFile,
                 cardExamInfo: cardExamInfo));

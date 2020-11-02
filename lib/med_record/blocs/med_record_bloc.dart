@@ -18,6 +18,7 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.d
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
 
@@ -114,8 +115,16 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var encriptedFile = File("$tempPath/$fileName");
         await encriptedFile.writeAsString(encoded);
 
-        await this.examRepository.saveExam(event.getCardExamInfo,
-            event.getExamDetails, encriptedFile, randomFileName.toString());
+        var pacientHash = SltPattern.retrivepacientHash(
+            event.getMedRecordArguments.pacientCpf,
+            event.getMedRecordArguments.pacientSalt);
+
+        await this.examRepository.saveExam(
+            event.getCardExamInfo,
+            event.getExamDetails,
+            encriptedFile,
+            randomFileName.toString(),
+            pacientHash);
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error) {

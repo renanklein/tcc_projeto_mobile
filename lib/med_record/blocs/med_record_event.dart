@@ -47,15 +47,18 @@ class SaveExam extends MedRecordEvent {
   final cardExamInfo;
   final examDetails;
   final examFile;
+  final medRecordArguments;
 
   SaveExam(
       {@required this.cardExamInfo,
       @required this.examDetails,
-      @required this.examFile});
+      @required this.examFile,
+      @required this.medRecordArguments});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   ExamDetails get getExamDetails => this.examDetails;
   File get getExamFile => this.examFile;
+  MedRecordArguments get getMedRecordArguments => this.medRecordArguments;
 
   @override
   List<Object> get props => [];

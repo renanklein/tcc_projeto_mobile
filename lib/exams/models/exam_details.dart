@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamDetails {
-  //final pacientHash;
-  final pacientName;
-  final examinationUnit;
-  final requestingDoctor;
-  final examResponsable;
-  final examDate;
-  final examDescription;
-  final diagnosticHypothesis;
-  final otherPacientInformation;
+  final fieldsWidgetList;
 
-  ExamDetails(
-      {@required this.pacientName,
-      @required this.examinationUnit,
-      @required this.requestingDoctor,
-      @required this.examResponsable,
-      @required this.examDate,
-      @required this.examDescription,
-      @required this.diagnosticHypothesis,
-      @required this.otherPacientInformation});
+  ExamDetails({@required this.fieldsWidgetList});
 
-  String get getPacientName => this.pacientName;
-  String get getExaminationUnit => this.examinationUnit;
-  String get getRequestingDoctor => this.requestingDoctor;
-  String get getExamResponsable => this.examResponsable;
-  String get getExamDate => this.examDate;
-  String get getExamDescription => this.examDescription;
-  String get getDiagnosticHypothesis => this.diagnosticHypothesis;
-  String get getOtherPacientInformation => this.otherPacientInformation;
+  List<Widget> get getFieldsWidgetList => this.fieldsWidgetList;
+
+  Map toMap() {
+    Map fieldValues = Map();
+    this.getFieldsWidgetList.forEach((field) {
+      if (field is ExamDetailsField) {
+        fieldValues.addAll({field.fieldPlaceholder: field.fieldValue});
+      }
+    });
+
+    return fieldValues;
+  }
+
+  static ExamDetails fromMap(Map dynamicFieldsMap) {
+    var fieldsList = <Widget>[];
+    dynamicFieldsMap.forEach((key, value) {
+      fieldsList
+          .add(ExamDetailsField(fieldValue: value, fieldPlaceholder: key));
+      fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
+    });
+
+    return ExamDetails(fieldsWidgetList: fieldsList);
+  }
 }

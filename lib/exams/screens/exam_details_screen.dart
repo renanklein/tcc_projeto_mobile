@@ -73,14 +73,6 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         ));
   }
 
-  InputDecoration _buildFieldDecoration(String fieldValue) {
-    return InputDecoration(
-      hintText: fieldValue,
-      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-    );
-  }
-
   List<Widget> _buildExamDetails() {
     return <Widget>[
       LayoutUtils.buildVerticalSpacing(20.0),
@@ -88,37 +80,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(10.0),
       _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getExamDescription,
-          fieldPlaceholder: "Descrição do exame"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getDiagnosticHypothesis,
-          fieldPlaceholder: "Hipótese diagnóstica"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getOtherPacientInformation,
-          fieldPlaceholder: "Outras informações do paciente"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getExaminationUnit,
-          fieldPlaceholder: "Unidade de realização do exame"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ..._showOtherFields(),
-      Visibility(
-          visible: true,
-          child: IconButton(
-            color: Theme.of(context).primaryColor,
-            iconSize: 50.0,
-            icon: this.hidePressed
-                ? Icon(Icons.arrow_drop_up)
-                : Icon(Icons.arrow_drop_down),
-            onPressed: () {
-              setState(() {
-                this.hidePressed = !this.hidePressed;
-              });
-            },
-          ))
+      ...this.examDetails.getFieldsWidgetList
     ];
   }
 
@@ -156,29 +118,5 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
     }
 
     return Container();
-  }
-
-  List<Widget> _showOtherFields() {
-    if (this.hidePressed) {
-      return <Widget>[
-        ExamDetailsField(
-            fieldValue: this.examDetails.getPacientName,
-            fieldPlaceholder: "Nome do paciente"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getExamDate,
-            fieldPlaceholder: "Data do exam"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getExamResponsable,
-            fieldPlaceholder: "Responsável pelo exame"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getRequestingDoctor,
-            fieldPlaceholder: "Médico solicitante"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-      ];
-    }
-    return <Widget>[Container()];
   }
 }

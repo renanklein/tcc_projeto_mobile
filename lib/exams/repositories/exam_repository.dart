@@ -19,7 +19,7 @@ class ExamRepository {
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName) async {
+      File encriptedFile, String fileName, String pacientHash) async {
     var user = _getUser();
     var fileDownloadURL = await this._uploadExam(encriptedFile, fileName);
     List exams = [];
@@ -35,13 +35,8 @@ class ExamRepository {
       "fileDownloadURL": fileDownloadURL,
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,
-      "pacientName": examDetails.getPacientName,
-      "examinationUnit": examDetails.getExaminationUnit,
-      "requestingDoctor": examDetails.getRequestingDoctor,
-      "examResponsible": examDetails.getExamResponsable,
-      "examDescription": examDetails.getExamDescription,
-      "diagnosticHypothesis": examDetails.getDiagnosticHypothesis,
-      "otherPacientInformation": examDetails.getOtherPacientInformation
+      "dynamicFields": examDetails.toMap(),
+      "pacientHash": pacientHash
     });
 
     await this
@@ -66,15 +61,8 @@ class ExamRepository {
     exams.forEach((exam) {
       displayableExams.add(
           CardExamInfo(examDate: exam["examDate"], examType: exam["examType"]));
-      displayableExams.add(ExamDetails(
-          pacientName: exam["pacientName"],
-          examinationUnit: exam["examinationUnit"],
-          requestingDoctor: exam["requestingDoctor"],
-          examResponsable: exam["examResponsible"],
-          examDate: exam["examDate"],
-          examDescription: exam["examDescription"],
-          diagnosticHypothesis: exam["diagnosticHypothesis"],
-          otherPacientInformation: exam["otherPacientInformation"]));
+
+      displayableExams.add(ExamDetails.fromMap(exam["dynamicFields"]));
 
       displayableExams.add(exam["fileDownloadURL"]);
     });

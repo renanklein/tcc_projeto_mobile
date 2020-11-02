@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -58,18 +59,20 @@ class _UserCalendarState extends State<UserCalendar> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Agenda"),
+          title: Text("Eventos"),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EventEditorScreen(
-                            event: null,
-                            isEdit: false,
-                            selectedDay: this._selectedDay,
-                            refreshAgenda: this.refresh,
-                          )));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => EventEditorScreen(
+                                event: null,
+                                isEdit: false,
+                                selectedDay: this._selectedDay,
+                                refreshAgenda: this.refresh,
+                              )))
+                      .then((value) => _dispatchAgendaLoadEvent());
                 })
           ],
           elevation: 0.0,
@@ -96,12 +99,11 @@ class _UserCalendarState extends State<UserCalendar> {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
-                return Stack(
-                  fit: StackFit.loose,
+                return ListView(
                   children: <Widget>[
                     TableCalendar(
                       locale: "pt_BR",
-                      onDaySelected: (date, events) {
+                      onDaySelected: (date, events, _) {
                         setState(() {
                           this._selectedDay = date;
                           this._selectedDayDescriptions = events;
@@ -119,23 +121,8 @@ class _UserCalendarState extends State<UserCalendar> {
                         ];
                       }),
                     ),
-                    DraggableScrollableSheet(
-                      expand: true,
-                      initialChildSize: 0.4,
-                      minChildSize: 0.35,
-                      maxChildSize: 0.4,
-                      builder: (context, controller) {
-                        return ListView(
-                          controller: controller,
-                          children: CalendarUtils.buildEventList(
-                              this._selectedDayDescriptions,
-                              this._selectedDay,
-                              this._agendaRepository,
-                              this.refresh,
-                              context),
-                        );
-                      },
-                    )
+                    CalendarUtils.buildEventList(this._selectedDayDescriptions,
+                        this._selectedDay, this.refresh)
                   ],
                 );
               },
@@ -188,7 +175,10 @@ class _UserCalendarState extends State<UserCalendar> {
     this._agendaBloc.add(AgendaLoad());
   }
 
-  void refresh() {
+  void refresh(bool isConfirmedOrCancel) {
+    if (isConfirmedOrCancel) {
+      Navigator.of(context).pop();
+    }
     setState(() {
       _dispatchAgendaLoadEvent();
     });

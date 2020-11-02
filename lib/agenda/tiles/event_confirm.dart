@@ -21,14 +21,14 @@ class EventConfirmBottomSheet extends StatefulWidget {
 }
 
 class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
+  AgendaBloc agendaBloc;
   Map get event => this.widget.event;
   DateTime get eventDay => this.widget.eventDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
-  AgendaBloc _agendaBloc;
 
   @override
   void initState() {
-    this._agendaBloc = AgendaBloc(
+    this.agendaBloc = new AgendaBloc(
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
     super.initState();
@@ -36,7 +36,6 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
 
   @override
   void dispose() {
-    this._agendaBloc.close();
     super.dispose();
   }
 
@@ -51,17 +50,17 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: BlocProvider(
-          create: (context) => this._agendaBloc,
+          create: (context) => this.agendaBloc,
           child: BlocListener<AgendaBloc, AgendaState>(
             listener: (context, state) {
               if (state is EventProcessingSuccess) {
                 Future.delayed(Duration(seconds: 1));
                 Navigator.of(context).pop();
-                this.refreshAgenda();
+                this.refreshAgenda(true);
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              cubit: this._agendaBloc,
+              cubit: this.agendaBloc,
               builder: (context, state) {
                 if (state is EventProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);
@@ -72,7 +71,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
                     LayoutUtils.buildVerticalSpacing(28.0),
                     Center(
                       child: Text(
-                        "Deseja confirmar esse evento ?",
+                        "Deseja confirmar esse agendamento ?",
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,
@@ -106,7 +105,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
         ),
         onPressed: () {
-          this._agendaBloc.add(AgendaEventConfirmButtomPressed(
+          this.agendaBloc.add(AgendaEventConfirmButtomPressed(
               eventDay: this.eventDay, event: this.event));
         },
       ),

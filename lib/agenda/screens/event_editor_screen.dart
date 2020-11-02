@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
+import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventEditorScreen extends StatefulWidget {
@@ -13,6 +16,8 @@ class EventEditorScreen extends StatefulWidget {
   final isEdit;
   final selectedDay;
   final refreshAgenda;
+  final isoCode = "BR";
+  final dialCode = "+55";
 
   EventEditorScreen(
       {@required this.event,
@@ -29,10 +34,14 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<String> occupedHours;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
+  TextEditingController _eventPhoneController;
+  PhoneNumber eventPhone;
   final formKey = new GlobalKey<FormState>();
 
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
+  String get isoCode => this.widget.isoCode;
+  String get dialCode => this.widget.dialCode;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
 
@@ -42,11 +51,19 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
 
-    this._eventNameController = new TextEditingController(
+    this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
 
+    this._eventPhoneController = TextEditingController(
+        text: this.event == null ? "" : this.event["phone"]);
+
+    this.eventPhone = PhoneNumber(
+        phoneNumber: this._eventPhoneController.text,
+        dialCode: this.dialCode,
+        isoCode: this.isoCode);
+
     this.agendaBloc.add(AgendaEventAvailableTimeLoad(day: this.selectedDay));
-    this._eventHourController = new TextEditingController();
+    this._eventHourController = TextEditingController();
     this._eventHourController.text = this.event == null
         ? null
         : "${this.event["begin"]} - ${this.event["end"]}";
@@ -104,7 +121,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                       padding: EdgeInsets.all(16.0),
                       children: <Widget>[
                         ..._buildFields(state),
-                        _buildCreateEventButton()
+                        ..._buildStatusButtons(),
+                        _buildCreateEventButton(),
                       ],
                     ),
                   );
@@ -126,7 +144,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         ),
         color: Theme.of(context).primaryColor,
         child: Text(
-          "${this.widget.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
+          "${this.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
           style: TextStyle(
               fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
@@ -139,6 +157,19 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _isLoadingState(AgendaState state) {
     return state is EventProcessing || state is AgendaAvailableTimeLoading;
+  }
+
+  List<Widget> _buildStatusButtons() {
+    var buttonsList = <Widget>[];
+
+    if (this.isEdit) {
+      buttonsList.add(_buildConfirmButton());
+      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+      buttonsList.add(_buildCancelButton());
+      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    }
+
+    return buttonsList;
   }
 
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
@@ -156,6 +187,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       ),
     );
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    fieldsList.add(this._buildEventPhoneField());
+    fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
 
     return fieldsList;
   }
@@ -169,6 +202,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventId: this.event["id"].toString(),
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
+          eventPhone: this._eventPhoneController.text,
           eventStart: eventStart,
           eventEnd: eventEnd,
           eventStatus: this.event["status"]));
@@ -176,15 +210,28 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       agendaBloc.add(AgendaCreateButtonPressed(
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
+          eventPhone: this._eventPhoneController.text,
           eventStart: eventStart,
           eventEnd: eventEnd));
     }
   }
 
+  Widget _buildEventPhoneField() {
+    return InternationalPhoneNumberInput(
+      initialValue: eventPhone,
+      onInputChanged: (phone) {},
+      inputDecoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          hintText: "Telefone"),
+      textFieldController: this._eventPhoneController,
+    );
+  }
+
   void _onSuccessState() {
     Future.delayed(Duration(seconds: 1));
     Navigator.of(context).pop();
-    this.refreshAgenda();
+    this.refreshAgenda(false);
   }
 
   bool _verifySuccessState(AgendaState state) {
@@ -193,5 +240,66 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   bool _verifyFailState(AgendaState state) {
     return state is EventProcessingFail;
+  }
+
+  Widget _buildConfirmButton() {
+    return SizedBox(
+      height: 44.0,
+      child: Builder(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet((context) {
+              return EventConfirmBottomSheet(
+                  event: this.event,
+                  eventDay: this.selectedDay,
+                  refreshAgenda: this.refreshAgenda);
+            }, backgroundColor: Colors.transparent);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Colors.green[600],
+          child: Text(
+            "Confirmar Agendamento",
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCancelButton() {
+    return SizedBox(
+      height: 44.0,
+      child: Builder(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet(
+              (context) {
+                return EventExcludeBottomSheet(
+                    eventId: this.event["id"].toString(),
+                    eventDay: this.selectedDay,
+                    refreshAgenda: this.refreshAgenda);
+              },
+              backgroundColor: Colors.transparent,
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Colors.red[300],
+          child: Text(
+            "Cancelar Agendamento",
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 }

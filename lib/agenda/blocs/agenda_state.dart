@@ -23,13 +23,9 @@ class EventProcessingFail extends AgendaState {
 }
 
 class AgendaLoadSuccess extends AgendaState {
-  Map<DateTime, List<dynamic>> _eventsLoaded;
+  final eventsLoaded;
 
-  AgendaLoadSuccess(Map<DateTime, List<dynamic>> events) {
-    this._eventsLoaded = events;
-  }
-
-  Map<DateTime, List<dynamic>> get eventsLoaded => this._eventsLoaded;
+  AgendaLoadSuccess({@required this.eventsLoaded});
 
   @override
   List<Object> get props => [];

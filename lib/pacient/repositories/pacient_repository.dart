@@ -2,17 +2,23 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class PacientRepository extends ChangeNotifier {
   final CollectionReference _pacientsCollectionReference =
       FirebaseFirestore.instance.collection('pacients');
 
+  final CollectionReference _agendaCollectionReference =
+      FirebaseFirestore.instance.collection('agenda');
+
+  String _userId;
+
   List<PacientModel> _pacients;
   List<PacientModel> get pacientsList => _pacients;
 
   //String _userId;
-  //set userId(String uid) => this._userId = uid;
+  set userId(String uid) => this._userId = uid;
 
   final StreamController<List<PacientModel>> _pacientsController =
       StreamController<List<PacientModel>>.broadcast();
@@ -28,6 +34,36 @@ class PacientRepository extends ChangeNotifier {
     } catch (e) {
       return e.toString();
     }
+  }
+
+  Future<List<AppointmentModel>> getAppointments() async {
+    List<AppointmentModel> _appointmentsList = new List<AppointmentModel>();
+    var docs;
+    await _agendaCollectionReference
+        .doc(this._userId)
+        .collection("events")
+        .get()
+        .then(
+          (resp) => resp.docs.forEach(
+            (snapshot) {
+              var events = snapshot.data().values.first;
+              events.forEach(
+                (event) {
+                  if (event["status"] != "canceled") {
+                    _appointmentsList.add(
+                      AppointmentModel(
+                        nome: event["description"],
+                        telefone: event["phone"],
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+          ),
+        );
+
+    return _appointmentsList;
   }
 
   Future getPacientByName(String name) async {}

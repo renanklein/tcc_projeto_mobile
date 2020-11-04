@@ -71,6 +71,8 @@ class ExamCard extends StatelessWidget {
               .add(DecriptExam(fileDownloadURL: this.fileDownloadURL));
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
+                    examDate: getCardExamInfo.examDate,
+                    examType: getCardExamInfo.examType,
                     examDetails: this.examDetails,
                     fileDownloadURL: this.fileDownloadURL,
                   )));

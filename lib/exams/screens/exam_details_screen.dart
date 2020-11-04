@@ -8,11 +8,14 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
   final fileDownloadURL;
+  final examDate;
+  final examType;
 
-  ExamDetailsScreen({
-    @required this.examDetails,
-    @required this.fileDownloadURL,
-  });
+  ExamDetailsScreen(
+      {@required this.examDetails,
+      @required this.fileDownloadURL,
+      @required this.examDate,
+      @required this.examType});
 
   @override
   _ExamDetailsScreenState createState() => _ExamDetailsScreenState();
@@ -20,6 +23,9 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
+  String get examDate => this.widget.examDate;
+  String get exameType => this.widget.examType;
+
   MedRecordBloc medRecordBloc;
   String get filePath => this.widget.fileDownloadURL;
   bool hidePressed = false;
@@ -79,6 +85,12 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       this.isDecripted ? _buildExameImageWidget() : Container(),
       LayoutUtils.buildVerticalSpacing(10.0),
       _showHideImageButton(),
+      LayoutUtils.buildVerticalSpacing(10.0),
+      ExamDetailsField(
+          fieldValue: this.exameType, fieldPlaceholder: "Tipo de exame"),
+      LayoutUtils.buildVerticalSpacing(10.0),
+      ExamDetailsField(
+          fieldValue: this.examDate, fieldPlaceholder: "Data do exame"),
       LayoutUtils.buildVerticalSpacing(10.0),
       ...this.examDetails.getFieldsWidgetList
     ];

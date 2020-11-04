@@ -14,6 +14,7 @@ import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -88,9 +89,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                           textController: this._examTypeController,
                           fieldPlaceholder: "Tipo de Exame"),
                       LayoutUtils.buildVerticalSpacing(10.0),
-                      Field(
-                          textController: this._examDateController,
-                          fieldPlaceholder: "Data de realização"),
+                      DateTimeFormField(
+                        fieldPlaceholder: "Data de Realização",
+                        dateTimeController: this._examDateController,
+                      ),
                       LayoutUtils.buildVerticalSpacing(10.0),
                       ...this.dynamicFieldsList,
                       RaisedButton(

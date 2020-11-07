@@ -46,17 +46,20 @@ class ExamRepository {
         .set({"exams": exams});
   }
 
-  Future<List> getExam() async {
+  Future<List> getExam(String pacientHash) async {
     var user = _getUser();
 
-    List exams;
+    List exams = [];
     List displayableExams = [];
 
-    var examSnapshot =
+    var dbSnapshot =
         await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (examSnapshot.exists) {
-      exams = examSnapshot.data()["exams"];
+    if (dbSnapshot.exists) {
+      var examsSnapshot = dbSnapshot.data()["exams"];
+      pacientHash == null
+          ? exams = examsSnapshot
+          : _addPacientsExams(exams, examsSnapshot, pacientHash);
     }
     exams.forEach((exam) {
       displayableExams.add(
@@ -72,5 +75,13 @@ class ExamRepository {
 
   User _getUser() {
     return FirebaseAuth.instance.currentUser;
+  }
+
+  void _addPacientsExams(List exams, List examsSnapshot, String pacientHash) {
+    examsSnapshot.forEach((el) {
+      if (el["pacientHash"] == pacientHash) {
+        exams.add(el);
+      }
+    });
   }
 }

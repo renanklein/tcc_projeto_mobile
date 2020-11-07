@@ -34,8 +34,8 @@ class SltPattern {
     return pacientHash;
   }
 
-  static String retrivepacientHash(id, salt) {
-    var bytes = utf8.encode('$id$salt');
+  static String retrivepacientHash(cpf, salt) {
+    var bytes = utf8.encode('$cpf$salt');
 
     var key = utf8.encode(_ppr);
 

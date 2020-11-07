@@ -8,6 +8,8 @@ import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamScreen extends StatefulWidget {
+  final pacientHash;
+  ExamScreen({@required this.pacientHash});
   @override
   _ExamScreenState createState() => _ExamScreenState();
 }
@@ -19,7 +21,8 @@ class _ExamScreenState extends State<ExamScreen> {
   List examDetailsList;
   List fileDownloadURLs;
   Uint8List decriptedBytes = Uint8List(0);
-  //final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String get pacientHash => this.widget.pacientHash;
 
   @override
   void initState() {
@@ -103,12 +106,12 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   bool _existsExamInfo() {
-    return this.cardExamInfos != null &&
-        this.examDetailsList != null &&
-        this.fileDownloadURLs != null;
+    return (this.cardExamInfos != null && this.cardExamInfos.isNotEmpty) &&
+        (this.examDetailsList != null && this.examDetailsList.isNotEmpty) &&
+        (this.fileDownloadURLs != null && this.fileDownloadURLs.isNotEmpty);
   }
 
   void _loadExamCards() {
-    this.medRecordBloc.add(GetExams());
+    this.medRecordBloc.add(GetExams(pacientHash: this.pacientHash));
   }
 }

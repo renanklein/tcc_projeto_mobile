@@ -46,8 +46,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield CreateMedRecordEventProcessing();
 
-        //TODO: Inserção itens Prontuario
-
         await medRecordRepository.updateMedRecord(
             pacientHash: event.pacientHash,
             medRecordModel: MedRecordModel(pacientHash: '22'));
@@ -134,7 +132,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield ExamProcessing();
 
-        var examInfoList = await this.examRepository.getExam();
+        var examInfoList = await this.examRepository.getExam(event.pacientHash);
 
         List examCards = [];
         List examDetails = [];

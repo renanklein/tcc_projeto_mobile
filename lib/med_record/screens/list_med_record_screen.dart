@@ -9,11 +9,11 @@ import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
-import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class MedRecordScreen extends StatefulWidget {
   final MedRecordArguments medRecordArguments;
@@ -30,6 +30,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
   MedRecordModel _medRecordModel;
+  String pacientHash;
   //UserModel _userModel;
 
   //TODO: Implementar modelo de prontuario
@@ -39,9 +40,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   int _selectedIndex;
 
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
-
   @override
   void initState() {
+    this.pacientHash = _hasPacientHashArguments()
+        ? null
+        : SltPattern.retrivepacientHash(this.medRecordArguments.pacientCpf,
+            this.medRecordArguments.pacientSalt);
     var injector = Injector.appInstance;
     this._medRecordRepository = injector.getDependency<MedRecordRepository>();
     var examRepository = injector.getDependency<ExamRepository>();
@@ -193,7 +197,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Flexible(child: ExamScreen()),
+              Flexible(
+                  child: ExamScreen(
+                pacientHash: this.pacientHash,
+              )),
               RaisedButton(
                 onPressed: () {
                   Navigator.of(context)
@@ -201,7 +208,11 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                           builder: (context) => ExamFormScreen(
                                 medRecordArguments: this.medRecordArguments,
                               )))
-                      .then((value) => {this._medRecordBloc.add(GetExams())});
+                      .then((value) => {
+                            this
+                                ._medRecordBloc
+                                .add(GetExams(pacientHash: this.pacientHash))
+                          });
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(32.0),
@@ -240,5 +251,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return 1;
         break;
     }
+  }
+
+  bool _hasPacientHashArguments() {
+    return (this.medRecordArguments.pacientCpf.isEmpty &&
+        this.medRecordArguments.pacientSalt.isEmpty);
   }
 }

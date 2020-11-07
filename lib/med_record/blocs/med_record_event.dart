@@ -72,6 +72,8 @@ class SaveExam extends MedRecordEvent {
 }
 
 class GetExams extends MedRecordEvent {
+  final pacientHash;
+  GetExams({@required this.pacientHash});
   @override
   List<Object> get props => [];
 }

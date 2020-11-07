@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
@@ -6,10 +8,13 @@ import 'package:intl/intl.dart';
 
 class MedRecordRepository {
   final CollectionReference _medRecordCollectionReference =
-      Firestore.instance.collection('medRecord');
+      FirebaseFirestore.instance.collection('medRecord');
   String _pacientHash;
 
   set setPacientHash(String hash) => this._pacientHash = hash;
+
+  List<MedRecordModel> _medRecordList;
+  List<MedRecordModel> get getMedRecordList => _medRecordList;
 
   var date = DateTime.now();
   var dateFormat = DateFormat("dd/MM/yyyy");
@@ -19,7 +24,7 @@ class MedRecordRepository {
     @required String date,
   }) async {
     try {
-      await _medRecordCollectionReference.document(_pacientHash).setData({
+      await _medRecordCollectionReference.doc(_pacientHash).set({
         date: completeDiagnosisModel.toMap(),
       });
     } on Exception catch (e) {
@@ -40,22 +45,28 @@ class MedRecordRepository {
     }
   }
 
-  Future<MedRecordModel> getMedRecordByCpf(String pacientHash) async {
+  Future<MedRecordModel> getMedRecordByHash(String pacientHash) async {
     try {
       MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
       medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
-      await document.get().then(
-            (value) => medRecord = MedRecordModel.fromMap(value.data()),
-          );
-
-//TODO: getCreatedDate
-
-      String dt = dateFormat.format(date);
-      await document.setData({
-        'created': dt,
+      bool boolMedRecord;
+      await document.get().then((value) {
+        if (value.data() != null) {
+          medRecord = MedRecordModel.fromMap(value.data());
+          boolMedRecord = true;
+        } else {
+          boolMedRecord = false;
+        }
       });
+
+      if (boolMedRecord == false) {
+        String dt = dateFormat.format(date);
+        await document.set({
+          'created': dt,
+        }, SetOptions(merge: true));
+      }
 
       this._pacientHash = pacientHash;
 

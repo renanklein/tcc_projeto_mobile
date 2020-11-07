@@ -8,7 +8,7 @@ import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
-import 'package:tcc_projeto_app/pacient/screens/wait_list_screen.dart';
+import 'package:tcc_projeto_app/pacient/screens/appointments_wait_list_screen.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
@@ -50,7 +50,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreatePacientScreen());
         break;
       case waitListRoute:
-        return MaterialPageRoute(builder: (_) => WaitList());
+        return MaterialPageRoute(builder: (_) => AppointmentsWaitListScreen());
         break;
       case pacientDetailRoute:
         return MaterialPageRoute(builder: (_) => PacientDetailScreen());

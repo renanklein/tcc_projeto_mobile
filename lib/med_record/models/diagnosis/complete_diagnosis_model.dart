@@ -30,12 +30,23 @@ class CompleteDiagnosisModel {
   }
 
   static CompleteDiagnosisModel fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
+    if (map == null || map.length < 2) return null;
+
+    String data = map.keys.toList()[0];
+    int year = int.parse(data.split('/')[2]);
+    int mon = int.parse(data.split('/')[1]);
+    int day = int.parse(data.split('/')[0]);
 
     return CompleteDiagnosisModel(
-        problem: map['problem'],
-        diagnosis: map['diagnosis'],
-        prescription: map['prescription']);
+      problem: ProblemModel.fromMap(map['problem']),
+      diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
+      prescription: PrescriptionModel.fromMap(map['prescription']),
+      date: new DateTime(
+        year,
+        mon,
+        day,
+      ),
+    );
   }
 
   DateTime get getDate => this._date;

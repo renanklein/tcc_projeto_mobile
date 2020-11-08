@@ -102,9 +102,9 @@ class GetExamsSuccess extends MedRecordState {
       @required this.examDetailsList,
       @required this.fileDownloadURLs});
 
-  List<CardExamInfo> get getCardExamInfo => this.cardExamInfos;
-  List<ExamDetails> get getExamDetails => this.examDetailsList;
-  List<String> get getFileDownloadURLs => this.fileDownloadURLs;
+  List get getCardExamInfo => this.cardExamInfos;
+  List get getExamDetails => this.examDetailsList;
+  List get getFileDownloadURLs => this.fileDownloadURLs;
 
   @override
   List<Object> get props => [];

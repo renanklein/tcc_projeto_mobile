@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_model_screen.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
@@ -117,6 +118,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                               color: Colors.white),
                         ),
                       ),
+                      _createFieldsModelButton(),
                       RaisedButton(
                         onPressed: () async {
                           _setExamFile();
@@ -176,6 +178,29 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     }
   }
 
+  Widget _createFieldsModelButton() {
+    return SizedBox(
+      height: 44.0,
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        color: Theme.of(context).primaryColor,
+        child: Text(
+          "Modelos de exames",
+          style: TextStyle(
+              fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ExamFormModelScreen(
+                  dynamicFieldsList: this.dynamicFieldsList,
+                  refreshExamFormModel: refreshFieldsModel)));
+        },
+      ),
+    );
+  }
+
   Widget _createSubmitButton() {
     return SizedBox(
       height: 44.0,
@@ -215,6 +240,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     setState(() {
       fieldsList.add(newField);
       fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
+    });
+  }
+
+  void refreshFieldsModel(List fieldsList) {
+    setState(() {
+      this.dynamicFieldsList.removeRange(0, this.dynamicFieldsList.length - 1);
+      this.dynamicFieldsList.addAll(fieldsList.whereType<Widget>());
     });
   }
 }

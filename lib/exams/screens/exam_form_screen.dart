@@ -20,7 +20,7 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamFormScreen extends StatefulWidget {
-  final dynamicFieldsList = <Widget>[];
+  List dynamicFieldsList = <Widget>[];
   final medRecordArguments;
 
   ExamFormScreen({@required this.medRecordArguments});
@@ -244,9 +244,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   void refreshFieldsModel(List fieldsList) {
+    Navigator.of(context).pop();
     setState(() {
-      this.dynamicFieldsList.removeRange(0, this.dynamicFieldsList.length - 1);
-      this.dynamicFieldsList.addAll(fieldsList.whereType<Widget>());
+      this.widget.dynamicFieldsList = fieldsList;
     });
   }
 }

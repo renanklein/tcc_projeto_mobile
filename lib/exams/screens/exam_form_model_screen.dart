@@ -8,7 +8,6 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class ExamFormModelScreen extends StatefulWidget {
   List dynamicFieldsList;
   final refreshExamFormModel;
-  int examDetailsIndex = 0;
   ExamFormModelScreen(
       {@required this.dynamicFieldsList, @required this.refreshExamFormModel});
   @override
@@ -20,7 +19,6 @@ class _ExamFormModelScreenState extends State<ExamFormModelScreen> {
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
   Function get refreshExamFormModel => this.widget.refreshExamFormModel;
-  int get examDetailsIndex => this.widget.examDetailsIndex;
 
   List examDetails;
   @override
@@ -44,7 +42,7 @@ class _ExamFormModelScreenState extends State<ExamFormModelScreen> {
         listener: (context, state) {
           if (state is GetExamsSuccess) {
             this.examDetails = state.getExamDetails;
-            this.widget.dynamicFieldsList = setFieldsModel(0);
+            setFieldsModel(0);
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -53,18 +51,21 @@ class _ExamFormModelScreenState extends State<ExamFormModelScreen> {
             if (state is ExamProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
-            return Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Swiper.children(
-                children: ExamSwiperTile.fromFieldsList(this.examDetails),
-                onIndexChanged: (index) {
-                  this.widget.dynamicFieldsList = setFieldsModel(index);
-                },
-                autoplay: false,
-                pagination: SwiperPagination(),
-                control: SwiperControl(),
-                containerHeight: 200.0,
-              ),
+            return Stack(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Swiper.children(
+                        children:
+                            ExamSwiperTile.fromFieldsList(this.examDetails),
+                        onIndexChanged: (index) {
+                          setFieldsModel(index);
+                        },
+                        autoplay: false,
+                        pagination: SwiperPagination(),
+                        control: SwiperControl())),
+                _createInsertModelButton()
+              ],
             );
           },
         ),
@@ -72,15 +73,27 @@ class _ExamFormModelScreenState extends State<ExamFormModelScreen> {
     );
   }
 
-  List setFieldsModel(int examDetailsListIndex) {
-    var examDetails = this.examDetails[examDetailsListIndex];
-    return examDetails.fieldsWidgetList;
+  Widget _createInsertModelButton() {
+    return Positioned(
+      top: 500.0,
+      left: 58.0,
+      height: 40.0,
+      width: 300.0,
+      child: RaisedButton(
+          color: Theme.of(context).primaryColor,
+          child: Text("Adicionar modelo",
+              style: TextStyle(fontSize: 16.0, color: Colors.white)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          onPressed: () {
+            this.refreshExamFormModel(this.dynamicFieldsList);
+          }),
+    );
   }
 
-  // Padding(
-  //             padding: const EdgeInsets.all(14.0),
-  //             child: ListView(
-  //               children: <Widget>[...this.dynamicFieldsList],
-  //             ),
-  //           );
+  void setFieldsModel(int index) {
+    if (this.examDetails != null) {
+      this.widget.dynamicFieldsList = (examDetails[index].getFieldsWidgetList);
+    }
+  }
 }

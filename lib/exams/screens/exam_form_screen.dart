@@ -11,6 +11,7 @@ import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_model_screen.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
@@ -95,7 +96,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                         dateTimeController: this._examDateController,
                       ),
                       LayoutUtils.buildVerticalSpacing(10.0),
-                      ...this.dynamicFieldsList,
+                      ..._buildFieldsRow(),
                       RaisedButton(
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet(
@@ -142,6 +143,35 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 );
               }),
         ));
+  }
+
+  List<Widget> _buildFieldsRow() {
+    var examDetailFields = <Widget>[];
+    if (this.dynamicFieldsList != null) {
+      this.dynamicFieldsList.forEach((el) {
+        if (el is ExamDetailsField) {
+          var row = IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(child: el),
+                IconButton(
+                    icon: Icon(Icons.cancel_outlined,
+                        color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        this.dynamicFieldsList.remove(el);
+                      });
+                    })
+              ],
+            ),
+          );
+          examDetailFields.add(row);
+        } else {
+          examDetailFields.add(el);
+        }
+      });
+    }
+    return examDetailFields;
   }
 
   void onSuccess() {

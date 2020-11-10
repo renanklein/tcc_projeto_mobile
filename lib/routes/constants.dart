@@ -17,3 +17,5 @@ const String createDiagnosisRoute = '/createDiagnosis';
 const String pacientsRoute = '/pacients';
 const String createPacientRoute = '/createPacient';
 const String pacientDetailRoute = '/pacientDetail';
+const String appointmentsViewRoute = '/appointmentView';
+

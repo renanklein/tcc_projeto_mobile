@@ -56,6 +56,9 @@ class RouteGenerator {
       case pacientDetailRoute:
         return MaterialPageRoute(builder: (_) => PacientDetailScreen());
         break;
+      case appointmentsViewRoute:
+        return MaterialPageRoute(builder: (_) => AppointmentsWaitListScreen());
+        break;
       case medRecordRoute:
         var data = settings.arguments as MedRecordArguments;
         return MaterialPageRoute(

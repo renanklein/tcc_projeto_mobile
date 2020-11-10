@@ -47,6 +47,12 @@ class PacientRepository extends ChangeNotifier {
           (resp) => resp.docs.forEach(
             (snapshot) {
               var events = snapshot.data().values.first;
+              var snapId = snapshot.id;
+              var _appointmentTime = DateTime(
+                  int.parse(snapId.split("-")[0]),
+                  int.parse(snapId.split("-")[1]),
+                  int.parse(snapId.split("-")[2]));
+
               events.forEach(
                 (event) {
                   if (event["status"] != "canceled") {
@@ -54,6 +60,7 @@ class PacientRepository extends ChangeNotifier {
                       AppointmentModel(
                         nome: event["description"],
                         telefone: event["phone"],
+                        appointmentTime: _appointmentTime,
                       ),
                     );
                   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
@@ -56,6 +57,14 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       } catch (error) {
         yield PacientLoadEventFail();
       }
+    } else if (event is AppointmentsLoad) {
+      yield AppointmentsLoading();
+
+      List<AppointmentModel> _appointmentsList;
+
+      _appointmentsList = await pacientRepository.getAppointments();
+
+      yield AppointmentLoadEventSuccess(_appointmentsList);
     }
     /* else if (event is PacientEditButtonPressed) {
       try {

@@ -4,6 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
@@ -28,6 +29,8 @@ class _AppointmentsWaitListScreenState
     this._pacientBloc =
         new PacientBloc(pacientRepository: this._pacientRepository);
 
+    _loadAppointments();
+
     super.initState();
   }
 
@@ -46,19 +49,6 @@ class _AppointmentsWaitListScreenState
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: IconButton(
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          color: Theme.of(context).primaryColor,
-          onPressed: () {
-            Navigator.of(context).pushNamed(createPacientRoute);
-          },
-        ),
-      ),
       body: BlocProvider<PacientBloc>(
         create: (context) => this._pacientBloc,
         child: BlocListener<PacientBloc, PacientState>(
@@ -72,7 +62,31 @@ class _AppointmentsWaitListScreenState
                 return FutureBuilder(
                     future: _loadAppointments(),
                     builder: (context, snapshot) {
-                      return SafeArea();
+                      return SafeArea(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.98,
+                              child: Column(children: <Widget>[
+                                Expanded(
+                                  child: (state
+                                              is AppointmentLoadEventSuccess &&
+                                          state.appointmentsLoaded != null)
+                                      ? ListView.builder(
+                                          itemCount:
+                                              (state.appointmentsLoaded).length,
+                                          itemBuilder: (context, index) =>
+                                              _listAppointmentView(
+                                            state.appointmentsLoaded[index],
+                                          ),
+                                        )
+                                      : Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(
+                                              Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                )
+                              ])));
                     });
               }),
         ),
@@ -82,5 +96,30 @@ class _AppointmentsWaitListScreenState
 
   Future _loadAppointments() async {
     await _pacientBloc.add(AppointmentsLoad());
+  }
+
+  Widget _listAppointmentView(AppointmentModel appointment) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.93,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  medRecordRoute,
+                );
+              },
+              child: AppointmentTile(
+                nome: appointment.nome,
+                telefone: appointment.telefone,
+                horarioAgendamento: appointment.appointmentTime,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

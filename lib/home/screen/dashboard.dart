@@ -124,6 +124,32 @@ class _DashboardState extends State<Dashboard> {
                         ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                appointmentsViewRoute,
+                                arguments: 'Dashboard',
+                              );
+                            },
+                            child: _dashboardItem(
+                              Icons.library_add,
+                              'Listar Agendamentos de Hoje',
+                              0xFF1A237E,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: _dashboardItem(
+                                Icons.archive, 'Desativado', 0xFF1A237E),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

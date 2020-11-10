@@ -55,12 +55,30 @@ class PacientLoadEventSuccess extends PacientState {
   List<Object> get props => throw UnimplementedError();
 }
 
+class AppointmentLoadEventSuccess extends PacientState {
+  List<AppointmentModel> _appointmentsLoaded;
+
+  AppointmentLoadEventSuccess(List<AppointmentModel> appointments) {
+    this._appointmentsLoaded = appointments;
+  }
+
+  List<AppointmentModel> get appointmentsLoaded => this._appointmentsLoaded;
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
 class PacientLoadEventFail extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }
 
 class PacientLoading extends PacientState {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class AppointmentsLoading extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }

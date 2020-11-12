@@ -71,7 +71,7 @@ class PacientModel {
 
   String get email => this._email;
   String get nome => this._nome;
-  String get userUid => this._userId;
+  String get medicId => this._userId;
   String get cpf => this._cpf;
   String get salt => this._salt;
   //set userUid(String uid) => this._userId = uid;

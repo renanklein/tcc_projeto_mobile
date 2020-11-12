@@ -11,6 +11,8 @@ import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 part 'pacient_event.dart';
 part 'pacient_state.dart';
+part 'appointment_event.dart';
+part 'appointment_state.dart';
 
 class PacientBloc extends Bloc<PacientEvent, PacientState> {
   PacientRepository pacientRepository;
@@ -58,13 +60,17 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield PacientLoadEventFail();
       }
     } else if (event is AppointmentsLoad) {
-      yield AppointmentsLoading();
+      try {
+        yield AppointmentsLoading();
 
-      List<AppointmentModel> _appointmentsList;
+        List<AppointmentModel> _appointmentsList;
 
-      _appointmentsList = await pacientRepository.getAppointments();
+        _appointmentsList = await pacientRepository.getAppointments();
 
-      yield AppointmentLoadEventSuccess(_appointmentsList);
+        yield AppointmentLoadEventSuccess(_appointmentsList);
+      } on Exception catch (e) {
+        e.toString();
+      }
     }
     /* else if (event is PacientEditButtonPressed) {
       try {

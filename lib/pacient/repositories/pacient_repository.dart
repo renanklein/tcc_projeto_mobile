@@ -92,7 +92,8 @@ class PacientRepository extends ChangeNotifier {
       if (pacientsSnapshot.docs.isNotEmpty) {
         var pacients = pacientsSnapshot.docs
             .map((snapshot) => PacientModel.fromMap(snapshot.data()))
-            .where((mappedItem) => mappedItem.nome != null)
+            .where((mappedItem) =>
+                mappedItem.nome != null && mappedItem.medicId == _userId)
             .toList();
 
         _pacientsController.add(pacients);

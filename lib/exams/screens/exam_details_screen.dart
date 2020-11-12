@@ -8,11 +8,14 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
   final fileDownloadURL;
+  final examDate;
+  final examType;
 
-  ExamDetailsScreen({
-    @required this.examDetails,
-    @required this.fileDownloadURL,
-  });
+  ExamDetailsScreen(
+      {@required this.examDetails,
+      @required this.fileDownloadURL,
+      @required this.examDate,
+      @required this.examType});
 
   @override
   _ExamDetailsScreenState createState() => _ExamDetailsScreenState();
@@ -20,6 +23,9 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   ExamDetails get examDetails => this.widget.examDetails;
+  String get examDate => this.widget.examDate;
+  String get exameType => this.widget.examType;
+
   MedRecordBloc medRecordBloc;
   String get filePath => this.widget.fileDownloadURL;
   bool hidePressed = false;
@@ -73,14 +79,6 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         ));
   }
 
-  InputDecoration _buildFieldDecoration(String fieldValue) {
-    return InputDecoration(
-      hintText: fieldValue,
-      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-    );
-  }
-
   List<Widget> _buildExamDetails() {
     return <Widget>[
       LayoutUtils.buildVerticalSpacing(20.0),
@@ -89,36 +87,12 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(10.0),
       ExamDetailsField(
-          fieldValue: this.examDetails.getExamDescription,
-          fieldPlaceholder: "Descrição do exame"),
+          fieldValue: this.exameType, fieldPlaceholder: "Tipo de exame"),
       LayoutUtils.buildVerticalSpacing(10.0),
       ExamDetailsField(
-          fieldValue: this.examDetails.getDiagnosticHypothesis,
-          fieldPlaceholder: "Hipótese diagnóstica"),
+          fieldValue: this.examDate, fieldPlaceholder: "Data do exame"),
       LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getOtherPacientInformation,
-          fieldPlaceholder: "Outras informações do paciente"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-          fieldValue: this.examDetails.getExaminationUnit,
-          fieldPlaceholder: "Unidade de realização do exame"),
-      LayoutUtils.buildVerticalSpacing(10.0),
-      ..._showOtherFields(),
-      Visibility(
-          visible: true,
-          child: IconButton(
-            color: Theme.of(context).primaryColor,
-            iconSize: 50.0,
-            icon: this.hidePressed
-                ? Icon(Icons.arrow_drop_up)
-                : Icon(Icons.arrow_drop_down),
-            onPressed: () {
-              setState(() {
-                this.hidePressed = !this.hidePressed;
-              });
-            },
-          ))
+      ...this.examDetails.getFieldsWidgetList
     ];
   }
 
@@ -156,29 +130,5 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
     }
 
     return Container();
-  }
-
-  List<Widget> _showOtherFields() {
-    if (this.hidePressed) {
-      return <Widget>[
-        ExamDetailsField(
-            fieldValue: this.examDetails.getPacientName,
-            fieldPlaceholder: "Nome do paciente"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getExamDate,
-            fieldPlaceholder: "Data do exam"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getExamResponsable,
-            fieldPlaceholder: "Responsável pelo exame"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ExamDetailsField(
-            fieldValue: this.examDetails.getRequestingDoctor,
-            fieldPlaceholder: "Médico solicitante"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-      ];
-    }
-    return <Widget>[Container()];
   }
 }

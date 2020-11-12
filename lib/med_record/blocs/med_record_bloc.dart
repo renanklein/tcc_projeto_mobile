@@ -11,12 +11,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,8 +45,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     if (event is MedRecordCreateButtonPressed) {
       try {
         yield CreateMedRecordEventProcessing();
-
-        //TODO: Inserção itens Prontuario
 
         await medRecordRepository.updateMedRecord(
             pacientHash: event.pacientHash,
@@ -113,8 +113,16 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var encriptedFile = File("$tempPath/$fileName");
         await encriptedFile.writeAsString(encoded);
 
-        await this.examRepository.saveExam(event.getCardExamInfo,
-            event.getExamDetails, encriptedFile, randomFileName.toString());
+        var pacientHash = SltPattern.retrivepacientHash(
+            event.getMedRecordArguments.pacientCpf,
+            event.getMedRecordArguments.pacientSalt);
+
+        await this.examRepository.saveExam(
+            event.getCardExamInfo,
+            event.getExamDetails,
+            encriptedFile,
+            randomFileName.toString(),
+            pacientHash);
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error) {
@@ -124,7 +132,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield ExamProcessing();
 
-        var examInfoList = await this.examRepository.getExam();
+        var examInfoList = await this.examRepository.getExam(event.pacientHash);
 
         List examCards = [];
         List examDetails = [];
@@ -155,6 +163,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         yield DecriptExamSuccess(decriptedBytes: decriptedBytes);
       } catch (error) {
         yield ExamProcessingFail();
+      }
+    } else if (event is DinamicExamField) {
+      try {
+        yield DynamicExamFieldProcessing();
+
+        var fieldWidget = ExamDetailsField(
+            fieldPlaceholder: event.fieldName, fieldValue: event.fieldValue);
+
+        yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
+      } catch (e) {
+        yield DynamicExamFieldFail();
       }
     }
   }

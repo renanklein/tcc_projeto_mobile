@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ConvertUtils {
   static List<String> getTotalHours() {
@@ -37,7 +38,7 @@ class ConvertUtils {
   }
 
   static String dayFromDateTime(DateTime date) {
-    return "${date.day}-${date.month}-${date.year}";
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   static DateTime removeTime(DateTime date) {

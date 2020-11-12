@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
+import 'package:tcc_projeto_app/agenda/screens/elements/event_status.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -15,6 +16,7 @@ class EventEditorScreen extends StatefulWidget {
   final event;
   final isEdit;
   final selectedDay;
+  final selectedTime;
   final refreshAgenda;
   final isoCode = "BR";
   final dialCode = "+55";
@@ -23,6 +25,7 @@ class EventEditorScreen extends StatefulWidget {
       {@required this.event,
       @required this.isEdit,
       @required this.selectedDay,
+      @required this.selectedTime,
       @required this.refreshAgenda});
 
   @override
@@ -32,6 +35,7 @@ class EventEditorScreen extends StatefulWidget {
 class _EventEditorScreenState extends State<EventEditorScreen> {
   AgendaBloc agendaBloc;
   List<String> occupedHours;
+  TextEditingController _eventStatusController;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
   TextEditingController _eventPhoneController;
@@ -42,6 +46,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   bool get isEdit => this.widget.isEdit;
   String get isoCode => this.widget.isoCode;
   String get dialCode => this.widget.dialCode;
+  String get selectedTime => this.widget.selectedTime;
   DateTime get selectedDay => this.widget.selectedDay;
   Function get refreshAgenda => this.widget.refreshAgenda;
 
@@ -56,6 +61,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
     this._eventPhoneController = TextEditingController(
         text: this.event == null ? "" : this.event["phone"]);
+
+    this._eventStatusController = TextEditingController(
+        text: this.event == null ? "" : this.event["status"]);
 
     this.eventPhone = PhoneNumber(
         phoneNumber: this._eventPhoneController.text,
@@ -122,6 +130,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                       children: <Widget>[
                         ..._buildFields(state),
                         ..._buildStatusButtons(),
+                        LayoutUtils.buildVerticalSpacing(20.0),
                         _buildCreateEventButton(),
                       ],
                     ),
@@ -162,14 +171,25 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildStatusButtons() {
     var buttonsList = <Widget>[];
 
-    if (this.isEdit) {
-      buttonsList.add(_buildConfirmButton());
-      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    if (this.isEdit && this.event["status"] != "confirmed") {
       buttonsList.add(_buildCancelButton());
-      buttonsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+      buttonsList.add(_buildConfirmButton());
+
+      return <Widget>[
+        Center(
+          child: Text("Clique para confirmar ou cancelar a consulta",
+              style: TextStyle(
+                  fontSize: 16.0, color: Theme.of(context).primaryColor)),
+        ),
+        LayoutUtils.buildVerticalSpacing(10.0),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: buttonsList)
+      ];
     }
 
-    return buttonsList;
+    return <Widget>[];
   }
 
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
@@ -178,10 +198,17 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     fieldsList
         .add(EventNameField(eventNameController: this._eventNameController));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    if (this.isEdit) {
+      fieldsList.add(EventStatus(
+        eventStatus: this._eventStatusController.text,
+      ));
+      fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+    }
     fieldsList.add(EventDate(selectedDay: this.selectedDay));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
     fieldsList.add(
       EventHourField(
+        selectedTime: this.selectedTime,
         occupedHours: state.occupedTimes,
         hourController: this._eventHourController,
       ),
@@ -245,6 +272,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildConfirmButton() {
     return SizedBox(
       height: 44.0,
+      width: 150.0,
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
@@ -260,7 +288,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.green[600],
           child: Text(
-            "Confirmar Agendamento",
+            "Confirmar",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -274,6 +302,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildCancelButton() {
     return SizedBox(
       height: 44.0,
+      width: 150.0,
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
@@ -292,7 +321,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           ),
           color: Colors.red[300],
           child: Text(
-            "Cancelar Agendamento",
+            "Cancelar",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

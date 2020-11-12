@@ -19,7 +19,7 @@ class ExamRepository {
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName) async {
+      File encriptedFile, String fileName, String pacientHash) async {
     var user = _getUser();
     var fileDownloadURL = await this._uploadExam(encriptedFile, fileName);
     List exams = [];
@@ -35,13 +35,8 @@ class ExamRepository {
       "fileDownloadURL": fileDownloadURL,
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,
-      "pacientName": examDetails.getPacientName,
-      "examinationUnit": examDetails.getExaminationUnit,
-      "requestingDoctor": examDetails.getRequestingDoctor,
-      "examResponsible": examDetails.getExamResponsable,
-      "examDescription": examDetails.getExamDescription,
-      "diagnosticHypothesis": examDetails.getDiagnosticHypothesis,
-      "otherPacientInformation": examDetails.getOtherPacientInformation
+      "dynamicFields": examDetails.toMap(),
+      "pacientHash": pacientHash
     });
 
     await this
@@ -51,30 +46,26 @@ class ExamRepository {
         .set({"exams": exams});
   }
 
-  Future<List> getExam() async {
+  Future<List> getExam(String pacientHash) async {
     var user = _getUser();
 
-    List exams;
+    List exams = [];
     List displayableExams = [];
 
-    var examSnapshot =
+    var dbSnapshot =
         await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (examSnapshot.exists) {
-      exams = examSnapshot.data()["exams"];
+    if (dbSnapshot.exists) {
+      var examsSnapshot = dbSnapshot.data()["exams"];
+      pacientHash == null
+          ? exams = examsSnapshot
+          : _addPacientsExams(exams, examsSnapshot, pacientHash);
     }
     exams.forEach((exam) {
       displayableExams.add(
           CardExamInfo(examDate: exam["examDate"], examType: exam["examType"]));
-      displayableExams.add(ExamDetails(
-          pacientName: exam["pacientName"],
-          examinationUnit: exam["examinationUnit"],
-          requestingDoctor: exam["requestingDoctor"],
-          examResponsable: exam["examResponsible"],
-          examDate: exam["examDate"],
-          examDescription: exam["examDescription"],
-          diagnosticHypothesis: exam["diagnosticHypothesis"],
-          otherPacientInformation: exam["otherPacientInformation"]));
+
+      displayableExams.add(ExamDetails.fromMap(exam["dynamicFields"]));
 
       displayableExams.add(exam["fileDownloadURL"]);
     });
@@ -84,5 +75,13 @@ class ExamRepository {
 
   User _getUser() {
     return FirebaseAuth.instance.currentUser;
+  }
+
+  void _addPacientsExams(List exams, List examsSnapshot, String pacientHash) {
+    examsSnapshot.forEach((el) {
+      if (el["pacientHash"] == pacientHash) {
+        exams.add(el);
+      }
+    });
   }
 }

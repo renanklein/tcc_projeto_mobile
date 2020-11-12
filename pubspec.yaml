@@ -49,6 +49,7 @@ dependencies:
   permission_handler: ^5.0.1+1
   firebase_storage: ^4.0.0
   intl_phone_number_input: ^0.5.1
+  flutter_swiper: ^1.1.6
   
 
 dev_dependencies:

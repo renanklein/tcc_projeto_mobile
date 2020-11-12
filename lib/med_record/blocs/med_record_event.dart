@@ -54,21 +54,26 @@ class SaveExam extends MedRecordEvent {
   final cardExamInfo;
   final examDetails;
   final examFile;
+  final medRecordArguments;
 
   SaveExam(
       {@required this.cardExamInfo,
       @required this.examDetails,
-      @required this.examFile});
+      @required this.examFile,
+      @required this.medRecordArguments});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   ExamDetails get getExamDetails => this.examDetails;
   File get getExamFile => this.examFile;
+  MedRecordArguments get getMedRecordArguments => this.medRecordArguments;
 
   @override
   List<Object> get props => [];
 }
 
 class GetExams extends MedRecordEvent {
+  final pacientHash;
+  GetExams({@required this.pacientHash});
   @override
   List<Object> get props => [];
 }
@@ -77,6 +82,16 @@ class DecriptExam extends MedRecordEvent {
   final fileDownloadURL;
 
   DecriptExam({@required this.fileDownloadURL});
+
+  @override
+  List<Object> get props => [];
+}
+
+class DinamicExamField extends MedRecordEvent {
+  final fieldName;
+  final fieldValue;
+
+  DinamicExamField({@required this.fieldName, @required this.fieldValue});
 
   @override
   List<Object> get props => [];

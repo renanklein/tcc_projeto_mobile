@@ -49,23 +49,29 @@ class _CalendarEventListState extends State<CalendarEventList> {
 
   Widget _buildTimeTile(String time, bool hasEvent) {
     var event;
+    var tableCellCollor = Colors.white;
     this.eventsList.forEach((el) {
       String eventTime = "${el["begin"]} - ${el["end"]}";
       if (time == eventTime) {
         event = el;
+
+        event["status"] == "confirmed"
+            ? tableCellCollor = Colors.green[300]
+            : tableCellCollor = Colors.grey[400];
       }
     });
     return TableCell(
       child: GestureDetector(
         child: Text(
           time,
-          style: TextStyle(color: hasEvent ? Colors.grey : Colors.white),
+          style: TextStyle(color: tableCellCollor, fontSize: 15.7),
         ),
         onTap: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
                   builder: (context) => EventEditorScreen(
                         event: hasEvent ? event : null,
+                        selectedTime: time,
                         isEdit: hasEvent,
                         selectedDay: this.widget.selectedDay,
                         refreshAgenda: this.widget.refreshAgenda,
@@ -92,14 +98,28 @@ class _CalendarEventListState extends State<CalendarEventList> {
       if (this.tableCellCount % 2 == 0) {
         var lastRowChild = tableRowChildren.last;
         tableRowChildren.removeLast();
-        var row = TableRow(children: [tableRowChildren.last, lastRowChild]);
+        var row = TableRow(
+          children: [tableRowChildren.last, lastRowChild],
+        );
         tableRowChildren = <Widget>[];
         hourRows.add(row);
       }
     });
 
     return Table(
+      border: TableBorder(
+          top: _buildTableBorder(),
+          bottom: _buildTableBorder(),
+          left: _buildTableBorder(),
+          right: _buildTableBorder(),
+          horizontalInside: _buildTableBorder(),
+          verticalInside: _buildTableBorder()),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: hourRows,
     );
+  }
+
+  BorderSide _buildTableBorder() {
+    return BorderSide(color: Colors.white, style: BorderStyle.solid);
   }
 }

@@ -25,6 +25,7 @@ class _ExamModelScreenState extends State<ExamModelScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Modelos de exame"),
+          centerTitle: true,
         ),
         body: BlocListener<ExamBloc, ExamState>(
           listener: (context, state) => {
@@ -36,10 +37,13 @@ class _ExamModelScreenState extends State<ExamModelScreen> {
               if (state is LoadExamModelProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);
               }
-              return ListView(shrinkWrap: true, children: <Widget>[
-                ..._buildModelFormBody(),
-                _buildRouteModelExamFormButton()
-              ]);
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ListView(shrinkWrap: true, children: <Widget>[
+                  ..._buildModelFormBody(),
+                  _buildRouteModelExamFormButton()
+                ]),
+              );
             },
           ),
         ));

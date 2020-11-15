@@ -15,11 +15,12 @@ class ExamModelForm extends StatefulWidget {
 }
 
 class _ExamModelFormState extends State<ExamModelForm> {
+  GlobalKey _scaffoldKey = GlobalKey<ScaffoldState>();
   ExamBloc _examBloc;
   TextEditingController _examTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
 
-  List<Widget> get dynamicModelFields => this.widget.dynamicFields;
+  List get dynamicModelFields => this.widget.dynamicFields;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: this._scaffoldKey,
       appBar: AppBar(
         title: Text("Cadastrar modelo de exame"),
         centerTitle: true,
@@ -45,13 +47,20 @@ class _ExamModelFormState extends State<ExamModelForm> {
             if (state is CreateExamModelProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
-            return ListView(
-              children: [
-                ..._buildMandatoryFields(),
-                ..._buildFieldsRow(),
-                _buildAddFieldButton(),
-                _buildCreateModelButton()
-              ],
+            return Builder(
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: ListView(
+                    children: [
+                      ..._buildMandatoryFields(),
+                      ..._buildFieldsRow(),
+                      _buildAddFieldButton(),
+                      _buildCreateModelButton()
+                    ],
+                  ),
+                );
+              },
             );
           },
         ),
@@ -59,7 +68,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
     );
   }
 
-  List<Widget> _buildMandatoryFields() {
+  List _buildMandatoryFields() {
     return <Widget>[
       Field(
           textController: this._examTypeController,
@@ -73,7 +82,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
     ];
   }
 
-  List<Widget> _buildFieldsRow() {
+  List _buildFieldsRow() {
     var examDetailFields = <Widget>[];
     if (this.dynamicModelFields != null) {
       this.dynamicModelFields.forEach((el) {
@@ -103,25 +112,31 @@ class _ExamModelFormState extends State<ExamModelForm> {
   }
 
   Widget _buildAddFieldButton() {
-    return RaisedButton(
-      onPressed: () {
-        Scaffold.of(context).showBottomSheet(
-          (context) => ExamDynamicFieldsBottomsheet(
-            dynamicFieldsList: this.dynamicModelFields,
-            refreshForm: this.refreshFields,
+    return Builder(
+      builder: (context) {
+        return RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet(
+              (context) => ExamDynamicFieldsBottomsheet(
+                dynamicFieldsList: this.dynamicModelFields,
+                refreshForm: this.refreshFields,
+              ),
+              backgroundColor: Colors.transparent,
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
           ),
-          backgroundColor: Colors.transparent,
+          color: Theme.of(context).primaryColor,
+          child: Text(
+            "Adicione um campo",
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
         );
       },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(32.0),
-      ),
-      color: Theme.of(context).primaryColor,
-      child: Text(
-        "Adicione um campo",
-        style: TextStyle(
-            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
     );
   }
 

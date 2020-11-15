@@ -28,7 +28,7 @@ class _ExamDinamicFieldsBottomsheetState
   TextEditingController get fieldValueController =>
       this.widget.fieldValueController;
 
-  List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
+  List get dynamicFieldsList => this.widget.dynamicFieldsList;
   Function get refreshForm => this.widget.refreshForm;
 
   @override

@@ -15,11 +15,7 @@ class CreateExamModelFail extends ExamState {
   CreateExamModelFail({@required this.errorMessage});
 }
 
-class CreateExamModelSuccess extends ExamState {
-  final newModelFields;
-
-  CreateExamModelSuccess({@required this.newModelFields});
-}
+class CreateExamModelSuccess extends ExamState {}
 
 class LoadExamModelProcessing extends ExamState {}
 
@@ -30,7 +26,7 @@ class LoadExamModelFail extends ExamState {
 }
 
 class LoadExamModelSuccess extends ExamState {
-  final models;
+  final Map models;
 
   LoadExamModelSuccess({@required this.models});
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
@@ -11,7 +12,8 @@ class ExamModelScreen extends StatefulWidget {
 
 class _ExamModelScreenState extends State<ExamModelScreen> {
   ExamBloc _examBloc;
-  List modelFieldsFromDatabase = [];
+  List<Widget> modelFieldsFromDatabase = [];
+  List<Map> modelTypeEntries;
 
   @override
   void initState() {
@@ -30,7 +32,13 @@ class _ExamModelScreenState extends State<ExamModelScreen> {
         body: BlocListener<ExamBloc, ExamState>(
           listener: (context, state) => {
             if (state is LoadExamModelSuccess)
-              {this.modelFieldsFromDatabase = state.models}
+              {
+                state.models.forEach((key, value) {
+                  if (key == "Tipo de Exame") {
+                    this.modelTypeEntries.add({key: value});
+                  }
+                })
+              }
           },
           child: BlocBuilder<ExamBloc, ExamState>(
             builder: (context, state) {

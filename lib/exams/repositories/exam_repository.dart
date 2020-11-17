@@ -18,6 +18,23 @@ class ExamRepository {
     return await putFileResult.ref.getDownloadURL();
   }
 
+  Future<Map> getExamModels() async {
+    var data = Map();
+    await this
+        ._firestore
+        .collection("modelExam")
+        .get()
+        .then((res) => res.docs.forEach((element) {
+              data.addAll(element.data());
+            }));
+
+    return data;
+  }
+
+  Future saveModelExam(Map modelExam) async {
+    await this._firestore.collection("modelExam").doc().set(modelExam);
+  }
+
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
       File encriptedFile, String fileName, String pacientHash) async {
     var user = _getUser();

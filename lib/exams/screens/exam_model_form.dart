@@ -15,6 +15,8 @@ class ExamModelForm extends StatefulWidget {
 }
 
 class _ExamModelFormState extends State<ExamModelForm> {
+  String examTypePlaceholder = "Tipo de Exame";
+  String examDatePlaceholder = "Data de Realização";
   GlobalKey _scaffoldKey = GlobalKey<ScaffoldState>();
   ExamBloc _examBloc;
   TextEditingController _examTypeController = TextEditingController();
@@ -72,10 +74,10 @@ class _ExamModelFormState extends State<ExamModelForm> {
     return <Widget>[
       Field(
           textController: this._examTypeController,
-          fieldPlaceholder: "Tipo de Exame"),
+          fieldPlaceholder: this.examTypePlaceholder),
       LayoutUtils.buildVerticalSpacing(10.0),
       DateTimeFormField(
-        fieldPlaceholder: "Data de Realização",
+        fieldPlaceholder: this.examDatePlaceholder,
         dateTimeController: this._examDateController,
       ),
       LayoutUtils.buildVerticalSpacing(10.0),
@@ -143,9 +145,15 @@ class _ExamModelFormState extends State<ExamModelForm> {
   Widget _buildCreateModelButton() {
     return RaisedButton(
       onPressed: () {
-        this
-            ._examBloc
-            .add(CreateExamModel(listOfFields: this.dynamicModelFields));
+        this._examBloc.add(CreateExamModel(
+              examTypeMap: {
+                this.examTypePlaceholder: this._examTypeController.text
+              },
+              examDateMap: {
+                this.examDatePlaceholder: this._examDateController.text
+              },
+              listOfFields: this.dynamicModelFields,
+            ));
       },
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(32.0),

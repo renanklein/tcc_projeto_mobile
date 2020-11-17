@@ -23,12 +23,14 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
       try {
         yield CreateExamModelProcessing();
 
-        var modelMap = Map();
+        var modelMap = Map<String, dynamic>();
         modelMap.addAll(event.examTypeMap);
         modelMap.addAll(event.examDateMap);
-        modelMap
-            .addAll(ExamDetails(fieldsWidgetList: event.listOfFields).toMap());
-        await this.examRepository.saveModelExam(modelMap);
+        modelMap.addAll({"fields": event.listOfFields});
+
+        await this
+            .examRepository
+            .saveModelExam(modelMap, event.examTypeMap["Tipo de Exame"]);
 
         yield CreateExamModelSuccess();
       } catch (error) {

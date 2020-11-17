@@ -7,10 +7,10 @@ class ExamDetails {
 
   ExamDetails({@required this.fieldsWidgetList});
 
-  List<Widget> get getFieldsWidgetList => this.fieldsWidgetList;
+  List get getFieldsWidgetList => this.fieldsWidgetList;
 
   Map toMap() {
-    Map fieldValues = Map();
+    Map fieldValues = Map<String, dynamic>();
     this.getFieldsWidgetList.forEach((field) {
       if (field is ExamDetailsField) {
         fieldValues.addAll({field.fieldPlaceholder: field.fieldValue});

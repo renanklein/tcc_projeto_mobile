@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_model_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
@@ -160,7 +160,7 @@ class _UserDrawerState extends State<UserDrawer> {
 
   void _navigateToExameScreen() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ExamModelScreen()));
+        .push(MaterialPageRoute(builder: (context) => ExamModelForm()));
   }
 
   void _navigateToPacientScreen() {

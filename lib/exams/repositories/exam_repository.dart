@@ -23,16 +23,21 @@ class ExamRepository {
     await this
         ._firestore
         .collection("modelExam")
+        .doc(_getUser().uid)
         .get()
-        .then((res) => res.docs.forEach((element) {
-              data.addAll(element.data());
-            }));
+        .then((res) => data = res.data());
 
     return data;
   }
 
-  Future saveModelExam(Map modelExam) async {
-    await this._firestore.collection("modelExam").doc().set(modelExam);
+  Future saveModelExam(Map modelExam, String examType) async {
+    await this
+        ._firestore
+        .collection("modelExam")
+        .doc(_getUser().uid)
+        .collection(examType)
+        .doc()
+        .set(modelExam);
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,

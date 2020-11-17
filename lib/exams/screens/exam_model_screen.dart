@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
-import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
@@ -11,6 +10,7 @@ class ExamModelScreen extends StatefulWidget {
 }
 
 class _ExamModelScreenState extends State<ExamModelScreen> {
+  String examTypeKey = "Tipo de Exame";
   ExamBloc _examBloc;
   List<Widget> modelFieldsFromDatabase = [];
   List<Map> modelTypeEntries;
@@ -34,7 +34,7 @@ class _ExamModelScreenState extends State<ExamModelScreen> {
             if (state is LoadExamModelSuccess)
               {
                 state.models.forEach((key, value) {
-                  if (key == "Tipo de Exame") {
+                  if (key == examTypeKey) {
                     this.modelTypeEntries.add({key: value});
                   }
                 })
@@ -87,5 +87,17 @@ class _ExamModelScreenState extends State<ExamModelScreen> {
             fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
+  }
+
+  Widget _buildDropdownExamTypeButton() {
+    return DropdownButton<String>(
+        items: this
+            .modelTypeEntries
+            .map((e) => DropdownMenuItem<String>(
+                  value: e[examTypeKey],
+                  child: Text(e[examTypeKey]),
+                ))
+            .toList(),
+        onChanged: null);
   }
 }

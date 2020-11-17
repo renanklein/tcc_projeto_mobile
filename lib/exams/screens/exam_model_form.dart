@@ -17,10 +17,12 @@ class ExamModelForm extends StatefulWidget {
 class _ExamModelFormState extends State<ExamModelForm> {
   String examTypePlaceholder = "Tipo de Exame";
   String examDatePlaceholder = "Data de Realização";
-  GlobalKey _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   ExamBloc _examBloc;
   TextEditingController _examTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
+  TextEditingController _examModelFieldsNamesController =
+      TextEditingController();
 
   List get dynamicModelFields => this.widget.dynamicFields;
 
@@ -41,6 +43,8 @@ class _ExamModelFormState extends State<ExamModelForm> {
       body: BlocListener<ExamBloc, ExamState>(
         listener: (context, state) {
           if (state is CreateExamModelSuccess) {
+            Future.delayed(Duration(seconds: 2));
+            onSuccess();
             Navigator.of(context).pop();
           }
         },
@@ -57,7 +61,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
                     children: [
                       ..._buildMandatoryFields(),
                       ..._buildFieldsRow(),
-                      _buildAddFieldButton(),
+                      //_buildAddFieldButton(),
                       _buildCreateModelButton()
                     ],
                   ),
@@ -81,7 +85,30 @@ class _ExamModelFormState extends State<ExamModelForm> {
         dateTimeController: this._examDateController,
       ),
       LayoutUtils.buildVerticalSpacing(10.0),
+      TextFormField(
+        controller: this._examModelFieldsNamesController,
+        readOnly: false,
+        minLines: 3,
+        maxLines: 8,
+        keyboardType: TextInputType.multiline,
+        decoration: InputDecoration(
+          hintText: "Insira os nomes do campos separados por ;",
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        ),
+      )
     ];
+  }
+
+  List<String> _buildListOfFields() {
+    return this._examModelFieldsNamesController.text.split(";");
+  }
+
+  void onSuccess() {
+    this._scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Conta criada com sucesso !"),
+          backgroundColor: Colors.green,
+        ));
   }
 
   List _buildFieldsRow() {
@@ -145,15 +172,11 @@ class _ExamModelFormState extends State<ExamModelForm> {
   Widget _buildCreateModelButton() {
     return RaisedButton(
       onPressed: () {
-        this._examBloc.add(CreateExamModel(
-              examTypeMap: {
-                this.examTypePlaceholder: this._examTypeController.text
-              },
-              examDateMap: {
-                this.examDatePlaceholder: this._examDateController.text
-              },
-              listOfFields: this.dynamicModelFields,
-            ));
+        this._examBloc.add(CreateExamModel(examTypeMap: {
+              this.examTypePlaceholder: this._examTypeController.text
+            }, examDateMap: {
+              this.examDatePlaceholder: this._examDateController.text
+            }, listOfFields: _buildListOfFields()));
       },
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(32.0),

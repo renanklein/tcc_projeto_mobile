@@ -175,6 +175,16 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       } catch (e) {
         yield DynamicExamFieldFail();
       }
+    } else if (event is LoadExamModels) {
+      try {
+        yield LoadExamModelProcessing();
+
+        var result = await this.examRepository.getExamModels();
+
+        yield LoadExamModelSuccess(models: result);
+      } catch (error) {
+        yield LoadExamModelFail(errorMessage: error.toString());
+      }
     }
   }
 }

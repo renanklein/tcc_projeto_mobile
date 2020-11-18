@@ -18,7 +18,7 @@ class ExamRepository {
     return await putFileResult.ref.getDownloadURL();
   }
 
-  Future<Map> getExamModels() async {
+  Future<dynamic> getExamModels() async {
     var data = Map();
     await this
         ._firestore
@@ -31,13 +31,19 @@ class ExamRepository {
   }
 
   Future saveModelExam(Map modelExam, String examType) async {
+    var models = await getExamModels();
+    if (models == null) {
+      models = {
+        "models": <Map>[modelExam]
+      };
+    } else {
+      models["models"].add(modelExam);
+    }
     await this
         ._firestore
         .collection("modelExam")
         .doc(_getUser().uid)
-        .collection(examType)
-        .doc()
-        .set(modelExam);
+        .set(models);
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,

@@ -149,3 +149,29 @@ class DynamicExamFieldFail extends MedRecordState {
   @override
   List<Object> get props => [];
 }
+
+class LoadExamModelProcessing extends MedRecordState {
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
+
+class LoadExamModelFail extends MedRecordState {
+  final String errorMessage;
+
+  LoadExamModelFail({@required this.errorMessage});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
+
+class LoadExamModelSuccess extends MedRecordState {
+  final Map models;
+
+  LoadExamModelSuccess({@required this.models});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}

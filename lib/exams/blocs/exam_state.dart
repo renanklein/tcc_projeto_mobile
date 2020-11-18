@@ -16,17 +16,3 @@ class CreateExamModelFail extends ExamState {
 }
 
 class CreateExamModelSuccess extends ExamState {}
-
-class LoadExamModelProcessing extends ExamState {}
-
-class LoadExamModelFail extends ExamState {
-  final String errorMessage;
-
-  LoadExamModelFail({@required this.errorMessage});
-}
-
-class LoadExamModelSuccess extends ExamState {
-  final Map models;
-
-  LoadExamModelSuccess({@required this.models});
-}

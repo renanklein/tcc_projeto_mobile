@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
@@ -33,6 +34,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   MedRecordBloc _medRecordBloc;
   TextEditingController _examTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
+  String currentDropdownItem;
+  Map<String, List> modelExams = Map<String, List>();
+  List<String> examModelsTypes = List<String>();
   File _examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -45,6 +49,8 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         medRecordRepository:
             Injector.appInstance.getDependency<MedRecordRepository>(),
         examRepository: Injector.appInstance.getDependency<ExamRepository>());
+
+    this._medRecordBloc.add(LoadExamModels());
     super.initState();
   }
 
@@ -70,6 +76,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
               });
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
+            } else if (state is LoadExamModelSuccess) {
+              state.models["models"].forEach((map) {
+                this.examModelsTypes.add(map["Tipo de Exame"]);
+                this.modelExams.addAll({map["Tipo de Exame"]: map["fields"]});
+              });
+
+              this.currentDropdownItem = this.examModelsTypes.first;
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -84,65 +97,111 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 }
                 return Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Form(
-                      child: ListView(
-                    children: [
-                      Field(
-                          textController: this._examTypeController,
-                          fieldPlaceholder: "Tipo de Exame"),
-                      LayoutUtils.buildVerticalSpacing(10.0),
-                      DateTimeFormField(
-                        fieldPlaceholder: "Data de Realização",
-                        dateTimeController: this._examDateController,
-                      ),
-                      LayoutUtils.buildVerticalSpacing(10.0),
-                      ..._buildFieldsRow(),
-                      RaisedButton(
-                        onPressed: () {
-                          Scaffold.of(context).showBottomSheet(
-                            (context) => ExamDynamicFieldsBottomsheet(
-                              dynamicFieldsList: this.dynamicFieldsList,
-                              refreshForm: this.refreshFields,
-                            ),
-                            backgroundColor: Colors.transparent,
-                          );
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                        color: Theme.of(context).primaryColor,
-                        child: Text(
-                          "Adicione um campo",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      _createFieldsModelButton(),
-                      RaisedButton(
-                        onPressed: () async {
-                          _setExamFile();
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                        color: Theme.of(context).primaryColor,
-                        child: Text(
-                          "Escolha o exame",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      _createSubmitButton()
-                    ],
-                  )),
+                  child: Form(child: _buildFormBody()),
                 );
               }),
         ));
+  }
+
+  ListView _buildFormBody() {
+    return ListView(
+      children: [
+        Field(
+            textController: this._examTypeController,
+            fieldPlaceholder: "Tipo de Exame"),
+        LayoutUtils.buildVerticalSpacing(10.0),
+        DateTimeFormField(
+          fieldPlaceholder: "Data de Realização",
+          dateTimeController: this._examDateController,
+        ),
+        LayoutUtils.buildVerticalSpacing(10.0),
+        ..._buildModelTypeDropDownButton(),
+        ..._buildModelExamFields(this.modelExams[this.currentDropdownItem]),
+        RaisedButton(
+          onPressed: () {
+            Scaffold.of(context).showBottomSheet(
+              (context) => ExamDynamicFieldsBottomsheet(
+                dynamicFieldsList: this.dynamicFieldsList,
+                refreshForm: this.refreshFields,
+              ),
+              backgroundColor: Colors.transparent,
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Theme.of(context).primaryColor,
+          child: Text(
+            "Adicione um campo",
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+        LayoutUtils.buildVerticalSpacing(20.0),
+        _createSubmitButton()
+      ],
+    );
+  }
+
+  List<Widget> _buildModelTypeDropDownButton() {
+    var dropdownWidgets = <Widget>[];
+    if (this.examModelsTypes.isEmpty) {
+      return dropdownWidgets;
+    }
+    dropdownWidgets
+        .add(Center(child: Text("Selecione o modelo de exame abaixo")));
+
+    dropdownWidgets.add(LayoutUtils.buildVerticalSpacing(5.0));
+
+    dropdownWidgets.add(Container(
+      alignment: Alignment.center,
+      child: DropdownButton<String>(
+        items: this.examModelsTypes.map((el) {
+          return DropdownMenuItem(value: el, child: Text(el));
+        }).toList(),
+        onChanged: (newValue) {
+          setState(() {
+            this.currentDropdownItem = newValue;
+          });
+        },
+        value: this.currentDropdownItem,
+      ),
+    ));
+
+    return dropdownWidgets;
+  }
+
+  List<Widget> _buildModelExamFields(List fields) {
+    var examDetailsFieldsList = <Widget>[];
+
+    if (fields != null) {
+      fields.forEach((type) {
+        var examDetailsField = ExamDetailsField(
+          fieldPlaceholder: type,
+          fieldValue: "",
+        );
+        examDetailsFieldsList.add(
+          Row(
+            children: [
+              Expanded(child: examDetailsField),
+              IconButton(
+                  icon: Icon(Icons.cancel_outlined,
+                      color: Theme.of(context).primaryColor),
+                  onPressed: () {
+                    setState(() {
+                      this.dynamicFieldsList.remove(examDetailsField);
+                    });
+                  })
+            ],
+          ),
+        );
+        examDetailsFieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
+      });
+    }
+
+    return examDetailsFieldsList;
   }
 
   List<Widget> _buildFieldsRow() {

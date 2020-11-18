@@ -15,5 +15,3 @@ class CreateExamModel extends ExamEvent {
       @required this.examTypeMap,
       @required this.examDateMap});
 }
-
-class LoadExamModels extends ExamEvent {}

@@ -36,16 +36,6 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
       } catch (error) {
         yield CreateExamModelFail(errorMessage: error.toString());
       }
-    } else if (state is LoadExamModels) {
-      try {
-        yield LoadExamModelProcessing();
-
-        var result = await this.examRepository.getExamModels();
-
-        yield LoadExamModelSuccess(models: result);
-      } catch (error) {
-        yield LoadExamModelFail(errorMessage: error.toString());
-      }
     }
   }
 

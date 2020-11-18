@@ -19,6 +19,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
   String examDatePlaceholder = "Data de Realização";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ExamBloc _examBloc;
+  dynamic examModels;
   TextEditingController _examTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
   TextEditingController _examModelFieldsNamesController =

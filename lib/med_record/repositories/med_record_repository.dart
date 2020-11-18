@@ -52,6 +52,7 @@ class MedRecordRepository {
       medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
       bool boolMedRecord;
+      
       await document.get().then((value) {
         if (value.data() != null) {
           medRecord = MedRecordModel.fromMap(value.data());

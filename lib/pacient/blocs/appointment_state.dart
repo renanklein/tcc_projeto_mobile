@@ -17,3 +17,8 @@ class AppointmentLoadEventSuccess extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
+class AppointmentLoadEventFail extends PacientState {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}

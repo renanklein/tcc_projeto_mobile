@@ -38,7 +38,12 @@ class RouteGenerator {
       //   return MaterialPageRoute(builder: (context) => ExamFormScreen());
       //   break;
       case pacientsRoute:
-        return MaterialPageRoute(builder: (_) => ListPacientScreen());
+        String uid = settings.arguments;
+
+        return MaterialPageRoute(
+            builder: (_) => ListPacientScreen(
+                  userUid: uid,
+                ));
         break;
       case calendarRoute:
         return MaterialPageRoute(
@@ -56,7 +61,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => PacientDetailScreen());
         break;
       case appointmentsViewRoute:
-        return MaterialPageRoute(builder: (_) => AppointmentsWaitListScreen());
+        String uid = settings.arguments;
+        return MaterialPageRoute(
+            builder: (_) => AppointmentsWaitListScreen(
+                  userUid: uid,
+                ));
         break;
       case medRecordRoute:
         var data = settings.arguments as MedRecordArguments;

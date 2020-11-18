@@ -7,7 +7,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
@@ -36,6 +35,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   TextEditingController _examDateController = TextEditingController();
   String currentDropdownItem;
   Map<String, List> modelExams = Map<String, List>();
+  List<Widget> examModelsFields = List<Widget>();
   List<String> examModelsTypes = List<String>();
   File _examFile;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -117,15 +117,16 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         LayoutUtils.buildVerticalSpacing(10.0),
         ..._buildModelTypeDropDownButton(),
         ..._buildModelExamFields(this.modelExams[this.currentDropdownItem]),
+        ..._buildFieldsRow(),
         RaisedButton(
           onPressed: () {
-            Scaffold.of(context).showBottomSheet(
-              (context) => ExamDynamicFieldsBottomsheet(
-                dynamicFieldsList: this.dynamicFieldsList,
-                refreshForm: this.refreshFields,
-              ),
-              backgroundColor: Colors.transparent,
-            );
+            this._scaffoldKey.currentState.showBottomSheet(
+                  (context) => ExamDynamicFieldsBottomsheet(
+                    dynamicFieldsList: this.dynamicFieldsList,
+                    refreshForm: this.refreshFields,
+                  ),
+                  backgroundColor: Colors.transparent,
+                );
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
@@ -139,7 +140,23 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 color: Colors.white),
           ),
         ),
-        LayoutUtils.buildVerticalSpacing(20.0),
+        RaisedButton(
+          onPressed: () async {
+            _setExamFile();
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          color: Theme.of(context).primaryColor,
+          child: Text(
+            "Escolha o exame",
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+        LayoutUtils.buildVerticalSpacing(10.0),
         _createSubmitButton()
       ],
     );
@@ -174,34 +191,34 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   List<Widget> _buildModelExamFields(List fields) {
-    var examDetailsFieldsList = <Widget>[];
-
+    var dropDownFields = <Widget>[];
+    this.examModelsFields = <Widget>[];
     if (fields != null) {
       fields.forEach((type) {
         var examDetailsField = ExamDetailsField(
           fieldPlaceholder: type,
           fieldValue: "",
         );
-        examDetailsFieldsList.add(
-          Row(
-            children: [
-              Expanded(child: examDetailsField),
-              IconButton(
-                  icon: Icon(Icons.cancel_outlined,
-                      color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    setState(() {
-                      this.dynamicFieldsList.remove(examDetailsField);
-                    });
-                  })
-            ],
-          ),
+        this.examModelsFields.add(examDetailsField);
+        var row = Row(
+          children: [
+            Expanded(child: examDetailsField),
+            IconButton(
+                icon: Icon(Icons.cancel_outlined,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  setState(() {
+                    fields.remove(type);
+                  });
+                })
+          ],
         );
-        examDetailsFieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
+        dropDownFields.add(row);
+        dropDownFields.add(LayoutUtils.buildVerticalSpacing(10.0));
       });
     }
 
-    return examDetailsFieldsList;
+    return dropDownFields;
   }
 
   List<Widget> _buildFieldsRow() {
@@ -298,11 +315,14 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           borderRadius: BorderRadius.circular(32.0),
         ),
         color: Theme.of(context).primaryColor,
-        child: Text(
-          "Salvar",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        child: Text("Salvar",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 16.0)),
         onPressed: () {
+          this.dynamicFieldsList.addAll(this.examModelsFields);
+
           if (this._examFile != null) {
             var cardExamInfo = CardExamInfo(
                 examDate: this._examDateController.text,

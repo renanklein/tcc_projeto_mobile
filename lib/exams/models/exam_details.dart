@@ -10,10 +10,10 @@ class ExamDetails {
   List get getFieldsWidgetList => this.fieldsWidgetList;
 
   Map toMap() {
-    Map fieldValues = Map<String, dynamic>();
+    Map fieldValues = Map();
     this.getFieldsWidgetList.forEach((field) {
       if (field is ExamDetailsField) {
-        fieldValues.addAll({field.fieldPlaceholder: field.fieldValue});
+        fieldValues.addAll({field.fieldPlaceholder: field.controller.text});
       }
     });
 

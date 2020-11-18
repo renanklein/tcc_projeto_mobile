@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ExamDetailsField extends StatefulWidget {
   final fieldValue;
   final fieldPlaceholder;
+  final controller = TextEditingController();
 
   ExamDetailsField(
       {@required this.fieldValue, @required this.fieldPlaceholder});
@@ -12,9 +13,9 @@ class ExamDetailsField extends StatefulWidget {
 }
 
 class _ExamDetailsFieldState extends State<ExamDetailsField> {
-  TextEditingController controller = TextEditingController();
   String get fieldValue => this.widget.fieldValue;
   String get fieldPlaceholder => this.widget.fieldPlaceholder;
+  TextEditingController get controller => this.widget.controller;
   bool isPlaceholder;
 
   @override

@@ -81,7 +81,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 this.examModelsTypes.add(map["Tipo de Exame"]);
                 this.modelExams.addAll({map["Tipo de Exame"]: map["fields"]});
               });
-
+              this._examTypeController.text = this.examModelsTypes.first;
               this.currentDropdownItem = this.examModelsTypes.first;
             }
           },
@@ -180,6 +180,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         }).toList(),
         onChanged: (newValue) {
           setState(() {
+            this._examTypeController.text = newValue;
             this.currentDropdownItem = newValue;
           });
         },

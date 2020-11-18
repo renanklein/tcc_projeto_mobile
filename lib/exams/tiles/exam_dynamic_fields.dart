@@ -83,6 +83,7 @@ class _ExamDinamicFieldsBottomsheetState
                           var newField = ExamDetailsField(
                             fieldValue: this.fieldValueController.text,
                             fieldPlaceholder: this.fieldNameController.text,
+                            isReadOnly: false,
                           );
 
                           this.refreshForm(this.dynamicFieldsList, newField);

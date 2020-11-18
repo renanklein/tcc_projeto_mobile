@@ -25,7 +25,6 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
 
         var modelMap = Map<String, dynamic>();
         modelMap.addAll(event.examTypeMap);
-        modelMap.addAll(event.examDateMap);
         modelMap.addAll({"fields": event.listOfFields});
 
         await this

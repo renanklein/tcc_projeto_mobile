@@ -96,3 +96,9 @@ class DinamicExamField extends MedRecordEvent {
   @override
   List<Object> get props => [];
 }
+
+class LoadExamModels extends MedRecordEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}

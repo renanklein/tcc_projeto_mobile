@@ -18,6 +18,34 @@ class ExamRepository {
     return await putFileResult.ref.getDownloadURL();
   }
 
+  Future<dynamic> getExamModels() async {
+    var data = Map();
+    await this
+        ._firestore
+        .collection("modelExam")
+        .doc(_getUser().uid)
+        .get()
+        .then((res) => data = res.data());
+
+    return data;
+  }
+
+  Future saveModelExam(Map modelExam, String examType) async {
+    var models = await getExamModels();
+    if (models == null) {
+      models = {
+        "models": <Map>[modelExam]
+      };
+    } else {
+      models["models"].add(modelExam);
+    }
+    await this
+        ._firestore
+        .collection("modelExam")
+        .doc(_getUser().uid)
+        .set(models);
+  }
+
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
       File encriptedFile, String fileName, String pacientHash) async {
     var user = _getUser();

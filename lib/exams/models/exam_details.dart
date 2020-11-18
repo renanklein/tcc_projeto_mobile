@@ -7,13 +7,13 @@ class ExamDetails {
 
   ExamDetails({@required this.fieldsWidgetList});
 
-  List<Widget> get getFieldsWidgetList => this.fieldsWidgetList;
+  List get getFieldsWidgetList => this.fieldsWidgetList;
 
   Map toMap() {
     Map fieldValues = Map();
     this.getFieldsWidgetList.forEach((field) {
       if (field is ExamDetailsField) {
-        fieldValues.addAll({field.fieldPlaceholder: field.fieldValue});
+        fieldValues.addAll({field.fieldPlaceholder: field.controller.text});
       }
     });
 
@@ -23,8 +23,11 @@ class ExamDetails {
   static ExamDetails fromMap(Map dynamicFieldsMap) {
     var fieldsList = <Widget>[];
     dynamicFieldsMap.forEach((key, value) {
-      fieldsList
-          .add(ExamDetailsField(fieldValue: value, fieldPlaceholder: key));
+      fieldsList.add(ExamDetailsField(
+        fieldValue: value,
+        fieldPlaceholder: key,
+        isReadOnly: true,
+      ));
       fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
     });
 

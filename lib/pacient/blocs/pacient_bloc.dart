@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
@@ -10,6 +11,8 @@ import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 part 'pacient_event.dart';
 part 'pacient_state.dart';
+part 'appointment_event.dart';
+part 'appointment_state.dart';
 
 class PacientBloc extends Bloc<PacientEvent, PacientState> {
   PacientRepository pacientRepository;
@@ -55,6 +58,18 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield PacientLoadEventSuccess(pacientRepository.pacientsList);
       } catch (error) {
         yield PacientLoadEventFail();
+      }
+    } else if (event is AppointmentsLoad) {
+      try {
+        yield AppointmentsLoading();
+
+        List<AppointmentModel> _appointmentsList;
+
+        _appointmentsList = await pacientRepository.getAppointments();
+
+        yield AppointmentLoadEventSuccess(_appointmentsList);
+      } on Exception catch (e) {
+        e.toString();
       }
     }
     /* else if (event is PacientEditButtonPressed) {

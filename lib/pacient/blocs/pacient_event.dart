@@ -32,11 +32,6 @@ class PacientLoad extends PacientEvent {
   List<Object> get props => throw UnimplementedError();
 }
 
-class AppointmentsLoad extends PacientEvent {
-  @override
-  List<Object> get props => throw UnimplementedError();
-}
-
 class PacientEditButtonPressed extends PacientEvent {
   final nome;
   final email;

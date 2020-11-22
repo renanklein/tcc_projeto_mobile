@@ -21,8 +21,11 @@ class _DashboardState extends State<Dashboard> {
 
   UserRepository get userRepository => this.widget.userRepository;
 
+  var _user;
+
   @override
   void initState() {
+    _user = this.userRepository.getUser();
     this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     super.initState();
   }
@@ -81,7 +84,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 pacientsRoute,
-                                arguments: 'Dashboard',
+                                arguments: _user.uid,
                               );
                             },
                             child: _dashboardItem(
@@ -120,6 +123,32 @@ class _DashboardState extends State<Dashboard> {
                               'Banco de Encaixe',
                               0xFF1A237E,
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                appointmentsViewRoute,
+                                arguments: _user.uid,
+                              );
+                            },
+                            child: _dashboardItem(
+                              Icons.library_add,
+                              'Listar Agendamentos de Hoje',
+                              0xFF1A237E,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: _dashboardItem(
+                                Icons.archive, 'Desativado', 0xFF1A237E),
                           ),
                         ],
                       ),

@@ -4,19 +4,15 @@ class ExamDetailsField extends StatefulWidget {
   final fieldValue;
   final fieldPlaceholder;
   final controller = TextEditingController();
-  final isReadOnly;
 
   ExamDetailsField(
-      {@required this.fieldValue,
-      @required this.fieldPlaceholder,
-      @required this.isReadOnly});
+      {@required this.fieldValue, @required this.fieldPlaceholder});
 
   @override
   _ExamDetailsFieldState createState() => _ExamDetailsFieldState();
 }
 
 class _ExamDetailsFieldState extends State<ExamDetailsField> {
-  bool get isReadOnly => this.widget.isReadOnly;
   String get fieldValue => this.widget.fieldValue;
   String get fieldPlaceholder => this.widget.fieldPlaceholder;
   TextEditingController get controller => this.widget.controller;
@@ -33,25 +29,11 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: this.controller,
-      readOnly: this.isReadOnly,
+      readOnly: false,
       minLines: 1,
       maxLines: 5,
       keyboardType: TextInputType.multiline,
       decoration: _buildFieldDecoration(),
-      onTap: () {
-        if (this.isReadOnly) {
-          setState(() {
-            if (isPlaceholder) {
-              this.controller.text = this.fieldValue;
-              this.isPlaceholder = false;
-            } else {
-              this.controller.text =
-                  this.controller.text = this.fieldPlaceholder;
-              this.isPlaceholder = true;
-            }
-          });
-        }
-      },
     );
   }
 

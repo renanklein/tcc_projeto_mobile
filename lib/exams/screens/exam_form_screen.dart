@@ -198,7 +198,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         var examDetailsField = ExamDetailsField(
           fieldPlaceholder: type,
           fieldValue: "",
-          isReadOnly: false,
         );
         this.examModelsFields.add(examDetailsField);
         var row = Row(

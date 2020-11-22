@@ -169,10 +169,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         yield DynamicExamFieldProcessing();
 
         var fieldWidget = ExamDetailsField(
-          fieldPlaceholder: event.fieldName,
-          fieldValue: event.fieldValue,
-          isReadOnly: true,
-        );
+            fieldPlaceholder: event.fieldName, fieldValue: event.fieldValue);
 
         yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
       } catch (e) {

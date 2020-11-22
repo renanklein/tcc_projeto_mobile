@@ -81,11 +81,6 @@ class _ExamModelFormState extends State<ExamModelForm> {
           textController: this._examTypeController,
           fieldPlaceholder: this.examTypePlaceholder),
       LayoutUtils.buildVerticalSpacing(10.0),
-      DateTimeFormField(
-        fieldPlaceholder: this.examDatePlaceholder,
-        dateTimeController: this._examDateController,
-      ),
-      LayoutUtils.buildVerticalSpacing(10.0),
       TextFormField(
         controller: this._examModelFieldsNamesController,
         readOnly: false,
@@ -175,8 +170,6 @@ class _ExamModelFormState extends State<ExamModelForm> {
       onPressed: () {
         this._examBloc.add(CreateExamModel(examTypeMap: {
               this.examTypePlaceholder: this._examTypeController.text
-            }, examDateMap: {
-              this.examDatePlaceholder: this._examDateController.text
             }, listOfFields: _buildListOfFields()));
       },
       shape: RoundedRectangleBorder(

@@ -23,8 +23,11 @@ class ExamDetails {
   static ExamDetails fromMap(Map dynamicFieldsMap) {
     var fieldsList = <Widget>[];
     dynamicFieldsMap.forEach((key, value) {
-      fieldsList
-          .add(ExamDetailsField(fieldValue: value, fieldPlaceholder: key));
+      fieldsList.add(ExamDetailsField(
+        fieldValue: value,
+        fieldPlaceholder: key,
+        isReadOnly: true,
+      ));
       fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
     });
 

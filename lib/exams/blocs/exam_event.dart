@@ -8,10 +8,6 @@ abstract class ExamEvent extends Equatable {
 class CreateExamModel extends ExamEvent {
   final listOfFields;
   final examTypeMap;
-  final examDateMap;
 
-  CreateExamModel(
-      {@required this.listOfFields,
-      @required this.examTypeMap,
-      @required this.examDateMap});
+  CreateExamModel({@required this.listOfFields, @required this.examTypeMap});
 }

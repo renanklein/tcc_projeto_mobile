@@ -87,10 +87,16 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(10.0),
       ExamDetailsField(
-          fieldValue: this.exameType, fieldPlaceholder: "Tipo de exame"),
+        fieldValue: this.exameType,
+        fieldPlaceholder: "Tipo de exame",
+        isReadOnly: true,
+      ),
       LayoutUtils.buildVerticalSpacing(10.0),
       ExamDetailsField(
-          fieldValue: this.examDate, fieldPlaceholder: "Data do exame"),
+        fieldValue: this.examDate,
+        fieldPlaceholder: "Data do exame",
+        isReadOnly: true,
+      ),
       LayoutUtils.buildVerticalSpacing(10.0),
       ...this.examDetails.getFieldsWidgetList
     ];

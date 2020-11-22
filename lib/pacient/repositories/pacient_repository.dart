@@ -38,7 +38,7 @@ class PacientRepository extends ChangeNotifier {
 
   Future<List<AppointmentModel>> getAppointments() async {
     List<AppointmentModel> _appointmentsList = new List<AppointmentModel>();
-
+    var docs;
     await _agendaCollectionReference
         .doc(this._userId)
         .collection("events")
@@ -60,10 +60,7 @@ class PacientRepository extends ChangeNotifier {
                       AppointmentModel(
                         nome: event["description"],
                         telefone: event["phone"],
-                        appointmentTime: _appointmentTime.add(Duration(
-                          hours: int.parse(event['begin'].split(':')[0]),
-                          minutes: int.parse(event['begin'].split(':')[1]),
-                        )),
+                        appointmentTime: _appointmentTime,
                       ),
                     );
                   }

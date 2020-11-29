@@ -149,7 +149,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           ),
           color: Theme.of(context).primaryColor,
           child: Text(
-            "Escolha o exame",
+            "Escolha imagem",
             style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -325,22 +325,18 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         onPressed: () {
           this.dynamicFieldsList.addAll(this.examModelsFields);
 
-          if (this._examFile != null) {
-            var cardExamInfo = CardExamInfo(
-                examDate: this._examDateController.text,
-                examType: this._examTypeController.text);
+          var cardExamInfo = CardExamInfo(
+              examDate: this._examDateController.text,
+              examType: this._examTypeController.text);
 
-            var examDetails =
-                ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
+          var examDetails =
+              ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
 
-            this._medRecordBloc.add(SaveExam(
-                medRecordArguments: this.medRecordArguments,
-                examDetails: examDetails,
-                examFile: _examFile,
-                cardExamInfo: cardExamInfo));
-          } else {
-            onFail("Por favor escolha seu exame");
-          }
+          this._medRecordBloc.add(SaveExam(
+              medRecordArguments: this.medRecordArguments,
+              examDetails: examDetails,
+              examFile: _examFile,
+              cardExamInfo: cardExamInfo));
         },
       ),
     );

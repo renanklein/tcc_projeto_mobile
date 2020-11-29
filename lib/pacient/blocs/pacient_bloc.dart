@@ -53,7 +53,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield PacientLoading();
 
-        pacientRepository.listenToPacients();
+        this.pacientRepository.listenToPacients();
 
         yield PacientLoadEventSuccess(pacientRepository.pacientsList);
       } catch (error) {

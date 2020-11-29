@@ -49,7 +49,10 @@ class ExamRepository {
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
       File encriptedFile, String fileName, String pacientHash) async {
     var user = _getUser();
-    var fileDownloadURL = await this._uploadExam(encriptedFile, fileName);
+    var fileDownloadURL = encriptedFile == null
+        ? ""
+        : await this._uploadExam(encriptedFile, fileName);
+
     List exams = [];
 
     var snapshot =

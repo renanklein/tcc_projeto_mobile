@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ListPacientScreen extends StatefulWidget {
   @override
@@ -71,61 +72,46 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
             child: BlocListener<PacientBloc, PacientState>(
                 listener: (context, state) {
                   if (state is PacientLoadEventSuccess) {
+                    this._pacientsList = state.pacientsLoaded;
                   } else if (state is PacientLoadEventFail) {}
                 },
                 child: BlocBuilder<PacientBloc, PacientState>(
                     cubit: this._pacientBloc,
                     builder: (context, state) {
-                      return FutureBuilder(
-                          future: _loadPacients(),
-                          builder: (context, snapshot) {
-                            return SafeArea(
-                                child: Center(
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.98,
-                                            child: Column(children: <Widget>[
-                                              pacientSearchBar(
-                                                  _searchBarController,
-                                                  'Digite um nome aqui para pesquisar'),
-                                              Expanded(
-                                                child: (state
-                                                            is PacientLoadEventSuccess &&
-                                                        state.pacientsLoaded !=
-                                                            null)
-                                                    ? ListView.builder(
-                                                        itemCount: (state
-                                                                .pacientsLoaded)
-                                                            .length,
-                                                        itemBuilder: (context,
-                                                                index) =>
-                                                            _listPacientView(
-                                                          state.pacientsLoaded[
-                                                              index],
-                                                        ),
-                                                      )
-                                                    : Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          valueColor:
-                                                              AlwaysStoppedAnimation(
-                                                            Theme.of(context)
-                                                                .primaryColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                              )
-                                            ])))));
-                          });
+                      if (state is PacientLoading) {
+                        return LayoutUtils.buildCircularProgressIndicator(
+                            context);
+                      }
+                      return SafeArea(
+                          child: Center(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.98,
+                                      child: Column(children: <Widget>[
+                                        pacientSearchBar(_searchBarController,
+                                            'Digite um nome aqui para pesquisar'),
+                                        Expanded(
+                                          child: ListView.builder(
+                                              itemCount:
+                                                  this._pacientsList?.length,
+                                              itemBuilder: (context, index) {
+                                                if (this._pacientsList !=
+                                                    null) {
+                                                 return  _listPacientView(this
+                                                      ._pacientsList[index]);
+                                                }
+
+                                                return Container();
+                                              }),
+                                        ),
+                                      ])))));
                     }))));
   }
 
-  Future _loadPacients() async {
-    await _pacientBloc.add(PacientLoad());
+  void _loadPacients() {
+    this._pacientBloc.add(PacientLoad());
   }
 
   Widget _listPacientView(PacientModel pacient) {

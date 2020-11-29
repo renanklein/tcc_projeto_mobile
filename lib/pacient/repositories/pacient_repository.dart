@@ -79,7 +79,7 @@ class PacientRepository extends ChangeNotifier {
     listenToPacientsRealTime().listen((pacientsData) {
       List<PacientModel> updatedPacients = pacientsData;
       if (updatedPacients != null && updatedPacients.length > 0) {
-        _pacients = updatedPacients;
+        this._pacients = updatedPacients;
         notifyListeners();
       }
     });
@@ -88,7 +88,7 @@ class PacientRepository extends ChangeNotifier {
 // TODO: iterar paciente pelo ID do médico
 
   Stream listenToPacientsRealTime() {
-    _pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
+    this._pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
       if (pacientsSnapshot.docs.isNotEmpty) {
         var pacients = pacientsSnapshot.docs
             .map((snapshot) => PacientModel.fromMap(snapshot.data()))
@@ -96,7 +96,7 @@ class PacientRepository extends ChangeNotifier {
                 mappedItem.nome != null && mappedItem.medicId == _userId)
             .toList();
 
-        _pacientsController.add(pacients);
+        this._pacientsController.add(pacients);
         notifyListeners();
       }
     });

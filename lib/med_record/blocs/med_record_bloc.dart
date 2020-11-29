@@ -102,16 +102,20 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     if (event is SaveExam) {
       try {
         yield ExamProcessing();
+        var encriptedFile;
+        var randomFileName;
 
-        var examBytes = await event.getExamFile.readAsBytes();
+        if (event.getExamFile != null) {
+          var examBytes = await event.getExamFile.readAsBytes();
 
-        var encoded = base64.encode(examBytes);
-        var tempDir = await getTemporaryDirectory();
-        var tempPath = tempDir.path;
-        var randomFileName = Random.secure().nextInt(10000);
-        var fileName = randomFileName.toString();
-        var encriptedFile = File("$tempPath/$fileName");
-        await encriptedFile.writeAsString(encoded);
+          var encoded = base64.encode(examBytes);
+          var tempDir = await getTemporaryDirectory();
+          var tempPath = tempDir.path;
+          randomFileName = Random.secure().nextInt(10000);
+          var fileName = randomFileName.toString();
+          encriptedFile = File("$tempPath/$fileName");
+          await encriptedFile.writeAsString(encoded);
+        }
 
         var pacientHash = SltPattern.retrivepacientHash(
             event.getMedRecordArguments.pacientCpf,

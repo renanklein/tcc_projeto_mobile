@@ -38,7 +38,9 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   void initState() {
     this.hideButtonTitle = this.hidePressed ? "Hide" : "Show";
     this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
-    this.medRecordBloc.add(DecriptExam(fileDownloadURL: this.filePath));
+    if (this.filePath.isNotEmpty) {
+      this.medRecordBloc.add(DecriptExam(fileDownloadURL: this.filePath));
+    }
     super.initState();
   }
 
@@ -84,7 +86,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(20.0),
       this.isDecripted ? _buildExameImageWidget() : Container(),
       LayoutUtils.buildVerticalSpacing(10.0),
-      _showHideImageButton(),
+      this.examImage == null ? Container() : _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(10.0),
       ExamDetailsField(
         fieldValue: this.exameType,

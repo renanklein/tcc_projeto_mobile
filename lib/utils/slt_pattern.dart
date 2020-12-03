@@ -1,9 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:crypto/crypto.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'package:encrypt/encrypt.dart';
 
 class SltPattern {
+  static final _initVector = IV.fromSecureRandom(16);
+  static final _cryptoKey = Key.fromSecureRandom(16);
+
   static const String _ppr = '5gNA2qTaKmHdP94W8s4wCudEQh7uVE9z';
 
   static final Random _random = Random.secure();
@@ -44,6 +50,23 @@ class SltPattern {
     var digest = hmacSha256.convert(bytes);
 
     return digest.toString();
+  }
+
+  static String encryptImageBytes(Uint8List imageBytes) {
+    var encrypter = Encrypter(AES(_cryptoKey));
+    var encripedBytes =
+        encrypter.encryptBytes(imageBytes, iv: _initVector).bytes;
+
+    return base64.encode(encripedBytes);
+  }
+
+  static List<int> decryptImageBytes(String encriptedBytes) {
+    var decodedBytes = base64.decode(encriptedBytes);
+    var encrypted = Encrypted(decodedBytes);
+    var decrypter = Encrypter(AES(_cryptoKey));
+
+    return Uint8List.fromList(
+        decrypter.decryptBytes(encrypted, iv: _initVector));
   }
 
   //final _storage = new FlutterSecureStorage();

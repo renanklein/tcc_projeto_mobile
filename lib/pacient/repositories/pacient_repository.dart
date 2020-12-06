@@ -85,6 +85,17 @@ class PacientRepository extends ChangeNotifier {
     });
   }
 
+  Future<List<PacientModel>> getPacients() async {
+    List<PacientModel> pacientsList = List<PacientModel>();
+    await this._pacientsCollectionReference.get().then((resp) {
+      resp.docs.forEach((doc) {
+        pacientsList.add(PacientModel.fromMap(doc.data()));
+      });
+    });
+
+    return pacientsList;
+  }
+
 // TODO: iterar paciente pelo ID do médico
 
   Stream listenToPacientsRealTime() {

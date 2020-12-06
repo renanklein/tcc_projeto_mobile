@@ -15,6 +15,7 @@ import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -78,6 +79,10 @@ class _MyAppState extends State<MyApp> {
               examRepository:
                   Injector.appInstance.getDependency<ExamRepository>()),
         ),
+        BlocProvider<PacientBloc>(
+            create: (context) => PacientBloc(
+                pacientRepository:
+                    Injector.appInstance.getDependency<PacientRepository>())),
         BlocProvider<MedRecordBloc>(
             create: (context) => MedRecordBloc(
                 medRecordRepository:

@@ -19,21 +19,19 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientRepository _pacientRepository;
   List<PacientModel> _pacientsList;
 
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController _searchBarController;
 
   @override
   void initState() {
-    var injector = Injector.appInstance;
+    this._pacientBloc = PacientBloc(
+        pacientRepository:
+            Injector.appInstance.getDependency<PacientRepository>());
 
-    this._pacientRepository = injector.getDependency<PacientRepository>();
-    this._pacientBloc =
-        new PacientBloc(pacientRepository: this._pacientRepository);
+    this._pacientBloc.add(PacientLoad());
 
-    _loadPacients();
-
-    this._searchBarController = new TextEditingController();
+    this._searchBarController = TextEditingController();
 
     super.initState();
   }
@@ -78,7 +76,8 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 child: BlocBuilder<PacientBloc, PacientState>(
                     cubit: this._pacientBloc,
                     builder: (context, state) {
-                      if (state is PacientLoading) {
+                      if (state is PacientLoading ||
+                          this._pacientsList == null) {
                         return LayoutUtils.buildCircularProgressIndicator(
                             context);
                       }
@@ -97,21 +96,12 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                               itemCount:
                                                   this._pacientsList?.length,
                                               itemBuilder: (context, index) {
-                                                if (this._pacientsList !=
-                                                    null) {
-                                                 return  _listPacientView(this
-                                                      ._pacientsList[index]);
-                                                }
-
-                                                return Container();
+                                                return _listPacientView(
+                                                    this._pacientsList[index]);
                                               }),
                                         ),
                                       ])))));
                     }))));
-  }
-
-  void _loadPacients() {
-    this._pacientBloc.add(PacientLoad());
   }
 
   Widget _listPacientView(PacientModel pacient) {

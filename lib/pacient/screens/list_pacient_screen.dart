@@ -116,7 +116,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 Navigator.of(context).pushNamed(
                   medRecordRoute,
                   arguments: MedRecordArguments(
-                      index: 'index',
+                      index: 'examScreen',
                       pacientCpf: pacient.cpf,
                       pacientSalt: pacient.salt),
                 );

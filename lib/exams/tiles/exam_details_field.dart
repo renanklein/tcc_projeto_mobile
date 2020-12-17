@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ExamDetailsField extends StatefulWidget {
   final fieldValue;
@@ -31,27 +32,33 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: this.controller,
-      readOnly: this.isReadOnly,
-      minLines: 1,
-      maxLines: 5,
-      keyboardType: TextInputType.multiline,
-      decoration: _buildFieldDecoration(),
-      onTap: () {
-        if (this.isReadOnly) {
-          setState(() {
-            if (isPlaceholder) {
-              this.controller.text = this.fieldValue;
-              this.isPlaceholder = false;
-            } else {
-              this.controller.text =
-                  this.controller.text = this.fieldPlaceholder;
-              this.isPlaceholder = true;
-            }
-          });
-        }
+    var focusScope = FocusScope.of(context);
+    var focusNode = FocusScopeNode();
+    return RawKeyboardListener(
+      autofocus: true,
+      onKey: (key) {
+        if (key.isKeyPressed(LogicalKeyboardKey.enter)) {}
       },
+      child: TextField(
+        controller: this.controller,
+        readOnly: this.isReadOnly,
+        keyboardType: TextInputType.multiline,
+        decoration: _buildFieldDecoration(),
+        onTap: () {
+          if (this.isReadOnly) {
+            setState(() {
+              if (isPlaceholder) {
+                this.controller.text = this.fieldValue;
+                this.isPlaceholder = false;
+              } else {
+                this.controller.text =
+                    this.controller.text = this.fieldPlaceholder;
+                this.isPlaceholder = true;
+              }
+            });
+          }
+        },
+      ),
     );
   }
 

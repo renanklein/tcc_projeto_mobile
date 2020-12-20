@@ -32,33 +32,32 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
 
   @override
   Widget build(BuildContext context) {
-    var focusScope = FocusScope.of(context);
-    var focusNode = FocusScopeNode();
-    return RawKeyboardListener(
-      autofocus: true,
-      onKey: (key) {
-        if (key.isKeyPressed(LogicalKeyboardKey.enter)) {}
+    return TextField(
+      controller: this.controller,
+      textInputAction: TextInputAction.next,
+      readOnly: this.isReadOnly,
+      keyboardType: TextInputType.multiline,
+      decoration: _buildFieldDecoration(),
+      onEditingComplete: () {
+        // Escaping the "remove" field button focus from the row in list of fields
+        for (int i = 0; i < 2; i++) {
+          FocusScope.of(context).nextFocus();
+        }
       },
-      child: TextField(
-        controller: this.controller,
-        readOnly: this.isReadOnly,
-        keyboardType: TextInputType.multiline,
-        decoration: _buildFieldDecoration(),
-        onTap: () {
-          if (this.isReadOnly) {
-            setState(() {
-              if (isPlaceholder) {
-                this.controller.text = this.fieldValue;
-                this.isPlaceholder = false;
-              } else {
-                this.controller.text =
-                    this.controller.text = this.fieldPlaceholder;
-                this.isPlaceholder = true;
-              }
-            });
-          }
-        },
-      ),
+      onTap: () {
+        if (this.isReadOnly) {
+          setState(() {
+            if (isPlaceholder) {
+              this.controller.text = this.fieldValue;
+              this.isPlaceholder = false;
+            } else {
+              this.controller.text =
+                  this.controller.text = this.fieldPlaceholder;
+              this.isPlaceholder = true;
+            }
+          });
+        }
+      },
     );
   }
 

@@ -103,7 +103,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         ));
   }
 
-  ListView _buildFormBody() {
+  Widget _buildFormBody() {
     return ListView(
       children: [
         Field(
@@ -197,10 +197,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     if (fields != null) {
       fields.forEach((type) {
         var examDetailsField = ExamDetailsField(
-          fieldPlaceholder: type,
-          fieldValue: "",
-          isReadOnly: false,
-        );
+            fieldPlaceholder: type, fieldValue: "", isReadOnly: false);
         this.examModelsFields.add(examDetailsField);
         var row = Row(
           children: [

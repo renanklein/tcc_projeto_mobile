@@ -54,10 +54,17 @@ class SltPattern {
 
   static String encryptImageBytes(Uint8List imageBytes) {
     var encrypter = Encrypter(AES(_cryptoKey));
-    var encripedBytes =
-        encrypter.encryptBytes(imageBytes, iv: _initVector).bytes;
+    var encripedBytes = encrypter.encryptBytes(imageBytes);
 
-    return base64.encode(encripedBytes);
+    return base64.encode(encripedBytes.bytes);
+  }
+
+  static String encodeImageBytes(List<int> imageBytes) {
+    return base64.encode(imageBytes);
+  }
+
+  static List<int> decodeImageBytes(String encodedBytes) {
+    return base64.decode(encodedBytes);
   }
 
   static List<int> decryptImageBytes(String encriptedBytes) {
@@ -65,8 +72,7 @@ class SltPattern {
     var encrypted = Encrypted(decodedBytes);
     var decrypter = Encrypter(AES(_cryptoKey));
 
-    return Uint8List.fromList(
-        decrypter.decryptBytes(encrypted, iv: _initVector));
+    return Uint8List.fromList(decrypter.decryptBytes(encrypted));
   }
 
   //final _storage = new FlutterSecureStorage();

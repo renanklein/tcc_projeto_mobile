@@ -38,7 +38,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   List<Widget> examModelsFields = List<Widget>();
   List<String> examModelsTypes = List<String>();
   File _examFile;
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;

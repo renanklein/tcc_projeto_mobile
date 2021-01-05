@@ -33,6 +33,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   String hideButtonTitle;
   bool isDecripted = false;
   Image examImage;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Detalhes do Exame"),
           centerTitle: true,
@@ -105,14 +107,16 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   }
 
   void onFail(String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.red,
-      content: Text(
-        message,
-        style: TextStyle(
-            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
-      ),
-    ));
+    this._scaffoldKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            message,
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),
+          ),
+        ));
   }
 
   Widget _showHideImageButton() {

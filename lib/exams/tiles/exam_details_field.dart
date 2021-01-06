@@ -25,8 +25,13 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
 
   @override
   void initState() {
-    this.controller.text = this.fieldValue;
-    this.isPlaceholder = true;
+    if (this.isReadOnly) {
+      this.controller.text = this.controller.text = this.fieldPlaceholder;
+      this.isPlaceholder = true;
+    } else {
+      this.controller.text = this.fieldValue;
+      this.isPlaceholder = false;
+    }
     super.initState();
   }
 

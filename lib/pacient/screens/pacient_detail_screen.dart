@@ -1,160 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/home/drawer.dart';
-import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
-import 'package:tcc_projeto_app/login/models/user_model.dart';
-import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 
 class PacientDetailScreen extends StatefulWidget {
+  PacientModel pacient;
+
+  PacientDetailScreen({@required this.pacient});
+
   @override
   _PacientDetailScreenState createState() => _PacientDetailScreenState();
 }
 
 class _PacientDetailScreenState extends State<PacientDetailScreen> {
-  UserModel model;
-  AuthenticationBloc _authenticationBloc;
+  PacientBloc _pacientBloc;
+  PacientRepository _pacientRepository;
 
-  //UserRepository get userRepository => this.widget.userRepository;
+  PacientModel get getPacient => this.widget.pacient;
 
   @override
   void initState() {
-    this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    var injector = Injector.appInstance;
+
+    this._pacientRepository = injector.getDependency<PacientRepository>();
+    this._pacientBloc =
+        new PacientBloc(pacientRepository: this._pacientRepository);
+
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => this._authenticationBloc,
-      child: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is AuthenticationUnauthenticated) {
-            return LoginScreen();
-          }
-        },
-        child: BlocBuilder(
-          cubit: this._authenticationBloc,
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Menu principal"),
-                centerTitle: true,
-                backgroundColor: Theme.of(context).primaryColor,
-                elevation: 0.0,
-              ),
-              drawer: UserDrawer(),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                child: IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/newPacientDetail');
-                  },
-                ),
-              ),
-              body: SafeArea(child: pacientDetail(context)),
-            );
-          },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Informações do Paciente"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0.0,
+      ),
+      body: BlocProvider(
+        create: (context) => this._pacientBloc,
+        child: BlocListener<PacientBloc, PacientState>(
+          listener: (context, state) {},
+          child: BlocBuilder(
+            cubit: this._pacientBloc,
+            builder: (context, state) {
+              return SafeArea(child: pacientDetail(getPacient));
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-Widget pacientDetail(context) {
-  return Row(
-    children: <Widget>[
-      pacientTabs(),
-      pacientProfile(context),
-    ],
-  );
-}
-
-Widget pacientTabs() {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: <Widget>[
-      GestureDetector(
-        //onTap: (){},
-        child: Container(
-          width: 50.0,
-          height: 50.0,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(18),
-            ),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.add_alert,
-              color: Colors.blue,
-              size: 30.0,
-              semanticLabel: 'texto acessibilidade',
-            ),
-          ),
-        ),
-      ),
-      Container(
-        width: 50.0,
-        height: 50.0,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(18),
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.add_alert,
-            color: Colors.blue,
-            size: 30.0,
-            semanticLabel: 'texto acessibilidade',
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Widget pacientProfile(context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-    child: Column(
+Widget pacientDetail(PacientModel pacient) {
+  return Container(
+    child: Row(
       children: <Widget>[
-        Row(
+        Column(
           children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(
-                width: 90,
-                height: 90,
-              ),
-              decoration:
-                  BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
-              child: Image.network(
-                'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.60,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      'info paciente',
-                    ),
-                    Text(
-                      'info paciente',
-                    ),
-                  ],
+            Row(
+              children: [
+                Text(
+                  "Nome: $pacient.nome",
                 ),
-              ),
+                Text(
+                  "Nome: $pacient.telefone",
+                ),
+                Text(
+                  "Nome: $pacient.email",
+                ),
+                Text(
+                  "Nome: $pacient.rg",
+                ),
+                Text(
+                  "Nome: $pacient.cpf",
+                ),
+                Text(
+                  "Nome: $pacient.dtNascimento",
+                ),
+                Text(
+                  "Nome: $pacient.sexo",
+                ),
+              ],
             ),
+            // TODO: ADD IMAGE
           ],
         ),
       ],

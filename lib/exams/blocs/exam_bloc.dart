@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:encrypt/encrypt.dart' as encryptLib;
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 part 'exam_event.dart';

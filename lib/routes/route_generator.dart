@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
@@ -34,45 +35,48 @@ class RouteGenerator {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
-      // case createExamRoute:
-      //   return MaterialPageRoute(builder: (context) => ExamFormScreen());
-      //   break;
       case pacientsRoute:
         String uid = settings.arguments;
 
         return MaterialPageRoute(
-            builder: (_) => ListPacientScreen(
-                  userUid: uid,
-                ));
+          builder: (_) => ListPacientScreen(
+            userUid: uid,
+          ),
+        );
         break;
       case calendarRoute:
         return MaterialPageRoute(
-            builder: (_) => UserCalendar(
-                  uid: uid,
-                ));
+          builder: (_) => UserCalendar(
+            uid: uid,
+          ),
+        );
         break;
       case createPacientRoute:
         return MaterialPageRoute(builder: (_) => CreatePacientScreen());
         break;
-      case waitListRoute:
-        return MaterialPageRoute(builder: (_) => AppointmentsWaitListScreen());
-        break;
       case pacientDetailRoute:
-        return MaterialPageRoute(builder: (_) => PacientDetailScreen());
+        var pacientData = settings.arguments as PacientModel;
+        return MaterialPageRoute(
+          builder: (_) => PacientDetailScreen(
+            pacient: pacientData,
+          ),
+        );
         break;
       case appointmentsViewRoute:
         String uid = settings.arguments;
         return MaterialPageRoute(
-            builder: (_) => AppointmentsWaitListScreen(
-                  userUid: uid,
-                ));
+          builder: (_) => AppointmentsWaitListScreen(
+            userUid: uid,
+          ),
+        );
         break;
       case medRecordRoute:
         var data = settings.arguments as MedRecordArguments;
         return MaterialPageRoute(
-            builder: (_) => MedRecordScreen(
-                  medRecordArguments: data,
-                ));
+          builder: (_) => MedRecordScreen(
+            medRecordArguments: data,
+          ),
+        );
         break;
       case '/newPacientDetail':
         //return MaterialPageRoute(builder: (_) => NewPacientDetailScreen());

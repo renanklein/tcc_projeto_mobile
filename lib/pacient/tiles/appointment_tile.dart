@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentTile extends StatelessWidget {
   final String nome;
   final String telefone;
   final DateTime horarioAgendamento;
 
+  var dateFormat = DateFormat("dd/MM/yyyy - HH:mm");
+
   AppointmentTile({this.nome, this.telefone, this.horarioAgendamento});
 
   @override
   Widget build(BuildContext context) {
+    var dataAgendamento = dateFormat.format(horarioAgendamento);
+
     return Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -25,11 +30,21 @@ class AppointmentTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Text(
+              dataAgendamento,
+              overflow: TextOverflow.visible,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26.0,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1A237E),
+              ),
+            ),
+            Text(
               nome,
               overflow: TextOverflow.visible,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: 24.0,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF1A237E),
               ),
@@ -39,22 +54,12 @@ class AppointmentTile extends StatelessWidget {
               overflow: TextOverflow.visible,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-            Text(
-              horarioAgendamento.toString(),
-              overflow: TextOverflow.visible,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 25.0,
+                fontSize: 24.0,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF1A237E),
               ),
             ),
           ],
-        ));
+        ),);
   }
 }

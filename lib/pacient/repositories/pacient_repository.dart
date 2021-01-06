@@ -36,6 +36,19 @@ class PacientRepository extends ChangeNotifier {
     }
   }
 
+  Future<PacientModel> getPacientByNameAndPhone(
+      AppointmentModel appointmentModel) async {
+    PacientModel pacientModel;
+    await _pacientsCollectionReference
+        .where("nome", isEqualTo: appointmentModel.nome)
+        .where("telefone", isEqualTo: appointmentModel.telefone)
+        .get()
+        .then(
+            (data) => pacientModel = PacientModel.fromMap(data.docs[0].data()));
+
+    return pacientModel;
+  }
+
   Future<List<AppointmentModel>> getAppointments() async {
     List<AppointmentModel> _appointmentsList = new List<AppointmentModel>();
 
@@ -55,7 +68,13 @@ class PacientRepository extends ChangeNotifier {
 
               events.forEach(
                 (event) {
-                  if (event["status"] != "canceled") {
+                  if (event["status"] != "canceled" &&
+                      _appointmentTime.compareTo(new DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                          )) >=
+                          0) {
                     _appointmentsList.add(
                       AppointmentModel(
                         nome: event["description"],
@@ -87,8 +106,6 @@ class PacientRepository extends ChangeNotifier {
       }
     });
   }
-
-// TODO: iterar paciente pelo ID do médico
 
   Stream listenToPacientsRealTime() {
     _pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {

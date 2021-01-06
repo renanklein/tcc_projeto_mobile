@@ -169,6 +169,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                         .validate()) {
                                       await _setUserModel();
 
+                                      //TODO: check se necessita ir pro pré-atendimento
+
                                       _pacientBloc.add(
                                         PacientCreateButtonPressed(
                                           userId: _userModel.uid,

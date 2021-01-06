@@ -5,7 +5,6 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
-import 'package:tcc_projeto_app/routes/constants.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
   @override

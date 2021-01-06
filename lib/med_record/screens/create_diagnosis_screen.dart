@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 
 class CreateDiagnosisScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class CreateDiagnosisScreen extends StatefulWidget {
 class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
+  MedRecordStyle _medRecordStyle = new MedRecordStyle();
 
   final diagnosisFormKey = new GlobalKey<FormState>();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -109,28 +111,17 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                               child: ListView(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                      0,
-                                      0,
-                                      0,
-                                      4,
-                                    ),
+                                    margin: _medRecordStyle.containerMargin,
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            0,
-                                            5,
-                                            0,
-                                            0,
-                                          ),
+                                          padding:
+                                              _medRecordStyle.formTextPadding,
                                           child: Text(
                                             'Relato da Queixa',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17.0,
-                                            ),
+                                            style:
+                                                _medRecordStyle.formTextStyle,
                                           ),
                                         ),
                                         _diagnosisFormField(
@@ -148,30 +139,19 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                       ],
                                     ),
                                   ),
-                                  breakLine(),
+                                  _medRecordStyle.breakLine(),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                      0,
-                                      0,
-                                      0,
-                                      4,
-                                    ),
+                                    margin: _medRecordStyle.containerMargin,
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            0,
-                                            5,
-                                            0,
-                                            0,
-                                          ),
+                                          padding:
+                                              _medRecordStyle.formTextPadding,
                                           child: Text(
                                             'Diagnóstico',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17.0,
-                                            ),
+                                            style:
+                                                _medRecordStyle.formTextStyle,
                                           ),
                                         ),
                                         _diagnosisFormField(
@@ -189,30 +169,19 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                       ],
                                     ),
                                   ),
-                                  breakLine(),
+                                  _medRecordStyle.breakLine(),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                      0,
-                                      0,
-                                      0,
-                                      4,
-                                    ),
+                                    margin: _medRecordStyle.containerMargin,
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            0,
-                                            5,
-                                            0,
-                                            0,
-                                          ),
+                                          padding:
+                                              _medRecordStyle.formTextPadding,
                                           child: Text(
                                             'Prescrição',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17.0,
-                                            ),
+                                            style:
+                                                _medRecordStyle.formTextStyle,
                                           ),
                                         ),
                                         _diagnosisFormField(
@@ -340,15 +309,4 @@ Widget _diagnosisFormField(controller, label, hint, errorText) {
       },
     ),
   );
-}
-
-Widget breakLine() {
-  return Container(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-        width: 1,
-        color: Colors.black,
-      ))));
 }

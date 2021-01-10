@@ -20,6 +20,7 @@ class _ExamScreenState extends State<ExamScreen> {
   List cardExamInfos;
   List examDetailsList;
   List fileDownloadURLs;
+  List ivs;
   Uint8List decriptedBytes = Uint8List(0);
 
   String get pacientHash => this.widget.pacientHash;
@@ -41,7 +42,8 @@ class _ExamScreenState extends State<ExamScreen> {
           this.cardExamInfos = state.cardExamInfos;
           this.examDetailsList = state.examDetailsList;
           this.fileDownloadURLs = state.fileDownloadURLs;
-        } else if (state is DecriptExamSuccess) {
+          this.ivs = state.ivs;
+        } else if (state is DecryptExamSuccess) {
           this.isDecripted = true;
           this.decriptedBytes = state.decriptedBytes;
         }
@@ -84,6 +86,7 @@ class _ExamScreenState extends State<ExamScreen> {
             fileDownloadURL: this.fileDownloadURLs[i],
             cardExamInfo: this.cardExamInfos[i],
             examDetails: this.examDetailsList[i],
+            iv: this.ivs[i],
           ),
         );
         examCards.add(LayoutUtils.buildVerticalSpacing(15.0));

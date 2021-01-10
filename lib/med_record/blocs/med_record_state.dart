@@ -96,15 +96,18 @@ class GetExamsSuccess extends MedRecordState {
   final cardExamInfos;
   final examDetailsList;
   final fileDownloadURLs;
+  final ivs;
 
   GetExamsSuccess(
       {@required this.cardExamInfos,
       @required this.examDetailsList,
-      @required this.fileDownloadURLs});
+      @required this.fileDownloadURLs,
+      @required this.ivs});
 
   List get getCardExamInfo => this.cardExamInfos;
   List get getExamDetails => this.examDetailsList;
   List get getFileDownloadURLs => this.fileDownloadURLs;
+  List get getIvs => this.ivs;
 
   @override
   List<Object> get props => [];
@@ -118,10 +121,10 @@ class ExamProcessingSuccess extends MedRecordState {
   List<Object> get props => [];
 }
 
-class DecriptExamSuccess extends MedRecordState {
+class DecryptExamSuccess extends MedRecordState {
   final decriptedBytes;
 
-  DecriptExamSuccess({@required this.decriptedBytes});
+  DecryptExamSuccess({@required this.decriptedBytes});
 
   @override
   List<Object> get props => [];

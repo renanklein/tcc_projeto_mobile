@@ -8,12 +8,14 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
   final fileDownloadURL;
+  final iv;
   final examDate;
   final examType;
 
   ExamDetailsScreen(
       {@required this.examDetails,
       @required this.fileDownloadURL,
+      @required this.iv,
       @required this.examDate,
       @required this.examType});
 
@@ -28,6 +30,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
 
   MedRecordBloc medRecordBloc;
   String get filePath => this.widget.fileDownloadURL;
+  String get iv => this.widget.iv;
   bool hidePressed = false;
   bool hideImagePressed = false;
   String hideButtonTitle;
@@ -40,7 +43,9 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
     this.hideButtonTitle = this.hidePressed ? "Hide" : "Show";
     this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     if (this.filePath.isNotEmpty) {
-      this.medRecordBloc.add(DecriptExam(fileDownloadURL: this.filePath));
+      this
+          .medRecordBloc
+          .add(DecryptExam(fileDownloadURL: this.filePath, iv: this.iv));
     }
     super.initState();
   }
@@ -61,7 +66,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         body: BlocListener<MedRecordBloc, MedRecordState>(
           cubit: this.medRecordBloc,
           listener: (context, state) {
-            if (state is DecriptExamSuccess) {
+            if (state is DecryptExamSuccess) {
               this.examImage = Image.memory(state.decriptedBytes);
               this.isDecripted = true;
             } else if (state is ExamProcessingFail) {

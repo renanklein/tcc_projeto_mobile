@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:encrypt/encrypt.dart';
 
 class ExamRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -47,7 +48,7 @@ class ExamRepository {
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName, String pacientHash) async {
+      File encriptedFile, String fileName, String pacientHash, IV iv) async {
     var user = _getUser();
     var fileDownloadURL = encriptedFile == null
         ? ""
@@ -67,7 +68,8 @@ class ExamRepository {
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,
       "dynamicFields": examDetails.toMap(),
-      "pacientHash": pacientHash
+      "pacientHash": pacientHash,
+      "IV": iv.base64
     });
 
     await this
@@ -99,6 +101,8 @@ class ExamRepository {
       displayableExams.add(ExamDetails.fromMap(exam["dynamicFields"]));
 
       displayableExams.add(exam["fileDownloadURL"]);
+
+      displayableExams.add(exam['IV']);
     });
 
     return displayableExams;

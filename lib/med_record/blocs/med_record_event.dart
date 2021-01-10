@@ -78,10 +78,11 @@ class GetExams extends MedRecordEvent {
   List<Object> get props => [];
 }
 
-class DecriptExam extends MedRecordEvent {
+class DecryptExam extends MedRecordEvent {
   final fileDownloadURL;
+  final iv;
 
-  DecriptExam({@required this.fileDownloadURL});
+  DecryptExam({@required this.fileDownloadURL, @required this.iv});
 
   @override
   List<Object> get props => [];

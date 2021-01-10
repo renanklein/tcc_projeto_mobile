@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -21,6 +20,7 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
+import 'package:encrypt/encrypt.dart';
 
 part 'med_record_event.dart';
 part 'med_record_state.dart';
@@ -105,9 +105,13 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var encriptedFile;
         var randomFileName;
 
+        // For Encrypt/Decrypt purposes
+        var initializationVector = IV.fromSecureRandom(16);
+
         if (event.getExamFile != null) {
           var examBytes = await event.getExamFile.readAsBytes();
-          var encoded = SltPattern.encodeImageBytes(examBytes);
+          var encoded =
+              SltPattern.encryptImageBytes(examBytes, initializationVector);
 
           var tempDir = await getTemporaryDirectory();
           var tempPath = tempDir.path;
@@ -127,7 +131,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             event.getExamDetails,
             encriptedFile,
             randomFileName.toString(),
-            pacientHash);
+            pacientHash,
+            initializationVector);
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error) {
@@ -142,20 +147,23 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         List examCards = [];
         List examDetails = [];
         List examFileDownloadURLs = [];
+        List ivs = [];
 
-        for (int i = 0; i < examInfoList.length; i += 3) {
+        for (int i = 0; i < examInfoList.length; i += 4) {
           examCards.add(examInfoList[i]);
           examDetails.add(examInfoList[i + 1]);
           examFileDownloadURLs.add(examInfoList[i + 2]);
+          ivs.add(examInfoList[i + 3]);
         }
         yield GetExamsSuccess(
             cardExamInfos: examCards,
             examDetailsList: examDetails,
-            fileDownloadURLs: examFileDownloadURLs);
+            fileDownloadURLs: examFileDownloadURLs,
+            ivs: ivs);
       } catch (error) {
         yield ExamProcessingFail();
       }
-    } else if (event is DecriptExam) {
+    } else if (event is DecryptExam) {
       try {
         yield ExamProcessing();
 
@@ -163,9 +171,9 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var response = await http.get(fileDownloadURL);
         var bytes = response.body;
-        var decriptedBytes = SltPattern.decodeImageBytes(bytes);
+        var decriptedBytes = SltPattern.decryptImageBytes(bytes, event.iv);
 
-        yield DecriptExamSuccess(decriptedBytes: decriptedBytes);
+        yield DecryptExamSuccess(decriptedBytes: decriptedBytes);
       } catch (error) {
         yield ExamProcessingFail();
       }

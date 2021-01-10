@@ -7,7 +7,6 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart';
 
 class SltPattern {
-  static final _initVector = IV.fromSecureRandom(16);
   static final _cryptoKey = Key.fromSecureRandom(16);
 
   static const String _ppr = '5gNA2qTaKmHdP94W8s4wCudEQh7uVE9z';
@@ -52,27 +51,20 @@ class SltPattern {
     return digest.toString();
   }
 
-  static String encryptImageBytes(Uint8List imageBytes) {
-    var encrypter = Encrypter(AES(_cryptoKey));
-    var encripedBytes = encrypter.encryptBytes(imageBytes);
+  static String encryptImageBytes(Uint8List imageBytes, IV iv) {
+    var encrypter = AES(_cryptoKey, mode: AESMode.ctr);
+    var encripedBytes = encrypter.encrypt(imageBytes, iv: iv);
 
     return base64.encode(encripedBytes.bytes);
   }
 
-  static String encodeImageBytes(List<int> imageBytes) {
-    return base64.encode(imageBytes);
-  }
-
-  static List<int> decodeImageBytes(String encodedBytes) {
-    return base64.decode(encodedBytes);
-  }
-
-  static List<int> decryptImageBytes(String encriptedBytes) {
+  static List<int> decryptImageBytes(String encriptedBytes, String ivEncoded) {
+    var iv = IV.fromBase64(ivEncoded);
     var decodedBytes = base64.decode(encriptedBytes);
     var encrypted = Encrypted(decodedBytes);
-    var decrypter = Encrypter(AES(_cryptoKey));
+    var decrypter = AES(_cryptoKey, mode: AESMode.ctr);
 
-    return Uint8List.fromList(decrypter.decryptBytes(encrypted));
+    return Uint8List.fromList(decrypter.decrypt(encrypted, iv: iv));
   }
 
   //final _storage = new FlutterSecureStorage();

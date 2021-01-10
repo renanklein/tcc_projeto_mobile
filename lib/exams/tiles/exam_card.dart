@@ -7,12 +7,14 @@ class ExamCard extends StatelessWidget {
   final cardExamInfo;
   final examDetails;
   final fileDownloadURL;
+  final iv;
   final medRecordBloc;
 
   ExamCard(
       {@required this.cardExamInfo,
       @required this.examDetails,
       @required this.fileDownloadURL,
+      @required this.iv,
       @required this.medRecordBloc});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
@@ -66,15 +68,15 @@ class ExamCard extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () async {
-          this
-              .medRecordBloc
-              .add(DecriptExam(fileDownloadURL: this.fileDownloadURL));
+          this.medRecordBloc.add(
+              DecryptExam(fileDownloadURL: this.fileDownloadURL, iv: this.iv));
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
                     examDate: getCardExamInfo.examDate,
                     examType: getCardExamInfo.examType,
                     examDetails: this.examDetails,
                     fileDownloadURL: this.fileDownloadURL,
+                    iv: this.iv,
                   )));
         },
       ),

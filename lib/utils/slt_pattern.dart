@@ -7,8 +7,6 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart';
 
 class SltPattern {
-  static final _cryptoKey = Key.fromSecureRandom(16);
-
   static const String _ppr = '5gNA2qTaKmHdP94W8s4wCudEQh7uVE9z';
 
   static final Random _random = Random.secure();
@@ -51,18 +49,22 @@ class SltPattern {
     return digest.toString();
   }
 
-  static String encryptImageBytes(Uint8List imageBytes, IV iv) {
-    var encrypter = AES(_cryptoKey, mode: AESMode.ctr);
+  static String encryptImageBytes(
+      Uint8List imageBytes, IV iv, String base64Key) {
+    var cryptoKey = Key.fromBase64(base64Key);
+    var encrypter = AES(cryptoKey, mode: AESMode.ctr);
     var encripedBytes = encrypter.encrypt(imageBytes, iv: iv);
 
     return base64.encode(encripedBytes.bytes);
   }
 
-  static List<int> decryptImageBytes(String encriptedBytes, String ivEncoded) {
+  static List<int> decryptImageBytes(
+      String encriptedBytes, String ivEncoded, String base64Key) {
+    var cryptoKey = Key.fromBase64(base64Key);
     var iv = IV.fromBase64(ivEncoded);
     var decodedBytes = base64.decode(encriptedBytes);
     var encrypted = Encrypted(decodedBytes);
-    var decrypter = AES(_cryptoKey, mode: AESMode.ctr);
+    var decrypter = AES(cryptoKey, mode: AESMode.ctr);
 
     return Uint8List.fromList(decrypter.decrypt(encrypted, iv: iv));
   }

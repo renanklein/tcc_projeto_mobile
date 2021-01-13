@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ExamRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -17,6 +18,27 @@ class ExamRepository {
     var putFileResult = await storageRef.putFile(encriptedFile).onComplete;
 
     return await putFileResult.ref.getDownloadURL();
+  }
+
+  Future uploadCryptoKey() async {
+    var aesKey = Key.fromSecureRandom(16);
+
+    var tempDir = await getTemporaryDirectory();
+    var tempPath = tempDir.path;
+
+    var credentialsFile = File("$tempPath/credentials.txt");
+
+    await credentialsFile.writeAsString(aesKey.base64);
+
+    var storageRef = this._storage.ref().child('credentials.txt');
+
+    await storageRef.putFile(credentialsFile).onComplete;
+  }
+
+  Future<String> getCryptoKeyDownload() async {
+    var storageRef = this._storage.ref().child('credentials.txt');
+
+    return await storageRef.getDownloadURL();
   }
 
   Future<dynamic> getExamModels() async {

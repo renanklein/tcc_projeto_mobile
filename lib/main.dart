@@ -44,6 +44,7 @@ class _MyAppState extends State<MyApp> {
     configureNotificationsType(context);
     this.authenticationBloc =
         Injector.appInstance.getDependency<AuthenticationBloc>();
+
     this.authenticationBloc.add(AppStarted(context: context));
     super.initState();
   }

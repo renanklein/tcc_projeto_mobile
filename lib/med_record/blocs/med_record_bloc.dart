@@ -110,8 +110,13 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         if (event.getExamFile != null) {
           var examBytes = await event.getExamFile.readAsBytes();
-          var encoded =
-              SltPattern.encryptImageBytes(examBytes, initializationVector);
+
+          var keyUrl = await this.examRepository.getCryptoKeyDownload();
+
+          var keyResponse = await http.get(keyUrl);
+          var base64Key = keyResponse.body;
+          var encoded = SltPattern.encryptImageBytes(
+              examBytes, initializationVector, base64Key);
 
           var tempDir = await getTemporaryDirectory();
           var tempPath = tempDir.path;
@@ -171,7 +176,14 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var response = await http.get(fileDownloadURL);
         var bytes = response.body;
-        var decriptedBytes = SltPattern.decryptImageBytes(bytes, event.iv);
+
+        var keyUrl = await this.examRepository.getCryptoKeyDownload();
+
+        var keyResponse = await http.get(keyUrl);
+        var base64Key = keyResponse.body;
+
+        var decriptedBytes =
+            SltPattern.decryptImageBytes(bytes, event.iv, base64Key);
 
         yield DecryptExamSuccess(decriptedBytes: decriptedBytes);
       } catch (error) {

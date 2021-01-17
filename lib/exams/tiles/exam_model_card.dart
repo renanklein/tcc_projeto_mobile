@@ -4,9 +4,13 @@ import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 class ExamModelCard extends StatelessWidget {
   final modelTitle;
   final modelFields;
+  final refreshModels;
   final bool isEdit = false;
 
-  ExamModelCard({@required this.modelTitle, @required this.modelFields});
+  ExamModelCard(
+      {@required this.modelTitle,
+      @required this.modelFields,
+      @required this.refreshModels});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,7 @@ class ExamModelCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Text(
-                  this.modelTitle,
+                  "Tipo de modelo : ${this.modelTitle}",
                   style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w300,
@@ -56,6 +60,7 @@ class ExamModelCard extends StatelessWidget {
                       isEdit: true,
                       examModelType: this.modelTitle,
                       examModelFields: this.modelFields,
+                      refreshExamModels: this.refreshModels,
                     )));
           },
         ));

@@ -8,11 +8,15 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class ExamModelForm extends StatefulWidget {
   List dynamicFields = [];
   final bool isEdit;
+  final refreshExamModels;
   String examModelType;
   List examModelFields;
 
   ExamModelForm(
-      {@required this.isEdit, this.examModelType, this.examModelFields});
+      {@required this.isEdit,
+      this.examModelType,
+      this.examModelFields,
+      @required this.refreshExamModels});
 
   @override
   _ExamModelFormState createState() => _ExamModelFormState();
@@ -22,6 +26,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
   bool get isEdit => this.widget.isEdit;
   String get examModelType => this.widget.examModelType;
   List get examModelFields => this.widget.examModelFields;
+  Function get refreshExamModels => this.widget.refreshExamModels;
 
   String examTypePlaceholder = "Tipo de Exame";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -64,6 +69,8 @@ class _ExamModelFormState extends State<ExamModelForm> {
               state is UpdateExamModelSuccess) {
             Future.delayed(Duration(seconds: 2));
             onSuccess();
+            Navigator.of(context).pop();
+            this.refreshExamModels();
           } else if (state is CreateExamModelFail ||
               state is UpdateExamModelFail) {
             onFail(state);

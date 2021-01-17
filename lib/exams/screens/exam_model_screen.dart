@@ -58,7 +58,10 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
     if (this.exam_models != null) {
       this.exam_models.forEach((map) {
         cards.add(ExamModelCard(
-            modelTitle: map["Tipo de Exame"], modelFields: map["fields"]));
+          modelTitle: map["Tipo de Exame"],
+          modelFields: map["fields"],
+          refreshModels: refreshModels,
+        ));
       });
 
       cards.add(LayoutUtils.buildVerticalSpacing(30.0));
@@ -85,8 +88,15 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ExamModelForm(
                       isEdit: false,
+                      refreshExamModels: refreshModels,
                     )));
           },
         ));
+  }
+
+  void refreshModels() {
+    setState(() {
+      this._bloc.add(LoadExamModels());
+    });
   }
 }

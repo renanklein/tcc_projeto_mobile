@@ -11,3 +11,14 @@ class CreateExamModel extends ExamEvent {
 
   CreateExamModel({@required this.listOfFields, @required this.examTypeMap});
 }
+
+class UpdateExamModel extends ExamEvent {
+  final fields;
+  final examModelType;
+  final oldExamModelType;
+
+  UpdateExamModel(
+      {@required this.fields,
+      @required this.examModelType,
+      @required this.oldExamModelType});
+}

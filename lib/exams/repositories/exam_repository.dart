@@ -53,6 +53,25 @@ class ExamRepository {
     return data;
   }
 
+  Future updateExamModels(String examModelType, List examModelFields,
+      String oldExamModelType) async {
+    Map models = await getExamModels();
+    List modelMaps = models['models'];
+
+    modelMaps.forEach((map) {
+      if (map["Tipo de Exame"] == oldExamModelType) {
+        map["Tipo de Exame"] = examModelType;
+        map["fields"] = examModelFields;
+      }
+    });
+
+    await this
+        ._firestore
+        .collection("modelExam")
+        .doc(_getUser().uid)
+        .set(models);
+  }
+
   Future saveModelExam(Map modelExam, String examType) async {
     var models = await getExamModels();
     if (models == null) {

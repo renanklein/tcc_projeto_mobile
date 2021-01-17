@@ -2,26 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
-import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamModelForm extends StatefulWidget {
   List dynamicFields = [];
+  final bool isEdit;
+  String examModelType;
+  List examModelFields;
+
+  ExamModelForm(
+      {@required this.isEdit, this.examModelType, this.examModelFields});
 
   @override
   _ExamModelFormState createState() => _ExamModelFormState();
 }
 
 class _ExamModelFormState extends State<ExamModelForm> {
+  bool get isEdit => this.widget.isEdit;
+  String get examModelType => this.widget.examModelType;
+  List get examModelFields => this.widget.examModelFields;
+
   String examTypePlaceholder = "Tipo de Exame";
-  String examDatePlaceholder = "Data de Realização";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ExamBloc _examBloc;
+  String oldExamModelType;
   dynamic examModels;
   TextEditingController _examTypeController = TextEditingController();
-  TextEditingController _examDateController = TextEditingController();
   TextEditingController _examModelFieldsNamesController =
       TextEditingController();
 
@@ -30,6 +37,14 @@ class _ExamModelFormState extends State<ExamModelForm> {
   @override
   void initState() {
     this._examBloc = BlocProvider.of<ExamBloc>(context);
+    if (this.isEdit) {
+      this._examTypeController.text = this.examModelType;
+      this.oldExamModelType = this.examModelType;
+      this.examModelFields.forEach((field) {
+        this._examModelFieldsNamesController.text += "$field;";
+      });
+    }
+
     super.initState();
   }
 
@@ -38,20 +53,26 @@ class _ExamModelFormState extends State<ExamModelForm> {
     return Scaffold(
       key: this._scaffoldKey,
       appBar: AppBar(
-        title: Text("Cadastrar modelo de exame"),
+        title: Text(this.isEdit
+            ? "Editar modelo de exame"
+            : "Cadastrar modelo de exame"),
         centerTitle: true,
       ),
       body: BlocListener<ExamBloc, ExamState>(
         listener: (context, state) {
-          if (state is CreateExamModelSuccess) {
+          if (state is CreateExamModelSuccess ||
+              state is UpdateExamModelSuccess) {
             Future.delayed(Duration(seconds: 2));
             onSuccess();
-            Navigator.of(context).pop();
+          } else if (state is CreateExamModelFail ||
+              state is UpdateExamModelFail) {
+            onFail(state);
           }
         },
         child: BlocBuilder<ExamBloc, ExamState>(
           builder: (context, state) {
-            if (state is CreateExamModelProcessing) {
+            if (state is CreateExamModelProcessing ||
+                state is UpdateExamModelProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
             return Builder(
@@ -62,7 +83,6 @@ class _ExamModelFormState extends State<ExamModelForm> {
                     children: [
                       ..._buildMandatoryFields(),
                       ..._buildFieldsRow(),
-                      //_buildAddFieldButton(),
                       _buildCreateModelButton()
                     ],
                   ),
@@ -102,8 +122,24 @@ class _ExamModelFormState extends State<ExamModelForm> {
 
   void onSuccess() {
     this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Conta criada com sucesso !"),
+          content: Text(this.isEdit
+              ? "Modelo editado com sucesso"
+              : "Modelo criado com sucesso"),
           backgroundColor: Colors.green,
+        ));
+  }
+
+  void onFail(ExamState state) {
+    var errorMessage = "";
+    if (state is CreateExamModelFail) {
+      errorMessage = state.errorMessage;
+    } else if (state is UpdateExamModelFail) {
+      errorMessage = state.errorMessage;
+    }
+
+    this._scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
         ));
   }
 
@@ -136,48 +172,26 @@ class _ExamModelFormState extends State<ExamModelForm> {
     return examDetailFields;
   }
 
-  Widget _buildAddFieldButton() {
-    return Builder(
-      builder: (context) {
-        return RaisedButton(
-          onPressed: () {
-            Scaffold.of(context).showBottomSheet(
-              (context) => ExamDynamicFieldsBottomsheet(
-                dynamicFieldsList: this.dynamicModelFields,
-                refreshForm: this.refreshFields,
-              ),
-              backgroundColor: Colors.transparent,
-            );
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
-          ),
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            "Adicione um campo",
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildCreateModelButton() {
     return RaisedButton(
       onPressed: () {
-        this._examBloc.add(CreateExamModel(examTypeMap: {
-              this.examTypePlaceholder: this._examTypeController.text
-            }, listOfFields: _buildListOfFields()));
+        if (this.isEdit) {
+          this._examBloc.add(UpdateExamModel(
+              fields: _buildListOfFields(),
+              oldExamModelType: this.oldExamModelType,
+              examModelType: this._examTypeController.text));
+        } else {
+          this._examBloc.add(CreateExamModel(examTypeMap: {
+                this.examTypePlaceholder: this._examTypeController.text
+              }, listOfFields: _buildListOfFields()));
+        }
       },
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(32.0),
       ),
       color: Theme.of(context).primaryColor,
       child: Text(
-        "Cadastrar modelo",
+        this.isEdit ? "Editar modelo" : "Cadastrar modelo",
         style: TextStyle(
             fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
       ),

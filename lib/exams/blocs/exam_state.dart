@@ -16,3 +16,13 @@ class CreateExamModelFail extends ExamState {
 }
 
 class CreateExamModelSuccess extends ExamState {}
+
+class UpdateExamModelProcessing extends ExamState {}
+
+class UpdateExamModelSuccess extends ExamState {}
+
+class UpdateExamModelFail extends ExamState {
+  final errorMessage;
+
+  UpdateExamModelFail({@required this.errorMessage});
+}

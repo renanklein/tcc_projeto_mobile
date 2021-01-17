@@ -2,15 +2,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:encrypt/encrypt.dart' as encryptLib;
-import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 part 'exam_event.dart';
 part 'exam_state.dart';
 
 class ExamBloc extends Bloc<ExamEvent, ExamState> {
-  final _encripKey = encryptLib.Key.fromSecureRandom(16);
   ExamRepository examRepository;
 
   ExamBloc({@required this.examRepository}) : super(null);
@@ -34,6 +31,17 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
         yield CreateExamModelSuccess();
       } catch (error) {
         yield CreateExamModelFail(errorMessage: error.toString());
+      }
+    } else if (event is UpdateExamModel) {
+      try {
+        yield UpdateExamModelProcessing();
+
+        await this.examRepository.updateExamModels(
+            event.examModelType, event.fields, event.oldExamModelType);
+
+        yield UpdateExamModelSuccess();
+      } catch (err) {
+        yield UpdateExamModelFail(errorMessage: err.toString());
       }
     }
   }

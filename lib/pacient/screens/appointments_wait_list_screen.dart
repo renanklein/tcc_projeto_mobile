@@ -105,11 +105,7 @@ class _AppointmentsWaitListScreenState
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  medRecordRoute,
-                );
-              },
+              onTap: () {},
               child: AppointmentTile(
                 nome: appointment.nome,
                 telefone: appointment.telefone,

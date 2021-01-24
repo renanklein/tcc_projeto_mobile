@@ -34,7 +34,9 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
         cubit: _bloc,
         listener: (context, state) {
           if (state is LoadExamModelSuccess) {
-            this.exam_models = state.models["models"];
+            state.models == null
+                ? this.exam_models = null
+                : this.exam_models = state.models["models"];
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -69,7 +71,16 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
       return cards;
     }
 
-    return <Widget>[];
+    return <Widget>[
+      Center(
+        child: Text(
+          "Não há modelos de exame cadastrados",
+          style:
+              TextStyle(fontSize: 16.0, color: Theme.of(context).primaryColor),
+        ),
+      ),
+      LayoutUtils.buildVerticalSpacing(20.0)
+    ];
   }
 
   Widget _buildCreateExamModelButton() {

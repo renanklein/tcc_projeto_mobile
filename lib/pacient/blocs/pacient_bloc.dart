@@ -8,6 +8,7 @@ import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 part 'pacient_event.dart';
 part 'pacient_state.dart';
@@ -46,7 +47,8 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             ));
 
         yield CreatePacientEventSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreatePacientEventFail();
       }
     } else if (event is PacientLoad) {
@@ -56,7 +58,8 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         var pacientList = await this.pacientRepository.getPacients();
 
         yield PacientLoadEventSuccess(pacientList);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield PacientLoadEventFail();
       }
     } else if (event is AppointmentsLoad) {
@@ -68,47 +71,9 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         _appointmentsList = await pacientRepository.getAppointments();
 
         yield AppointmentLoadEventSuccess(_appointmentsList);
-      } on Exception catch (e) {
-        e.toString();
+      } on Exception catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
       }
     }
-    /* else if (event is PacientEditButtonPressed) {
-      try {
-        yield PacientEventProcessing();
-
-        var updatedPacient = {
-          'nome': event.nome,
-          'email': event.email,
-          'telefone': event.telefone,
-          'identidade': event.identidade,
-          'cpf': event.cpf,
-          'dtNascimento': event.dtNascimento,
-          'sexo': event.sexo,
-        };
-
-        await this.pacientRepository.updatePacient(
-            nome: event.nome,
-            email: event.email,
-            telefone: event.telefone,
-            identidade: event.identidade,
-            cpf: event.cpf,
-            dtNascimento: event.dtNascimento,
-            sexo: event.sexo);
-
-        yield EditPacientEventSuccess();
-      } catch (error) {
-        yield EditPacientEventFail();
-      }
-    } else if (event is PacientDeleteButtonPressed) {
-      try {
-        yield PacientEventProcessing();
-
-        //await this.pacientRepository.removePacient(event.pacientId);
-
-        yield DeletePacientEventSuccess();
-      } catch (error) {
-        yield DeletePacientEventFail();
-      }
-    }*/
   }
 }

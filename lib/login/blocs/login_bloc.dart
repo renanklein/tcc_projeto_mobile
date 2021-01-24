@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -35,7 +36,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             .authenticationBloc
             .add(LoggedIn(token: tokenResponse, context: event.context));
         yield LoginSucceded();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield LoginFailure();
       }
     } else if (event is LoginResetPasswordButtonPressed) {

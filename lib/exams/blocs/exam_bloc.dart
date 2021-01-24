@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:encrypt/encrypt.dart' as encryptLib;
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 part 'exam_event.dart';
@@ -30,7 +30,8 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
             .saveModelExam(modelMap, event.examTypeMap["Tipo de Exame"]);
 
         yield CreateExamModelSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreateExamModelFail(errorMessage: error.toString());
       }
     } else if (event is UpdateExamModel) {
@@ -41,7 +42,8 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
             event.examModelType, event.fields, event.oldExamModelType);
 
         yield UpdateExamModelSuccess();
-      } catch (err) {
+      } catch (err, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(err, stack_trace);
         yield UpdateExamModelFail(errorMessage: err.toString());
       }
     }

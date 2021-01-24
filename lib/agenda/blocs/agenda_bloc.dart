@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 part 'agenda_event.dart';
 part 'agenda_state.dart';
@@ -31,7 +32,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
             event.eventName, event.eventDay, event.eventPhone, eventHourRange);
 
         yield EventProcessingSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaLoad) {
@@ -41,7 +43,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         var events = await this.agendaRepository.getEvents();
 
         yield AgendaLoadSuccess(eventsLoaded: events);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield AgendaLoadFail();
       }
     } else if (event is AgendaEditButtonPressed) {
@@ -61,7 +64,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
             .updateEvent(event.eventDay, updatedEvent, event.eventStatus);
 
         yield EventProcessingSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaDeleteButtonPressed) {
@@ -73,7 +77,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
             .removeEvent(event.eventDay, event.eventId, event.reason);
 
         yield EventProcessingSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaEventAvailableTimeLoad) {
@@ -85,7 +90,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         var occupedHours = await agendaRepository.getOccupedDayTimes(day);
 
         yield AgendaAvailableTimeSuccess(occupedHours);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield AgendaAvailableTimeFail();
       }
     } else if (event is AgendaEventConfirmButtomPressed) {
@@ -97,7 +103,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
             .updateEvent(event.eventDay, event.event, "confirmed");
 
         yield EventProcessingSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     }

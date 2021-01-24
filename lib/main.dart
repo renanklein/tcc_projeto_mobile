@@ -19,6 +19,8 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart' as flutter_foundation;
 
 class MyApp extends StatefulWidget {
   @override
@@ -32,6 +34,11 @@ Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if (flutter_foundation.kDebugMode) {
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  }
+
   runApp(MyApp());
 }
 

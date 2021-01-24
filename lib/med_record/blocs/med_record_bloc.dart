@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -51,7 +52,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             medRecordModel: MedRecordModel(pacientHash: '22'));
 
         yield CreateMedRecordEventSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreateMedRecordEventFail();
       }
     } else if (event is DiagnosisCreateButtonPressed) {
@@ -79,7 +81,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             date: hoje);
 
         yield MedRecordEventSuccess();
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield MedRecordEventFailure();
       }
     } else if (event is MedRecordLoad) {
@@ -91,7 +94,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             .getMedRecordByHash(event.getPacientHash);
 
         yield MedRecordLoadEventSuccess(medRecord: medRecord);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield MedRecordLoadEventFail();
       }
     } else if (event is MedRecordEditButtonPressed) {
@@ -140,7 +144,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             initializationVector);
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ExamProcessingFail();
       }
     } else if (event is GetExams) {
@@ -165,7 +170,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             examDetailsList: examDetails,
             fileDownloadURLs: examFileDownloadURLs,
             ivs: ivs);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ExamProcessingFail();
       }
     } else if (event is DecryptExam) {
@@ -186,7 +192,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             SltPattern.decryptImageBytes(bytes, event.iv, base64Key);
 
         yield DecryptExamSuccess(decriptedBytes: decriptedBytes);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ExamProcessingFail();
       }
     } else if (event is DinamicExamField) {
@@ -200,7 +207,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         );
 
         yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
-      } catch (e) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield DynamicExamFieldFail();
       }
     } else if (event is LoadExamModels) {
@@ -210,7 +218,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var result = await this.examRepository.getExamModels();
 
         yield LoadExamModelSuccess(models: result);
-      } catch (error) {
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield LoadExamModelFail(errorMessage: error.toString());
       }
     }

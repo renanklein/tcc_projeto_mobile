@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
   String userUid;
@@ -53,7 +54,7 @@ class _AppointmentsWaitListScreenState
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Atendimentos para Hoje"),
+        title: Text("Atendimentos Futuros"),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
@@ -64,7 +65,18 @@ class _AppointmentsWaitListScreenState
           listener: (context, state) {
             if (state is AppointmentLoadEventSuccess) {
               _horariosAgendados = state.appointmentsLoaded;
-            } else if (state is AppointmentLoadEventFail) {}
+            } else if (state is AppointmentLoadEventFail) {
+            } else if (state is PacientDetailLoadEventSuccess) {
+              Navigator.of(context).pushNamed(
+                preDiagnosisRoute,
+                arguments: state.pacientDetailLoaded,
+              );
+            } else if (state is PacientDetailLoadEventFail) {
+              Navigator.of(context).pushNamed(
+                createPacientRoute,
+                arguments: preDiagnosisRoute,
+              );
+            }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
               cubit: this._pacientBloc,
@@ -80,7 +92,7 @@ class _AppointmentsWaitListScreenState
                               Expanded(
                                 child: (_horariosAgendados != null)
                                     ? ListView.builder(
-                                        itemCount: (_horariosAgendados).length,
+                                        itemCount: _horariosAgendados.length,
                                         itemBuilder: (context, index) =>
                                             _listAppointmentView(
                                           _horariosAgendados[index],
@@ -107,6 +119,10 @@ class _AppointmentsWaitListScreenState
     await _pacientBloc.add(AppointmentsLoad());
   }
 
+  Future _loadPacientDetail(AppointmentModel appointment) async {
+    await _pacientBloc.add(PacientDetailLoad(appointment));
+  }
+
   Widget _listAppointmentView(AppointmentModel appointment) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.93,
@@ -115,7 +131,9 @@ class _AppointmentsWaitListScreenState
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                _loadPacientDetail(appointment);
+              },
               child: AppointmentTile(
                 nome: appointment.nome,
                 telefone: appointment.telefone,

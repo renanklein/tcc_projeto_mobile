@@ -3,10 +3,21 @@ part of 'med_record_bloc.dart';
 abstract class MedRecordEvent extends Equatable {}
 
 class MedRecordCreateButtonPressed extends MedRecordEvent {
-  final pacientHash;
+  final _pacientHash;
 
   MedRecordCreateButtonPressed(
-    this.pacientHash,
+    this._pacientHash,
+  );
+
+  @override
+  List<Object> get props => [];
+}
+
+class MedRecordPacientDetailButtonPressed extends MedRecordEvent {
+  final _pacientCpf;
+
+  MedRecordPacientDetailButtonPressed(
+    this._pacientCpf,
   );
 
   @override
@@ -99,6 +110,5 @@ class DinamicExamField extends MedRecordEvent {
 
 class LoadExamModels extends MedRecordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }

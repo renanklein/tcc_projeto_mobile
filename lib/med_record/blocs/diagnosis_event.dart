@@ -24,12 +24,10 @@ class DiagnosisCreateButtonPressed extends MedRecordEvent {
   });
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
 class GetDiagnosis extends MedRecordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }

@@ -65,7 +65,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is MedRecordEventSuccess) {
-              this._scaffoldKey.currentState.showSnackBar(messageSnackBar(
+              Scaffold.of(context).showSnackBar(messageSnackBar(
                     context,
                     "Diagnóstico Cadastrado com Sucesso",
                     Colors.green,

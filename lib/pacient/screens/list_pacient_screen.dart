@@ -148,13 +148,13 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 Navigator.of(context).pushNamed(
                   medRecordRoute,
                   arguments: MedRecordArguments(
-                      index: 'index',
-                      pacientCpf: pacient.cpf,
-                      pacientSalt: pacient.salt),
+                    index: 'index',
+                    pacientModel: pacient,
+                  ),
                 );
               },
               child: PacientTile(
-                title: pacient.nome,
+                title: pacient.getNome,
                 textBody:
                     'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
                 imgPath:

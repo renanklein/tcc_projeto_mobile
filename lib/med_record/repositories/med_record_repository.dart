@@ -49,7 +49,6 @@ class MedRecordRepository {
     try {
       MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
-      medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
       bool boolMedRecord;
 

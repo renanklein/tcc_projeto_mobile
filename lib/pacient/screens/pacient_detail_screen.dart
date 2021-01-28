@@ -20,6 +20,8 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
 
   PacientModel get getPacient => this.widget.pacient;
 
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     var injector = Injector.appInstance;
@@ -39,20 +41,17 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Informações do Paciente"),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        elevation: 0.0,
-      ),
-      body: BlocProvider(
+      key: _scaffoldKey,
+      body: BlocProvider<PacientBloc>(
         create: (context) => this._pacientBloc,
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {},
           child: BlocBuilder(
             cubit: this._pacientBloc,
             builder: (context, state) {
-              return SafeArea(child: pacientDetail(getPacient));
+              return SafeArea(
+                child: pacientDetail(this.getPacient),
+              );
             },
           ),
         ),
@@ -62,40 +61,38 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
 }
 
 Widget pacientDetail(PacientModel pacient) {
-  return Container(
-    child: Row(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Text(
-                  "Nome: $pacient.nome",
-                ),
-                Text(
-                  "Nome: $pacient.telefone",
-                ),
-                Text(
-                  "Nome: $pacient.email",
-                ),
-                Text(
-                  "Nome: $pacient.rg",
-                ),
-                Text(
-                  "Nome: $pacient.cpf",
-                ),
-                Text(
-                  "Nome: $pacient.dtNascimento",
-                ),
-                Text(
-                  "Nome: $pacient.sexo",
-                ),
-              ],
-            ),
-            // TODO: ADD IMAGE
-          ],
-        ),
-      ],
+  return Expanded(
+    child: Container(
+      child: Row(
+        children: <Widget>[
+          Column(
+            children: [
+              Text(
+                "Nome: " + pacient.getNome,
+              ),
+              Text(
+                "Telefone: " + pacient.getTelefone,
+              ),
+              Text(
+                "Email: " + pacient.getEmail,
+              ),
+              Text(
+                "Nº Documento: " + pacient.getRg,
+              ),
+              Text(
+                "CPF: " + pacient.getCpf,
+              ),
+              Text(
+                "Data de Nascimento: " + pacient.getDtNascimento,
+              ),
+              Text(
+                "Sexo: " + pacient.getSexo,
+              ),
+            ],
+          ),
+          // TODO: ADD IMAGE
+        ],
+      ),
     ),
   );
 }

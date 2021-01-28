@@ -12,6 +12,7 @@ class CreatePacientEventProcessing extends PacientState {
   List<Object> get props => throw UnimplementedError();
 }
 
+//TODO: Incluir modelo paciente para pre diagnose
 class CreatePacientEventSuccess extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();

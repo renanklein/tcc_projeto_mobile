@@ -10,6 +10,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -30,8 +31,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
   MedRecordModel _medRecordModel;
-  String pacientHash;
-  //UserModel _userModel;
+
+  String _pacientHash;
 
   //TODO: Implementar modelo de prontuario
 
@@ -42,10 +43,11 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
   @override
   void initState() {
-    this.pacientHash = _hasPacientHashArguments()
+    this._pacientHash = _hasPacientHashArguments()
         ? null
-        : SltPattern.retrivepacientHash(this.medRecordArguments.pacientCpf,
-            this.medRecordArguments.pacientSalt);
+        : SltPattern.retrivepacientHash(
+            this.medRecordArguments.pacientModel.getCpf,
+            this.medRecordArguments.pacientModel.getSalt);
     var injector = Injector.appInstance;
     this._medRecordRepository = injector.getDependency<MedRecordRepository>();
     var examRepository = injector.getDependency<ExamRepository>();
@@ -59,12 +61,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
       _selectedIndex = 1;
     }
 
-    if (medRecordArguments.pacientCpf != null &&
-        medRecordArguments.pacientSalt != null) {
+    if (medRecordArguments.pacientModel.getCpf != null &&
+        medRecordArguments.pacientModel.getSalt != null) {
       _medRecordBloc.add(
         MedRecordLoad(
-          pacientCpf: medRecordArguments.pacientCpf,
-          pacientSalt: medRecordArguments.pacientSalt,
+          pacientCpf: medRecordArguments.pacientModel.getCpf,
+          pacientSalt: medRecordArguments.pacientModel.getSalt,
         ),
       );
     }
@@ -100,88 +102,89 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             builder: (context, state) {
               if (state is CreateMedRecordEventProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);
-              }
-              return SafeArea(
-                child: Row(
-                  children: <Widget>[
-                    LayoutBuilder(
-                      builder: (context, constraint) {
-                        return SingleChildScrollView(
-                          child: ConstrainedBox(
-                            constraints:
-                                BoxConstraints(minHeight: constraint.maxHeight),
-                            child: IntrinsicHeight(
-                              child: NavigationRail(
-                                selectedIndex: _selectedIndex,
-                                onDestinationSelected: (int index) {
-                                  setState(() {
-                                    _selectedIndex = index;
-                                  });
-                                },
-                                labelType: NavigationRailLabelType.selected,
-                                destinations: [
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.add_circle),
-                                    label: Text('Novo'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.portrait),
-                                    label: Text('Resumo'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.content_paste),
-                                    label: Text('Exames'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.question_answer),
-                                    label: Text('Diagnóstico'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.healing),
-                                    label: Text('Evolução'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.file_upload),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.add_to_photos),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.child_friendly),
-                                    label: Text('Ficha RN'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.apps),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.close),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.compare),
-                                    //selectedIcon: Icon(Icons.star),
-                                    label: Text('Third'),
-                                  ),
-                                ],
+              } else {
+                return SafeArea(
+                  child: Row(
+                    children: <Widget>[
+                      LayoutBuilder(
+                        builder: (context, constraint) {
+                          return SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minHeight: constraint.maxHeight),
+                              child: IntrinsicHeight(
+                                child: NavigationRail(
+                                  selectedIndex: _selectedIndex,
+                                  onDestinationSelected: (int index) {
+                                    setState(() {
+                                      _selectedIndex = index;
+                                    });
+                                  },
+                                  labelType: NavigationRailLabelType.selected,
+                                  destinations: [
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.add_circle),
+                                      label: Text('Novo'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.portrait),
+                                      label: Text('Resumo'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.content_paste),
+                                      label: Text('Exames'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.question_answer),
+                                      label: Text('Diagnóstico'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.healing),
+                                      label: Text('Evolução'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.file_upload),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.add_to_photos),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.child_friendly),
+                                      label: Text('Ficha RN'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.apps),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.close),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.compare),
+                                      //selectedIcon: Icon(Icons.star),
+                                      label: Text('Third'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    VerticalDivider(thickness: 1, width: 1),
-                    // This is the main content.
-                    Expanded(
-                      child: Center(
-                        child: _showMedRecord(_selectedIndex, context),
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                ),
-              );
+                      VerticalDivider(thickness: 1, width: 1),
+                      // This is the main content.
+                      Expanded(
+                        child: Center(
+                          child: _showMedRecord(_selectedIndex, context),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
             },
           ),
         ),
@@ -191,6 +194,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
   Widget _showMedRecord(index, context) {
     switch (index) {
+      case 1:
+        return PacientDetailScreen(
+          pacient: medRecordArguments.pacientModel,
+        );
+        break;
+
       case 2:
         return Padding(
           padding: const EdgeInsets.all(10.0),
@@ -199,7 +208,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             children: <Widget>[
               Flexible(
                   child: ExamScreen(
-                pacientHash: this.pacientHash,
+                pacientHash: this._pacientHash,
               )),
               RaisedButton(
                 onPressed: () {
@@ -211,7 +220,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                       .then((value) => {
                             this
                                 ._medRecordBloc
-                                .add(GetExams(pacientHash: this.pacientHash))
+                                .add(GetExams(pacientHash: this._pacientHash))
                           });
                 },
                 shape: RoundedRectangleBorder(
@@ -254,7 +263,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   }
 
   bool _hasPacientHashArguments() {
-    return (this.medRecordArguments.pacientCpf.isEmpty &&
-        this.medRecordArguments.pacientSalt.isEmpty);
+    return (this.medRecordArguments.pacientModel.getCpf.isEmpty &&
+        this.medRecordArguments.pacientModel.getSalt.isEmpty);
   }
 }

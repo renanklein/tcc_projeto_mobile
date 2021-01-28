@@ -1,7 +1,8 @@
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+
 class MedRecordArguments {
   final String index;
-  final String pacientCpf;
-  final String pacientSalt;
+  final PacientModel pacientModel;
 
-  MedRecordArguments({this.index, this.pacientCpf, this.pacientSalt});
+  MedRecordArguments({this.index, this.pacientModel});
 }

@@ -64,7 +64,6 @@ class _UserDrawerState extends State<UserDrawer> {
                         DrawerTile(
                           icon: Icons.assignment,
                           text: "Prontuario",
-                          onTapCallback: _navigateToMedRecordScreen,
                         ),
                         DrawerTile(
                           icon: Icons.info,
@@ -167,13 +166,6 @@ class _UserDrawerState extends State<UserDrawer> {
     Navigator.of(context).pushNamed(
       '/pacients',
       arguments: 'drawer',
-    );
-  }
-
-  void _navigateToMedRecordScreen() {
-    Navigator.of(context).pushNamed(
-      '/medRecord',
-      arguments: MedRecordArguments(index: '', pacientCpf: '', pacientSalt: ''),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:tcc_projeto_app/agenda/screens/elements/event_status.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventEditorScreen extends StatefulWidget {
@@ -55,7 +56,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this.agendaBloc = BlocProvider.of<AgendaBloc>(context);
+    this.agendaBloc = new AgendaBloc(
+        agendaRepository:
+            Injector.appInstance.getDependency<AgendaRepository>());
 
     this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
@@ -177,23 +180,28 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildStatusButtons() {
     var buttonsList = <Widget>[];
 
-    if (this.isEdit &&
-        this.event["status"] != "confirmed" &&
-        !this.isReadOnly) {
+    if (this.isEdit && this.event["status"] != "canceled" && !this.isReadOnly) {
       buttonsList.add(_buildCancelButton());
-      buttonsList.add(_buildConfirmButton());
+      if (this.event["status"] != "confirmed") {
+        buttonsList.add(_buildConfirmButton());
+      }
 
       return <Widget>[
         Center(
-          child: Text("Clique para confirmar ou cancelar a consulta",
+          child: Text(
+              this.event["status"] == "confirmed"
+                  ? ""
+                  : "Clique para confirmar ou cancelar a consulta",
               style: TextStyle(
                   fontSize: 16.0, color: Theme.of(context).primaryColor)),
         ),
         LayoutUtils.buildVerticalSpacing(10.0),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: buttonsList)
+        this.event["status"] == "confirmed"
+            ? buttonsList[0]
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: buttonsList)
       ];
     }
 
@@ -314,7 +322,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildCancelButton() {
     return SizedBox(
       height: 44.0,
-      width: 150.0,
+      width: this.event["status"] == "confirmed" ? 379.0 : 150.0,
       child: Builder(
         builder: (context) => RaisedButton(
           onPressed: () {
@@ -343,4 +351,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       ),
     );
   }
+
+  void refreshScreenWithPacientData() {}
 }

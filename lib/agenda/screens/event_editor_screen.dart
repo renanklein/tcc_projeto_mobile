@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
-import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_hour.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_status.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
+import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class EventEditorScreen extends StatefulWidget {
@@ -34,13 +34,16 @@ class EventEditorScreen extends StatefulWidget {
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
   AgendaBloc agendaBloc;
+  PacientRepository _pacientRepository =
+      Injector.appInstance.getDependency<PacientRepository>();
   List<String> occupedHours;
   TextEditingController _eventStatusController;
   TextEditingController _eventNameController;
   TextEditingController _eventHourController;
   TextEditingController _eventPhoneController;
+  bool isReadOnly;
   PhoneNumber eventPhone;
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
@@ -52,9 +55,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
+    this.agendaBloc = BlocProvider.of<AgendaBloc>(context);
 
     this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
@@ -75,12 +76,15 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     this._eventHourController.text = this.event == null
         ? null
         : "${this.event["begin"]} - ${this.event["end"]}";
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
+    var nowDate = DateTime.now();
+    var today = DateTime(nowDate.year, nowDate.month, nowDate.day);
+
+    this.selectedDay.isAfter(today)
+        ? this.isReadOnly = false
+        : this.isReadOnly = true;
+
+    super.initState();
   }
 
   @override
@@ -153,12 +157,14 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         ),
         color: Theme.of(context).primaryColor,
         child: Text(
-          "${this.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
+          this.isReadOnly
+              ? "Voltar"
+              : "${this.isEdit ? "Editar Agendamento" : "Criar Agendamento"}",
           style: TextStyle(
               fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
-          _createOrEditEvent();
+          this.isReadOnly ? Navigator.of(context).pop() : _createOrEditEvent();
         },
       ),
     );
@@ -171,7 +177,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildStatusButtons() {
     var buttonsList = <Widget>[];
 
-    if (this.isEdit && this.event["status"] != "confirmed") {
+    if (this.isEdit &&
+        this.event["status"] != "confirmed" &&
+        !this.isReadOnly) {
       buttonsList.add(_buildCancelButton());
       buttonsList.add(_buildConfirmButton());
 
@@ -195,9 +203,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   List<Widget> _buildFields(AgendaAvailableTimeSuccess state) {
     var fieldsList = <Widget>[];
 
-    fieldsList
-        .add(EventNameField(eventNameController: this._eventNameController));
+    fieldsList.add(EventNameField(
+        eventNameController: this._eventNameController,
+        isReadOnly: this.isReadOnly));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
+
     if (this.isEdit) {
       fieldsList.add(EventStatus(
         eventStatus: this._eventStatusController.text,
@@ -211,10 +221,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
         selectedTime: this.selectedTime,
         occupedHours: state.occupedTimes,
         hourController: this._eventHourController,
+        isReadOnly: this.isReadOnly,
       ),
     );
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
-    fieldsList.add(this._buildEventPhoneField());
+    fieldsList.add(this._buildEventPhoneField(this.isReadOnly));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
 
     return fieldsList;
@@ -243,9 +254,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     }
   }
 
-  Widget _buildEventPhoneField() {
+  Widget _buildEventPhoneField(bool isReadOnly) {
     return InternationalPhoneNumberInput(
       initialValue: eventPhone,
+      isEnabled: !isReadOnly,
       onInputChanged: (phone) {},
       inputDecoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),

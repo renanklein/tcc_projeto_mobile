@@ -67,16 +67,22 @@ class _CalendarEventListState extends State<CalendarEventList> {
           style: TextStyle(color: tableCellCollor, fontSize: 15.7),
         ),
         onTap: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(
-                  builder: (context) => EventEditorScreen(
-                        event: hasEvent ? event : null,
-                        selectedTime: time,
-                        isEdit: hasEvent,
-                        selectedDay: this.widget.selectedDay,
-                        refreshAgenda: this.widget.refreshAgenda,
-                      )))
-              .then((_) => this.widget.refreshAgenda(false));
+          var nowDate = DateTime.now();
+          var today = DateTime(nowDate.year, nowDate.month, nowDate.day);
+
+          if (this.selectedDay.isAfter(today) ||
+              (this.selectedDay.isBefore(today) && event != null)) {
+            Navigator.of(context)
+                .push(MaterialPageRoute(
+                    builder: (context) => EventEditorScreen(
+                          event: hasEvent ? event : null,
+                          selectedTime: time,
+                          isEdit: hasEvent,
+                          selectedDay: this.selectedDay,
+                          refreshAgenda: this.widget.refreshAgenda,
+                        )))
+                .then((_) => this.refreshAgenda(false));
+          }
         },
       ),
     );

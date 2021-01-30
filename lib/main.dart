@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
@@ -82,6 +83,10 @@ class _MyAppState extends State<MyApp> {
             authenticationBloc: this.authenticationBloc,
           ),
         ),
+        BlocProvider<AgendaBloc>(
+            create: (context) => AgendaBloc(
+                agendaRepository:
+                    Injector.appInstance.getDependency<AgendaRepository>())),
         BlocProvider<ExamBloc>(
           create: (context) => ExamBloc(
               examRepository:

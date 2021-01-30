@@ -92,7 +92,20 @@ class PacientRepository extends ChangeNotifier {
     return _appointmentsList;
   }
 
-  Future getPacientByName(String name) async {}
+  Future<PacientModel> getPacientByName(String name) async {
+    var pacientModel;
+    await this
+        ._pacientsCollectionReference
+        .where(
+          "nome",
+          isEqualTo: name,
+        )
+        .get()
+        .then(
+            (data) => pacientModel = PacientModel.fromMap(data.docs[0].data()));
+
+    return pacientModel;
+  }
 
   void listenToPacients() {
     listenToPacientsRealTime().listen((pacientsData) {

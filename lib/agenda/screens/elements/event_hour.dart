@@ -6,10 +6,12 @@ class EventHourField extends StatefulWidget {
   final occupedHours;
   final hourController;
   final selectedTime;
+  final isReadOnly;
   EventHourField(
       {@required this.occupedHours,
       @required this.hourController,
-      @required this.selectedTime});
+      @required this.selectedTime,
+      @required this.isReadOnly});
 
   @override
   _EventHourFieldState createState() => _EventHourFieldState();
@@ -20,6 +22,7 @@ class _EventHourFieldState extends State<EventHourField> {
   TextEditingController get hourController => this.widget.hourController;
   String get selectedTime => this.widget.selectedTime;
   String currentValue;
+  bool get isReadOnly => this.widget.isReadOnly;
 
   @override
   void initState() {
@@ -30,6 +33,17 @@ class _EventHourFieldState extends State<EventHourField> {
 
   @override
   Widget build(BuildContext context) {
+    if (this.isReadOnly) {
+      return TextFormField(
+        readOnly: this.isReadOnly,
+        obscureText: this.isReadOnly,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+            hintText: this.currentValue),
+      );
+    }
     return DropdownButtonFormField(
         value: this.currentValue,
         isDense: true,

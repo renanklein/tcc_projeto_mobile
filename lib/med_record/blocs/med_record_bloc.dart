@@ -108,7 +108,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         yield ExamProcessing();
         var encriptedFile;
         var randomFileName;
-
         // For Encrypt/Decrypt purposes
         var initializationVector = IV.fromSecureRandom(16);
 

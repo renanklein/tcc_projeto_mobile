@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injector/injector.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_date.dart';
@@ -9,9 +8,10 @@ import 'package:tcc_projeto_app/agenda/screens/elements/event_name.dart';
 import 'package:tcc_projeto_app/agenda/screens/elements/event_status.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_confirm.dart';
 import 'package:tcc_projeto_app/agenda/tiles/event_exclude_reason.dart';
-import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
-import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 
 class EventEditorScreen extends StatefulWidget {
   final event;
@@ -34,9 +34,9 @@ class EventEditorScreen extends StatefulWidget {
 }
 
 class _EventEditorScreenState extends State<EventEditorScreen> {
+  // ignore: close_sinks
   AgendaBloc agendaBloc;
-  PacientRepository _pacientRepository =
-      Injector.appInstance.getDependency<PacientRepository>();
+  PacientBloc _pacientBloc;
   List<String> occupedHours;
   TextEditingController _eventStatusController;
   TextEditingController _eventNameController;
@@ -56,7 +56,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this.agendaBloc = new AgendaBloc(
+    this._pacientBloc = context.read<PacientBloc>();
+
+    this.agendaBloc = AgendaBloc(
         agendaRepository:
             Injector.appInstance.getDependency<AgendaRepository>());
 
@@ -93,62 +95,74 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Agendar Consulta"),
-          elevation: 0.0,
-        ),
-        body: BlocProvider<AgendaBloc>(
-          create: (context) => this.agendaBloc,
-          child: BlocListener<AgendaBloc, AgendaState>(
-            listener: (context, state) {
-              if (_verifySuccessState(state)) {
-                _onSuccessState();
-              } else if (_verifyFailState(state)) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text(
-                      "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    )));
-              } else if (state is AgendaAvailableTimeFail) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text(
-                      "Ocorreu um erro ao carregar os horário vagos",
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    )));
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Agendar Consulta"),
+        elevation: 0.0,
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<PacientBloc, PacientState>(listener: (context, state) {
+            if (state is GetPacientByNameSuccess) {
+              var pacient = state.pacient;
+              if (pacient != null) {
+                var pacient = state.pacient;
+                this._eventPhoneController.text = pacient.telefone;
               }
-            },
-            child: BlocBuilder<AgendaBloc, AgendaState>(
-              builder: (context, state) {
-                if (_isLoadingState(state)) {
-                  return LayoutUtils.buildCircularProgressIndicator(context);
-                } else if (state is AgendaAvailableTimeSuccess) {
-                  return Form(
-                    child: ListView(
-                      padding: EdgeInsets.all(16.0),
-                      children: <Widget>[
-                        ..._buildFields(state),
-                        ..._buildStatusButtons(),
-                        LayoutUtils.buildVerticalSpacing(20.0),
-                        _buildCreateEventButton(),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Container();
+            }
+          }),
+          BlocListener<AgendaBloc, AgendaState>(
+              cubit: this.agendaBloc,
+              listener: (context, state) {
+                if (_verifySuccessState(state)) {
+                  _onSuccessState();
+                } else if (_verifyFailState(state)) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                        "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      )));
+                } else if (state is AgendaAvailableTimeFail) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                        "Ocorreu um erro ao carregar os horário vagos",
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      )));
                 }
-              },
-            ),
-          ),
-        ));
+              })
+        ],
+        child: BlocBuilder<AgendaBloc, AgendaState>(
+          cubit: this.agendaBloc,
+          builder: (context, state) {
+            if (_isLoadingState(state)) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            } else if (state is AgendaAvailableTimeSuccess) {
+              return Form(
+                child: ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: <Widget>[
+                    ..._buildFields(state),
+                    ..._buildStatusButtons(),
+                    LayoutUtils.buildVerticalSpacing(20.0),
+                    _buildCreateEventButton(),
+                  ],
+                ),
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+      ),
+    );
   }
 
   Widget _buildCreateEventButton() {
@@ -173,7 +187,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     );
   }
 
-  bool _isLoadingState(AgendaState state) {
+  bool _isLoadingState(dynamic state) {
     return state is EventProcessing || state is AgendaAvailableTimeLoading;
   }
 
@@ -212,8 +226,10 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     var fieldsList = <Widget>[];
 
     fieldsList.add(EventNameField(
-        eventNameController: this._eventNameController,
-        isReadOnly: this.isReadOnly));
+      eventNameController: this._eventNameController,
+      isReadOnly: this.isReadOnly,
+      refreshPacient: refreshScreenWithPacientData,
+    ));
     fieldsList.add(LayoutUtils.buildVerticalSpacing(20.0));
 
     if (this.isEdit) {
@@ -244,7 +260,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     var eventEnd = this._eventHourController.text.split("-")[1].trim();
 
     if (this.widget.isEdit) {
-      agendaBloc.add(AgendaEditButtonPressed(
+      this.agendaBloc.add(AgendaEditButtonPressed(
           eventId: this.event["id"].toString(),
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
@@ -253,7 +269,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
           eventEnd: eventEnd,
           eventStatus: this.event["status"]));
     } else {
-      agendaBloc.add(AgendaCreateButtonPressed(
+      this.agendaBloc.add(AgendaCreateButtonPressed(
           eventDay: this.selectedDay,
           eventName: this._eventNameController.text,
           eventPhone: this._eventPhoneController.text,
@@ -352,5 +368,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     );
   }
 
-  void refreshScreenWithPacientData() {}
+  void refreshScreenWithPacientData(String pacientName) {
+    this._pacientBloc.add(GetPacientByName(name: pacientName));
+  }
 }

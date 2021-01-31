@@ -74,6 +74,17 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
       }
+    } else if (event is GetPacientByName) {
+      try {
+        yield PacientLoading();
+
+        var pacient = await this.pacientRepository.getPacientByName(event.name);
+
+        yield GetPacientByNameSuccess(pacient: pacient);
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        yield GetPacientByNameFail();
+      }
     }
   }
 }

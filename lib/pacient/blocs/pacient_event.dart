@@ -65,3 +65,12 @@ class PacientDeleteButtonPressed extends PacientEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
+class GetPacientByName extends PacientEvent {
+  final String name;
+
+  GetPacientByName({@required this.name});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}

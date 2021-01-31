@@ -101,8 +101,11 @@ class PacientRepository extends ChangeNotifier {
           isEqualTo: name,
         )
         .get()
-        .then(
-            (data) => pacientModel = PacientModel.fromMap(data.docs[0].data()));
+        .then((data) {
+      if (data.docs.isNotEmpty) {
+        pacientModel = PacientModel.fromMap(data.docs[0].data());
+      }
+    });
 
     return pacientModel;
   }

@@ -48,6 +48,7 @@ class _CalendarEventListState extends State<CalendarEventList> {
   }
 
   Widget _buildTimeTile(String time, bool hasEvent) {
+    String pacientName = "";
     var event;
     var tableCellCollor = Colors.white;
     this.eventsList.forEach((el) {
@@ -58,12 +59,14 @@ class _CalendarEventListState extends State<CalendarEventList> {
         event["status"] == "confirmed"
             ? tableCellCollor = Colors.green[300]
             : tableCellCollor = Colors.grey[400];
+
+        pacientName = event["description"];
       }
     });
     return TableCell(
       child: GestureDetector(
         child: Text(
-          time,
+          "$time      $pacientName",
           style: TextStyle(color: tableCellCollor, fontSize: 15.7),
         ),
         onTap: () {

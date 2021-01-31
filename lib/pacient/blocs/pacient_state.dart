@@ -69,3 +69,19 @@ class PacientEventProcessing extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
+class GetPacientByNameSuccess extends PacientState {
+  final pacient;
+
+  GetPacientByNameSuccess({@required this.pacient});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+}
+
+class GetPacientByNameFail extends PacientState {
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+}

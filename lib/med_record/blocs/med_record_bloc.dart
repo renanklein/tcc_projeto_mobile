@@ -17,6 +17,7 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
+import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
@@ -72,6 +73,36 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       } catch (error) {
         yield MedRecordPacientDetailLoadEventFailure();
       }
+    } else if (event is PreDiagnosisCreateButtonPressed) {
+      try {
+        yield MedRecordEventProcessing();
+
+        var now = new DateTime.now();
+        var dateFormat = DateFormat("dd/MM/yyyy");
+        var hoje = dateFormat.format(now);
+
+        await this.medRecordRepository.createPacientPreDiagnosis(
+              preDiagnosisModel: PreDiagnosisModel(
+                peso: int.parse(event.peso),
+                altura: int.parse(event.altura),
+                imc: double.parse(event.imc),
+                paSistolica: int.parse(event.pASistolica),
+                pADiastolica: int.parse(event.pADiastolica),
+                freqCardiaca: int.parse(event.freqCardiaca),
+                freqRepouso: int.parse(event.freqRepouso),
+                temperatura: double.parse(event.temperatura),
+                glicemia: int.parse(event.glicemia),
+                observacao: event.obs,
+                //dtUltimaMestruacao: event.dtUltimaMestruacao,
+                //dtProvavelParto: event.dtProvavelParto,
+                dtPreDiagnosis: hoje,
+              ),
+            );
+
+        yield MedRecordEventSuccess();
+      } catch (error) {
+        yield MedRecordEventFailure();
+      }
     } else if (event is DiagnosisCreateButtonPressed) {
       try {
         yield MedRecordEventProcessing();
@@ -109,6 +140,19 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             .getMedRecordByHash(event.getPacientHash);
 
         yield MedRecordLoadEventSuccess(medRecord: medRecord);
+      } catch (error) {
+        yield MedRecordLoadEventFail();
+      }
+    } else if (event is DiagnosisLoad) {
+      try {
+        yield DiagnosisLoading();
+
+        List<CompleteDiagnosisModel> diagnosisList;
+        MedRecordModel medRecord = await this
+            .medRecordRepository
+            .getMedRecordByHash(event.getPacientHash);
+
+        yield DiagnosisLoadEventSuccess(diagnosisModels: diagnosisList);
       } catch (error) {
         yield MedRecordLoadEventFail();
       }

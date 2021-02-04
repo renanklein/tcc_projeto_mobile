@@ -21,6 +21,7 @@ class ListPacientScreen extends StatefulWidget {
 class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
+  List<PacientModel> pacientsList;
 
   String get getUserUid => this.widget.userUid;
 
@@ -97,9 +98,38 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                                     .width *
                                                 0.98,
                                             child: Column(children: <Widget>[
-                                              pacientSearchBar(
-                                                  _searchBarController,
-                                                  'Digite um nome aqui para pesquisar'),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8.0, 15.0, 8.0, 4.0),
+                                                child: Container(
+                                                  child: TextFormField(
+                                                    controller:
+                                                        _searchBarController,
+                                                    decoration: InputDecoration(
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    4.0)),
+                                                      ),
+                                                      hintText:
+                                                          'Digite um nome aqui para pesquisar',
+                                                    ),
+                                                    onChanged: (value) {
+                                                      for (final e
+                                                          in pacientsList) {}
+                                                    },
+                                                    validator: (value) {
+                                                      if (value.isEmpty) {
+                                                        return '';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
                                               Expanded(
                                                 child: (state
                                                             is PacientLoadEventSuccess &&
@@ -166,27 +196,4 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
       ),
     );
   }
-}
-
-Widget pacientSearchBar(controller, hint) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(8.0, 15.0, 8.0, 4.0),
-    child: Container(
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-          ),
-          hintText: hint,
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return '';
-          }
-          return null;
-        },
-      ),
-    ),
-  );
 }

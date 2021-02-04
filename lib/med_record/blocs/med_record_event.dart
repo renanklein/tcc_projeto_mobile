@@ -40,13 +40,6 @@ class MedRecordLoad extends MedRecordEvent {
   List<Object> get props => [];
 }
 
-class DiagnosisLoad extends MedRecordEvent {
-  DiagnosisLoad();
-
-  @override
-  List<Object> get props => [];
-}
-
 class MedRecordEditButtonPressed extends MedRecordEvent {
   MedRecordEditButtonPressed();
 

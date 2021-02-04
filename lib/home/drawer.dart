@@ -7,7 +7,6 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
-import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -64,6 +63,7 @@ class _UserDrawerState extends State<UserDrawer> {
                         DrawerTile(
                           icon: Icons.assignment,
                           text: "Prontuario",
+                          onTapCallback: () {},
                         ),
                         DrawerTile(
                           icon: Icons.info,

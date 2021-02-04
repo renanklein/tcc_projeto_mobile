@@ -10,6 +10,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/med_record/screens/list_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -242,7 +243,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 3:
-        return CreateDiagnosisScreen();
+        return ListDiagnosisScreen();
+        //CreateDiagnosisScreen();
         break;
 
       default:

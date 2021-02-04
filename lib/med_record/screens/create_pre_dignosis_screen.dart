@@ -4,18 +4,20 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 
-class PreDiagnosisScreen extends StatefulWidget {
+class CreatePreDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
 
-  PreDiagnosisScreen({
+  CreatePreDiagnosisScreen({
     @required this.pacient,
   });
   @override
-  _PreDiagnosisScreenState createState() => _PreDiagnosisScreenState();
+  _CreatePreDiagnosisScreenState createState() =>
+      _CreatePreDiagnosisScreenState();
 }
 
-class _PreDiagnosisScreenState extends State<PreDiagnosisScreen> {
+class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
 
@@ -77,7 +79,18 @@ class _PreDiagnosisScreenState extends State<PreDiagnosisScreen> {
       body: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is MedRecordEventSuccess) {
+              Scaffold.of(context).showSnackBar(
+                messageSnackBar(
+                  context,
+                  "Pré-Diagnóstico Cadastrado com Sucesso",
+                  Colors.green,
+                  Colors.white,
+                ),
+              );
+            }
+          },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             builder: (context, state) {
               return SafeArea(
@@ -140,23 +153,24 @@ class _PreDiagnosisScreenState extends State<PreDiagnosisScreen> {
                             ),
                             onPressed: () async {
                               if (_preDiagnosisFormKey.currentState.validate())
-                                _medRecordBloc
-                                    .add(PreDiagnosisCreateButtonPressed(
-                                  peso: pesoController.text,
-                                  altura: alturaController.text,
-                                  imc: imcController.text,
-                                  pASistolica: pASistolicaController.text,
-                                  pADiastolica: pADiastolicaController.text,
-                                  freqCardiaca: freqCardiacaController.text,
-                                  freqRepouso: freqRepousoController.text,
-                                  temperatura: temperaturaController.text,
-                                  glicemia: glicemiaController.text,
-                                  obs: obsController.text,
-                                  dtUltimaMestruacao:
-                                      dtUltimaMestruacaoController.text,
-                                  dtProvavelParto:
-                                      dtProvavelPartoController.text,
-                                ));
+                                _medRecordBloc.add(
+                                  PreDiagnosisCreateButtonPressed(
+                                    peso: pesoController.text,
+                                    altura: alturaController.text,
+                                    imc: '28.5',
+                                    pASistolica: pASistolicaController.text,
+                                    pADiastolica: pADiastolicaController.text,
+                                    freqCardiaca: freqCardiacaController.text,
+                                    freqRepouso: freqRepousoController.text,
+                                    temperatura: temperaturaController.text,
+                                    glicemia: glicemiaController.text,
+                                    obs: obsController.text,
+                                    dtUltimaMestruacao:
+                                        dtUltimaMestruacaoController.text,
+                                    dtProvavelParto:
+                                        dtProvavelPartoController.text,
+                                  ),
+                                );
                             },
                             child: Text('Cadastrar Pré-Atendimento'),
                           ),

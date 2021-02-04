@@ -5,7 +5,7 @@ import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
-import 'package:tcc_projeto_app/med_record/screens/pre_dignosis_screen.dart';
+import 'package:tcc_projeto_app/med_record/screens/create_pre_dignosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
@@ -82,7 +82,7 @@ class RouteGenerator {
       case preDiagnosisRoute:
         var data = settings.arguments as PacientModel;
         return MaterialPageRoute(
-          builder: (_) => PreDiagnosisScreen(
+          builder: (_) => CreatePreDiagnosisScreen(
             pacient: data,
           ),
         );

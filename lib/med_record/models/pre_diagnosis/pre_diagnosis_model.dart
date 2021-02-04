@@ -13,6 +13,7 @@ class PreDiagnosisModel {
   String _observacao;
   DateTime _ultimaMestruacao;
   DateTime _dtProvavelParto;
+  String _dtPreDiagnosis;
 
   PreDiagnosisModel({
     @required int peso,
@@ -25,8 +26,9 @@ class PreDiagnosisModel {
     @required double temperatura,
     @required int glicemia,
     String observacao,
-    DateTime ultimaMestruacao,
+    DateTime dtUltimaMestruacao,
     DateTime dtProvavelParto,
+    String dtPreDiagnosis,
   }) {
     this._peso = peso;
     this._altura = altura;
@@ -40,10 +42,24 @@ class PreDiagnosisModel {
     this._observacao = observacao;
     this._ultimaMestruacao = ultimaMestruacao;
     this._dtProvavelParto = dtProvavelParto;
+    this._dtPreDiagnosis = dtPreDiagnosis;
   }
 
   Map<String, dynamic> toMap() {
-    return {};
+    return {
+      'peso': this._peso,
+      'altura': this._altura,
+      'imc': this._imc,
+      'paSistolica': this._paSistolica,
+      'pADiastolica': this._pADiastolica,
+      'freqCardiaca': this._freqCardiaca,
+      'freqRepouso': this._freqRepouso,
+      'temperatura': this._temperatura,
+      'glicemia': this._glicemia,
+      'observacao': this._observacao,
+      'ultimaMestruacao': this._ultimaMestruacao,
+      'dtProvavelParto': this._dtProvavelParto,
+    };
   }
 
   static PreDiagnosisModel fromMap(Map<String, dynamic> map) {
@@ -59,7 +75,7 @@ class PreDiagnosisModel {
       freqRepouso: map['freqRepouso'],
       temperatura: map['temperatura'],
       glicemia: map['glicemia'],
-      ultimaMestruacao: map['ultimaMestruacao'],
+      dtUltimaMestruacao: map['ultimaMestruacao'],
       dtProvavelParto: map['dtProvavelParto'],
     );
   }
@@ -76,4 +92,5 @@ class PreDiagnosisModel {
   String get observacao => _observacao;
   DateTime get ultimaMestruacao => _ultimaMestruacao;
   DateTime get dtProvavelParto => _dtProvavelParto;
+  String get getPreDiagnosisDate => _dtPreDiagnosis;
 }

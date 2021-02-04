@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 class ExamModelExclude extends StatefulWidget {
   final examModelToBeExcluded;
@@ -22,7 +23,8 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
 
   @override
   void initState() {
-    this.examBloc = BlocProvider.of<ExamBloc>(context);
+    this.examBloc = ExamBloc(
+        examRepository: Injector.appInstance.getDependency<ExamRepository>());
     super.initState();
   }
 

@@ -38,8 +38,8 @@ class ExamModelCard extends StatelessWidget {
                       fontWeight: FontWeight.w300,
                       color: Colors.grey),
                 ),
+                LayoutUtils.buildVerticalSpacing(8.0),
                 _buildShowModelButton(context),
-                LayoutUtils.buildVerticalSpacing(5.0),
                 _buildExcludeModelButton()
               ],
             ),

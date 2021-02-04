@@ -96,12 +96,15 @@ class ExamRepository {
     var models = response['models'] as List;
 
     var comparator = DeepCollectionEquality.unordered();
+    Map mapToExclude = Map();
 
     models.forEach((map) {
       if (comparator.equals(map, modelToBeExcluded)) {
-        models.remove(modelToBeExcluded);
+        mapToExclude = map;
       }
     });
+
+    models.remove(mapToExclude);
 
     await this
         ._firestore

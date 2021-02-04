@@ -26,3 +26,9 @@ class UpdateExamModelFail extends ExamState {
 
   UpdateExamModelFail({@required this.errorMessage});
 }
+
+class DeleteExamModelProcessing extends ExamState {}
+
+class DeleteExamModelSuccess extends ExamState {}
+
+class DeleteExamModelFail extends ExamState {}

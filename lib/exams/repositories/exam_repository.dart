@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:collection/collection.dart';
 
 class ExamRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -81,11 +82,32 @@ class ExamRepository {
     } else {
       models["models"].add(modelExam);
     }
+
     await this
         ._firestore
         .collection("modelExam")
         .doc(_getUser().uid)
         .set(models);
+  }
+
+  Future deleteExamModel(Map modelToBeExcluded) async {
+    var response = await getExamModels();
+
+    var models = response['models'] as List;
+
+    var comparator = DeepCollectionEquality.unordered();
+
+    models.forEach((map) {
+      if (comparator.equals(map, modelToBeExcluded)) {
+        models.remove(modelToBeExcluded);
+      }
+    });
+
+    await this
+        ._firestore
+        .collection("modelExam")
+        .doc(_getUser().uid)
+        .set(response);
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,

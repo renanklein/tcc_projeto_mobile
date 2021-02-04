@@ -22,3 +22,9 @@ class UpdateExamModel extends ExamEvent {
       @required this.examModelType,
       @required this.oldExamModelType});
 }
+
+class DeleteExamModel extends ExamEvent {
+  final Map modelToBeRemoved;
+
+  DeleteExamModel({@required this.modelToBeRemoved});
+}

@@ -46,6 +46,17 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
         await FirebaseCrashlytics.instance.recordError(err, stack_trace);
         yield UpdateExamModelFail(errorMessage: err.toString());
       }
+    } else if (event is DeleteExamModel) {
+      try {
+        yield DeleteExamModelProcessing();
+
+        await this.examRepository.deleteExamModel(event.modelToBeRemoved);
+
+        yield DeleteExamModelSuccess();
+      } catch (err, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(err, stack_trace);
+        yield DeleteExamModelFail();
+      }
     }
   }
 

@@ -13,7 +13,7 @@ class ExamModelsScreen extends StatefulWidget {
 class _ExamModelsScreenState extends State<ExamModelsScreen> {
   // ignore: close_sinks
   MedRecordBloc _bloc;
-  dynamic exam_models;
+  List exam_models;
   List<String> examModelTypes = <String>[];
   Map<String, List> examModelFields = Map<String, List>();
   @override
@@ -58,6 +58,9 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
   List<Widget> _buildExamModelCards() {
     var cards = <Widget>[];
     if (this.exam_models != null) {
+      this
+          .exam_models
+          .sort((a, b) => a["Tipo de Exame"].compareTo(b["Tipo de Exame"]));
       this.exam_models.forEach((map) {
         cards.add(ExamModelCard(
           modelTitle: map["Tipo de Exame"],

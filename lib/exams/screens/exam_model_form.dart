@@ -124,7 +124,10 @@ class _ExamModelFormState extends State<ExamModelForm> {
   }
 
   List<String> _buildListOfFields() {
-    return this._examModelFieldsNamesController.text.split(";");
+    var fields = this._examModelFieldsNamesController.text.split(";");
+
+    fields.removeWhere((element) => element == "");
+    return fields;
   }
 
   void onSuccess() {

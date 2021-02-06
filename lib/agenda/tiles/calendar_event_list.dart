@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:instant/instant.dart';
 
 class CalendarEventList extends StatefulWidget {
   final eventsList;
@@ -71,10 +72,15 @@ class _CalendarEventListState extends State<CalendarEventList> {
         ),
         onTap: () {
           var nowDate = DateTime.now();
-          var today = DateTime(nowDate.year, nowDate.month, nowDate.day);
+          var date = DateTime(nowDate.year, nowDate.month, nowDate.day,
+              nowDate.hour, nowDate.minute);
 
-          if (this.selectedDay.isAfter(today) ||
-              (this.selectedDay.isBefore(today) && event != null)) {
+          var currentDateTime = dateTimeToZone(zone: "ART", datetime: date);
+
+          var eventDate = _convertFromString(this.selectedDay, time);
+
+          if (eventDate.isAfter(currentDateTime) ||
+              (eventDate.isBefore(currentDateTime) && event != null)) {
             Navigator.of(context)
                 .push(MaterialPageRoute(
                     builder: (context) => EventEditorScreen(
@@ -130,5 +136,13 @@ class _CalendarEventListState extends State<CalendarEventList> {
 
   BorderSide _buildTableBorder() {
     return BorderSide(color: Colors.white, style: BorderStyle.solid);
+  }
+
+  DateTime _convertFromString(DateTime selectedDay, String eventTime) {
+    var endTime = eventTime.split("-")[1];
+    var times = endTime.split(":");
+
+    return DateTime(this.selectedDay.year, this.selectedDay.month,
+        this.selectedDay.day, int.parse(times[0]), int.parse(times[1]));
   }
 }

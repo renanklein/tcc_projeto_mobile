@@ -58,7 +58,7 @@ class _UserCalendarState extends State<UserCalendar> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Eventos"),
+          title: Text("Agendamentos"),
           elevation: 0.0,
         ),
         backgroundColor: Theme.of(context).primaryColor,

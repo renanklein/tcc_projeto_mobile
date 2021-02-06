@@ -108,6 +108,8 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               if (pacient != null) {
                 var pacient = state.pacient;
                 this._eventPhoneController.text = pacient.telefone;
+              } else {
+                this._eventPhoneController.text = "";
               }
             }
           }),

@@ -50,7 +50,7 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
       try {
         yield DeleteExamModelProcessing();
 
-        await this.examRepository.deleteExamModel(event.modelToBeRemoved);
+        await this.examRepository.deleteExamModels(event.modelsToBeRemoved);
 
         yield DeleteExamModelSuccess();
       } catch (err, stack_trace) {

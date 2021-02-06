@@ -6,11 +6,11 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 
 class ExamModelExclude extends StatefulWidget {
-  final examModelToBeExcluded;
+  final examModelsToBeExcluded;
   final refreshModels;
 
   ExamModelExclude(
-      {@required this.examModelToBeExcluded, @required this.refreshModels});
+      {@required this.examModelsToBeExcluded, @required this.refreshModels});
 
   @override
   _ExamModelExcludeState createState() => _ExamModelExcludeState();
@@ -18,7 +18,7 @@ class ExamModelExclude extends StatefulWidget {
 
 class _ExamModelExcludeState extends State<ExamModelExclude> {
   ExamBloc examBloc;
-  Map get examModelToBeExcluded => this.widget.examModelToBeExcluded;
+  List get examModelsToBeExcluded => this.widget.examModelsToBeExcluded;
   Function get refreshModels => this.widget.refreshModels;
 
   @override
@@ -60,7 +60,7 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
                     LayoutUtils.buildVerticalSpacing(28.0),
                     Center(
                       child: Text(
-                        "Deseja excluir esse modelo ?",
+                        "Deseja excluir os modelos ?",
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,
@@ -95,7 +95,7 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
         ),
         onPressed: () {
           this.examBloc.add(
-              DeleteExamModel(modelToBeRemoved: this.examModelToBeExcluded));
+              DeleteExamModel(modelsToBeRemoved: this.examModelsToBeExcluded));
         },
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_model_card.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
+import 'package:tcc_projeto_app/exams/tiles/exam_model_exclude.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamModelsScreen extends StatefulWidget {
@@ -16,6 +17,10 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
   List exam_models;
   List<String> examModelTypes = <String>[];
   Map<String, List> examModelFields = Map<String, List>();
+  List<Map> _examModelsToBeExcluded = [];
+  int toExcludeCardsCount = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     this._bloc = BlocProvider.of<MedRecordBloc>(context);
@@ -26,6 +31,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: this._scaffoldKey,
       appBar: AppBar(
         title: Text("Modelos de exame"),
         centerTitle: true,
@@ -46,6 +52,9 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
             return ListView(padding: EdgeInsets.all(10.0), children: [
+              this.toExcludeCardsCount == 0
+                  ? Container()
+                  : _buildExcludeCardItensBar(),
               ..._buildExamModelCards(),
               _buildCreateExamModelButton()
             ]);
@@ -66,6 +75,8 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
           modelTitle: map["Tipo de Exame"],
           modelFields: map["fields"],
           refreshModels: refreshModels,
+          refreshIncludeModelsToExclude: this.refreshIncludeModelToExclude,
+          refreshRemoveModelsToExclude: this.refreshRemoveModelToExclude,
         ));
       });
 
@@ -108,9 +119,62 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
         ));
   }
 
+  Widget _buildExcludeCardItensBar() {
+    return Container(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              "${this.toExcludeCardsCount} modelos selecionados",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(
+                height: 30.0,
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  color: Colors.white,
+                  child: Text(
+                    "Excluir modelos",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor),
+                  ),
+                  onPressed: () {
+                    this._scaffoldKey.currentState.showBottomSheet(
+                        (context) => ExamModelExclude(
+                              refreshModels: refreshModels,
+                              examModelsToBeExcluded:
+                                  this._examModelsToBeExcluded,
+                            ),
+                        backgroundColor: Colors.transparent);
+                  },
+                )),
+          ],
+        ));
+  }
+
   void refreshModels() {
     setState(() {
       this._bloc.add(LoadExamModels());
+    });
+  }
+
+  void refreshIncludeModelToExclude(Map examModel) {
+    this._examModelsToBeExcluded.add(examModel);
+    setState(() {
+      this.toExcludeCardsCount++;
+    });
+  }
+
+  void refreshRemoveModelToExclude(Map examModel) {
+    this._examModelsToBeExcluded.remove(examModel);
+    setState(() {
+      this.toExcludeCardsCount--;
     });
   }
 }

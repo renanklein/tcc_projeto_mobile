@@ -24,7 +24,7 @@ class UpdateExamModel extends ExamEvent {
 }
 
 class DeleteExamModel extends ExamEvent {
-  final Map modelToBeRemoved;
+  final List modelsToBeRemoved;
 
-  DeleteExamModel({@required this.modelToBeRemoved});
+  DeleteExamModel({@required this.modelsToBeRemoved});
 }

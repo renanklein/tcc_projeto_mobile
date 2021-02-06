@@ -90,21 +90,14 @@ class ExamRepository {
         .set(models);
   }
 
-  Future deleteExamModel(Map modelToBeExcluded) async {
+  Future deleteExamModels(List<Map> examModels) async {
     var response = await getExamModels();
 
     var models = response['models'] as List;
 
-    var comparator = DeepCollectionEquality.unordered();
-    Map mapToExclude = Map();
-
-    models.forEach((map) {
-      if (comparator.equals(map, modelToBeExcluded)) {
-        mapToExclude = map;
-      }
+    examModels.forEach((map) {
+      models.remove(map);
     });
-
-    models.remove(mapToExclude);
 
     await this
         ._firestore

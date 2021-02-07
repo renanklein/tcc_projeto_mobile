@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/exams/tiles/exam_model_card.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_model_exclude.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:collection/collection.dart';
 
 class ExamModelsScreen extends StatefulWidget {
   @override
@@ -43,6 +44,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
             state.models == null
                 ? this.exam_models = null
                 : this.exam_models = state.models["models"];
+            this.toExcludeCardsCount = 0;
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -120,42 +122,45 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
   }
 
   Widget _buildExcludeCardItensBar() {
-    return Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              "${this.toExcludeCardsCount} modelos selecionados",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(
-                height: 30.0,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
+    return SizedBox(
+      height: 45,
+      child: Container(
+          color: Theme.of(context).primaryColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "${this.toExcludeCardsCount} modelos selecionados",
+                style: TextStyle(
                   color: Colors.white,
-                  child: Text(
-                    "Excluir modelos",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor),
-                  ),
-                  onPressed: () {
-                    this._scaffoldKey.currentState.showBottomSheet(
-                        (context) => ExamModelExclude(
-                              refreshModels: refreshModels,
-                              examModelsToBeExcluded:
-                                  this._examModelsToBeExcluded,
-                            ),
-                        backgroundColor: Colors.transparent);
-                  },
-                )),
-          ],
-        ));
+                ),
+              ),
+              SizedBox(
+                  height: 30.0,
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                    color: Colors.white,
+                    child: Text(
+                      "Excluir modelos",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                    onPressed: () {
+                      this._scaffoldKey.currentState.showBottomSheet(
+                          (context) => ExamModelExclude(
+                                refreshModels: refreshModels,
+                                examModelsToBeExcluded:
+                                    this._examModelsToBeExcluded,
+                              ),
+                          backgroundColor: Colors.transparent);
+                    },
+                  )),
+            ],
+          )),
+    );
   }
 
   void refreshModels() {
@@ -172,7 +177,14 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
   }
 
   void refreshRemoveModelToExclude(Map examModel) {
-    this._examModelsToBeExcluded.remove(examModel);
+    Map toBeRemoved = Map();
+    var comparator = DeepCollectionEquality.unordered();
+    this._examModelsToBeExcluded.forEach((map) {
+      if (comparator.equals(map, examModel)) {
+        toBeRemoved = map;
+      }
+    });
+    this._examModelsToBeExcluded.remove(toBeRemoved);
     setState(() {
       this.toExcludeCardsCount--;
     });

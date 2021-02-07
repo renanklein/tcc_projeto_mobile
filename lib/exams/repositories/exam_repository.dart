@@ -94,10 +94,18 @@ class ExamRepository {
     var response = await getExamModels();
 
     var models = response['models'] as List;
+    var comparator = DeepCollectionEquality.unordered();
 
-    examModels.forEach((map) {
-      models.remove(map);
-    });
+    for (int i = 0; i < examModels.length; i++) {
+      Map elementToBeRemoved = Map();
+      models.forEach((map) {
+        if (comparator.equals(map, examModels.elementAt(i))) {
+          elementToBeRemoved = map;
+        }
+      });
+
+      models.remove(elementToBeRemoved);
+    }
 
     await this
         ._firestore

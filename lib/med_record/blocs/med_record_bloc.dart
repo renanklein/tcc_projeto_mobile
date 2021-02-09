@@ -95,8 +95,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
                 observacao: event.obs,
                 //dtUltimaMestruacao: event.dtUltimaMestruacao,
                 //dtProvavelParto: event.dtProvavelParto,
-                dtPreDiagnosis: hoje,
               ),
+              date: hoje,
             );
 
         yield MedRecordEventSuccess();

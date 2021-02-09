@@ -26,7 +26,9 @@ class MedRecordRepository {
   }) async {
     try {
       await _medRecordCollectionReference.doc(_pacientHash).set({
-        date: completeDiagnosisModel.toMap(),
+        date: {
+          'fulldiagnosis': completeDiagnosisModel.toMap(),
+        },
       }, SetOptions(merge: true));
     } on Exception catch (e) {
       return e.toString();
@@ -35,10 +37,13 @@ class MedRecordRepository {
 
   Future createPacientPreDiagnosis({
     @required PreDiagnosisModel preDiagnosisModel,
+    @required String date,
   }) async {
     try {
       await _medRecordCollectionReference.doc(_pacientHash).set({
-        preDiagnosisModel.getPreDiagnosisDate: preDiagnosisModel.toMap(),
+        date: {
+          'prediagnosis': preDiagnosisModel.toMap(),
+        }
       }, SetOptions(merge: true));
     } on Exception catch (e) {
       return e.toString();

@@ -5,8 +5,13 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class ListDiagnosisScreen extends StatefulWidget {
+  final PacientModel pacient;
+
+  ListDiagnosisScreen({@required this.pacient});
+
   @override
   _ListDiagnosisScreenState createState() => _ListDiagnosisScreenState();
 }
@@ -15,6 +20,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
   List<CompleteDiagnosisModel> _diagnosisList;
+
+  PacientModel get pacient => this.widget.pacient;
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -69,6 +76,9 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   Future _loadDiagnosis() async {
-    await _medRecordBloc.add(DiagnosisLoad());
+    await _medRecordBloc.add(DiagnosisLoad(
+      pacientCpf: this.pacient.getCpf,
+      pacientSalt: this.pacient.getSalt,
+    ));
   }
 }

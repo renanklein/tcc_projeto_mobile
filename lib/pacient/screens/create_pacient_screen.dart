@@ -23,6 +23,15 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   UserModel _userModel;
 
   String sexoController = 'Masculino';
+  String tipoDocumentoController = 'RG';
+  List<String> tipoDocumentoList = [
+    'RG',
+    'Carteira de Trabalho',
+    'Carteira Profissional',
+    'Passaporte',
+    'Carteira Funcional'
+  ];
+
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -117,7 +126,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   nomeController,
                                   'Nome:',
                                   'Insira o nome do paciente',
-                                  'Por Favor, insira um nome',
+                                  'Por Favor, insira o nome do paciente',
                                 ),
                                 pacienteFormField(
                                   emailController,
@@ -141,12 +150,34 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                       hintText: "Telefone"),
                                   textFieldController: this.telefoneController,
                                 ),
-
+                                Column(
+                                  children: [
+                                    Text('Tipo de Documento'),
+                                    DropdownButton<String>(
+                                      hint: Text(
+                                          'Selecione o tipo de documento apresentado'),
+                                      items: tipoDocumentoList
+                                          .map((String dropDownStringItem) {
+                                        return DropdownMenuItem<String>(
+                                          value: dropDownStringItem,
+                                          child: Text(dropDownStringItem),
+                                        );
+                                      }).toList(),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          this.tipoDocumentoController =
+                                              newValue;
+                                        });
+                                      },
+                                      value: tipoDocumentoController,
+                                    ),
+                                  ],
+                                ),
                                 pacienteFormField(
                                   identidadeController,
-                                  'Identidade:',
-                                  'Insira o número do RG do paciente',
-                                  'Por Favor, insira um e-mail válido',
+                                  'Nº Doc:',
+                                  'Insira o número do Documento do paciente',
+                                  'Por Favor, insira um número válido',
                                 ),
                                 pacienteFormField(
                                   cpfController,
@@ -160,8 +191,11 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                     DropdownButton<String>(
                                       hint:
                                           Text('Selecione o sexo do paciente'),
-                                      items: ['Masculino', 'Feminino']
-                                          .map((String dropDownStringItem) {
+                                      items: [
+                                        'Masculino',
+                                        'Feminino',
+                                        'Não Declarado'
+                                      ].map((String dropDownStringItem) {
                                         return DropdownMenuItem<String>(
                                           value: dropDownStringItem,
                                           child: Text(dropDownStringItem),

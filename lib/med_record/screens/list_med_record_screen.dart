@@ -243,7 +243,9 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 3:
-        return ListDiagnosisScreen();
+        return ListDiagnosisScreen(
+          pacient: medRecordArguments.pacientModel,
+        );
         //CreateDiagnosisScreen();
         break;
 

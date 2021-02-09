@@ -1,20 +1,24 @@
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
+import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 
 class MedRecordModel {
   String _pacientHash;
   String _medRecordOverview;
   List<CompleteDiagnosisModel> _diagnosisModels;
+  List<PreDiagnosisModel> _preDiagnosisModels;
   DateTime _createdDate;
 
   MedRecordModel({
     String pacientHash,
     String overview,
     List<CompleteDiagnosisModel> completeDiagnosis,
+    List<PreDiagnosisModel> preDiagnosis,
     DateTime createdDate,
   }) {
     this._pacientHash = pacientHash;
     this._medRecordOverview = overview;
     this._diagnosisModels = completeDiagnosis;
+    this._preDiagnosisModels = preDiagnosis;
     this._createdDate = createdDate;
   }
 
@@ -30,11 +34,17 @@ class MedRecordModel {
     List<CompleteDiagnosisModel> _diagnosisList =
         new List<CompleteDiagnosisModel>();
 
+    List<PreDiagnosisModel> _preDiagnosisList = new List<PreDiagnosisModel>();
+
     map.keys.forEach((k) {
       if (k != 'created') {
         CompleteDiagnosisModel diagnosisModel =
             CompleteDiagnosisModel.fromMap(map[k], k);
         _diagnosisList.add(diagnosisModel);
+
+        PreDiagnosisModel preDiagnosisModel =
+            PreDiagnosisModel.fromMap(map[k], k);
+        _preDiagnosisList.add(preDiagnosisModel);
       }
     });
 

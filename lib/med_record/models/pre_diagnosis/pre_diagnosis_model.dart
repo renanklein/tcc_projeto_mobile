@@ -13,7 +13,7 @@ class PreDiagnosisModel {
   String _observacao;
   DateTime _ultimaMestruacao;
   DateTime _dtProvavelParto;
-  String _dtPreDiagnosis;
+  DateTime _dtPreDiagnosis;
 
   PreDiagnosisModel({
     @required int peso,
@@ -28,7 +28,7 @@ class PreDiagnosisModel {
     String observacao,
     DateTime dtUltimaMestruacao,
     DateTime dtProvavelParto,
-    String dtPreDiagnosis,
+    DateTime dtPreDiagnosis,
   }) {
     this._peso = peso;
     this._altura = altura;
@@ -62,21 +62,38 @@ class PreDiagnosisModel {
     };
   }
 
-  static PreDiagnosisModel fromMap(Map<String, dynamic> map) {
+  static PreDiagnosisModel fromMap(Map<String, dynamic> map, String key) {
     if (map == null) return null;
 
+    int year = int.parse(key.split('/')[2]);
+    int mon = int.parse(key.split('/')[1]);
+    int day = int.parse(key.split('/')[0]);
+
     return PreDiagnosisModel(
-      peso: map['peso'],
-      altura: map['altura'],
-      imc: map['imc'],
-      paSistolica: map['paSistolica'],
-      pADiastolica: map['pADiastolica'],
-      freqCardiaca: map['freqCardiaca'],
-      freqRepouso: map['freqRepouso'],
-      temperatura: map['temperatura'],
-      glicemia: map['glicemia'],
-      dtUltimaMestruacao: map['ultimaMestruacao'],
-      dtProvavelParto: map['dtProvavelParto'],
+      peso: int.parse(map['peso']),
+      altura: int.parse(map['altura']),
+      imc: double.parse(map['imc']),
+      paSistolica: int.parse(map['paSistolica']),
+      pADiastolica: int.parse(map['pADiastolica']),
+      freqCardiaca: int.parse(map['freqCardiaca']),
+      freqRepouso: int.parse(map['freqRepouso']),
+      temperatura: double.parse(map['temperatura']),
+      glicemia: int.parse(map['glicemia']),
+      dtUltimaMestruacao: new DateTime(
+        int.parse(map['ultimaMestruacao'].toString().split('/')[2]),
+        int.parse(map['ultimaMestruacao'].toString().split('/')[1]),
+        int.parse(map['ultimaMestruacao'].toString().split('/')[0]),
+      ),
+      dtProvavelParto: new DateTime(
+        int.parse(map['dtProvavelParto'].toString().split('/')[2]),
+        int.parse(map['dtProvavelParto'].toString().split('/')[1]),
+        int.parse(map['dtProvavelParto'].toString().split('/')[0]),
+      ),
+      dtPreDiagnosis: new DateTime(
+        year,
+        mon,
+        day,
+      ),
     );
   }
 
@@ -92,5 +109,5 @@ class PreDiagnosisModel {
   String get observacao => _observacao;
   DateTime get ultimaMestruacao => _ultimaMestruacao;
   DateTime get dtProvavelParto => _dtProvavelParto;
-  String get getPreDiagnosisDate => _dtPreDiagnosis;
+  DateTime get getPreDiagnosisDate => _dtPreDiagnosis;
 }

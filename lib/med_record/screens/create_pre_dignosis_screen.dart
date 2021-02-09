@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
+import 'package:tcc_projeto_app/utils/function_text_form_field.dart';
 
 class CreatePreDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -27,9 +28,11 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  double imcController = 0;
+  Widget showImc = Text('');
+
   final pesoController = TextEditingController();
   final alturaController = TextEditingController();
-  final imcController = TextEditingController();
   final pASistolicaController = TextEditingController();
   final pADiastolicaController = TextEditingController();
   final freqCardiacaController = TextEditingController();
@@ -58,7 +61,6 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   void dispose() {
     pesoController.dispose();
     alturaController.dispose();
-    imcController.dispose();
     pASistolicaController.dispose();
     pADiastolicaController.dispose();
     freqCardiacaController.dispose();
@@ -96,86 +98,157 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
               return SafeArea(
                 child: Form(
                   key: _preDiagnosisFormKey,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        textFormField(
-                            pesoController,
-                            'Peso',
-                            'Insira o peso do paciente',
-                            'Por Favor, Insira o peso do paciente'),
-                        textFormField(
-                            alturaController,
-                            'Altura',
-                            'Insira a altura do paciente em cm',
-                            'Por Favor, Insira a altura do paciente'),
-//inserir calculo do imc
-                        textFormField(
-                            pASistolicaController,
-                            'P.A.',
-                            'Insira o valor da Pressão Artorial do paciente',
-                            'Por Favor, Insira um valor para a P.A.'),
-                        textFormField(
-                            pADiastolicaController,
-                            'P.D.',
-                            'Insira o valor da Pressão Diastólica do paciente',
-                            'Por Favor, Insira um valor para a P.D.'),
-                        textFormField(
-                            freqCardiacaController,
-                            'Freq. Cardíaca',
-                            'Insira o valor da Frequência Cardíaca do paciente',
-                            'Por Favor, Insira um valor para a F.C.'),
-                        textFormField(
-                            freqRepousoController,
-                            'Freq. Repouso',
-                            'Insira o valor da Frequência de Repouso do paciente',
-                            'Por Favor, Insira um valor para a Freq. Repouso'),
-                        textFormField(
-                            temperaturaController,
-                            'Temperatura',
-                            'Insira o valor da Temperatura do paciente',
-                            'Por Favor, Insira a temperatura'),
-                        textFormField(
-                            glicemiaController,
-                            'Glicemia',
-                            'Insira o valor da Glicemia do paciente',
-                            'Por Favor, Insira o valor da Glicemia'),
-                        formFieldFemalePacient(),
-                        textFormField(
-                            obsController, 'Observações', 'Observações', ''),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: MaterialButton(
-                            color: Color(0xFF84FFFF),
-                            height: 55.0,
-                            shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(15.0),
-                            ),
-                            onPressed: () async {
-                              if (_preDiagnosisFormKey.currentState.validate())
-                                _medRecordBloc.add(
-                                  PreDiagnosisCreateButtonPressed(
-                                    peso: pesoController.text,
-                                    altura: alturaController.text,
-                                    imc: '28.5',
-                                    pASistolica: pASistolicaController.text,
-                                    pADiastolica: pADiastolicaController.text,
-                                    freqCardiaca: freqCardiacaController.text,
-                                    freqRepouso: freqRepousoController.text,
-                                    temperatura: temperaturaController.text,
-                                    glicemia: glicemiaController.text,
-                                    obs: obsController.text,
-                                    dtUltimaMestruacao:
-                                        dtUltimaMestruacaoController.text,
-                                    dtProvavelParto:
-                                        dtProvavelPartoController.text,
-                                  ),
-                                );
+                  child: SingleChildScrollView(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          FunctionTextFormField(
+                            controller: pesoController,
+                            label: 'Peso',
+                            hint: 'Insira o peso do paciente',
+                            errorText: 'Por Favor, Insira o peso do paciente',
+                            onChangedFunction: (value) {
+                              if (int.parse(pesoController.text) > 0 &&
+                                  int.parse(alturaController.text) > 0) {
+                                setState(() {
+                                  imcController =
+                                      int.parse(pesoController.text) /
+                                          ((int.parse(alturaController.text) *
+                                              int.parse(alturaController.text))/10000);
+                                  showImc =
+                                      Text(imcController.toStringAsFixed(1));
+                                });
+                              }
                             },
-                            child: Text('Cadastrar Pré-Atendimento'),
+                            validatorFunction: null,
+                            isNumber: true,
                           ),
-                        ),
-                      ]),
+                          FunctionTextFormField(
+                            controller: alturaController,
+                            label: 'Altura em cm',
+                            hint: 'Insira a altura do paciente em cm',
+                            errorText: 'Por Favor, Insira a altura do paciente',
+                            onChangedFunction: (value) {
+                              if (int.parse(pesoController.text) > 0 &&
+                                  int.parse(alturaController.text) > 0) {
+                                setState(() {
+                                  imcController =
+                                      int.parse(pesoController.text) /
+                                          ((int.parse(alturaController.text) *
+                                              int.parse(alturaController.text))/10000);
+                                  showImc =
+                                      Text(imcController.toStringAsFixed(1));
+                                });
+                              }
+                            },
+                            validatorFunction: null,
+                            isNumber: true,
+                          ),
+                          showImc,
+                          FunctionTextFormField(
+                            controller: pASistolicaController,
+                            label: 'P.A.',
+                            hint:
+                                'Insira o valor da Pressão Artorial do paciente',
+                            errorText: 'Por Favor, Insira um valor para a P.A.',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
+                            controller: pADiastolicaController,
+                            label: 'P.D.',
+                            hint:
+                                'Insira o valor da Pressão Diastólica do paciente',
+                            errorText: 'Por Favor, Insira um valor para a P.D.',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
+                            controller: freqCardiacaController,
+                            label: 'Freq. Cardíaca',
+                            hint:
+                                'Insira o valor da Frequência Cardíaca do paciente',
+                            errorText: 'Por Favor, Insira um valor para a F.C.',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
+                            controller: freqRepousoController,
+                            label: 'Freq. Repouso',
+                            hint:
+                                'Insira o valor da Frequência de Repouso do paciente',
+                            errorText:
+                                'Por Favor, Insira um valor para a Freq. Repouso',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
+                            controller: temperaturaController,
+                            label: 'Temperatura',
+                            hint: 'Insira o valor da Temperatura do paciente',
+                            errorText: 'Por Favor, Insira a temperatura',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
+                            controller: glicemiaController,
+                            label: 'Glicemia',
+                            hint: 'Insira o valor da Glicemia do paciente',
+                            errorText: 'Por Favor, Insira o valor da Glicemia',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: true,
+                          ),
+                          //formFieldFemalePacient(),
+                          FunctionTextFormField(
+                            controller: obsController,
+                            label: 'Observações',
+                            hint: 'Observações',
+                            errorText: '',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {},
+                            isNumber: false,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              color: Color(0xFF84FFFF),
+                              height: 55.0,
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(15.0),
+                              ),
+                              onPressed: () async {
+                                if (_preDiagnosisFormKey.currentState
+                                    .validate())
+                                  _medRecordBloc.add(
+                                    PreDiagnosisCreateButtonPressed(
+                                      peso: pesoController.text,
+                                      altura: alturaController.text,
+                                      imc: '28.5',
+                                      pASistolica: pASistolicaController.text,
+                                      pADiastolica: pADiastolicaController.text,
+                                      freqCardiaca: freqCardiacaController.text,
+                                      freqRepouso: freqRepousoController.text,
+                                      temperatura: temperaturaController.text,
+                                      glicemia: glicemiaController.text,
+                                      obs: obsController.text,
+                                      dtUltimaMestruacao:
+                                          dtUltimaMestruacaoController.text,
+                                      dtProvavelParto:
+                                          dtProvavelPartoController.text,
+                                    ),
+                                  );
+                              },
+                              child: Text('Cadastrar Pré-Atendimento'),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ),
               );
             },
@@ -189,41 +262,26 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
     if (pacient.getSexo == 'Feminino') {
       return Column(
         children: [
-          textFormField(
-              dtUltimaMestruacaoController,
-              'Data da última mestruação',
-              'Insira a data da última mestruação da paciente',
-              'Por Favor, Insira a data da última mestruação'),
-          textFormField(
-              dtProvavelPartoController,
-              'Data provavél do parto',
-              'Insira a data provavél do parto',
-              'Por Favor, Insira a data provavél do parto'),
+          FunctionTextFormField(
+            controller: dtUltimaMestruacaoController,
+            label: 'Data da última mestruação',
+            hint: 'Insira a data da última mestruação da paciente',
+            errorText: 'Por Favor, Insira a data da última mestruação',
+            onChangedFunction: null,
+            validatorFunction: (value) {},
+            isNumber: false,
+          ),
+          FunctionTextFormField(
+              controller: dtProvavelPartoController,
+              label: 'Data provavél do parto',
+              hint: 'Insira a data provavél do parto',
+              errorText: 'Por Favor, Insira a data provavél do parto',
+              onChangedFunction: null,
+              validatorFunction: (value) {},
+              isNumber: false)
         ],
       );
     } else
       return Row();
-  }
-
-  Widget textFormField(controller, label, hint, errorText) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          labelText: label,
-          hintText: hint,
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return errorText;
-          }
-          return null;
-        },
-      ),
-    );
   }
 }

@@ -147,12 +147,15 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield DiagnosisLoading();
 
-        List<CompleteDiagnosisModel> diagnosisList;
         MedRecordModel medRecord = await this
             .medRecordRepository
             .getMedRecordByHash(event.getPacientHash);
 
-        yield DiagnosisLoadEventSuccess(diagnosisModels: diagnosisList);
+        if (medRecord.getDiagnosisList.length < 1 && medRecord.getPreDiagnosisList.length < 1) {
+          yield MedRecordLoadEventFail();
+          } 
+            yield DiagnosisLoadEventSuccess(medRecordModel: medRecord);
+           
       } catch (error) {
         yield MedRecordLoadEventFail();
       }

@@ -28,6 +28,6 @@ class DiagnosisModel {
     );
   }
 
-  //String get email => this._email;
-  //set userUid(String uid) => this._userId = uid;
+  String get diagnosisDescription => this._description;
+  String get diagnosisCid => this._cid;
 }

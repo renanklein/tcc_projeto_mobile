@@ -38,13 +38,17 @@ class MedRecordModel {
 
     map.keys.forEach((k) {
       if (k != 'created') {
-        CompleteDiagnosisModel diagnosisModel =
-            CompleteDiagnosisModel.fromMap(map[k], k);
+        if (map[k] != null) {
+          CompleteDiagnosisModel diagnosisModel = CompleteDiagnosisModel.fromMap(map[k], k);
+        
         _diagnosisList.add(diagnosisModel);
+        }
 
-        PreDiagnosisModel preDiagnosisModel =
-            PreDiagnosisModel.fromMap(map[k], k);
+        if (map[k] != null) {
+          PreDiagnosisModel preDiagnosisModel = PreDiagnosisModel.fromMap(map[k], k);
+
         _preDiagnosisList.add(preDiagnosisModel);
+        }
       }
     });
 
@@ -66,6 +70,9 @@ class MedRecordModel {
 
   String get medRecordOverview => this._medRecordOverview;
   bool get notNullPacientHash => this._pacientHash == null ? false : true;
+
+  List<CompleteDiagnosisModel> get getDiagnosisList => this._diagnosisModels;
+  List<PreDiagnosisModel> get getPreDiagnosisList => this._preDiagnosisModels;
 
   DateTime get getDate => this._createdDate;
 

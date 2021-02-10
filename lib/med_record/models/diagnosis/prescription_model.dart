@@ -44,6 +44,9 @@ class PrescriptionModel {
     );
   }
 
-  //String get email => this._email;
-  //set userUid(String uid) => this._userId = uid;
+  String get prescriptionMedicine => this._medicine;
+  String get prescriptionDosage => this._dosage;
+  String get prescriptionDosageForm => this._dosageForm;
+  String get prescriptionUsageOrientation => this._usageOrientation;
+  String get prescriptionUsageDuration => this._usageDuration;
 }

@@ -242,7 +242,9 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                             email: emailController.text,
                                             telefone: telefoneController.text,
                                             identidade:
-                                                identidadeController.text,
+                                                tipoDocumentoController +
+                                                    ': ' +
+                                                    identidadeController.text,
                                             cpf: cpfController.text,
                                             dtNascimento: dtNascController.text,
                                             sexo: sexoController,

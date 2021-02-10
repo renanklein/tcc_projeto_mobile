@@ -4,14 +4,14 @@ class PreDiagnosisModel {
   int _peso;
   int _altura;
   double _imc;
-  int _paSistolica;
+  int _pASistolica;
   int _pADiastolica;
   int _freqCardiaca;
   int _freqRepouso;
   double _temperatura;
   int _glicemia;
   String _observacao;
-  DateTime _ultimaMestruacao;
+  DateTime _dtUltimaMestruacao;
   DateTime _dtProvavelParto;
   DateTime _dtPreDiagnosis;
 
@@ -33,14 +33,14 @@ class PreDiagnosisModel {
     this._peso = peso;
     this._altura = altura;
     this._imc = imc;
-    this._paSistolica = paSistolica;
+    this._pASistolica = paSistolica;
     this._pADiastolica = pADiastolica;
     this._freqCardiaca = freqCardiaca;
     this._freqRepouso = freqRepouso;
     this._temperatura = temperatura;
     this._glicemia = glicemia;
     this._observacao = observacao;
-    this._ultimaMestruacao = ultimaMestruacao;
+    this._dtUltimaMestruacao = dtUltimaMestruacao;
     this._dtProvavelParto = dtProvavelParto;
     this._dtPreDiagnosis = dtPreDiagnosis;
   }
@@ -50,14 +50,14 @@ class PreDiagnosisModel {
       'peso': this._peso,
       'altura': this._altura,
       'imc': this._imc,
-      'paSistolica': this._paSistolica,
+      'paSistolica': this._pASistolica,
       'pADiastolica': this._pADiastolica,
       'freqCardiaca': this._freqCardiaca,
       'freqRepouso': this._freqRepouso,
       'temperatura': this._temperatura,
       'glicemia': this._glicemia,
       'observacao': this._observacao,
-      'ultimaMestruacao': this._ultimaMestruacao,
+      'ultimaMestruacao': this._dtUltimaMestruacao,
       'dtProvavelParto': this._dtProvavelParto,
     };
   }
@@ -100,14 +100,14 @@ class PreDiagnosisModel {
   int get peso => _peso;
   int get altura => _altura;
   double get imc => _imc;
-  int get paSistolica => _paSistolica;
+  int get pASistolica => _pASistolica;
   int get pADiastolica => _pADiastolica;
   int get freqCardiaca => _freqCardiaca;
   int get freqRepouso => _freqRepouso;
   double get temperatura => _temperatura;
   int get glicemia => _glicemia;
   String get observacao => _observacao;
-  DateTime get ultimaMestruacao => _ultimaMestruacao;
+  DateTime get dtUltimaMestruacao => _dtUltimaMestruacao;
   DateTime get dtProvavelParto => _dtProvavelParto;
   DateTime get getPreDiagnosisDate => _dtPreDiagnosis;
 }

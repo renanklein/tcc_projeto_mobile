@@ -26,14 +26,17 @@ class DiagnosisCreateEventFail extends MedRecordState {
 }
 
 class DiagnosisLoadEventSuccess extends MedRecordState {
-  List<CompleteDiagnosisModel> _diagnosisLoaded;
+  //List<CompleteDiagnosisModel> _diagnosisLoaded;
 
-  DiagnosisLoadEventSuccess(
-      {@required List<CompleteDiagnosisModel> diagnosisModels}) {
-    this._diagnosisLoaded = diagnosisModels;
+  MedRecordModel _medRecord;
+
+  DiagnosisLoadEventSuccess({
+    @required MedRecordModel medRecordModel,
+  }) {
+    this._medRecord = medRecordModel;
   }
 
-  List<CompleteDiagnosisModel> get medRecordLoaded => this._diagnosisLoaded;
+  MedRecordModel get medRecordLoaded => this._medRecord;
 
   @override
   List<Object> get props => [];

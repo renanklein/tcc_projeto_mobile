@@ -51,5 +51,10 @@ class CompleteDiagnosisModel {
   DateTime get getDate => this._diagnosisDate;
   set setDate(DateTime dt) => this._diagnosisDate = dt;
 
+  ProblemModel get problem => this._problemModel;
+  DiagnosisModel get diagnosis => this._diagnosisModel;
+  PrescriptionModel get prescription => this._prescriptionModel;
+  DateTime get diagnosisDate => this._diagnosisDate;
+
   //set userUid(String uid) => this._userId = uid;
 }

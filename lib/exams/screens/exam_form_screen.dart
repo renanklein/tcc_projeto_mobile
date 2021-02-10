@@ -39,6 +39,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   List<String> examModelsTypes = List<String>();
   File _examFile;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
@@ -104,61 +105,64 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   Widget _buildFormBody() {
-    return ListView(
-      children: [
-        Field(
-            textController: this._examTypeController,
-            fieldPlaceholder: "Tipo de Exame"),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        DateTimeFormField(
-          fieldPlaceholder: "Data de Realização",
-          dateTimeController: this._examDateController,
-        ),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        ..._buildModelTypeDropDownButton(),
-        ..._buildModelExamFields(this.modelExams[this.currentDropdownItem]),
-        ..._buildFieldsRow(),
-        RaisedButton(
-          onPressed: () {
-            this._scaffoldKey.currentState.showBottomSheet(
-                  (context) => ExamDynamicFieldsBottomsheet(
-                    dynamicFieldsList: this.dynamicFieldsList,
-                    refreshForm: this.refreshFields,
-                  ),
-                  backgroundColor: Colors.transparent,
-                );
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
+    return Form(
+      key: this._formKey,
+      child: ListView(
+        children: [
+          Field(
+              textController: this._examTypeController,
+              fieldPlaceholder: "Tipo de Exame"),
+          LayoutUtils.buildVerticalSpacing(10.0),
+          DateTimeFormField(
+            fieldPlaceholder: "Data de Realização",
+            dateTimeController: this._examDateController,
           ),
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            "Adicione um campo",
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
+          LayoutUtils.buildVerticalSpacing(10.0),
+          ..._buildModelTypeDropDownButton(),
+          ..._buildModelExamFields(this.modelExams[this.currentDropdownItem]),
+          ..._buildFieldsRow(),
+          RaisedButton(
+            onPressed: () {
+              this._scaffoldKey.currentState.showBottomSheet(
+                    (context) => ExamDynamicFieldsBottomsheet(
+                      dynamicFieldsList: this.dynamicFieldsList,
+                      refreshForm: this.refreshFields,
+                    ),
+                    backgroundColor: Colors.transparent,
+                  );
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            color: Theme.of(context).primaryColor,
+            child: Text(
+              "Adicione um campo",
+              style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
           ),
-        ),
-        RaisedButton(
-          onPressed: () async {
-            _setExamFile();
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
+          RaisedButton(
+            onPressed: () async {
+              _setExamFile();
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            color: Theme.of(context).primaryColor,
+            child: Text(
+              "Escolha imagem",
+              style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
           ),
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            "Escolha imagem",
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-          ),
-        ),
-        LayoutUtils.buildVerticalSpacing(10.0),
-        _createSubmitButton()
-      ],
+          LayoutUtils.buildVerticalSpacing(10.0),
+          _createSubmitButton()
+        ],
+      ),
     );
   }
 
@@ -320,20 +324,22 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 color: Colors.white,
                 fontSize: 16.0)),
         onPressed: () {
-          this.dynamicFieldsList.addAll(this.examModelsFields);
+          if (this._formKey.currentState.validate()) {
+            this.dynamicFieldsList.addAll(this.examModelsFields);
 
-          var cardExamInfo = CardExamInfo(
-              examDate: this._examDateController.text,
-              examType: this._examTypeController.text);
+            var cardExamInfo = CardExamInfo(
+                examDate: this._examDateController.text,
+                examType: this._examTypeController.text);
 
-          var examDetails =
-              ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
+            var examDetails =
+                ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
 
-          this._medRecordBloc.add(SaveExam(
-              medRecordArguments: this.medRecordArguments,
-              examDetails: examDetails,
-              examFile: _examFile,
-              cardExamInfo: cardExamInfo));
+            this._medRecordBloc.add(SaveExam(
+                medRecordArguments: this.medRecordArguments,
+                examDetails: examDetails,
+                examFile: _examFile,
+                cardExamInfo: cardExamInfo));
+          }
         },
       ),
     );

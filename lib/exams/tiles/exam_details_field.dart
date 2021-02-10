@@ -37,8 +37,15 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: this.controller,
+      validator: (value) {
+        if (value.isEmpty) {
+          return "O campo não foi preenchido";
+        }
+
+        return null;
+      },
       textInputAction: TextInputAction.next,
       readOnly: this.isReadOnly,
       keyboardType: TextInputType.multiline,

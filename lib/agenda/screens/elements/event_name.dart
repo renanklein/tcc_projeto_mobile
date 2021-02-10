@@ -19,6 +19,13 @@ class EventNameField extends StatelessWidget {
         this.refreshPacient(this.eventNameController.text);
       },
       readOnly: this.isReadOnly,
+      validator: (value) {
+        if (value.isEmpty) {
+          return "O campo nome não preenchido";
+        }
+
+        return null;
+      },
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),

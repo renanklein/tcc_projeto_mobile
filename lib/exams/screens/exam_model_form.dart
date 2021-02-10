@@ -30,6 +30,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
 
   String examTypePlaceholder = "Tipo de Exame";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
   ExamBloc _examBloc;
   String oldExamModelType;
   dynamic examModels;
@@ -85,15 +86,17 @@ class _ExamModelFormState extends State<ExamModelForm> {
             return Builder(
               builder: (context) {
                 return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: ListView(
-                    children: [
-                      ..._buildMandatoryFields(),
-                      ..._buildFieldsRow(),
-                      _buildCreateModelButton()
-                    ],
-                  ),
-                );
+                    padding: const EdgeInsets.all(12.0),
+                    child: Form(
+                      key: this._formKey,
+                      child: ListView(
+                        children: [
+                          ..._buildMandatoryFields(),
+                          ..._buildFieldsRow(),
+                          _buildCreateModelButton()
+                        ],
+                      ),
+                    ));
               },
             );
           },
@@ -111,6 +114,13 @@ class _ExamModelFormState extends State<ExamModelForm> {
       TextFormField(
         controller: this._examModelFieldsNamesController,
         readOnly: false,
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Nenhum campo foi informado";
+          }
+
+          return null;
+        },
         minLines: 3,
         maxLines: 8,
         keyboardType: TextInputType.multiline,
@@ -185,15 +195,17 @@ class _ExamModelFormState extends State<ExamModelForm> {
   Widget _buildCreateModelButton() {
     return RaisedButton(
       onPressed: () {
-        if (this.isEdit) {
-          this._examBloc.add(UpdateExamModel(
-              fields: _buildListOfFields(),
-              oldExamModelType: this.oldExamModelType,
-              examModelType: this._examTypeController.text));
-        } else {
-          this._examBloc.add(CreateExamModel(examTypeMap: {
-                this.examTypePlaceholder: this._examTypeController.text
-              }, listOfFields: _buildListOfFields()));
+        if (this._formKey.currentState.validate()) {
+          if (this.isEdit) {
+            this._examBloc.add(UpdateExamModel(
+                fields: _buildListOfFields(),
+                oldExamModelType: this.oldExamModelType,
+                examModelType: this._examTypeController.text));
+          } else {
+            this._examBloc.add(CreateExamModel(examTypeMap: {
+                  this.examTypePlaceholder: this._examTypeController.text
+                }, listOfFields: _buildListOfFields()));
+          }
         }
       },
       shape: RoundedRectangleBorder(

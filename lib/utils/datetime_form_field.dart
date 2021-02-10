@@ -16,6 +16,13 @@ class DateTimeFormField extends StatelessWidget {
       children: <Widget>[
         DateTimeField(
           controller: dateTimeController,
+          validator: (value) {
+            if (value == null) {
+              return "Não foi selecionado um data";
+            }
+
+            return null;
+          },
           decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
               border: OutlineInputBorder(

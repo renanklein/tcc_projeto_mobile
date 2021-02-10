@@ -148,6 +148,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               return LayoutUtils.buildCircularProgressIndicator(context);
             } else if (state is AgendaAvailableTimeSuccess) {
               return Form(
+                key: this.formKey,
                 child: ListView(
                   padding: EdgeInsets.all(16.0),
                   children: <Widget>[
@@ -183,7 +184,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
-          this.isReadOnly ? Navigator.of(context).pop() : _createOrEditEvent();
+          if (this.formKey.currentState.validate()) {
+            this.isReadOnly
+                ? Navigator.of(context).pop()
+                : _createOrEditEvent();
+          }
         },
       ),
     );
@@ -285,6 +290,13 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       initialValue: eventPhone,
       isEnabled: !isReadOnly,
       onInputChanged: (phone) {},
+      validator: (value) {
+        if (value.isEmpty) {
+          return "O campo telefone não foi preenchido";
+        }
+
+        return null;
+      },
       inputDecoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),

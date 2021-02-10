@@ -133,13 +133,22 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                   imcController =
                                       int.parse(pesoController.text) /
                                           ((int.parse(alturaController.text) *
-                                              int.parse(alturaController.text))/10000);
+                                                  int.parse(
+                                                      alturaController.text)) /
+                                              10000);
                                   showImc =
                                       Text(imcController.toStringAsFixed(1));
                                 });
                               }
                             },
-                            validatorFunction: null,
+                            validatorFunction: (value) {
+                              if (isNumeric(pesoController.text) &&
+                                  isNumeric(alturaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira valores numéricos para Peso e altura";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -154,13 +163,22 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                   imcController =
                                       int.parse(pesoController.text) /
                                           ((int.parse(alturaController.text) *
-                                              int.parse(alturaController.text))/10000);
+                                                  int.parse(
+                                                      alturaController.text)) /
+                                              10000);
                                   showImc =
                                       Text(imcController.toStringAsFixed(1));
                                 });
                               }
                             },
-                            validatorFunction: null,
+                            validatorFunction: (value) {
+                              if (isNumeric(pesoController.text) &&
+                                  isNumeric(alturaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para altura";
+                            },
                             isNumber: true,
                           ),
                           showImc,
@@ -171,7 +189,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                 'Insira o valor da Pressão Artorial do paciente',
                             errorText: 'Por Favor, Insira um valor para a P.A.',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(pASistolicaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para P.A";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -181,7 +205,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                 'Insira o valor da Pressão Diastólica do paciente',
                             errorText: 'Por Favor, Insira um valor para a P.D.',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(pADiastolicaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para P.D";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -191,7 +221,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                 'Insira o valor da Frequência Cardíaca do paciente',
                             errorText: 'Por Favor, Insira um valor para a F.C.',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(freqCardiacaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para Freq. Cardíaca";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -202,7 +238,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             errorText:
                                 'Por Favor, Insira um valor para a Freq. Repouso',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(freqRepousoController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para Freq. Repouso";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -211,7 +253,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             hint: 'Insira o valor da Temperatura do paciente',
                             errorText: 'Por Favor, Insira a temperatura',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(temperaturaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para temperatura";
+                            },
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -220,7 +268,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             hint: 'Insira o valor da Glicemia do paciente',
                             errorText: 'Por Favor, Insira o valor da Glicemia',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(glicemiaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para temperatura";
+                            },
                             isNumber: true,
                           ),
                           //formFieldFemalePacient(),
@@ -275,6 +329,12 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
         ),
       ),
     );
+  }
+
+  bool isNumeric(String s) {
+    if (s == null) return false;
+
+    return double.tryParse(s) != null;
   }
 
   Widget formFieldFemalePacient() {

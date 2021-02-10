@@ -5,6 +5,7 @@ import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -270,9 +271,12 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 }
 
 Widget pacienteFormField(controller, label, hint, errorText) {
+  var mask = MaskTextInputFormatter(
+      mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
+      inputFormatters: [mask],
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

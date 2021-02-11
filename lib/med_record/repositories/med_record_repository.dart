@@ -73,9 +73,10 @@ class MedRecordRepository {
       bool boolMedRecordCreated;
 
       await document.get().then((value) {
-        if (value.data()['created'] != null) {
+        var response = value.data();
+        if (response != null) {
           boolMedRecordCreated = true;
-          medRecord = MedRecordModel.fromMap(value.data());
+          medRecord = MedRecordModel.fromMap(response);
         } else {
           boolMedRecordCreated = false;
         }

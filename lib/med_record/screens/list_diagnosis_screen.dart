@@ -64,6 +64,10 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
             builder: (context, state) {
               if (state is DiagnosisLoading) {
                 return LayoutUtils.buildCircularProgressIndicator(context);
+              } else if (state is MedRecordLoadEventFail) {
+                return Center(
+                    child: Text(
+                        'Não há informações de diagnostico cadastrado para esse paciente'));
               } else {
                 return Column(children: [
                   Padding(
@@ -84,8 +88,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                       ),
                     ),
                   ),
-                  (state is DiagnosisLoadEventSuccess)
-                      ? (state.medRecordLoaded.getDiagnosisList.length > 0)
+                  (state is DiagnosisLoadEventSuccess && state.medRecordLoaded.getDiagnosisList.length > 0)
+                          
                           ? ListView.builder(
                               shrinkWrap: true,
                               itemCount:
@@ -94,21 +98,21 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                                 state.medRecordLoaded.getDiagnosisList[index],
                               ),
                             )
-                          : (state.medRecordLoaded.getPreDiagnosisList.length >
+                          : (state is DiagnosisLoadEventSuccess && state.medRecordLoaded.getPreDiagnosisList.length >
                                   0)
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: state
-                                      .medRecordLoaded.getDiagnosisList.length,
+                                      .medRecordLoaded.
+                                      getPreDiagnosisList.length,
                                   itemBuilder: (context, index) =>
-                                      displayDiagnosis(
+                                      displayPreDiagnosis(
                                     state.medRecordLoaded
-                                        .getDiagnosisList[index],
+                                        .getPreDiagnosisList[index],
+                                    pacient
                                   ),
                                 )
-                              : Center(
-                                  child: Text(
-                                      'Não há informações de diagnostico cadastrado para esse paciente'))
+                          
                       : LayoutUtils.buildCircularProgressIndicator(context)
                 ]);
               }
@@ -135,7 +139,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     return Column(
       children: [
         Text(date),
-        Text('deuhhdeuheText: ' + diagnosisModel.problem.problemDescription),
+        Text('Text: ' + diagnosisModel.problem.problemDescription),
         Text(diagnosisModel.problem.problemId),
         Text(diagnosisModel.diagnosis.diagnosisCid),
         Text(diagnosisModel.diagnosis.diagnosisDescription),

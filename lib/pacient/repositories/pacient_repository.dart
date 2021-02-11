@@ -109,7 +109,7 @@ class PacientRepository extends ChangeNotifier {
         .where(
           "nome",
           isEqualTo: name,
-        )
+        ).where("userId", isEqualTo: _userId)
         .get()
         .then((data) {
       if (data.docs.isNotEmpty) {
@@ -119,6 +119,7 @@ class PacientRepository extends ChangeNotifier {
 
     return pacientModel;
   }
+
   Future getPacientByCpf(String cpf) async {
     PacientModel pacientModel;
     try {
@@ -168,10 +169,12 @@ class PacientRepository extends ChangeNotifier {
 
   Future<List<PacientModel>> getPacients() async {
     List<PacientModel> pacientsList = List<PacientModel>();
-    await this._pacientsCollectionReference.get().then((resp) {
-      resp.docs.forEach((doc) {
-        pacientsList.add(PacientModel.fromMap(doc.data()));
-      });
+    pacientsList = await this._pacientsCollectionReference.get().then((resp) {
+      return resp.docs
+          .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+          .where((mappedItem) =>
+              mappedItem.getNome != null && mappedItem.medicId == _userId)
+          .toList();
     });
 
     return pacientsList;

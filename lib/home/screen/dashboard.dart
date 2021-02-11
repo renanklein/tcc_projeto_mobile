@@ -24,6 +24,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+
     super.initState();
   }
 
@@ -81,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 pacientsRoute,
-                                arguments: 'Dashboard',
+                                arguments: this.userRepository.getUser().uid,
                               );
                             },
                             child: _dashboardItem(
@@ -133,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 appointmentsViewRoute,
-                                arguments: 'Dashboard',
+                                arguments: this.userRepository.getUser().uid,
                               );
                             },
                             child: _dashboardItem(

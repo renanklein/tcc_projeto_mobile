@@ -243,17 +243,17 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 3:
-      return ListDiagnosisScreen(
-            pacient: medRecordArguments.pacientModel,
-          );
-      //CreateDiagnosisScreen();
-        /*Column(children: [
-          ListDiagnosisScreen(
-            pacient: medRecordArguments.pacientModel,
+      return Column(
+        children: [
+          Flexible(
+                      child: ListDiagnosisScreen(
+              pacient: medRecordArguments.pacientModel,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: MaterialButton(
+              child: Text("Cadastrar diagnostico"),
                 color: Color(0xFF84FFFF),
                 height: 55.0,
                 shape: new RoundedRectangleBorder(
@@ -263,7 +263,9 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                   Navigator.of(context).pushNamed(createDiagnosisRoute);
                 }),
           ),
-        ]);*/
+        ]);
+
+
         break;
 
       default:

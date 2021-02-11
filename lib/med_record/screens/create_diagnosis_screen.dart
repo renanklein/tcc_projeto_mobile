@@ -60,6 +60,11 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Cadastrar diagnóstico"),
+        elevation: 0.0,
+      ),
       body: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
@@ -90,25 +95,6 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.lightBlue[100],
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  'Cadastrar Diagnóstico',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                              ),
-                            ),
                             Flexible(
                               child: ListView(
                                 children: <Widget>[

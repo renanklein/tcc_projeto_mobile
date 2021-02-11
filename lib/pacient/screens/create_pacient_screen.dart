@@ -278,7 +278,7 @@ Widget pacienteFormField(controller, label, hint, errorText) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
-      inputFormatters: [mask],
+      inputFormatters: label == "CPF:" ?  [mask] : null,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

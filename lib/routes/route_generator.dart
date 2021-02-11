@@ -4,6 +4,7 @@ import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_pre_dignosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
@@ -44,6 +45,9 @@ class RouteGenerator {
             userUid: uid,
           ),
         );
+        break;
+      case createDiagnosisRoute:
+        return MaterialPageRoute(builder: (_) => CreateDiagnosisScreen());
         break;
       case calendarRoute:
         return MaterialPageRoute(

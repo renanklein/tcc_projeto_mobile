@@ -65,6 +65,29 @@ class MedRecordLoading extends MedRecordState {
   List<Object> get props => [];
 }
 
+class MedRecordPacientDetailLoading extends MedRecordState {
+  @override
+  List<Object> get props => [];
+}
+
+class MedRecordPacientDetailLoadEventSuccess extends MedRecordState {
+  PacientModel _pacient;
+
+  MedRecordPacientDetailLoadEventSuccess({@required PacientModel pacient}) {
+    this._pacient = pacient;
+  }
+
+  PacientModel get pacientModelLoaded => this._pacient;
+
+  @override
+  List<Object> get props => [];
+}
+
+class MedRecordPacientDetailLoadEventFailure extends MedRecordState {
+  @override
+  List<Object> get props => [];
+}
+
 class MedRecordEventProcessing extends MedRecordState {
   @override
   List<Object> get props => [];
@@ -82,13 +105,11 @@ class MedRecordEventFailure extends MedRecordState {
 
 class ExamInitial extends MedRecordState {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
 class ExamProcessing extends MedRecordState {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -155,7 +176,6 @@ class DynamicExamFieldFail extends MedRecordState {
 
 class LoadExamModelProcessing extends MedRecordState {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -165,7 +185,6 @@ class LoadExamModelFail extends MedRecordState {
   LoadExamModelFail({@required this.errorMessage});
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -175,6 +194,5 @@ class LoadExamModelSuccess extends MedRecordState {
   LoadExamModelSuccess({@required this.models});
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }

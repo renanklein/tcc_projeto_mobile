@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -21,19 +23,27 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   PacientRepository _pacientRepository;
   UserModel _userModel;
 
+  String sexoController = 'Masculino';
+  String tipoDocumentoController = 'RG';
+  List<String> tipoDocumentoList = [
+    'RG',
+    'Carteira de Trabalho',
+    'Carteira Profissional',
+    'Passaporte',
+    'Carteira Funcional'
+  ];
+
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
-  final formKey = new GlobalKey<FormState>();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  final _createPacientKey = GlobalKey<FormState>();
+  final _createPacientFormKey = GlobalKey<FormState>();
   final nomeController = TextEditingController();
   final emailController = TextEditingController();
   final telefoneController = TextEditingController();
   final identidadeController = TextEditingController();
   final cpfController = TextEditingController();
   final dtNascController = TextEditingController();
-  final sexoController = TextEditingController();
 
   @override
   void initState() {
@@ -55,7 +65,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     identidadeController.dispose();
     cpfController.dispose();
     dtNascController.dispose();
-    sexoController.dispose();
     super.dispose();
   }
 
@@ -78,14 +87,15 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {
             if (state is AuthenticationUnauthenticated) {
-              Navigator.pushNamed(context, '/');
+              Navigator.pushReplacementNamed(context, '/');
             } else if (state is CreatePacientEventSuccess) {
-              this._scaffoldKey.currentState.showSnackBar(messageSnackBar(
-                    context,
-                    "Paciente Cadastrado com Sucesso",
-                    Colors.green,
-                    Colors.white,
-                  ));
+              Scaffold.of(context).showSnackBar(messageSnackBar(
+                context,
+                "Paciente Cadastrado com Sucesso",
+                Colors.green,
+                Colors.white,
+              ));
+              _createPacientFormKey.currentState.reset();
             }
           },
           child:
@@ -101,7 +111,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
             } else {
               return SafeArea(
                 child: Form(
-                  key: _createPacientKey,
+                  key: _createPacientFormKey,
                   child: Center(
                     child: Container(
                       //decoration: new BoxDecoration(color: Colors.black54),
@@ -109,86 +119,144 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                         width: MediaQuery.of(context).size.width * 0.98,
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: ListView(
-                            children: <Widget>[
-                              pacienteFormField(
-                                nomeController,
-                                'Nome:',
-                                'Insira o nome do paciente',
-                                'Por Favor, insira um nome',
-                              ),
-                              pacienteFormField(
-                                emailController,
-                                'E-mail:',
-                                'Insira o e-mail do paciente',
-                                'Por Favor, insira um e-mail válido',
-                              ),
-                              pacienteFormField(
-                                telefoneController,
-                                'Tel.:',
-                                'Insira o número do telefone do paciente',
-                                'Por Favor, insira um número válido',
-                              ),
-                              pacienteFormField(
-                                identidadeController,
-                                'Identidade:',
-                                'Insira o número do RG do paciente',
-                                'Por Favor, insira um e-mail válido',
-                              ),
-                              pacienteFormField(
-                                cpfController,
-                                'CPF:',
-                                'Insira o CPF do paciente',
-                                'Por Favor, insira um CPF válido',
-                              ),
-                              //menudropdown
-                              pacienteFormField(
-                                sexoController,
-                                'Sexo:',
-                                'Selecione o sexo do paciente',
-                                '',
-                              ),
-                              dateFormField(
-                                dtNascController,
-                                'Data de Nascimento:',
-                                'Entre com a Data de Nascimento',
-                                context,
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MaterialButton(
-                                  color: Color(0xFF84FFFF),
-                                  height: 55.0,
-                                  shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(15.0),
-                                  ),
-                                  onPressed: () async {
-                                    if (_createPacientKey.currentState
-                                        .validate()) {
-                                      await _setUserModel();
-
-                                      //TODO: check se necessita ir pro pré-atendimento
-
-                                      _pacientBloc.add(
-                                        PacientCreateButtonPressed(
-                                          userId: _userModel.uid,
-                                          nome: nomeController.text,
-                                          email: emailController.text,
-                                          telefone: telefoneController.text,
-                                          identidade: identidadeController.text,
-                                          cpf: cpfController.text,
-                                          dtNascimento: dtNascController.text,
-                                          sexo: sexoController.text,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: Text('Cadastrar Paciente'),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                pacienteFormField(
+                                  nomeController,
+                                  'Nome:',
+                                  'Insira o nome do paciente',
+                                  'Por Favor, insira o nome do paciente',
                                 ),
-                              ),
-                            ],
+                                pacienteFormField(
+                                  emailController,
+                                  'E-mail:',
+                                  'Insira o e-mail do paciente',
+                                  'Por Favor, insira um e-mail válido',
+                                ),
+                                InternationalPhoneNumberInput(
+                                  initialValue: PhoneNumber(
+                                    phoneNumber: '21',
+                                    dialCode: '+55',
+                                    isoCode: 'BR',
+                                  ),
+                                  onInputChanged: (phone) {},
+                                  inputDecoration: InputDecoration(
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          20.0, 10.0, 10.0, 20.0),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0)),
+                                      hintText: "Telefone"),
+                                  textFieldController: this.telefoneController,
+                                ),
+                                Column(
+                                  children: [
+                                    Text('Tipo de Documento'),
+                                    DropdownButton<String>(
+                                      hint: Text(
+                                          'Selecione o tipo de documento apresentado'),
+                                      items: tipoDocumentoList
+                                          .map((String dropDownStringItem) {
+                                        return DropdownMenuItem<String>(
+                                          value: dropDownStringItem,
+                                          child: Text(dropDownStringItem),
+                                        );
+                                      }).toList(),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          this.tipoDocumentoController =
+                                              newValue;
+                                        });
+                                      },
+                                      value: tipoDocumentoController,
+                                    ),
+                                  ],
+                                ),
+                                pacienteFormField(
+                                  identidadeController,
+                                  'Nº Doc:',
+                                  'Insira o número do Documento do paciente',
+                                  'Por Favor, insira um número válido',
+                                ),
+                                pacienteFormField(
+                                  cpfController,
+                                  'CPF:',
+                                  'Insira o CPF do paciente',
+                                  'Por Favor, insira um CPF válido',
+                                ),
+                                Column(
+                                  children: [
+                                    Text('Sexo do Paciente'),
+                                    DropdownButton<String>(
+                                      hint:
+                                          Text('Selecione o sexo do paciente'),
+                                      items: [
+                                        'Masculino',
+                                        'Feminino',
+                                        'Não Declarado'
+                                      ].map((String dropDownStringItem) {
+                                        return DropdownMenuItem<String>(
+                                          value: dropDownStringItem,
+                                          child: Text(dropDownStringItem),
+                                        );
+                                      }).toList(),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          this.sexoController = newValue;
+                                        });
+                                      },
+                                      value: sexoController,
+                                    ),
+                                  ],
+                                ), //menudropdown
+                                dateFormField(
+                                  dtNascController,
+                                  'Data de Nascimento:',
+                                  'Entre com a Data de Nascimento',
+                                  context,
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: MaterialButton(
+                                    color: Color(0xFF84FFFF),
+                                    height: 55.0,
+                                    shape: new RoundedRectangleBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(15.0),
+                                    ),
+                                    onPressed: () async {
+                                      if (_createPacientFormKey.currentState
+                                              .validate() &&
+                                          sexoController != '') {
+                                        await _setUserModel();
+
+                                        //TODO: check se necessita ir pro pré-atendimento
+
+                                        _pacientBloc.add(
+                                          PacientCreateButtonPressed(
+                                            userId: _userModel.uid,
+                                            nome: nomeController.text,
+                                            email: emailController.text,
+                                            telefone: telefoneController.text,
+                                            identidade:
+                                                tipoDocumentoController +
+                                                    ': ' +
+                                                    identidadeController.text,
+                                            cpf: cpfController.text,
+                                            dtNascimento: dtNascController.text,
+                                            sexo: sexoController,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text('Cadastrar Paciente'),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -205,9 +273,12 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 }
 
 Widget pacienteFormField(controller, label, hint, errorText) {
+  var mask = MaskTextInputFormatter(
+      mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
+      inputFormatters: label == "CPF:" ?  [mask] : null,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

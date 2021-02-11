@@ -39,14 +39,24 @@ class PacientRepository extends ChangeNotifier {
   Future<PacientModel> getPacientByNameAndPhone(
       AppointmentModel appointmentModel) async {
     PacientModel pacientModel;
-    await _pacientsCollectionReference
-        .where("nome", isEqualTo: appointmentModel.nome)
-        .where("telefone", isEqualTo: appointmentModel.telefone)
-        .get()
-        .then(
-            (data) => pacientModel = PacientModel.fromMap(data.docs[0].data()));
+    try {
+      var doc = await _pacientsCollectionReference
+          .where("nome", isEqualTo: appointmentModel.nome)
+          .where("telefone", isEqualTo: appointmentModel.telefone)
+          .get();
+      if (doc.docs.isNotEmpty) {
+        var pacientsList = doc.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+        pacientModel = pacientsList[0];
+      }
 
-    return pacientModel;
+      return pacientModel;
+    } on Exception catch (e) {
+      e.toString();
+    }
   }
 
   Future<List<AppointmentModel>> getAppointments() async {
@@ -99,7 +109,7 @@ class PacientRepository extends ChangeNotifier {
         .where(
           "nome",
           isEqualTo: name,
-        )
+        ).where("userId", isEqualTo: _userId)
         .get()
         .then((data) {
       if (data.docs.isNotEmpty) {
@@ -108,6 +118,43 @@ class PacientRepository extends ChangeNotifier {
     });
 
     return pacientModel;
+  }
+
+  Future getPacientByCpf(String cpf) async {
+    PacientModel pacientModel;
+    try {
+      var doc =
+          await _pacientsCollectionReference.where("cpf", isEqualTo: cpf).get();
+      if (doc.docs.isNotEmpty) {
+        var pacientsList = doc.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+        pacientModel = pacientsList[0];
+      }
+
+      return pacientModel;
+    } on Exception catch (e) {
+      e.toString();
+    }
+  }
+
+  Stream listenToPacientsRealTime() {
+    this._pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
+      if (pacientsSnapshot.docs.isNotEmpty) {
+        var pacients = pacientsSnapshot.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+
+        this._pacientsController.add(pacients);
+        notifyListeners();
+      }
+    });
+
+    return _pacientsController.stream;
   }
 
   void listenToPacients() {
@@ -122,31 +169,14 @@ class PacientRepository extends ChangeNotifier {
 
   Future<List<PacientModel>> getPacients() async {
     List<PacientModel> pacientsList = List<PacientModel>();
-    await this._pacientsCollectionReference.get().then((resp) {
-      resp.docs.forEach((doc) {
-        pacientsList.add(PacientModel.fromMap(doc.data()));
-      });
+    pacientsList = await this._pacientsCollectionReference.get().then((resp) {
+      return resp.docs
+          .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+          .where((mappedItem) =>
+              mappedItem.getNome != null && mappedItem.medicId == _userId)
+          .toList();
     });
 
     return pacientsList;
-  }
-
-// TODO: iterar paciente pelo ID do médico
-
-  Stream listenToPacientsRealTime() {
-    this._pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
-      if (pacientsSnapshot.docs.isNotEmpty) {
-        var pacients = pacientsSnapshot.docs
-            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
-            .where((mappedItem) =>
-                mappedItem.nome != null && mappedItem.medicId == _userId)
-            .toList();
-
-        this._pacientsController.add(pacients);
-        notifyListeners();
-      }
-    });
-
-    return _pacientsController.stream;
   }
 }

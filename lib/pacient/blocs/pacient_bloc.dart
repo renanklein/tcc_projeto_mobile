@@ -14,6 +14,8 @@ part 'pacient_event.dart';
 part 'pacient_state.dart';
 part 'appointment_event.dart';
 part 'appointment_state.dart';
+part 'pacient_detail_state.dart';
+part 'pacient_detail_event.dart';
 
 class PacientBloc extends Bloc<PacientEvent, PacientState> {
   PacientRepository pacientRepository;
@@ -56,7 +58,6 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield PacientLoading();
 
         var pacientList = await this.pacientRepository.getPacients();
-
         yield PacientLoadEventSuccess(pacientList);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
@@ -73,6 +74,24 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield AppointmentLoadEventSuccess(_appointmentsList);
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+      } 
+    } else if (event is PacientDetailLoad) {
+      try {
+        yield PacientDetailLoading();
+
+        PacientModel _pacientDetail;
+
+        _pacientDetail = await pacientRepository
+            .getPacientByNameAndPhone(event._appointmentModel);
+
+        if (_pacientDetail != null) {
+          yield PacientDetailLoadEventSuccess(_pacientDetail);
+        } else {
+          yield PacientDetailLoadEventFail();
+        }
+      } on Exception catch (e) {
+        yield PacientDetailLoadEventFail();
+        e.toString();
       }
     } else if (event is GetPacientByName) {
       try {

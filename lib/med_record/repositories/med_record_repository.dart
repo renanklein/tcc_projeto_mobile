@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 
 class MedRecordRepository {
   final CollectionReference _medRecordCollectionReference =
@@ -25,8 +26,25 @@ class MedRecordRepository {
   }) async {
     try {
       await _medRecordCollectionReference.doc(_pacientHash).set({
-        date: completeDiagnosisModel.toMap(),
-      });
+        date: {
+          'fulldiagnosis': completeDiagnosisModel.toMap(),
+        },
+      }, SetOptions(merge: true));
+    } on Exception catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future createPacientPreDiagnosis({
+    @required PreDiagnosisModel preDiagnosisModel,
+    @required String date,
+  }) async {
+    try {
+      await _medRecordCollectionReference.doc(_pacientHash).set({
+        date: {
+          'prediagnosis': preDiagnosisModel.toMap(),
+        }
+      }, SetOptions(merge: true));
     } on Exception catch (e) {
       return e.toString();
     }
@@ -39,7 +57,7 @@ class MedRecordRepository {
     try {
       await _medRecordCollectionReference
           .doc(pacientHash)
-          .set(medRecordModel.toMap());
+          .set(medRecordModel.toMap(), SetOptions(merge: true));
     } catch (e) {
       return e.toString();
     }
@@ -47,21 +65,24 @@ class MedRecordRepository {
 
   Future<MedRecordModel> getMedRecordByHash(String pacientHash) async {
     try {
+      //TODO: Pegar o Prontuario Médico
+
       MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
-      medRecord = new MedRecordModel(pacientHash: pacientHash, overview: null);
 
-      bool boolMedRecord;
+      bool boolMedRecordCreated;
+
       await document.get().then((value) {
-        if (value.data() != null) {
-          medRecord = MedRecordModel.fromMap(value.data());
-          boolMedRecord = true;
+        var response = value.data();
+        if (response != null) {
+          boolMedRecordCreated = true;
+          medRecord = MedRecordModel.fromMap(response);
         } else {
-          boolMedRecord = false;
+          boolMedRecordCreated = false;
         }
       });
 
-      if (boolMedRecord == false) {
+      if (boolMedRecordCreated == false) {
         String dt = dateFormat.format(date);
         await document.set({
           'created': dt,

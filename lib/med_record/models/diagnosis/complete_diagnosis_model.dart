@@ -7,7 +7,7 @@ class CompleteDiagnosisModel {
   ProblemModel _problemModel;
   DiagnosisModel _diagnosisModel;
   PrescriptionModel _prescriptionModel;
-  DateTime _date;
+  DateTime _diagnosisDate;
 
   CompleteDiagnosisModel({
     @required ProblemModel problem,
@@ -18,7 +18,7 @@ class CompleteDiagnosisModel {
     this._problemModel = problem;
     this._diagnosisModel = diagnosis;
     this._prescriptionModel = prescription;
-    this._date = date;
+    this._diagnosisDate = date;
   }
 
   Map<String, dynamic> toMap() {
@@ -29,13 +29,12 @@ class CompleteDiagnosisModel {
     };
   }
 
-  static CompleteDiagnosisModel fromMap(Map<String, dynamic> map) {
+  static CompleteDiagnosisModel fromMap(Map<String, dynamic> map, String key) {
     if (map == null || map.length < 2) return null;
 
-    String data = map.keys.toList()[0];
-    int year = int.parse(data.split('/')[2]);
-    int mon = int.parse(data.split('/')[1]);
-    int day = int.parse(data.split('/')[0]);
+    int year = int.parse(key.split('/')[2]);
+    int mon = int.parse(key.split('/')[1]);
+    int day = int.parse(key.split('/')[0]);
 
     return CompleteDiagnosisModel(
       problem: ProblemModel.fromMap(map['problem']),
@@ -49,8 +48,13 @@ class CompleteDiagnosisModel {
     );
   }
 
-  DateTime get getDate => this._date;
-  set setDate(DateTime dt) => this._date = dt;
+  DateTime get getDate => this._diagnosisDate;
+  set setDate(DateTime dt) => this._diagnosisDate = dt;
+
+  ProblemModel get problem => this._problemModel;
+  DiagnosisModel get diagnosis => this._diagnosisModel;
+  PrescriptionModel get prescription => this._prescriptionModel;
+  DateTime get diagnosisDate => this._diagnosisDate;
 
   //set userUid(String uid) => this._userId = uid;
 }

@@ -9,6 +9,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ListDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -61,58 +62,56 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             cubit: this._medRecordBloc,
             builder: (context, state) {
-              return FutureBuilder(
-                future: _loadDiagnosis(),
-                builder: (context, snapshot) {
-                  return SafeArea(
-                    child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlue[100],
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            'Listar Diagnóstico',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                            ),
-                          ),
+              if (state is DiagnosisLoading) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              } else {
+                return Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlue[100],
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'Listar Diagnóstico',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
                         ),
                       ),
-                      (state is DiagnosisLoadEventSuccess)
-                          ? (state.medRecordLoaded.getDiagnosisList.length > 0)
+                    ),
+                  ),
+                  (state is DiagnosisLoadEventSuccess)
+                      ? (state.medRecordLoaded.getDiagnosisList.length > 0)
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  state.medRecordLoaded.getDiagnosisList.length,
+                              itemBuilder: (context, index) => displayDiagnosis(
+                                state.medRecordLoaded.getDiagnosisList[index],
+                              ),
+                            )
+                          : (state.medRecordLoaded.getPreDiagnosisList.length >
+                                  0)
                               ? ListView.builder(
-                                  itemCount:
-                                      state.medRecordLoaded.getDiagnosisList.length,
+                                  shrinkWrap: true,
+                                  itemCount: state
+                                      .medRecordLoaded.getDiagnosisList.length,
                                   itemBuilder: (context, index) =>
                                       displayDiagnosis(
-                                    state.medRecordLoaded.getDiagnosisList[index],
+                                    state.medRecordLoaded
+                                        .getDiagnosisList[index],
                                   ),
                                 )
-                              : (state.medRecordLoaded.getPreDiagnosisList.length >
-                                      0)
-                                  ? ListView.builder(
-                                      itemCount: state.medRecordLoaded
-                                          .getDiagnosisList.length,
-                                      itemBuilder: (context, index) =>
-                                          displayDiagnosis(
-                                        state.medRecordLoaded
-                                            .getDiagnosisList[index],
-                                      ),
-                                    )
-                                  : Center(
-                                      child: Text(
-                                          'Não há informações de diagnostico cadastrado para esse paciente'))
-                          : progressIndicator()
-                    ]),
-                  );
-                },
-              );
+                              : Center(
+                                  child: Text(
+                                      'Não há informações de diagnostico cadastrado para esse paciente'))
+                      : LayoutUtils.buildCircularProgressIndicator(context)
+                ]);
+              }
             },
           ),
         ),
@@ -120,19 +119,11 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     );
   }
 
-  Future _loadDiagnosis() async {
-    await _medRecordBloc.add(DiagnosisLoad(
-      pacientCpf: this.pacient.getCpf,
-      pacientSalt: this.pacient.getSalt,
-    ));
-  }
-
-  Widget progressIndicator() {
-    return Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(
-          Theme.of(context).primaryColor,
-        ),
+  void _loadDiagnosis() {
+    _medRecordBloc.add(
+      DiagnosisLoad(
+        pacientCpf: this.pacient.getCpf,
+        pacientSalt: this.pacient.getSalt,
       ),
     );
   }
@@ -144,7 +135,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     return Column(
       children: [
         Text(date),
-        Text(diagnosisModel.problem.problemDescription),
+        Text('deuhhdeuheText: ' + diagnosisModel.problem.problemDescription),
         Text(diagnosisModel.problem.problemId),
         Text(diagnosisModel.diagnosis.diagnosisCid),
         Text(diagnosisModel.diagnosis.diagnosisDescription),

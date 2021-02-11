@@ -179,8 +179,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                       VerticalDivider(thickness: 1, width: 1),
                       // This is the main content.
                       Expanded(
-                        child: Center(
-                          child: _showMedRecord(_selectedIndex, context),
+                          child: _showMedRecord(_selectedIndex, context
                         ),
                       ),
                     ],
@@ -247,7 +246,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
       return ListDiagnosisScreen(
             pacient: medRecordArguments.pacientModel,
           );
-        //return CreateDiagnosisScreen();
+      //CreateDiagnosisScreen();
         /*Column(children: [
           ListDiagnosisScreen(
             pacient: medRecordArguments.pacientModel,

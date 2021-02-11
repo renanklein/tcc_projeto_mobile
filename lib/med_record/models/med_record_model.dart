@@ -31,23 +31,23 @@ class MedRecordModel {
   static MedRecordModel fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    List<CompleteDiagnosisModel> _diagnosisList =
-        new List<CompleteDiagnosisModel>();
+    List<CompleteDiagnosisModel> _diagnosisList = [];
 
-    List<PreDiagnosisModel> _preDiagnosisList = new List<PreDiagnosisModel>();
+    List<PreDiagnosisModel> _preDiagnosisList = [];
 
     map.keys.forEach((k) {
       if (k != 'created') {
-        if (map[k] != null) {
-          CompleteDiagnosisModel diagnosisModel = CompleteDiagnosisModel.fromMap(map[k], k);
-        
-        _diagnosisList.add(diagnosisModel);
+        if (map[k]['fulldiagnosis'] != null) {
+          CompleteDiagnosisModel diagnosisModel = CompleteDiagnosisModel.fromMap(map[k]['fulldiagnosis'], k);
+
+          _diagnosisList.add(diagnosisModel);
         }
 
-        if (map[k] != null) {
-          PreDiagnosisModel preDiagnosisModel = PreDiagnosisModel.fromMap(map[k], k);
+        if (map[k]['prediagnosis'] != null) {
+          PreDiagnosisModel preDiagnosisModel =
+              PreDiagnosisModel.fromMap(map[k]['prediagnosis'], k);
 
-        _preDiagnosisList.add(preDiagnosisModel);
+          _preDiagnosisList.add(preDiagnosisModel);
         }
       }
     });

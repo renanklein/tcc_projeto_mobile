@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
+import 'package:tcc_projeto_app/med_record/screens/create_pre_dignosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
@@ -36,7 +37,13 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case pacientsRoute:
-        return MaterialPageRoute(builder: (_) => ListPacientScreen());
+        String uid = settings.arguments;
+
+        return MaterialPageRoute(
+          builder: (_) => ListPacientScreen(
+            userUid: uid,
+          ),
+        );
         break;
       case calendarRoute:
         return MaterialPageRoute(
@@ -57,13 +64,26 @@ class RouteGenerator {
         );
         break;
       case appointmentsViewRoute:
-        return MaterialPageRoute(builder: (_) => AppointmentsWaitListScreen());
+        String uid = settings.arguments;
+        return MaterialPageRoute(
+          builder: (_) => AppointmentsWaitListScreen(
+            userUid: uid,
+          ),
+        );
         break;
       case medRecordRoute:
         var data = settings.arguments as MedRecordArguments;
         return MaterialPageRoute(
           builder: (_) => MedRecordScreen(
             medRecordArguments: data,
+          ),
+        );
+        break;
+      case preDiagnosisRoute:
+        var data = settings.arguments as PacientModel;
+        return MaterialPageRoute(
+          builder: (_) => CreatePreDiagnosisScreen(
+            pacient: data,
           ),
         );
         break;

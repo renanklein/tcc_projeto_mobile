@@ -69,15 +69,15 @@ class PacientModel {
     this._salt = salt;
   }
 
-  String get nome => this._nome;
-  String get email => this._email;
-  String get telefone => this._telefone;
-  String get rg => this._identidade;
-  String get cpf => this._cpf;
-  String get dtNascimento => this._dtNascimento;
-  String get sexo => this._sexo;
+  String get getNome => this._nome;
+  String get getEmail => this._email;
+  String get getTelefone => this._telefone;
+  String get getRg => this._identidade;
+  String get getCpf => this._cpf;
+  String get getDtNascimento => this._dtNascimento;
+  String get getSexo => this._sexo;
 
   String get medicId => this._userId;
-  String get salt => this._salt;
+  String get getSalt => this._salt;
   //set userUid(String uid) => this._userId = uid;
 }

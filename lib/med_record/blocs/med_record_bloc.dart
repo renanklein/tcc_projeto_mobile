@@ -17,7 +17,10 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
+import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
@@ -27,10 +30,13 @@ part 'med_record_event.dart';
 part 'med_record_state.dart';
 part 'diagnosis_state.dart';
 part 'diagnosis_event.dart';
+part 'pre_diagnosis_state.dart';
+part 'pre_diagnosis_event.dart';
 
 class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   MedRecordRepository medRecordRepository;
   ExamRepository examRepository;
+  PacientRepository pacientRepository;
 
   MedRecordBloc({
     @required this.medRecordRepository,
@@ -48,13 +54,56 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         yield CreateMedRecordEventProcessing();
 
         await medRecordRepository.updateMedRecord(
-            pacientHash: event.pacientHash,
+            pacientHash: event._pacientHash,
             medRecordModel: MedRecordModel(pacientHash: '22'));
 
         yield CreateMedRecordEventSuccess();
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreateMedRecordEventFail();
+      }
+    } else if (event is MedRecordPacientDetailButtonPressed) {
+      try {
+        yield MedRecordPacientDetailLoading();
+
+        PacientModel _pacientModel;
+
+        _pacientModel =
+            await pacientRepository.getPacientByCpf(event._pacientCpf);
+
+        yield MedRecordPacientDetailLoadEventSuccess(pacient: _pacientModel);
+      } catch (error) {
+        yield MedRecordPacientDetailLoadEventFailure();
+      }
+    } else if (event is PreDiagnosisCreateButtonPressed) {
+      try {
+        yield MedRecordEventProcessing();
+
+        var now = new DateTime.now();
+        var dateFormat = DateFormat("dd/MM/yyyy");
+        var hoje = dateFormat.format(now);
+
+        await this.medRecordRepository.createPacientPreDiagnosis(
+              preDiagnosisModel: PreDiagnosisModel(
+                peso: int.parse(event.peso),
+                altura: int.parse(event.altura),
+                imc: double.parse(event.imc),
+                paSistolica: int.parse(event.pASistolica),
+                pADiastolica: int.parse(event.pADiastolica),
+                freqCardiaca: int.parse(event.freqCardiaca),
+                freqRepouso: int.parse(event.freqRepouso),
+                temperatura: double.parse(event.temperatura),
+                glicemia: int.parse(event.glicemia),
+                observacao: event.obs,
+                //dtUltimaMestruacao: event.dtUltimaMestruacao,
+                //dtProvavelParto: event.dtProvavelParto,
+              ),
+              date: hoje,
+            );
+
+        yield MedRecordEventSuccess();
+      } catch (error) {
+        yield MedRecordEventFailure();
       }
     } else if (event is DiagnosisCreateButtonPressed) {
       try {
@@ -98,6 +147,22 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield MedRecordLoadEventFail();
       }
+    } else if (event is DiagnosisLoad) {
+      try {
+        yield DiagnosisLoading();
+
+        MedRecordModel medRecord = await this
+            .medRecordRepository
+            .getMedRecordByHash(event.getPacientHash);
+
+        if (medRecord.getDiagnosisList.length < 1 && medRecord.getPreDiagnosisList.length < 1) {
+          yield MedRecordLoadEventFail();
+          } 
+            yield DiagnosisLoadEventSuccess(medRecordModel: medRecord);
+           
+      } catch (error) {
+        yield MedRecordLoadEventFail();
+      }
     } else if (event is MedRecordEditButtonPressed) {
       try {} catch (error) {}
     } else if (event is MedRecordDeleteButtonPressed) {
@@ -131,8 +196,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         }
 
         var pacientHash = SltPattern.retrivepacientHash(
-            event.getMedRecordArguments.pacientCpf,
-            event.getMedRecordArguments.pacientSalt);
+            event.medRecordArguments.pacientModel.getCpf,
+            event.medRecordArguments.pacientModel.getSalt);
 
         await this.examRepository.saveExam(
             event.getCardExamInfo,

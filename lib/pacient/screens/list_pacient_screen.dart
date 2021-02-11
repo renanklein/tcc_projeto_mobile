@@ -17,7 +17,7 @@ class ListPacientScreen extends StatefulWidget {
 class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
-  List<PacientModel> _pacientsList;
+  List<PacientModel> pacientsList;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -70,17 +70,11 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
             child: BlocListener<PacientBloc, PacientState>(
                 listener: (context, state) {
                   if (state is PacientLoadEventSuccess) {
-                    this._pacientsList = state.pacientsLoaded;
                   } else if (state is PacientLoadEventFail) {}
                 },
                 child: BlocBuilder<PacientBloc, PacientState>(
                     cubit: this._pacientBloc,
                     builder: (context, state) {
-                      if (state is PacientLoading ||
-                          this._pacientsList == null) {
-                        return LayoutUtils.buildCircularProgressIndicator(
-                            context);
-                      }
                       return SafeArea(
                           child: Center(
                               child: Padding(
@@ -89,17 +83,60 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.98,
                                       child: Column(children: <Widget>[
-                                        pacientSearchBar(_searchBarController,
-                                            'Digite um nome aqui para pesquisar'),
-                                        Expanded(
-                                          child: ListView.builder(
-                                              itemCount:
-                                                  this._pacientsList?.length,
-                                              itemBuilder: (context, index) {
-                                                return _listPacientView(
-                                                    this._pacientsList[index]);
-                                              }),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8.0, 15.0, 8.0, 4.0),
+                                          child: Container(
+                                            child: TextFormField(
+                                              controller: _searchBarController,
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(4.0)),
+                                                ),
+                                                hintText:
+                                                    'Digite um nome aqui para pesquisar',
+                                              ),
+                                              onChanged: (value) {
+                                                for (final e in pacientsList) {}
+                                              },
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return '';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
                                         ),
+                                        Expanded(
+                                          child:
+                                              (state is PacientLoadEventSuccess &&
+                                                      state.pacientsLoaded !=
+                                                          null)
+                                                  ? ListView.builder(
+                                                      itemCount:
+                                                          (state.pacientsLoaded)
+                                                              .length,
+                                                      itemBuilder:
+                                                          (context, index) =>
+                                                              _listPacientView(
+                                                        state.pacientsLoaded[
+                                                            index],
+                                                      ),
+                                                    )
+                                                  : Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation(
+                                                          Theme.of(context)
+                                                              .primaryColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                        )
                                       ])))));
                     }))));
   }
@@ -116,13 +153,13 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 Navigator.of(context).pushNamed(
                   medRecordRoute,
                   arguments: MedRecordArguments(
-                      index: 'examScreen',
-                      pacientCpf: pacient.cpf,
-                      pacientSalt: pacient.salt),
+                    index: 'index',
+                    pacientModel: pacient,
+                  ),
                 );
               },
               child: PacientTile(
-                title: pacient.nome,
+                title: pacient.getNome,
                 textBody:
                     'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
                 imgPath:
@@ -134,27 +171,4 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
       ),
     );
   }
-}
-
-Widget pacientSearchBar(controller, hint) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(8.0, 15.0, 8.0, 4.0),
-    child: Container(
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-          ),
-          hintText: hint,
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return '';
-          }
-          return null;
-        },
-      ),
-    ),
-  );
 }

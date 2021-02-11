@@ -39,14 +39,24 @@ class PacientRepository extends ChangeNotifier {
   Future<PacientModel> getPacientByNameAndPhone(
       AppointmentModel appointmentModel) async {
     PacientModel pacientModel;
-    await _pacientsCollectionReference
-        .where("nome", isEqualTo: appointmentModel.nome)
-        .where("telefone", isEqualTo: appointmentModel.telefone)
-        .get()
-        .then(
-            (data) => pacientModel = PacientModel.fromMap(data.docs[0].data()));
+    try {
+      var doc = await _pacientsCollectionReference
+          .where("nome", isEqualTo: appointmentModel.nome)
+          .where("telefone", isEqualTo: appointmentModel.telefone)
+          .get();
+      if (doc.docs.isNotEmpty) {
+        var pacientsList = doc.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+        pacientModel = pacientsList[0];
+      }
 
-    return pacientModel;
+      return pacientModel;
+    } on Exception catch (e) {
+      e.toString();
+    }
   }
 
   Future<List<AppointmentModel>> getAppointments() async {
@@ -108,6 +118,24 @@ class PacientRepository extends ChangeNotifier {
     });
 
     return pacientModel;
+  Future getPacientByCpf(String cpf) async {
+    PacientModel pacientModel;
+    try {
+      var doc =
+          await _pacientsCollectionReference.where("cpf", isEqualTo: cpf).get();
+      if (doc.docs.isNotEmpty) {
+        var pacientsList = doc.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+        pacientModel = pacientsList[0];
+      }
+
+      return pacientModel;
+    } on Exception catch (e) {
+      e.toString();
+    }
   }
 
   void listenToPacients() {
@@ -139,7 +167,7 @@ class PacientRepository extends ChangeNotifier {
         var pacients = pacientsSnapshot.docs
             .map((snapshot) => PacientModel.fromMap(snapshot.data()))
             .where((mappedItem) =>
-                mappedItem.nome != null && mappedItem.medicId == _userId)
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
             .toList();
 
         this._pacientsController.add(pacients);

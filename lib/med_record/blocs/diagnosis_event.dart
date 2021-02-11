@@ -24,12 +24,21 @@ class DiagnosisCreateButtonPressed extends MedRecordEvent {
   });
 
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
-class GetDiagnosis extends MedRecordEvent {
+class DiagnosisLoad extends MedRecordEvent {
+  String _pacientHash;
+
+  DiagnosisLoad({
+    @required String pacientCpf,
+    @required String pacientSalt,
+  }) {
+    this._pacientHash = SltPattern.retrivepacientHash(pacientCpf, pacientSalt);
+  }
+
+  String get getPacientHash => this._pacientHash;
+
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }

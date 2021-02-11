@@ -28,6 +28,6 @@ class ProblemModel {
     );
   }
 
-  //String get email => this._email;
-  //set userUid(String uid) => this._userId = uid;
+  String get problemDescription => this._description;
+  String get problemId => this._problemId;
 }

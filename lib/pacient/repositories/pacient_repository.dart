@@ -118,6 +118,7 @@ class PacientRepository extends ChangeNotifier {
     });
 
     return pacientModel;
+  }
   Future getPacientByCpf(String cpf) async {
     PacientModel pacientModel;
     try {
@@ -136,6 +137,23 @@ class PacientRepository extends ChangeNotifier {
     } on Exception catch (e) {
       e.toString();
     }
+  }
+
+  Stream listenToPacientsRealTime() {
+    this._pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
+      if (pacientsSnapshot.docs.isNotEmpty) {
+        var pacients = pacientsSnapshot.docs
+            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+            .where((mappedItem) =>
+                mappedItem.getNome != null && mappedItem.medicId == _userId)
+            .toList();
+
+        this._pacientsController.add(pacients);
+        notifyListeners();
+      }
+    });
+
+    return _pacientsController.stream;
   }
 
   void listenToPacients() {
@@ -157,24 +175,5 @@ class PacientRepository extends ChangeNotifier {
     });
 
     return pacientsList;
-  }
-
-// TODO: iterar paciente pelo ID do médico
-
-  Stream listenToPacientsRealTime() {
-    this._pacientsCollectionReference.snapshots().listen((pacientsSnapshot) {
-      if (pacientsSnapshot.docs.isNotEmpty) {
-        var pacients = pacientsSnapshot.docs
-            .map((snapshot) => PacientModel.fromMap(snapshot.data()))
-            .where((mappedItem) =>
-                mappedItem.getNome != null && mappedItem.medicId == _userId)
-            .toList();
-
-        this._pacientsController.add(pacients);
-        notifyListeners();
-      }
-    });
-
-    return _pacientsController.stream;
   }
 }

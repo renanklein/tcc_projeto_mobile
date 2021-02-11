@@ -57,9 +57,9 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield PacientLoading();
 
-        var pacientList = await this.pacientRepository.getPacients();
+       pacientRepository.listenToPacients();
 
-        yield PacientLoadEventSuccess(pacientList);
+        yield PacientLoadEventSuccess(pacientRepository.pacientsList);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield PacientLoadEventFail();

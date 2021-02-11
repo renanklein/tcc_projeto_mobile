@@ -10,6 +10,10 @@ import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ListPacientScreen extends StatefulWidget {
+  String userUid;
+
+  ListPacientScreen({@required this.userUid});
+
   @override
   _ListPacientScreenState createState() => _ListPacientScreenState();
 }
@@ -19,16 +23,21 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientRepository _pacientRepository;
   List<PacientModel> pacientsList;
 
+  String get userUid => this.widget.userUid;
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController _searchBarController;
 
   @override
   void initState() {
+    this._pacientRepository = Injector.appInstance.getDependency<PacientRepository>();
+    this._pacientRepository.userId = this.userUid;
     this._pacientBloc = PacientBloc(
         pacientRepository:
-            Injector.appInstance.getDependency<PacientRepository>());
+           this._pacientRepository);
 
+    
     this._pacientBloc.add(PacientLoad());
 
     this._searchBarController = TextEditingController();

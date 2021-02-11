@@ -9,6 +9,9 @@ import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
+  String userUid;
+
+  AppointmentsWaitListScreen({@required this.userUid});
   @override
   _AppointmentsWaitListScreenState createState() =>
       _AppointmentsWaitListScreenState();
@@ -20,6 +23,8 @@ class _AppointmentsWaitListScreenState
   PacientRepository _pacientRepository;
   List<AppointmentModel> _appointmentList;
 
+  String get userUid => this.widget.userUid;
+
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -27,6 +32,7 @@ class _AppointmentsWaitListScreenState
     var injector = Injector.appInstance;
 
     this._pacientRepository = injector.getDependency<PacientRepository>();
+    this._pacientRepository.userId = this.userUid;
     this._pacientBloc =
         new PacientBloc(pacientRepository: this._pacientRepository);
 

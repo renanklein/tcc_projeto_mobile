@@ -70,25 +70,30 @@ class PreDiagnosisModel {
     int day = int.parse(key.split('/')[0]);
 
     return PreDiagnosisModel(
-      peso: int.parse(map['peso']),
-      altura: int.parse(map['altura']),
-      imc: double.parse(map['imc']),
-      paSistolica: int.parse(map['paSistolica']),
-      pADiastolica: int.parse(map['pADiastolica']),
-      freqCardiaca: int.parse(map['freqCardiaca']),
-      freqRepouso: int.parse(map['freqRepouso']),
-      temperatura: double.parse(map['temperatura']),
-      glicemia: int.parse(map['glicemia']),
-      dtUltimaMestruacao: new DateTime(
-        int.parse(map['ultimaMestruacao'].toString().split('/')[2]),
-        int.parse(map['ultimaMestruacao'].toString().split('/')[1]),
-        int.parse(map['ultimaMestruacao'].toString().split('/')[0]),
-      ),
-      dtProvavelParto: new DateTime(
-        int.parse(map['dtProvavelParto'].toString().split('/')[2]),
-        int.parse(map['dtProvavelParto'].toString().split('/')[1]),
-        int.parse(map['dtProvavelParto'].toString().split('/')[0]),
-      ),
+      peso: map['peso'],
+      altura: map['altura'],
+      imc: map['imc'],
+      paSistolica: map['paSistolica'],
+      pADiastolica: map['pADiastolica'],
+      freqCardiaca: map['freqCardiaca'],
+      freqRepouso: map['freqRepouso'],
+      temperatura: map['temperatura'],
+      glicemia: map['glicemia'],
+      observacao: map['observacao'],
+      /* ultimaMestruacao: (map['ultimaMestruacao'] != null)
+          ? new DateTime(
+              int.parse(map['ultimaMestruacao'].split('/')[2]),
+              int.parse(map['ultimaMestruacao'].split('/')[1]),
+              int.parse(map['ultimaMestruacao'].split('/')[0]),
+            )
+          : null,
+      dtProvavelParto: (map['dtProvavelParto'] != null)
+          ? new DateTime(
+              int.parse(map['dtProvavelParto'].split('/')[2]),
+              int.parse(map['dtProvavelParto'].split('/')[1]),
+              int.parse(map['dtProvavelParto'].split('/')[0]),
+            )
+          : null, */
       dtPreDiagnosis: new DateTime(
         year,
         mon,

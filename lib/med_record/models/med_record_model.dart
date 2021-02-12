@@ -60,6 +60,7 @@ class MedRecordModel {
     return MedRecordModel(
       overview: map['medRecordOverview'],
       completeDiagnosis: _diagnosisList,
+      preDiagnosis: _preDiagnosisList,
       createdDate: new DateTime(
         year,
         mon,

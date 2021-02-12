@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class AnamneseModel {
   int _age;
-  bool _smoking;
-  bool _drinking;
+  String _smoking;
+  String _drinking;
 
   AnamneseModel({
     @required int age,
-    @required bool smoking,
-    @required bool drinking,
+    @required String smoking,
+    @required String drinking,
   }) {
     this._age = age;
     this._smoking = smoking;
@@ -18,8 +18,8 @@ class AnamneseModel {
   Map<String, dynamic> toMap() {
     return {
       'age': _age as String,
-      'smoking': _smoking == false ? 'não' : 'sim',
-      'drinking': _drinking == false ? 'não' : 'sim',
+      'smoking': _smoking,
+      'drinking': _drinking,
     };
   }
 
@@ -27,12 +27,10 @@ class AnamneseModel {
     if (map == null) return null;
 
     return AnamneseModel(
-      age: map['age'],
+      age: int.parse(map['age']),
       smoking: map['smoking'],
       drinking: map['drinking'],
     );
   }
 
-  //String get email => this._email;
-  //set userUid(String uid) => this._userId = uid;
 }

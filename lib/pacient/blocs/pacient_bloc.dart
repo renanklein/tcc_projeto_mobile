@@ -35,20 +35,21 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
         PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
 
-        await this.pacientRepository.createPacient(
-                pacient: PacientModel(
-              userId: event.userId,
-              nome: event.nome,
-              email: event.email,
-              telefone: event.telefone,
-              identidade: event.identidade,
-              cpf: event.cpf,
-              dtNascimento: event.dtNascimento,
-              sexo: event.sexo,
-              salt: pacientHashModel.salt,
-            ));
+        PacientModel _pacientModel = PacientModel(
+          userId: event.userId,
+          nome: event.nome,
+          email: event.email,
+          telefone: event.telefone,
+          identidade: event.identidade,
+          cpf: event.cpf,
+          dtNascimento: event.dtNascimento,
+          sexo: event.sexo,
+          salt: pacientHashModel.salt,
+        );
 
-        yield CreatePacientEventSuccess();
+        await this.pacientRepository.createPacient(pacient: _pacientModel);
+
+        yield CreatePacientEventSuccess(_pacientModel);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreatePacientEventFail();
@@ -74,7 +75,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
         yield AppointmentLoadEventSuccess(_appointmentsList);
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-      } 
+      }
     } else if (event is PacientDetailLoad) {
       try {
         yield PacientDetailLoading();

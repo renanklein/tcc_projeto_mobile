@@ -6,9 +6,7 @@ import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
-import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
-import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
@@ -32,7 +30,6 @@ class MedRecordScreen extends StatefulWidget {
 class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
-  MedRecordModel _medRecordModel;
 
   String _pacientHash;
 
@@ -96,9 +93,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is AuthenticationUnauthenticated) {
-            } else if (state is MedRecordLoadEventSuccess) {
-              _medRecordModel = state.medRecordLoaded;
-            }
+            } else if (state is MedRecordLoadEventSuccess) {}
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             builder: (context, state) {
@@ -179,8 +174,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                       VerticalDivider(thickness: 1, width: 1),
                       // This is the main content.
                       Expanded(
-                          child: _showMedRecord(_selectedIndex, context
-                        ),
+                        child: _showMedRecord(_selectedIndex, context),
                       ),
                     ],
                   ),
@@ -243,17 +237,16 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 3:
-      return Column(
-        children: [
+        return Column(children: [
           Flexible(
-                      child: ListDiagnosisScreen(
+            child: ListDiagnosisScreen(
               pacient: medRecordArguments.pacientModel,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: MaterialButton(
-              child: Text("Cadastrar diagnostico"),
+                child: Text("Cadastrar diagnostico"),
                 color: Color(0xFF84FFFF),
                 height: 55.0,
                 shape: new RoundedRectangleBorder(
@@ -264,7 +257,6 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 }),
           ),
         ]);
-
 
         break;
 

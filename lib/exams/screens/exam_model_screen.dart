@@ -15,7 +15,7 @@ class ExamModelsScreen extends StatefulWidget {
 class _ExamModelsScreenState extends State<ExamModelsScreen> {
   // ignore: close_sinks
   MedRecordBloc _bloc;
-  List exam_models;
+  List examModels;
   List<String> examModelTypes = <String>[];
   Map<String, List> examModelFields = Map<String, List>();
   List<Map> _examModelsToBeExcluded = [];
@@ -42,8 +42,8 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
         listener: (context, state) {
           if (state is LoadExamModelSuccess) {
             state.models == null
-                ? this.exam_models = null
-                : this.exam_models = state.models["models"];
+                ? this.examModels = null
+                : this.examModels = state.models["models"];
             this.toExcludeCardsCount = 0;
           }
         },
@@ -68,11 +68,11 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
 
   List<Widget> _buildExamModelCards() {
     var cards = <Widget>[];
-    if (this.exam_models != null) {
+    if (this.examModels != null) {
       this
-          .exam_models
+          .examModels
           .sort((a, b) => a["Tipo de Exame"].compareTo(b["Tipo de Exame"]));
-      this.exam_models.forEach((map) {
+      this.examModels.forEach((map) {
         cards.add(ExamModelCard(
           modelTitle: map["Tipo de Exame"],
           modelFields: map["fields"],

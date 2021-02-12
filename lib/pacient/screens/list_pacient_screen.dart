@@ -7,7 +7,6 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
-import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ListPacientScreen extends StatefulWidget {
   String userUid;

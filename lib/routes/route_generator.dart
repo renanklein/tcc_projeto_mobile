@@ -57,7 +57,12 @@ class RouteGenerator {
         );
         break;
       case createPacientRoute:
-        return MaterialPageRoute(builder: (_) => CreatePacientScreen());
+        var routePath = settings.arguments as String;
+
+        return MaterialPageRoute(
+            builder: (_) => CreatePacientScreen(
+                  path: routePath,
+                ));
         break;
       case pacientDetailRoute:
         var pacientData = settings.arguments as PacientModel;

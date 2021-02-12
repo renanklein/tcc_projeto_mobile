@@ -36,7 +36,7 @@ class FunctionTextFormField extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
+            FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
           ],
           validator: validatorFunction,
           onChanged: onChangedFunction,

@@ -14,6 +14,14 @@ class CreatePacientEventProcessing extends PacientState {
 
 //TODO: Incluir modelo paciente para pre diagnose
 class CreatePacientEventSuccess extends PacientState {
+  PacientModel _createdPacient;
+
+  CreatePacientEventSuccess(PacientModel pacientModel) {
+    this._createdPacient = pacientModel;
+  }
+
+  PacientModel get pacientCreated => this._createdPacient;
+
   @override
   List<Object> get props => throw UnimplementedError();
 }

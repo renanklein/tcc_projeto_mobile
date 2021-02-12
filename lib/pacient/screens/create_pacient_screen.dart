@@ -11,9 +11,14 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 
 class CreatePacientScreen extends StatefulWidget {
+  final String path;
+
+  CreatePacientScreen({this.path});
+
   @override
   _CreatePacientScreenState createState() => _CreatePacientScreenState();
 }
@@ -22,6 +27,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
   UserModel _userModel;
+
+  String get getPath => this.widget.path;
 
   String sexoController = 'Masculino';
   String tipoDocumentoController = 'RG';
@@ -95,7 +102,14 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                 Colors.green,
                 Colors.white,
               ));
-              _createPacientFormKey.currentState.reset();
+              Future.delayed(Duration(seconds: 2));
+              if (this.getPath == preDiagnosisRoute) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  preDiagnosisRoute,
+                  arguments: state.pacientCreated,
+                );
+              }
             }
           },
           child:
@@ -278,7 +292,7 @@ Widget pacienteFormField(controller, label, hint, errorText) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
-      inputFormatters: label == "CPF:" ?  [mask] : null,
+      inputFormatters: label == "CPF:" ? [mask] : null,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

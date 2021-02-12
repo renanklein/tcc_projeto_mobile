@@ -82,20 +82,24 @@ class _AppointmentsWaitListScreenState
                     builder: (context, snapshot) {
                       return SafeArea(
                           child: Center(
-                        child: Container(
-                            width: MediaQuery.of(context).size.width * 0.98,
-                            child: Column(children: <Widget>[
-                              Expanded(
-                                child: (_appointmentList != null)
-                                    ? ListView.builder(
-                                        itemCount: _appointmentList.length,
-                                        itemBuilder: (context, index) =>
-                                            _listAppointmentView(
-                                          _appointmentList[index],
-                                        ),
-                                      )
-                                    : LayoutUtils.buildCircularProgressIndicator(context)
-                              )]))));
+                              child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.98,
+                                  child: Column(children: <Widget>[
+                                    Expanded(
+                                        child: (_appointmentList != null)
+                                            ? ListView.builder(
+                                                itemCount:
+                                                    _appointmentList.length,
+                                                itemBuilder: (context, index) =>
+                                                    _listAppointmentView(
+                                                  _appointmentList[index],
+                                                ),
+                                              )
+                                            : LayoutUtils
+                                                .buildCircularProgressIndicator(
+                                                    context))
+                                  ]))));
                     });
               }),
         ),

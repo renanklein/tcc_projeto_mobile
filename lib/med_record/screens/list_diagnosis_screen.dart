@@ -23,7 +23,8 @@ class ListDiagnosisScreen extends StatefulWidget {
 class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
-  MedRecordModel _pacientMedRecord;
+
+  bool showBothDiagnosis = false;
 
   PacientModel get pacient => this.widget.pacient;
 
@@ -55,9 +56,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
-            if (state is DiagnosisLoadEventSuccess) {
-              _pacientMedRecord = state.medRecordLoaded;
-            }
+            if (state is DiagnosisLoadEventSuccess) {}
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
             cubit: this._medRecordBloc,
@@ -69,7 +68,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                     child: Text(
                         'Não há informações de diagnostico cadastrado para esse paciente'));
               } else {
-                return Column(children: [
+                return SingleChildScrollView(
+                    child: Column(children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Container(
@@ -88,37 +88,43 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                       ),
                     ),
                   ),
-                  (state is DiagnosisLoadEventSuccess && state.medRecordLoaded.getDiagnosisList.length > 0)
-                          
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  state.medRecordLoaded.getDiagnosisList.length,
-                              itemBuilder: (context, index) => displayDiagnosis(
-                                state.medRecordLoaded.getDiagnosisList[index],
-                              ),
-                            )
-                          : (state is DiagnosisLoadEventSuccess && state.medRecordLoaded.getPreDiagnosisList.length >
-                                  0)
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: state
-                                      .medRecordLoaded.
-                                      getPreDiagnosisList.length,
-                                  itemBuilder: (context, index) =>
-                                      displayPreDiagnosis(
-                                    state.medRecordLoaded
-                                        .getPreDiagnosisList[index],
-                                    pacient
-                                  ),
-                                )
-                          
+                  (state is DiagnosisLoadEventSuccess)
+                      ? Column(children: [
+                          listDiagnosisScreen(state.medRecordLoaded),
+                          listPreDiagnosisScreen(state.medRecordLoaded, pacient)
+                        ])
                       : LayoutUtils.buildCircularProgressIndicator(context)
-                ]);
+                ]));
               }
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget listDiagnosisScreen(MedRecordModel medRecordModel) {
+    if (medRecordModel.getDiagnosisList == null) return null;
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: medRecordModel.getDiagnosisList.length,
+      itemBuilder: (context, index) => displayDiagnosis(
+        medRecordModel.getDiagnosisList[index],
+      ),
+    );
+  }
+
+  Widget listPreDiagnosisScreen(
+      MedRecordModel medRecordModel, PacientModel pacientModel) {
+    if (medRecordModel.getPreDiagnosisList == null) return null;
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: medRecordModel.getPreDiagnosisList.length,
+      itemBuilder: (context, index) => displayPreDiagnosis(
+        medRecordModel.getPreDiagnosisList[index],
+        pacientModel,
       ),
     );
   }
@@ -158,11 +164,23 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     var date = dateFormat.format(preDiagnosisModel.getPreDiagnosisDate);
 
     Widget showWomanPreDiagnosis = Text('');
+    String dtProvavelParto = '';
+    String dtUltimaMestruacao = '';
 
-    if (pacientModel.getSexo == 'Feminino') {
+    if (preDiagnosisModel.dtProvavelParto != null) {
+        
+dtProvavelParto = dateFormat.format(preDiagnosisModel.dtProvavelParto);
+    }
+
+    if (preDiagnosisModel.dtUltimaMestruacao != null) {
+        dtUltimaMestruacao = dateFormat.format(preDiagnosisModel.dtUltimaMestruacao);
+    }
+
+    if (pacientModel.getSexo == 'Feminino' &&
+        dtProvavelParto != dtUltimaMestruacao) {
       showWomanPreDiagnosis = Column(children: [
-        Text(preDiagnosisModel.dtProvavelParto.toString()),
-        Text(preDiagnosisModel.dtUltimaMestruacao.toString()),
+        Text(dtProvavelParto),
+        Text(dtUltimaMestruacao),
       ]);
     }
 

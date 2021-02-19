@@ -102,7 +102,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                 Colors.green,
                 Colors.white,
               ));
-              Future.delayed(Duration(seconds: 2));
               if (this.getPath == preDiagnosisRoute) {
                 Navigator.pushReplacementNamed(
                   context,

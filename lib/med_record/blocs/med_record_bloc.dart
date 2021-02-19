@@ -158,9 +158,9 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         if (medRecord.getDiagnosisList == null &&
             medRecord.getPreDiagnosisList == null) {
           yield MedRecordLoadEventFail();
+        } else {
+          yield DiagnosisLoadEventSuccess(medRecordModel: medRecord);
         }
-
-        yield DiagnosisLoadEventSuccess(medRecordModel: medRecord);
       } catch (error) {
         yield MedRecordLoadEventFail();
       }

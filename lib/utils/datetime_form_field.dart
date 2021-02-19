@@ -18,7 +18,7 @@ class DateTimeFormField extends StatelessWidget {
           controller: dateTimeController,
           validator: (value) {
             if (value == null) {
-              return "Não foi selecionado um data";
+              return "Não foi selecionada uma data";
             }
 
             return null;

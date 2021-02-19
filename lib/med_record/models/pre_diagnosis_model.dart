@@ -56,7 +56,32 @@ class PreDiagnosisModel {
     int mon = int.parse(key.split('/')[1]);
     int day = int.parse(key.split('/')[0]);
 
-    return PreDiagnosisModel(
+    var dtUltimaMestruacao = map['ultimaMestruacao'] ?? '';
+    var dtProvavelParto = map['dtProvavelParto'] ?? '';
+
+    PreDiagnosisModel preDiagnosisModel = new PreDiagnosisModel(
+      peso: map['peso'],
+      altura: map['altura'],
+      imc: map['imc'],
+      paSistolica: map['paSistolica'],
+      pADiastolica: map['pADiastolica'],
+      freqCardiaca: map['freqCardiaca'],
+      freqRepouso: map['freqRepouso'],
+      temperatura: map['temperatura'],
+      glicemia: map['glicemia'],
+      dtPreDiagnosis: new DateTime(
+        year,
+        mon,
+        day,
+      ),
+    );
+
+    preDiagnosisModel.setDtProvavelParto = dtProvavelParto;
+    preDiagnosisModel.setDtUltimaMestruacao = dtUltimaMestruacao;
+
+    return preDiagnosisModel;
+
+    /* PreDiagnosisModel(
       peso: map['peso'],
       altura: map['altura'],
       imc: map['imc'],
@@ -85,7 +110,7 @@ class PreDiagnosisModel {
         mon,
         day,
       ),
-    );
+    ); */
   }
 
   int get peso => _peso;
@@ -101,4 +126,26 @@ class PreDiagnosisModel {
   DateTime get ultimaMestruacao => _ultimaMestruacao;
   DateTime get dtProvavelParto => _dtProvavelParto;
   DateTime get getPreDiagnosisDate => _preDiagnosisDate;
+
+  set setDtUltimaMestruacao(String date) {
+    if (date != '') {
+      var dt = new DateTime(
+        int.parse(date.split('/')[2]),
+        int.parse(date.split('/')[1]),
+        int.parse(date.split('/')[0]),
+      );
+      this._ultimaMestruacao = dt;
+    }
+  }
+
+  set setDtProvavelParto(String date) {
+    if (date != '') {
+      var dt = new DateTime(
+        int.parse(date.split('/')[2]),
+        int.parse(date.split('/')[1]),
+        int.parse(date.split('/')[0]),
+      );
+      this._dtProvavelParto = dt;
+    }
+  }
 }

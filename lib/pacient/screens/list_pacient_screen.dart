@@ -20,7 +20,8 @@ class ListPacientScreen extends StatefulWidget {
 class _ListPacientScreenState extends State<ListPacientScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
-  List<PacientModel> pacientsList;
+  List<PacientModel> pacientsSorted = [];
+  List<PacientModel> pacientsList = [];
 
   String get userUid => this.widget.userUid;
 
@@ -30,13 +31,11 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
 
   @override
   void initState() {
-    this._pacientRepository = Injector.appInstance.getDependency<PacientRepository>();
+    this._pacientRepository =
+        Injector.appInstance.getDependency<PacientRepository>();
     this._pacientRepository.userId = this.userUid;
-    this._pacientBloc = PacientBloc(
-        pacientRepository:
-           this._pacientRepository);
+    this._pacientBloc = PacientBloc(pacientRepository: this._pacientRepository);
 
-    
     this._pacientBloc.add(PacientLoad());
 
     this._searchBarController = TextEditingController();
@@ -53,100 +52,130 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text("Menu principal"),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 0.0,
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text("Menu principal"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0.0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          color: Theme.of(context).primaryColor,
+          onPressed: () {
+            Navigator.of(context).pushNamed(createPacientRoute);
+          },
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            color: Theme.of(context).primaryColor,
-            onPressed: () {
-              Navigator.of(context).pushNamed(createPacientRoute);
+      ),
+      body: BlocProvider<PacientBloc>(
+        create: (context) => this._pacientBloc,
+        child: BlocListener<PacientBloc, PacientState>(
+          listener: (context, state) {
+            if (state is PacientLoadEventSuccess) {
+              pacientsList = state.pacientsLoaded;
+            } else if (state is PacientLoading) {
+              return Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  );
+            }
+          },
+          child: BlocBuilder<PacientBloc, PacientState>(
+            cubit: this._pacientBloc,
+            builder: (context, state) {
+              return SafeArea(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.98,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 15.0, 8.0, 4.0),
+                            child: Container(
+                              child: TextFormField(
+                                controller: _searchBarController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4.0)),
+                                  ),
+                                  hintText:
+                                      'Digite um nome aqui para pesquisar',
+                                ),
+                                onChanged: (value) {
+                                                                      setState(() {
+
+                                                                      pacientsSorted.clear();
+
+                                  if (value.length > 0) {
+                                    for (final e in pacientsList) {
+                                        if (e.getNome.toLowerCase().contains(value.toLowerCase())) {
+                                          pacientsSorted.add(e);
+                                        }
+                                      }                                   
+                                  }});}, 
+                                
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return '';
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: (pacientsList != null)
+                                ? _buildPacientView(
+                                    pacientsList, pacientsSorted)
+                                : Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
             },
           ),
         ),
-        body: BlocProvider<PacientBloc>(
-            create: (context) => this._pacientBloc,
-            child: BlocListener<PacientBloc, PacientState>(
-                listener: (context, state) {
-                  if (state is PacientLoadEventSuccess) {
-                  } else if (state is PacientLoadEventFail) {}
-                },
-                child: BlocBuilder<PacientBloc, PacientState>(
-                    cubit: this._pacientBloc,
-                    builder: (context, state) {
-                      return SafeArea(
-                          child: Center(
-                              child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.98,
-                                      child: Column(children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8.0, 15.0, 8.0, 4.0),
-                                          child: Container(
-                                            child: TextFormField(
-                                              controller: _searchBarController,
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(4.0)),
-                                                ),
-                                                hintText:
-                                                    'Digite um nome aqui para pesquisar',
-                                              ),
-                                              onChanged: (value) {
-                                                for (final e in pacientsList) {}
-                                              },
-                                              validator: (value) {
-                                                if (value.isEmpty) {
-                                                  return '';
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child:
-                                              (state is PacientLoadEventSuccess &&
-                                                      state.pacientsLoaded !=
-                                                          null)
-                                                  ? ListView.builder(
-                                                      itemCount:
-                                                          (state.pacientsLoaded)
-                                                              .length,
-                                                      itemBuilder:
-                                                          (context, index) =>
-                                                              _listPacientView(
-                                                        state.pacientsLoaded[
-                                                            index],
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation(
-                                                          Theme.of(context)
-                                                              .primaryColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                        )
-                                      ])))));
-                    }))));
+      ),
+    );
+  }
+
+  Widget _buildPacientView(
+      List<PacientModel> pacientList, List<PacientModel> sortedList) {
+    if (sortedList.length < 1) {
+      return ListView.builder(
+        itemCount: (pacientList).length,
+        itemBuilder: (context, index) => _listPacientView(
+          pacientList[index],
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: (sortedList).length,
+        itemBuilder: (context, index) => _listPacientView(
+          sortedList[index],
+        ),
+      );
+    }
   }
 
   Widget _listPacientView(PacientModel pacient) {

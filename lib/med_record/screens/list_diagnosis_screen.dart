@@ -66,7 +66,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
               } else if (state is MedRecordLoadEventFail) {
                 return Center(
                     child: Text(
-                        'Não há informações de diagnostico cadastrado para esse paciente'));
+                        'Não há informações de diagnostico cadastradas para esse paciente'));
               } else {
                 return SingleChildScrollView(
                     child: Column(children: [
@@ -168,12 +168,12 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     String dtUltimaMestruacao = '';
 
     if (preDiagnosisModel.dtProvavelParto != null) {
-        
-dtProvavelParto = dateFormat.format(preDiagnosisModel.dtProvavelParto);
+      dtProvavelParto = dateFormat.format(preDiagnosisModel.dtProvavelParto);
     }
 
     if (preDiagnosisModel.dtUltimaMestruacao != null) {
-        dtUltimaMestruacao = dateFormat.format(preDiagnosisModel.dtUltimaMestruacao);
+      dtUltimaMestruacao =
+          dateFormat.format(preDiagnosisModel.dtUltimaMestruacao);
     }
 
     if (pacientModel.getSexo == 'Feminino' &&

@@ -55,8 +55,8 @@ class PacientLoadEventSuccess extends PacientState {
   List<PacientModel> _pacientsLoaded;
 
   PacientLoadEventSuccess(List<PacientModel> pacients) {
-    pacients.sort((a, b) => a.getNome.compareTo(b.getNome));
     this._pacientsLoaded = pacients;
+    this._pacientsLoaded.sort((a, b) => a.getNome.compareTo(b.getNome));
   }
 
   List<PacientModel> get pacientsLoaded => this._pacientsLoaded;

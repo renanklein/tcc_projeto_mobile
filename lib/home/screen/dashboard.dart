@@ -56,102 +56,104 @@ class _DashboardState extends State<Dashboard> {
               ),
               drawer: UserDrawer(),
               body: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                createPacientRoute,
-                                arguments: 'Dashboard',
-                              );
-                            },
-                            child: _dashboardItem(
-                              Icons.library_add,
-                              'Cadastrar Paciente',
-                              0xFF1A237E,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  createPacientRoute,
+                                  arguments: 'Dashboard',
+                                );
+                              },
+                              child: _dashboardItem(
+                                Icons.library_add,
+                                'Cadastrar Paciente',
+                                0xFF1A237E,
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                pacientsRoute,
-                                arguments: this.userRepository.getUser().uid,
-                              );
-                            },
-                            child: _dashboardItem(
-                                Icons.archive, 'Listar Pacientes', 0xFF1A237E),
-                          ),
-                        ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  pacientsRoute,
+                                  arguments: this.userRepository.getUser().uid,
+                                );
+                              },
+                              child: _dashboardItem(Icons.archive,
+                                  'Listar Pacientes', 0xFF1A237E),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                calendarRoute,
-                                arguments: 'Dashboard',
-                              );
-                            },
-                            child: _dashboardItem(
-                              Icons.event,
-                              'Eventos',
-                              0xFF1A237E,
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  calendarRoute,
+                                  arguments: 'Dashboard',
+                                );
+                              },
+                              child: _dashboardItem(
+                                Icons.event,
+                                'Eventos',
+                                0xFF1A237E,
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                waitListRoute,
-                                arguments: 'Dashboard',
-                              );
-                            },
-                            child: _dashboardItem(
-                              Icons.library_add,
-                              'Banco de Encaixe',
-                              0xFF1A237E,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  waitListRoute,
+                                  arguments: 'Dashboard',
+                                );
+                              },
+                              child: _dashboardItem(
+                                Icons.library_add,
+                                'Banco de Encaixe',
+                                0xFF1A237E,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                appointmentsViewRoute,
-                                arguments: this.userRepository.getUser().uid,
-                              );
-                            },
-                            child: _dashboardItem(
-                              Icons.library_add,
-                              'Listar Agendamentos Futuros',
-                              0xFF1A237E,
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  appointmentsViewRoute,
+                                  arguments: this.userRepository.getUser().uid,
+                                );
+                              },
+                              child: _dashboardItem(
+                                Icons.library_add,
+                                'Listar Agendamentos Futuros',
+                                0xFF1A237E,
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: _dashboardItem(
-                                Icons.archive, 'Desativado', 0xFF1A237E),
-                          ),
-                        ],
+                            GestureDetector(
+                              onTap: () {},
+                              child: _dashboardItem(
+                                  Icons.archive, 'Desativado', 0xFF1A237E),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

@@ -110,8 +110,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
       child: ListView(
         children: [
           Field(
-              textController: this._examTypeController,
-              fieldPlaceholder: "Tipo de Exame"),
+            textController: this._examTypeController,
+            fieldPlaceholder: "Tipo de Exame",
+            isReadOnly: false,
+          ),
           LayoutUtils.buildVerticalSpacing(10.0),
           DateTimeFormField(
             fieldPlaceholder: "Data de Realização",

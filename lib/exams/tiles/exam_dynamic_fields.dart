@@ -65,6 +65,7 @@ class _ExamDinamicFieldsBottomsheetState
                       child: Field(
                         textController: fieldNameController,
                         fieldPlaceholder: "Nome do campo",
+                        isReadOnly: false,
                       ),
                     ),
                     LayoutUtils.buildVerticalSpacing(5.0),
@@ -73,6 +74,7 @@ class _ExamDinamicFieldsBottomsheetState
                       child: Field(
                         textController: fieldValueController,
                         fieldPlaceholder: "Valor do campo",
+                        isReadOnly: false,
                       ),
                     ),
                     LayoutUtils.buildVerticalSpacing(10.0),

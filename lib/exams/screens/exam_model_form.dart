@@ -108,8 +108,10 @@ class _ExamModelFormState extends State<ExamModelForm> {
   List _buildMandatoryFields() {
     return <Widget>[
       Field(
-          textController: this._examTypeController,
-          fieldPlaceholder: this.examTypePlaceholder),
+        textController: this._examTypeController,
+        fieldPlaceholder: this.examTypePlaceholder,
+        isReadOnly: false,
+      ),
       LayoutUtils.buildVerticalSpacing(10.0),
       TextFormField(
         controller: this._examModelFieldsNamesController,

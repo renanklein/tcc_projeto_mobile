@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 class Field extends StatelessWidget {
   final textController;
   final fieldPlaceholder;
+  final bool isReadOnly;
 
-  Field({@required this.textController, @required this.fieldPlaceholder});
+  Field(
+      {@required this.textController,
+      @required this.fieldPlaceholder,
+      @required this.isReadOnly});
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: textController,
+      readOnly: this.isReadOnly,
       validator: (value) {
         if (value.isEmpty) {
           return "Este campo não foi preenchido";

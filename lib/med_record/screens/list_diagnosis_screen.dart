@@ -10,6 +10,7 @@ import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_mo
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ListDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -68,33 +69,37 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                     child: Text(
                         'Não há informações de diagnostico cadastradas para esse paciente'));
               } else {
-                return SingleChildScrollView(
-                    child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.lightBlue[100],
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        'Listar Diagnóstico',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20.0,
+                return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlue[100],
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'Listar Diagnóstico',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  (state is DiagnosisLoadEventSuccess)
-                      ? Column(children: [
-                          listDiagnosisScreen(state.medRecordLoaded),
-                          listPreDiagnosisScreen(state.medRecordLoaded, pacient)
-                        ])
-                      : LayoutUtils.buildCircularProgressIndicator(context)
-                ]));
+                        LayoutUtils.buildVerticalSpacing(10.0),
+                        (state is DiagnosisLoadEventSuccess)
+                            ? Column(children: [
+                                ...listDiagnosisScreen(state.medRecordLoaded),
+                                ...listPreDiagnosisScreen(
+                                    state.medRecordLoaded, pacient)
+                              ])
+                            : LayoutUtils.buildCircularProgressIndicator(
+                                context)
+                      ],
+                    ));
               }
             },
           ),
@@ -103,30 +108,28 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     );
   }
 
-  Widget listDiagnosisScreen(MedRecordModel medRecordModel) {
+  List<Widget> listDiagnosisScreen(MedRecordModel medRecordModel) {
+    var fields = <Widget>[];
     if (medRecordModel.getDiagnosisList == null) return null;
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: medRecordModel.getDiagnosisList.length,
-      itemBuilder: (context, index) => displayDiagnosis(
-        medRecordModel.getDiagnosisList[index],
-      ),
-    );
+    medRecordModel.getDiagnosisList.forEach((element) {
+      fields.addAll(displayDiagnosis(element));
+    });
+
+    return fields;
   }
 
-  Widget listPreDiagnosisScreen(
+  List<Widget> listPreDiagnosisScreen(
       MedRecordModel medRecordModel, PacientModel pacientModel) {
+    var fields = <Widget>[];
+
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: medRecordModel.getPreDiagnosisList.length,
-      itemBuilder: (context, index) => displayPreDiagnosis(
-        medRecordModel.getPreDiagnosisList[index],
-        pacientModel,
-      ),
-    );
+    medRecordModel.getPreDiagnosisList.forEach((element) {
+      fields.addAll(displayPreDiagnosis(element, pacientModel));
+    });
+
+    return fields;
   }
 
   void _loadDiagnosis() {
@@ -138,27 +141,90 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     );
   }
 
-  Widget displayDiagnosis(CompleteDiagnosisModel diagnosisModel) {
+  List<Widget> displayDiagnosis(CompleteDiagnosisModel diagnosisModel) {
     var dateFormat = DateFormat("dd/MM/yyyy");
     var date = dateFormat.format(diagnosisModel.diagnosisDate);
 
-    return Column(
-      children: [
-        Text(date),
-        Text('Text: ' + diagnosisModel.problem.problemDescription),
-        Text(diagnosisModel.problem.problemId),
-        Text(diagnosisModel.diagnosis.diagnosisCid),
-        Text(diagnosisModel.diagnosis.diagnosisDescription),
-        Text(diagnosisModel.prescription.prescriptionMedicine),
-        Text(diagnosisModel.prescription.prescriptionUsageOrientation),
-        Text(diagnosisModel.prescription.prescriptionUsageDuration),
-        Text(diagnosisModel.prescription.prescriptionDosage),
-        Text(diagnosisModel.prescription.prescriptionDosageForm),
-      ],
-    );
+    return [
+      Field(
+        textController: TextEditingController(text: date),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: 'Text: ' + diagnosisModel.problem.problemDescription),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController:
+            TextEditingController(text: diagnosisModel.problem.problemId),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController:
+            TextEditingController(text: diagnosisModel.diagnosis.diagnosisCid),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.diagnosis.diagnosisDescription),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionMedicine),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionUsageOrientation),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionUsageDuration),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionUsageDuration),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionDosage),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: diagnosisModel.prescription.prescriptionDosageForm),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      )
+    ];
   }
 
-  Widget displayPreDiagnosis(
+  List<Widget> displayPreDiagnosis(
       PreDiagnosisModel preDiagnosisModel, PacientModel pacientModel) {
     var dateFormat = DateFormat("dd/MM/yyyy");
     var date = dateFormat.format(preDiagnosisModel.getPreDiagnosisDate);
@@ -184,19 +250,70 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       ]);
     }
 
-    return Column(
-      children: [
-        Text(date),
-        Text(preDiagnosisModel.pASistolica.toString()),
-        Text(preDiagnosisModel.pADiastolica.toString()),
-        Text(preDiagnosisModel.peso.toString()),
-        Text(preDiagnosisModel.imc.toString()),
-        Text(preDiagnosisModel.glicemia.toString()),
-        Text(preDiagnosisModel.freqCardiaca.toString()),
-        Text(preDiagnosisModel.freqRepouso.toString()),
-        showWomanPreDiagnosis,
-        Text(preDiagnosisModel.observacao.toString()),
-      ],
-    );
+    return [
+      Field(
+        textController: TextEditingController(text: date),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: preDiagnosisModel.pASistolica.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: preDiagnosisModel.pADiastolica.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController:
+            TextEditingController(text: preDiagnosisModel.peso.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController:
+            TextEditingController(text: preDiagnosisModel.imc.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController:
+            TextEditingController(text: preDiagnosisModel.glicemia.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: preDiagnosisModel.freqCardiaca.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: preDiagnosisModel.freqRepouso.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+      LayoutUtils.buildVerticalSpacing(8.0),
+      showWomanPreDiagnosis,
+      LayoutUtils.buildVerticalSpacing(8.0),
+      Field(
+        textController: TextEditingController(
+            text: preDiagnosisModel.observacao.toString()),
+        isReadOnly: true,
+        fieldPlaceholder: "",
+      ),
+    ];
   }
 }

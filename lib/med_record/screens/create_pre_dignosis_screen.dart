@@ -137,7 +137,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                       alturaController.text)) /
                                               10000);
                                   showImc =
-                                      Text(imcController.toStringAsFixed(1));
+                                      Text('IMC: '+imcController.toStringAsFixed(1));
                                 });
                               }
                             },
@@ -167,7 +167,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                       alturaController.text)) /
                                               10000);
                                   showImc =
-                                      Text(imcController.toStringAsFixed(1));
+                                      Text('IMC: '+imcController.toStringAsFixed(1));
                                 });
                               }
                             },

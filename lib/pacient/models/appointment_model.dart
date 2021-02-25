@@ -12,7 +12,7 @@ class AppointmentModel {
     @required DateTime appointmentTime,
     String email,
   }) {
-    this._nome = nome;
+    this._nome = nome.toUpperCase();
     this._email = email;
     this._telefone = telefone;
     this._horarioAgendamento = appointmentTime;

@@ -24,12 +24,7 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
 
   @override
   void initState() {
-    var injector = Injector.appInstance;
-
-    this._pacientRepository = injector.getDependency<PacientRepository>();
-    this._pacientBloc =
-        new PacientBloc(pacientRepository: this._pacientRepository);
-
+    this._pacientBloc = context.read<PacientBloc>();
     super.initState();
   }
 
@@ -68,58 +63,64 @@ Widget pacientDetail(PacientModel pacient, BuildContext context) {
           Column(
             children: [
               Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlue[100],
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            'Informações do Paciente',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ),
-                      ),
+                padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue[100],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'Informações do Paciente',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ),
               Text(
                 "Nome: " + pacient.getNome,
                 style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "Telefone: " + pacient.getTelefone,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "Telefone: " + pacient.getTelefone,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "Email: " + pacient.getEmail,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "Email: " + pacient.getEmail,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "Nº Documento: " + pacient.getRg,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "Nº Documento: " + pacient.getRg,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "CPF: " + pacient.getCpf,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "CPF: " + pacient.getCpf,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "Data de Nascimento: " + pacient.getDtNascimento,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "Data de Nascimento: " + pacient.getDtNascimento,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
               Text(
-                "Sexo: " + pacient.getSexo,style: TextStyle(
-                              fontSize: 17.0,
-                            ),
+                "Sexo: " + pacient.getSexo,
+                style: TextStyle(
+                  fontSize: 17.0,
+                ),
               ),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
@@ -47,31 +47,12 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
   @override
   void initState() {
-    var injector = Injector.appInstance;
-    this._medRecordRepository = injector.getDependency<MedRecordRepository>();
+    this._medRecordBloc = context.read<MedRecordBloc>();
+    var pacientHash =
+        SltPattern.retrivepacientHash(pacient.getCpf, pacient.getSalt);
 
-    this._medRecordBloc = new MedRecordBloc(
-      medRecordRepository: this._medRecordRepository,
-    );
-
+    this._medRecordBloc.medRecordRepository.setPacientHash = pacientHash;
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    pesoController.dispose();
-    alturaController.dispose();
-    pASistolicaController.dispose();
-    pADiastolicaController.dispose();
-    freqCardiacaController.dispose();
-    freqRepousoController.dispose();
-    temperaturaController.dispose();
-    glicemiaController.dispose();
-    obsController.dispose();
-    dtUltimaMestruacaoController.dispose();
-    dtProvavelPartoController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -103,24 +84,24 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.lightBlue[100],
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  'Cadastrar Pré-Diagnóstico',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                  ),
+                            padding:
+                                const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: Colors.lightBlue[100],
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Cadastrar Pré-Diagnóstico',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20.0,
                                 ),
                               ),
                             ),
+                          ),
                           FunctionTextFormField(
                             controller: pesoController,
                             label: 'Peso',
@@ -136,8 +117,8 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                   int.parse(
                                                       alturaController.text)) /
                                               10000);
-                                  showImc =
-                                      Text('IMC: '+imcController.toStringAsFixed(1));
+                                  showImc = Text('IMC: ' +
+                                      imcController.toStringAsFixed(1));
                                 });
                               }
                             },
@@ -166,8 +147,8 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                   int.parse(
                                                       alturaController.text)) /
                                               10000);
-                                  showImc =
-                                      Text('IMC: '+imcController.toStringAsFixed(1));
+                                  showImc = Text('IMC: ' +
+                                      imcController.toStringAsFixed(1));
                                 });
                               }
                             },

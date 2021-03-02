@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 
 class ListPacientScreen extends StatefulWidget {
   String userUid;
@@ -80,12 +81,12 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
               pacientsList = state.pacientsLoaded;
             } else if (state is PacientLoading) {
               return Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                  );
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).primaryColor,
+                  ),
+                ),
+              );
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
@@ -114,18 +115,33 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                       'Digite um nome aqui para pesquisar',
                                 ),
                                 onChanged: (value) {
-                                                                      setState(() {
+                                  setState(
+                                    () {
+                                      pacientsSorted.clear();
 
-                                                                      pacientsSorted.clear();
-
-                                  if (value.length > 0) {
-                                    for (final e in pacientsList) {
-                                        if (e.getNome.toLowerCase().contains(value.toLowerCase())) {
-                                          pacientsSorted.add(e);
+                                      if (value.length > 0) {
+                                        var nome = value.toUpperCase();
+                                        for (final e in pacientsList) {
+                                          if (e.getNome.contains(nome)) {
+                                            pacientsSorted.add(e);
+                                          }
                                         }
-                                      }                                   
-                                  }});}, 
-                                
+                                        if (pacientsSorted.length < 1) {
+                                          Scaffold.of(context)
+                                              .showSnackBar(messageSnackBar(
+                                            context,
+                                            "Paciente não encontrado",
+                                            Colors.red,
+                                            Colors.white,
+                                          ));
+                                          _searchBarController.text = '';
+                                        }
+                                      } else {
+                                        Scaffold.of(context).hideCurrentSnackBar();
+                                      }
+                                    },
+                                  );
+                                },
                                 validator: (value) {
                                   if (value.isEmpty) {
                                     return '';

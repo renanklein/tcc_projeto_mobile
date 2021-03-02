@@ -23,7 +23,7 @@ class PacientModel {
     @required String userId,
     @required String salt,
   }) {
-    this._nome = nome;
+    this._nome = nome.toUpperCase();
     this._email = email;
     this._telefone = telefone;
     this._identidade = identidade;

@@ -54,25 +54,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 
   @override
   void initState() {
-    var injector = Injector.appInstance;
-    this._pacientRepository = injector.getDependency<PacientRepository>();
-
-    this._pacientBloc = new PacientBloc(
-      pacientRepository: this._pacientRepository,
-    );
-
+    this._pacientBloc = context.read<PacientBloc>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    nomeController.dispose();
-    emailController.dispose();
-    telefoneController.dispose();
-    identidadeController.dispose();
-    cpfController.dispose();
-    dtNascController.dispose();
-    super.dispose();
   }
 
   Future<void> _setUserModel() async {

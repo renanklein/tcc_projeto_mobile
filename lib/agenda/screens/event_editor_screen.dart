@@ -383,6 +383,6 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   }
 
   void refreshScreenWithPacientData(String pacientName) {
-    this._pacientBloc.add(GetPacientByName(name: pacientName));
+    this._pacientBloc.add(GetPacientByName(name: pacientName.toUpperCase()));
   }
 }

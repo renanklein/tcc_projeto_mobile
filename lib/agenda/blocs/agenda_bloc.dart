@@ -11,6 +11,7 @@ part 'agenda_state.dart';
 
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   AgendaRepository agendaRepository;
+  FirebaseCrashlytics crashlytics = FirebaseCrashlytics.instance;
 
   AgendaBloc({@required this.agendaRepository}) : super(null);
 
@@ -33,7 +34,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield EventProcessingSuccess();
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaLoad) {
@@ -44,7 +45,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield AgendaLoadSuccess(eventsLoaded: events);
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield AgendaLoadFail();
       }
     } else if (event is AgendaEditButtonPressed) {
@@ -65,7 +66,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield EventProcessingSuccess();
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaDeleteButtonPressed) {
@@ -78,7 +79,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield EventProcessingSuccess();
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     } else if (event is AgendaEventAvailableTimeLoad) {
@@ -91,7 +92,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield AgendaAvailableTimeSuccess(occupedHours);
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield AgendaAvailableTimeFail();
       }
     } else if (event is AgendaEventConfirmButtomPressed) {
@@ -104,7 +105,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
         yield EventProcessingSuccess();
       } catch (error, stack_trace) {
-        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
     }

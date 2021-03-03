@@ -54,6 +54,12 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
             return ListView(padding: EdgeInsets.all(10.0), children: [
+              Center(
+                child: Text("Toque nos cards que deseja excluir",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 16.0)),
+              ),
+              LayoutUtils.buildVerticalSpacing(10.0),
               this.toExcludeCardsCount == 0
                   ? Container()
                   : _buildExcludeCardItensBar(),

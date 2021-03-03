@@ -51,19 +51,9 @@ class _UserDrawerState extends State<UserDrawer> {
                       children: <Widget>[
                         _createDrawerHeader(this.userModel, context),
                         DrawerTile(
-                          icon: Icons.person,
-                          text: "Pacientes",
-                          onTapCallback: _navigateToPacientScreen,
-                        ),
-                        DrawerTile(
                           icon: Icons.event_note,
                           text: "Modelo de exames",
                           onTapCallback: _navigateToExameScreen,
-                        ),
-                        DrawerTile(
-                          icon: Icons.assignment,
-                          text: "Prontuario",
-                          onTapCallback: () {},
                         ),
                         DrawerTile(
                           icon: Icons.info,
@@ -160,12 +150,5 @@ class _UserDrawerState extends State<UserDrawer> {
   void _navigateToExameScreen() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => ExamModelsScreen()));
-  }
-
-  void _navigateToPacientScreen() {
-    Navigator.of(context).pushNamed(
-      '/pacients',
-      arguments: 'drawer',
-    );
   }
 }

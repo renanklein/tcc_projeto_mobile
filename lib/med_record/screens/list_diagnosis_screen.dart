@@ -51,9 +51,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: BlocProvider<MedRecordBloc>(
+    return Container(
+      child: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
@@ -73,6 +72,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                     padding: EdgeInsets.all(8.0),
                     child: ListView(
                       shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,

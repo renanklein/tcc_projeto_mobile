@@ -74,12 +74,6 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   }
 
   @override
-  void dispose() {
-    //nomeController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -190,8 +184,18 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   Widget _showMedRecord(index, context) {
     switch (index) {
       case 1:
-        return PacientDetailScreen(
-          pacient: medRecordArguments.pacientModel,
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            ListDiagnosisScreen(
+              pacient: this.medRecordArguments.pacientModel,
+            ),
+            LayoutUtils.buildVerticalSpacing(10.0),
+            PacientDetailScreen(
+              pacient: medRecordArguments.pacientModel,
+            ),
+            LayoutUtils.buildVerticalSpacing(30.0),
+          ],
         );
         break;
 

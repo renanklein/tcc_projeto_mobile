@@ -9,6 +9,7 @@ import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/utils/details_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -146,81 +147,53 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     var date = dateFormat.format(diagnosisModel.diagnosisDate);
 
     return [
-      Field(
-        textController: TextEditingController(text: date),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: date, fieldPlaceholder: "Data", isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: 'Text: ' + diagnosisModel.problem.problemDescription),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.problem.problemDescription,
+          fieldPlaceholder: "Descrição do problema",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController:
-            TextEditingController(text: diagnosisModel.problem.problemId),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.problem.problemId,
+          fieldPlaceholder: "ID do problema",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController:
-            TextEditingController(text: diagnosisModel.diagnosis.diagnosisCid),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.diagnosis.diagnosisCid,
+          fieldPlaceholder: "Cid do diagnóstico",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.diagnosis.diagnosisDescription),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.diagnosis.diagnosisDescription,
+          fieldPlaceholder: "Descrição do diagnóstico",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionMedicine),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.prescription.prescriptionMedicine,
+          fieldPlaceholder: "Medicamento",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionUsageOrientation),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.prescription.prescriptionUsageOrientation,
+          fieldPlaceholder: "Orientação de uso",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionUsageDuration),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.prescription.prescriptionUsageDuration,
+          fieldPlaceholder: "Duração de uso",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionUsageDuration),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
+      DetailsField(
+          fieldValue: diagnosisModel.prescription.prescriptionDosage,
+          fieldPlaceholder: "Dosagem",
+          isReadOnly: true),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionDosage),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      ),
-      LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: diagnosisModel.prescription.prescriptionDosageForm),
-        isReadOnly: true,
-        fieldPlaceholder: "",
-      )
+      DetailsField(
+          fieldValue: diagnosisModel.prescription.prescriptionDosageForm,
+          fieldPlaceholder: "Formulário de dosagem",
+          isReadOnly: true),
     ];
   }
 
@@ -251,68 +224,60 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     }
 
     return [
-      Field(
-        textController: TextEditingController(text: date),
+      DetailsField(
+        fieldValue: date,
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Data",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: preDiagnosisModel.pASistolica.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.pASistolica.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "PA Sistolica",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: preDiagnosisModel.pADiastolica.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.pADiastolica.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "PA Diastolica",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController:
-            TextEditingController(text: preDiagnosisModel.peso.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.peso.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Peso",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController:
-            TextEditingController(text: preDiagnosisModel.imc.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.imc.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "IMC",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController:
-            TextEditingController(text: preDiagnosisModel.glicemia.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.glicemia.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Glicemia",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: preDiagnosisModel.freqCardiaca.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.freqCardiaca.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Freq Cardíaca",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: preDiagnosisModel.freqRepouso.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.freqRepouso.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Freq Repouso",
       ),
       LayoutUtils.buildVerticalSpacing(8.0),
       showWomanPreDiagnosis,
       LayoutUtils.buildVerticalSpacing(8.0),
-      Field(
-        textController: TextEditingController(
-            text: preDiagnosisModel.observacao.toString()),
+      DetailsField(
+        fieldValue: preDiagnosisModel.observacao.toString(),
         isReadOnly: true,
-        fieldPlaceholder: "",
+        fieldPlaceholder: "Observacao",
       ),
     ];
   }

@@ -18,7 +18,6 @@ class EventButtons extends StatefulWidget {
 }
 
 class _EventButtonsState extends State<EventButtons> {
-  
   String get eventText => this.widget.eventText;
   String get eventDate => this.widget.eventDate;
   DateTime get eventKey => this.widget.eventKey;
@@ -30,22 +29,21 @@ class _EventButtonsState extends State<EventButtons> {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        _buildCancelButton(),
-        _buildEditButton()
-      ],
+      children: <Widget>[_buildCancelButton(), _buildEditButton()],
     );
   }
 
   Widget _buildCancelButton() {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
-      child: RaisedButton(
-        color: Colors.grey,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.grey,
+          shape: _buildButtonCircularShape(8.0),
+        ),
         onPressed: () {
           Navigator.of(context).pop();
         },
-        shape: _buildButtonCircularShape(8.0),
         child: Text(
           "Cancelar",
           style: TextStyle(
@@ -59,9 +57,11 @@ class _EventButtonsState extends State<EventButtons> {
   Widget _buildEditButton() {
     return Padding(
       padding: EdgeInsets.only(right: 16.0),
-      child: RaisedButton(
-        shape: _buildButtonCircularShape(8.0),
-        color: Theme.of(context).primaryColor,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: _buildButtonCircularShape(8.0),
+          primary: Theme.of(context).primaryColor,
+        ),
         child: Text(
           "${this.isEdit ? "Editar" : "Criar"}",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),

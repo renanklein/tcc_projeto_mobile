@@ -49,7 +49,7 @@ class ConvertUtils {
   }
 
   static List<String> toStringListOfEvents(List events) {
-    List<String> eventsParsed = new List<String>();
+    List<String> eventsParsed = <String>[];
 
     events.forEach((event) {
       if (event["status"] != "canceled") {
@@ -62,9 +62,9 @@ class ConvertUtils {
 
   static List<Map> toMapListOfEvents(List events) {
     if (events == null) {
-      return List<Map>();
+      return <Map>[];
     }
-    List<Map> eventsParsed = new List<Map>();
+    List<Map> eventsParsed = <Map>[];
 
     events.forEach((eventString) {
       var eventsData = eventString.split(";");
@@ -92,7 +92,7 @@ class ConvertUtils {
   }
 
   static List<String> getOccupedHours(List events) {
-    var occupedHours = new List<String>();
+    var occupedHours = <String>[];
 
     events.forEach((event) {
       if (event["status"] != "canceled") {

@@ -40,7 +40,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     'Carteira Funcional'
   ];
 
-  final userRepository = Injector.appInstance.getDependency<UserRepository>();
+  final userRepository = Injector.appInstance.get<UserRepository>();
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -79,7 +79,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
             if (state is AuthenticationUnauthenticated) {
               Navigator.pushReplacementNamed(context, '/');
             } else if (state is CreatePacientEventSuccess) {
-              Scaffold.of(context).showSnackBar(messageSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
                 context,
                 "Paciente Cadastrado com Sucesso",
                 Colors.green,

@@ -36,7 +36,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   void initState() {
     var injector = Injector.appInstance;
 
-    this._medRecordRepository = injector.getDependency<MedRecordRepository>();
+    this._medRecordRepository = injector.get<MedRecordRepository>();
     this._medRecordBloc =
         new MedRecordBloc(medRecordRepository: _medRecordRepository);
 

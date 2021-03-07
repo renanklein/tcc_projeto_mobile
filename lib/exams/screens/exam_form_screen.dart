@@ -35,8 +35,8 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   TextEditingController _examDateController = TextEditingController();
   String currentDropdownItem;
   Map<String, List> modelExams = Map<String, List>();
-  List<Widget> examModelsFields = List<Widget>();
-  List<String> examModelsTypes = List<String>();
+  List<Widget> examModelsFields = <Widget>[];
+  List<String> examModelsTypes = <String>[];
   File _examFile;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
@@ -47,9 +47,8 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   @override
   void initState() {
     this._medRecordBloc = MedRecordBloc(
-        medRecordRepository:
-            Injector.appInstance.getDependency<MedRecordRepository>(),
-        examRepository: Injector.appInstance.getDependency<ExamRepository>());
+        medRecordRepository: Injector.appInstance.get<MedRecordRepository>(),
+        examRepository: Injector.appInstance.get<ExamRepository>());
 
     this._medRecordBloc.add(LoadExamModels());
     super.initState();
@@ -123,7 +122,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           ..._buildModelTypeDropDownButton(),
           ..._buildModelExamFields(this.modelExams[this.currentDropdownItem]),
           ..._buildFieldsRow(),
-          RaisedButton(
+          ElevatedButton(
             onPressed: () {
               this._scaffoldKey.currentState.showBottomSheet(
                     (context) => ExamDynamicFieldsBottomsheet(
@@ -133,10 +132,12 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                     backgroundColor: Colors.transparent,
                   );
             },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+              primary: Theme.of(context).primaryColor,
             ),
-            color: Theme.of(context).primaryColor,
             child: Text(
               "Adicione um campo",
               style: TextStyle(
@@ -145,14 +146,16 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                   color: Colors.white),
             ),
           ),
-          RaisedButton(
+          ElevatedButton(
             onPressed: () async {
               _setExamFile();
             },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+              primary: Theme.of(context).primaryColor,
             ),
-            color: Theme.of(context).primaryColor,
             child: Text(
               "Escolha imagem",
               style: TextStyle(
@@ -256,29 +259,25 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   void onSuccess() {
-    this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.green,
-          content: Text(
-            "Exame salvo com sucesso",
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.white),
-          ),
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.green,
+      content: Text(
+        "Exame salvo com sucesso",
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+      ),
+    ));
   }
 
   void onFail(String message) {
-    this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            message,
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.white),
-          ),
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        message,
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+      ),
+    ));
   }
 
   void _setExamFile() async {
@@ -292,11 +291,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   Widget _createFieldsModelButton() {
     return SizedBox(
       height: 44.0,
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          primary: Theme.of(context).primaryColor,
         ),
-        color: Theme.of(context).primaryColor,
         child: Text(
           "Modelos de exames",
           style: TextStyle(
@@ -315,11 +316,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   Widget _createSubmitButton() {
     return SizedBox(
       height: 44.0,
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          primary: Theme.of(context).primaryColor,
         ),
-        color: Theme.of(context).primaryColor,
         child: Text("Salvar",
             style: TextStyle(
                 fontWeight: FontWeight.bold,

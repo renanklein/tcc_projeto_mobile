@@ -64,7 +64,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is MedRecordEventSuccess) {
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 messageSnackBar(
                   context,
                   "Pré-Diagnóstico Cadastrado com Sucesso",
@@ -273,12 +273,12 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             child: MaterialButton(
                               color: Color(0xFF84FFFF),
                               height: 55.0,
-                              shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
                               ),
                               onPressed: () async {
                                 if (_preDiagnosisFormKey.currentState
-                                    .validate())
+                                    .validate()) {
                                   _medRecordBloc.add(
                                     PreDiagnosisCreateButtonPressed(
                                       peso: pesoController.text,
@@ -297,6 +297,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                           dtProvavelPartoController.text,
                                     ),
                                   );
+                                }
                               },
                               child: Text('Cadastrar Pré-Atendimento'),
                             ),

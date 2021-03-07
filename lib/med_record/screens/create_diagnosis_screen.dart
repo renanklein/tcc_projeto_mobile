@@ -33,7 +33,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   @override
   void initState() {
     var injector = Injector.appInstance;
-    this._medRecordRepository = injector.getDependency<MedRecordRepository>();
+    this._medRecordRepository = injector.get<MedRecordRepository>();
 
     this._medRecordBloc = new MedRecordBloc(
       medRecordRepository: this._medRecordRepository,
@@ -70,7 +70,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is MedRecordEventSuccess) {
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 messageSnackBar(
                   context,
                   "Diagnóstico Cadastrado com Sucesso",

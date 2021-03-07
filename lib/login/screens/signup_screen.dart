@@ -94,12 +94,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       LayoutUtils.buildVerticalSpacing(20.0),
                       SizedBox(
                           height: 44.0,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                            textColor: Colors.white,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                primary: Theme.of(context).primaryColor,
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                )),
                             child: Text("Criar Conta",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -130,7 +133,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final secretaria = DropdownMenuItem(child: Text("Secretária"));
 
-    final list = List<DropdownMenuItem>();
+    final list = <DropdownMenuItem>[];
 
     list.add(medico);
     list.add(paciente);
@@ -140,10 +143,10 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void onSuccess() {
-    this.scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Conta criada com sucesso !"),
-          backgroundColor: Colors.green,
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Conta criada com sucesso !"),
+      backgroundColor: Colors.green,
+    ));
   }
 
   void redirectToHomePage() {
@@ -152,9 +155,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void onFail() {
-    this.scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Falha ao criar o usuário"),
-          backgroundColor: Colors.red,
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Falha ao criar o usuário"),
+      backgroundColor: Colors.red,
+    ));
   }
 }

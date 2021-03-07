@@ -109,7 +109,8 @@ class PacientRepository extends ChangeNotifier {
         .where(
           "nome",
           isEqualTo: name,
-        ).where("userId", isEqualTo: _userId)
+        )
+        .where("userId", isEqualTo: _userId)
         .get()
         .then((data) {
       if (data.docs.isNotEmpty) {
@@ -168,7 +169,7 @@ class PacientRepository extends ChangeNotifier {
   }
 
   Future<List<PacientModel>> getPacients() async {
-    List<PacientModel> pacientsList = List<PacientModel>();
+    List<PacientModel> pacientsList = <PacientModel>[];
     pacientsList = await this._pacientsCollectionReference.get().then((resp) {
       return resp.docs
           .map((snapshot) => PacientModel.fromMap(snapshot.data()))

@@ -31,7 +31,7 @@ class _AppointmentsWaitListScreenState
   void initState() {
     var injector = Injector.appInstance;
 
-    this._pacientRepository = injector.getDependency<PacientRepository>();
+    this._pacientRepository = injector.get<PacientRepository>();
     this._pacientRepository.userId = this.userUid;
     this._pacientBloc =
         new PacientBloc(pacientRepository: this._pacientRepository);
@@ -108,11 +108,11 @@ class _AppointmentsWaitListScreenState
   }
 
   Future _loadAppointments() async {
-    await _pacientBloc.add(AppointmentsLoad());
+    _pacientBloc.add(AppointmentsLoad());
   }
 
   Future _loadPacientDetail(AppointmentModel appointment) async {
-    await _pacientBloc.add(PacientDetailLoad(appointment));
+    _pacientBloc.add(PacientDetailLoad(appointment));
   }
 
   Widget _listAppointmentView(AppointmentModel appointment) {

@@ -80,7 +80,7 @@ class _ExamDinamicFieldsBottomsheetState
                     LayoutUtils.buildVerticalSpacing(10.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           var newField = ExamDetailsField(
                             fieldValue: this.fieldValueController.text,
@@ -90,10 +90,12 @@ class _ExamDinamicFieldsBottomsheetState
 
                           this.refreshForm(this.dynamicFieldsList, newField);
                         },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                          ),
+                          primary: Theme.of(context).primaryColor,
                         ),
-                        color: Theme.of(context).primaryColor,
                         child: Text(
                           "Criar campo",
                           style: TextStyle(

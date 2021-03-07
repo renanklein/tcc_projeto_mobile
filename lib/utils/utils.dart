@@ -25,7 +25,7 @@ class Utils {
 
   static List<dynamic> retrieveListOfEvents(DateTime eventDay, dynamic events) {
     bool existsEventsInThatDay = verifyIfExistsEventInThatDay(eventDay, events);
-    List dayEvents = new List();
+    List dayEvents = [];
     if (existsEventsInThatDay) {
       events[eventDay].forEach((event) => dayEvents.add(event));
     }

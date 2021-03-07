@@ -66,7 +66,7 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void onFail(String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: Colors.red,
       content: Text(
         message,

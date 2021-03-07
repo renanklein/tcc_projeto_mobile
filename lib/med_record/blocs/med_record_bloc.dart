@@ -182,7 +182,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
           var keyUrl = await this.examRepository.getCryptoKeyDownload();
 
-          var keyResponse = await http.get(keyUrl);
+          var keyResponse = await http.get(Uri.parse(keyUrl));
           var base64Key = keyResponse.body;
           var encoded = SltPattern.encryptImageBytes(
               examBytes, initializationVector, base64Key);
@@ -250,7 +250,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var keyUrl = await this.examRepository.getCryptoKeyDownload();
 
-        var keyResponse = await http.get(keyUrl);
+        var keyResponse = await http.get(Uri.parse(keyUrl));
         var base64Key = keyResponse.body;
 
         var decriptedBytes =

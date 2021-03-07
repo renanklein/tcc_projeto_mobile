@@ -27,7 +27,7 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     String uid;
     //final MedRecordArguments mDArgs = settings.arguments as Type;
-    final userRepo = Injector.appInstance.getDependency<UserRepository>();
+    final userRepo = Injector.appInstance.get<UserRepository>();
     uid = userRepo.getUser().uid;
 
     switch (settings.name) {

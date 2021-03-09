@@ -129,6 +129,7 @@ class _AppointmentsWaitListScreenState
               child: AppointmentTile(
                 nome: appointment.nome,
                 telefone: appointment.telefone,
+                dataAgendamento: appointment.appointmentDate,
                 horarioAgendamento: appointment.appointmentTime,
               ),
             ),

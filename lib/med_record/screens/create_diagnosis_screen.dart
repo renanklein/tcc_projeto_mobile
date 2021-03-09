@@ -210,9 +210,9 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                     child: MaterialButton(
                                       color: Color(0xFF84FFFF),
                                       height: 55.0,
-                                      shape: new RoundedRectangleBorder(
+                                      shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            new BorderRadius.circular(15.0),
+                                            BorderRadius.circular(15.0),
                                       ),
                                       onPressed: () async {
                                         if (_diagnosisScreenKey.currentState

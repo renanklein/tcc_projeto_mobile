@@ -47,7 +47,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
   @override
   void initState() {
-    this._medRecordBloc = context.read<MedRecordBloc>();
+    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     var pacientHash =
         SltPattern.retrivepacientHash(pacient.getCpf, pacient.getSalt);
 
@@ -58,6 +58,10 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Cadastro de pré-diagnostico"),
+        centerTitle: true,
+      ),
       key: _scaffoldKey,
       body: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
@@ -279,24 +283,29 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                               onPressed: () async {
                                 if (_preDiagnosisFormKey.currentState
                                     .validate()) {
-                                  _medRecordBloc.add(
-                                    PreDiagnosisCreateButtonPressed(
-                                      peso: pesoController.text,
-                                      altura: alturaController.text,
-                                      imc: '28.5',
-                                      pASistolica: pASistolicaController.text,
-                                      pADiastolica: pADiastolicaController.text,
-                                      freqCardiaca: freqCardiacaController.text,
-                                      freqRepouso: freqRepousoController.text,
-                                      temperatura: temperaturaController.text,
-                                      glicemia: glicemiaController.text,
-                                      obs: obsController.text,
-                                      dtUltimaMestruacao:
-                                          dtUltimaMestruacaoController.text,
-                                      dtProvavelParto:
-                                          dtProvavelPartoController.text,
-                                    ),
-                                  );
+                                  this._medRecordBloc.add(
+                                        PreDiagnosisCreateButtonPressed(
+                                          peso: pesoController.text,
+                                          altura: alturaController.text,
+                                          imc: '28.5',
+                                          pASistolica:
+                                              pASistolicaController.text,
+                                          pADiastolica:
+                                              pADiastolicaController.text,
+                                          freqCardiaca:
+                                              freqCardiacaController.text,
+                                          freqRepouso:
+                                              freqRepousoController.text,
+                                          temperatura:
+                                              temperaturaController.text,
+                                          glicemia: glicemiaController.text,
+                                          obs: obsController.text,
+                                          dtUltimaMestruacao:
+                                              dtUltimaMestruacaoController.text,
+                                          dtProvavelParto:
+                                              dtProvavelPartoController.text,
+                                        ),
+                                      );
                                 }
                               },
                               child: Text('Cadastrar Pré-Atendimento'),

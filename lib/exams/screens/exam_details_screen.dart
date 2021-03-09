@@ -112,16 +112,14 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   }
 
   void onFail(String message) {
-    this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            message,
-            style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.white),
-          ),
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        message,
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+      ),
+    ));
   }
 
   Widget _showHideImageButton() {

@@ -39,7 +39,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
   int _selectedIndex;
 
-  final userRepository = Injector.appInstance.getDependency<UserRepository>();
+  final userRepository = Injector.appInstance.get<UserRepository>();
   @override
   void initState() {
     this._pacientHash = _hasPacientHashArguments()
@@ -48,8 +48,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             this.medRecordArguments.pacientModel.getCpf,
             this.medRecordArguments.pacientModel.getSalt);
     var injector = Injector.appInstance;
-    this._medRecordRepository = injector.getDependency<MedRecordRepository>();
-    var examRepository = injector.getDependency<ExamRepository>();
+    this._medRecordRepository = injector.get<MedRecordRepository>();
+    var examRepository = injector.get<ExamRepository>();
     this._medRecordBloc = new MedRecordBloc(
         medRecordRepository: this._medRecordRepository,
         examRepository: examRepository);
@@ -209,7 +209,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                   child: ExamScreen(
                 pacientHash: this._pacientHash,
               )),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
@@ -222,10 +222,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                                 .add(GetExams(pacientHash: this._pacientHash))
                           });
                 },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(32.0),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  primary: Theme.of(context).primaryColor,
                 ),
-                color: Theme.of(context).primaryColor,
                 child: Text(
                   "Clique aqui para inserir um exame",
                   style: TextStyle(

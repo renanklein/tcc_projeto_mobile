@@ -79,12 +79,14 @@ class _ExamFormModelScreenState extends State<ExamFormModelScreen> {
       left: 58.0,
       height: 40.0,
       width: 300.0,
-      child: RaisedButton(
-          color: Theme.of(context).primaryColor,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+          ),
           child: Text("Adicionar modelo",
               style: TextStyle(fontSize: 16.0, color: Colors.white)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           onPressed: () {
             this.refreshExamFormModel(this.dynamicFieldsList);
           }),

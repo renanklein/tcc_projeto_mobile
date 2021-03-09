@@ -45,6 +45,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   bool isReadOnly;
   PhoneNumber eventPhone;
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Map get event => this.widget.event;
   bool get isEdit => this.widget.isEdit;
@@ -59,8 +60,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     this._pacientBloc = context.read<PacientBloc>();
 
     this.agendaBloc = AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
+        agendaRepository: Injector.appInstance.get<AgendaRepository>());
 
     this._eventNameController = TextEditingController(
         text: this.event == null ? "" : this.event["description"]);
@@ -95,6 +95,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: this.scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Agendar Consulta"),
@@ -119,7 +120,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                 if (_verifySuccessState(state)) {
                   _onSuccessState();
                 } else if (_verifyFailState(state)) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.red,
                       content: Text(
                         "Ocorreu um error ao ${this.isEdit ? "editar" : "criar"} o evento",
@@ -129,7 +130,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
                             fontWeight: FontWeight.w500),
                       )));
                 } else if (state is AgendaAvailableTimeFail) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.red,
                       content: Text(
                         "Ocorreu um erro ao carregar os horário vagos",
@@ -171,11 +172,13 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
   Widget _buildCreateEventButton() {
     return SizedBox(
       height: 44.0,
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          primary: Theme.of(context).primaryColor,
         ),
-        color: Theme.of(context).primaryColor,
         child: Text(
           this.isReadOnly
               ? "Voltar"
@@ -323,27 +326,25 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     return SizedBox(
       height: 44.0,
       width: 150.0,
-      child: Builder(
-        builder: (context) => RaisedButton(
-          onPressed: () {
-            Scaffold.of(context).showBottomSheet((context) {
-              return EventConfirmBottomSheet(
-                  event: this.event,
-                  eventDay: this.selectedDay,
-                  refreshAgenda: this.refreshAgenda);
-            }, backgroundColor: Colors.transparent);
-          },
+      child: ElevatedButton(
+        onPressed: () {
+          this.scaffoldKey.currentState.showBottomSheet((context) {
+            return EventConfirmBottomSheet(
+                event: this.event,
+                eventDay: this.selectedDay,
+                refreshAgenda: this.refreshAgenda);
+          }, backgroundColor: Colors.transparent);
+        },
+        style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
           ),
-          color: Colors.green[600],
-          child: Text(
-            "Confirmar",
-            style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-          ),
+          primary: Colors.green[600],
+        ),
+        child: Text(
+          "Confirmar",
+          style: TextStyle(
+              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
@@ -353,30 +354,28 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
     return SizedBox(
       height: 44.0,
       width: this.event["status"] == "confirmed" ? 379.0 : 150.0,
-      child: Builder(
-        builder: (context) => RaisedButton(
-          onPressed: () {
-            Scaffold.of(context).showBottomSheet(
-              (context) {
-                return EventExcludeBottomSheet(
-                    eventId: this.event["id"].toString(),
-                    eventDay: this.selectedDay,
-                    refreshAgenda: this.refreshAgenda);
-              },
-              backgroundColor: Colors.transparent,
-            );
-          },
+      child: ElevatedButton(
+        onPressed: () {
+          this.scaffoldKey.currentState.showBottomSheet(
+            (context) {
+              return EventExcludeBottomSheet(
+                  eventId: this.event["id"].toString(),
+                  eventDay: this.selectedDay,
+                  refreshAgenda: this.refreshAgenda);
+            },
+            backgroundColor: Colors.transparent,
+          );
+        },
+        style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
           ),
-          color: Colors.red[300],
-          child: Text(
-            "Cancelar",
-            style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-          ),
+          primary: Colors.red[300],
+        ),
+        child: Text(
+          "Cancelar",
+          style: TextStyle(
+              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 
 class UserRepository {
@@ -62,7 +61,7 @@ class UserRepository {
   }
 
   Future<void> setupFcmNotification(User user) async {
-    var fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
+    var fcm = FirebaseMessaging.instance;
     var fcmToken = await fcm.getToken();
     await FirebaseFirestore.instance
         .collection("users")

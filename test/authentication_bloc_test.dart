@@ -9,7 +9,7 @@ class MockUserRepository extends Mock implements UserRepository {}
 
 class MockBuildContext extends Mock implements BuildContext {}
 
-class MockFirebaseUser extends Mock implements FirebaseUser {}
+class MockFirebaseUser extends Mock implements User {}
 
 class MockIdTokenResult extends Mock implements IdTokenResult {}
 

@@ -24,7 +24,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       try {
         yield EventProcessing();
 
-        var eventHourRange = new List<String>();
+        var eventHourRange = <String>[];
         eventHourRange.add(event.eventStart);
         eventHourRange.add(event.eventEnd);
 

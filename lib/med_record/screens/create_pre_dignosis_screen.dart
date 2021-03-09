@@ -47,7 +47,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
   @override
   void initState() {
-    this._medRecordBloc = context.read<MedRecordBloc>();
+    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     var pacientHash =
         SltPattern.retrivepacientHash(pacient.getCpf, pacient.getSalt);
 
@@ -58,13 +58,17 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Cadastro de pré-diagnostico"),
+        centerTitle: true,
+      ),
       key: _scaffoldKey,
       body: BlocProvider<MedRecordBloc>(
         create: (context) => this._medRecordBloc,
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is MedRecordEventSuccess) {
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 messageSnackBar(
                   context,
                   "Pré-Diagnóstico Cadastrado com Sucesso",
@@ -273,30 +277,36 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             child: MaterialButton(
                               color: Color(0xFF84FFFF),
                               height: 55.0,
-                              shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
                               ),
                               onPressed: () async {
                                 if (_preDiagnosisFormKey.currentState
-                                    .validate())
-                                  _medRecordBloc.add(
-                                    PreDiagnosisCreateButtonPressed(
-                                      peso: pesoController.text,
-                                      altura: alturaController.text,
-                                      imc: '28.5',
-                                      pASistolica: pASistolicaController.text,
-                                      pADiastolica: pADiastolicaController.text,
-                                      freqCardiaca: freqCardiacaController.text,
-                                      freqRepouso: freqRepousoController.text,
-                                      temperatura: temperaturaController.text,
-                                      glicemia: glicemiaController.text,
-                                      obs: obsController.text,
-                                      dtUltimaMestruacao:
-                                          dtUltimaMestruacaoController.text,
-                                      dtProvavelParto:
-                                          dtProvavelPartoController.text,
-                                    ),
-                                  );
+                                    .validate()) {
+                                  this._medRecordBloc.add(
+                                        PreDiagnosisCreateButtonPressed(
+                                          peso: pesoController.text,
+                                          altura: alturaController.text,
+                                          imc: '28.5',
+                                          pASistolica:
+                                              pASistolicaController.text,
+                                          pADiastolica:
+                                              pADiastolicaController.text,
+                                          freqCardiaca:
+                                              freqCardiacaController.text,
+                                          freqRepouso:
+                                              freqRepousoController.text,
+                                          temperatura:
+                                              temperaturaController.text,
+                                          glicemia: glicemiaController.text,
+                                          obs: obsController.text,
+                                          dtUltimaMestruacao:
+                                              dtUltimaMestruacaoController.text,
+                                          dtProvavelParto:
+                                              dtProvavelPartoController.text,
+                                        ),
+                                      );
+                                }
                               },
                               child: Text('Cadastrar Pré-Atendimento'),
                             ),

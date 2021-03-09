@@ -32,8 +32,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
 
   @override
   void initState() {
-    this._pacientRepository =
-        Injector.appInstance.getDependency<PacientRepository>();
+    this._pacientRepository = Injector.appInstance.get<PacientRepository>();
     this._pacientRepository.userId = this.userUid;
     this._pacientBloc = PacientBloc(pacientRepository: this._pacientRepository);
 
@@ -127,7 +126,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                           }
                                         }
                                         if (pacientsSorted.length < 1) {
-                                          Scaffold.of(context)
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(messageSnackBar(
                                             context,
                                             "Paciente não encontrado",
@@ -137,7 +136,8 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                           _searchBarController.text = '';
                                         }
                                       } else {
-                                        Scaffold.of(context).hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
                                       }
                                     },
                                   );

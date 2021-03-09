@@ -11,9 +11,8 @@ import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class HomeScreen extends StatefulWidget {
-  final userRepository = Injector.appInstance.getDependency<UserRepository>();
-  final authenticationBloc =
-      Injector.appInstance.getDependency<AuthenticationBloc>();
+  final userRepository = Injector.appInstance.get<UserRepository>();
+  final authenticationBloc = Injector.appInstance.get<AuthenticationBloc>();
 
   @override
   _HomeScreenState createState() => _HomeScreenState();

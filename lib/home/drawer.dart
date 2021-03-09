@@ -10,7 +10,7 @@ import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
-  final userRepository = Injector.appInstance.getDependency<UserRepository>();
+  final userRepository = Injector.appInstance.get<UserRepository>();
   @override
   _UserDrawerState createState() => _UserDrawerState();
 }
@@ -24,8 +24,7 @@ class _UserDrawerState extends State<UserDrawer> {
 
   @override
   void initState() {
-    this.authenticationBloc =
-        Injector.appInstance.getDependency<AuthenticationBloc>();
+    this.authenticationBloc = Injector.appInstance.get<AuthenticationBloc>();
     super.initState();
   }
 
@@ -128,7 +127,7 @@ class _UserDrawerState extends State<UserDrawer> {
   }
 
   Widget _buildSignoutButton(AuthenticationBloc authenticationBloc) {
-    return FlatButton(
+    return TextButton(
       child: Text(
         "Sair",
         style: TextStyle(

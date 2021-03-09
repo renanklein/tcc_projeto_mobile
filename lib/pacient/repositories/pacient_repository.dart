@@ -60,7 +60,7 @@ class PacientRepository extends ChangeNotifier {
   }
 
   Future<List<AppointmentModel>> getAppointments() async {
-    List<AppointmentModel> _appointmentsList = new List<AppointmentModel>();
+    List<AppointmentModel> _appointmentsList = <AppointmentModel>[];
     var docs;
     await _agendaCollectionReference
         .doc(this._userId)
@@ -71,7 +71,7 @@ class PacientRepository extends ChangeNotifier {
             (snapshot) {
               var events = snapshot.data().values.first;
               var snapId = snapshot.id;
-              var _appointmentTime = DateTime(
+              var _appointmentDate = DateTime(
                   int.parse(snapId.split("-")[0]),
                   int.parse(snapId.split("-")[1]),
                   int.parse(snapId.split("-")[2]));
@@ -79,18 +79,22 @@ class PacientRepository extends ChangeNotifier {
               events.forEach(
                 (event) {
                   if (event["status"] != "canceled" &&
-                      _appointmentTime.compareTo(new DateTime(
+                      _appointmentDate.compareTo(new DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day,
                           )) >=
                           0) {
+                    var beginTime = event['begin'];
+                    var endTime = event['end'];
+                    var eventTime = "$beginTime - $endTime";
+
                     _appointmentsList.add(
                       AppointmentModel(
-                        nome: event["description"],
-                        telefone: event["phone"],
-                        appointmentTime: _appointmentTime,
-                      ),
+                          nome: event["description"],
+                          telefone: event["phone"],
+                          appointmentDate: _appointmentDate,
+                          appointmentTime: eventTime),
                     );
                   }
                 },
@@ -109,7 +113,8 @@ class PacientRepository extends ChangeNotifier {
         .where(
           "nome",
           isEqualTo: name,
-        ).where("userId", isEqualTo: _userId)
+        )
+        .where("userId", isEqualTo: _userId)
         .get()
         .then((data) {
       if (data.docs.isNotEmpty) {
@@ -168,7 +173,7 @@ class PacientRepository extends ChangeNotifier {
   }
 
   Future<List<PacientModel>> getPacients() async {
-    List<PacientModel> pacientsList = List<PacientModel>();
+    List<PacientModel> pacientsList = <PacientModel>[];
     pacientsList = await this._pacientsCollectionReference.get().then((resp) {
       return resp.docs
           .map((snapshot) => PacientModel.fromMap(snapshot.data()))

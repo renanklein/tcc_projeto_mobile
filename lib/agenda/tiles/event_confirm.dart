@@ -29,8 +29,7 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
   @override
   void initState() {
     this.agendaBloc = new AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
+        agendaRepository: Injector.appInstance.get<AgendaRepository>());
     super.initState();
   }
 
@@ -97,9 +96,12 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
   Widget _buildConfirmButtom() {
     return Padding(
       padding: EdgeInsets.only(right: 16.0),
-      child: RaisedButton(
-        color: Colors.green,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.green,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         child: Text(
           "Confirmar",
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
@@ -115,9 +117,12 @@ class _EventConfirmBottomSheetState extends State<EventConfirmBottomSheet> {
   Widget _buildCancelButton() {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        color: Colors.grey,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          primary: Colors.grey,
+        ),
         child: Text(
           "Cancelar",
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),

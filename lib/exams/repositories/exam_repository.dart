@@ -16,7 +16,7 @@ class ExamRepository {
   Future<String> _uploadExam(File encriptedFile, String fileName) async {
     var storageRef = this._storage.ref().child(fileName);
 
-    var putFileResult = await storageRef.putFile(encriptedFile).onComplete;
+    var putFileResult = await storageRef.putFile(encriptedFile);
 
     return await putFileResult.ref.getDownloadURL();
   }
@@ -33,7 +33,7 @@ class ExamRepository {
 
     var storageRef = this._storage.ref().child('credentials.txt');
 
-    await storageRef.putFile(credentialsFile).onComplete;
+    await storageRef.putFile(credentialsFile);
   }
 
   Future<String> getCryptoKeyDownload() async {

@@ -33,8 +33,7 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
   @override
   void initState() {
     this.agendaBloc = new AgendaBloc(
-        agendaRepository:
-            Injector.appInstance.getDependency<AgendaRepository>());
+        agendaRepository: Injector.appInstance.get<AgendaRepository>());
     super.initState();
   }
 
@@ -99,12 +98,15 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
   Widget _buildCancelButton() {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
-      child: RaisedButton(
-        color: Colors.grey,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.grey,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         onPressed: () {
           Navigator.of(context).pop();
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         child: Text(
           "Cancelar",
           style: TextStyle(
@@ -118,11 +120,13 @@ class _EventExcludeBottomSheetState extends State<EventExcludeBottomSheet> {
   Widget _buildExcludeButton() {
     return Padding(
       padding: EdgeInsets.only(right: 16.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          primary: Colors.red,
         ),
-        color: Colors.red,
         child: Text(
           "Excluir",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),

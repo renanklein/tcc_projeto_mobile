@@ -143,12 +143,12 @@ class _ExamModelFormState extends State<ExamModelForm> {
   }
 
   void onSuccess() {
-    this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(this.isEdit
-              ? "Modelo editado com sucesso"
-              : "Modelo criado com sucesso"),
-          backgroundColor: Colors.green,
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(this.isEdit
+          ? "Modelo editado com sucesso"
+          : "Modelo criado com sucesso"),
+      backgroundColor: Colors.green,
+    ));
   }
 
   void onFail(ExamState state) {
@@ -159,10 +159,10 @@ class _ExamModelFormState extends State<ExamModelForm> {
       errorMessage = state.errorMessage;
     }
 
-    this._scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMessage),
+      backgroundColor: Colors.red,
+    ));
   }
 
   List _buildFieldsRow() {
@@ -195,7 +195,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
   }
 
   Widget _buildCreateModelButton() {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () {
         if (this._formKey.currentState.validate()) {
           if (this.isEdit) {
@@ -210,10 +210,12 @@ class _ExamModelFormState extends State<ExamModelForm> {
           }
         }
       },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(32.0),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
       ),
-      color: Theme.of(context).primaryColor,
       child: Text(
         this.isEdit ? "Editar modelo" : "Cadastrar modelo",
         style: TextStyle(

@@ -9,7 +9,7 @@ import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
-  final userRepository = Injector.appInstance.getDependency<UserRepository>();
+  final userRepository = Injector.appInstance.get<UserRepository>();
 
   @override
   _DashboardState createState() => _DashboardState();

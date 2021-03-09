@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(
               "Criar Conta",
               style: TextStyle(color: Colors.white),
@@ -88,12 +88,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgetPasswordFlatButton() {
     return Align(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
         child: Text(
           "Esqueci minha senha",
           textAlign: TextAlign.right,
         ),
-        padding: EdgeInsets.zero,
         onPressed: () {
           this.loginBloc.add(LoginResetPasswordButtonPressed(
               email: this.emailController.text));
@@ -105,12 +104,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLoginScreenButton(BuildContext context) {
     return SizedBox(
         height: 44.0,
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          color: Theme.of(context).primaryColor,
-          textColor: Colors.white,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              primary: Theme.of(context).primaryColor,
+              textStyle: TextStyle(
+                color: Colors.white,
+              )),
           child: Text("Entrar",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
           onPressed: () {
@@ -130,15 +132,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onFail() {
-    this.scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            "Falha ao autenticar, verifique os dados informados",
-            style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.white,
-                fontWeight: FontWeight.w500),
-          ),
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        "Falha ao autenticar, verifique os dados informados",
+        style: TextStyle(
+            fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w500),
+      ),
+    ));
   }
 }

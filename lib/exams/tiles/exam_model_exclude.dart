@@ -23,8 +23,8 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
 
   @override
   void initState() {
-    this.examBloc = ExamBloc(
-        examRepository: Injector.appInstance.getDependency<ExamRepository>());
+    this.examBloc =
+        ExamBloc(examRepository: Injector.appInstance.get<ExamRepository>());
     super.initState();
   }
 
@@ -86,9 +86,12 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
   Widget _buildConfirmButtom() {
     return Padding(
       padding: EdgeInsets.only(right: 16.0),
-      child: RaisedButton(
-        color: Colors.red,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.red,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         child: Text(
           "Excluir",
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
@@ -104,9 +107,12 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
   Widget _buildCancelButton() {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        color: Colors.grey,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          primary: Colors.grey,
+        ),
         child: Text(
           "Cancelar",
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),

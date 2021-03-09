@@ -36,7 +36,7 @@ class _CalendarEventListState extends State<CalendarEventList> {
     }
 
     AgendaRepository _agendaRepository =
-        Injector.appInstance.getDependency<AgendaRepository>();
+        Injector.appInstance.get<AgendaRepository>();
     return FutureBuilder(
       future: _agendaRepository.getOccupedDayTimes(day),
       builder: (context, snapshot) {

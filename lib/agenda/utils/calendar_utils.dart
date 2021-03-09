@@ -30,8 +30,7 @@ class CalendarUtils {
 // marcadores por default
   static Widget buildEventMarker(
       DateTime eventDate, List events, BuildContext context) {
-    var agendaRepository =
-        Injector.appInstance.getDependency<AgendaRepository>();
+    var agendaRepository = Injector.appInstance.get<AgendaRepository>();
     var dateAsString = DateFormat('yyyy-MM-dd').format(eventDate);
     return FutureBuilder(
         future: agendaRepository.getOccupedDayTimes(dateAsString),

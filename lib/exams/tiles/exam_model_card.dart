@@ -86,11 +86,13 @@ class _ExamModelCardState extends State<ExamModelCard> {
   Widget _buildShowModelButton(BuildContext context) {
     return SizedBox(
         height: 30.0,
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            primary: Theme.of(context).primaryColor,
           ),
-          color: Theme.of(context).primaryColor,
           child: Text(
             "Exibir Modelo",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),

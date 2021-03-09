@@ -28,7 +28,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
+Future onBackgroundMessage(RemoteMessage message) async {
   print(message);
 }
 
@@ -50,16 +50,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     registerDependencies();
     configureNotificationsType(context);
-    this.authenticationBloc =
-        Injector.appInstance.getDependency<AuthenticationBloc>();
-
+    this.authenticationBloc = Injector.appInstance.get<AuthenticationBloc>();
     this.authenticationBloc.add(AppStarted(context: context));
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -71,37 +64,33 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(
-            userRepository:
-                Injector.appInstance.getDependency<UserRepository>(),
+            userRepository: Injector.appInstance.get<UserRepository>(),
             authenticationBloc: this.authenticationBloc,
           ),
         ),
         BlocProvider<SignupBloc>(
           create: (context) => SignupBloc(
-            userRepository:
-                Injector.appInstance.getDependency<UserRepository>(),
+            userRepository: Injector.appInstance.get<UserRepository>(),
             authenticationBloc: this.authenticationBloc,
           ),
         ),
         BlocProvider<AgendaBloc>(
             create: (context) => AgendaBloc(
                 agendaRepository:
-                    Injector.appInstance.getDependency<AgendaRepository>())),
+                    Injector.appInstance.get<AgendaRepository>())),
         BlocProvider<ExamBloc>(
           create: (context) => ExamBloc(
-              examRepository:
-                  Injector.appInstance.getDependency<ExamRepository>()),
+              examRepository: Injector.appInstance.get<ExamRepository>()),
         ),
         BlocProvider<PacientBloc>(
             create: (context) => PacientBloc(
                 pacientRepository:
-                    Injector.appInstance.getDependency<PacientRepository>())),
+                    Injector.appInstance.get<PacientRepository>())),
         BlocProvider<MedRecordBloc>(
             create: (context) => MedRecordBloc(
                 medRecordRepository:
-                    Injector.appInstance.getDependency<MedRecordRepository>(),
-                examRepository:
-                    Injector.appInstance.getDependency<ExamRepository>()))
+                    Injector.appInstance.get<MedRecordRepository>(),
+                examRepository: Injector.appInstance.get<ExamRepository>()))
       ],
       child: MaterialApp(
         title: "Projeto tcc",
@@ -113,7 +102,7 @@ class _MyAppState extends State<MyApp> {
         ],
         supportedLocales: [const Locale('pt', 'BR')],
         onGenerateRoute: RouteGenerator.generateRoute,
-        home: BlocBuilder(
+        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           cubit: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
@@ -136,36 +125,34 @@ class _MyAppState extends State<MyApp> {
   void registerDependencies() {
     Injector injector = Injector.appInstance;
 
-    injector.registerSingleton<UserRepository>((_) => UserRepository());
+    injector.registerSingleton<UserRepository>(() => UserRepository());
 
-    injector.registerSingleton<PacientRepository>((_) => PacientRepository());
+    injector.registerSingleton<PacientRepository>(() => PacientRepository());
 
     injector
-        .registerSingleton<MedRecordRepository>((_) => MedRecordRepository());
+        .registerSingleton<MedRecordRepository>(() => MedRecordRepository());
 
-    injector.registerSingleton<ExamRepository>((_) => ExamRepository());
+    injector.registerSingleton<ExamRepository>(() => ExamRepository());
 
-    injector.registerSingleton((_) => AgendaRepository());
+    injector.registerSingleton<AgendaRepository>(() => AgendaRepository());
 
-    injector.registerSingleton((_) => FirebaseMessaging());
-
-    injector.registerSingleton((_) => AuthenticationBloc(
-          userRepository: injector.getDependency<UserRepository>(),
+    injector.registerSingleton<AuthenticationBloc>(() => AuthenticationBloc(
+          userRepository: injector.get<UserRepository>(),
         ));
   }
 
   void configureNotificationsType(BuildContext context) async {
-    var _fcm = Injector.appInstance.getDependency<FirebaseMessaging>();
-    _fcm.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-          print("onLaunch: $message");
-        },
-        onResume: (Map<String, dynamic> message) async {
-          print("onResume: $message");
-        },
-        onBackgroundMessage: onBackgroundMessage);
+    var notifications = FirebaseMessaging.instance;
+
+    await notifications.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: true,
+        sound: true);
+
+    FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
   }
 }

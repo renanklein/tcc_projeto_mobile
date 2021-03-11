@@ -76,6 +76,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                   Colors.white,
                 ),
               );
+              Navigator.of(context).pop();
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(

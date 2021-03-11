@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 
 class AppointmentTile extends StatelessWidget {
-  final String nome;
-  final String telefone;
-  final DateTime dataAgendamento;
-  final String horarioAgendamento;
+  final AppointmentModel appointmentModel;
 
   var dateFormat = DateFormat("dd/MM/yyyy");
 
-  AppointmentTile(
-      {this.nome,
-      this.telefone,
-      this.dataAgendamento,
-      this.horarioAgendamento});
+  AppointmentTile({this.appointmentModel});
 
   @override
   Widget build(BuildContext context) {
     var dateTimeAgendamento =
-        "${dateFormat.format(this.dataAgendamento)}  ${this.horarioAgendamento}";
+        "${dateFormat.format(this.appointmentModel.appointmentDate)}  ${this.appointmentModel.appointmentTime}";
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        color: Color(0xFF84FFFF),
+        color: this.appointmentModel.hasPreDiagnosis
+            ? Colors.yellowAccent
+            : Color(0xFF84FFFF),
         border: Border.all(
           color: Colors.black,
           width: 2.0,
@@ -46,7 +42,7 @@ class AppointmentTile extends StatelessWidget {
             ),
           ),
           Text(
-            nome,
+            this.appointmentModel.nome,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -56,7 +52,7 @@ class AppointmentTile extends StatelessWidget {
             ),
           ),
           Text(
-            telefone,
+            this.appointmentModel.telefone,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: TextStyle(

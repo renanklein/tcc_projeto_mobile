@@ -6,12 +6,14 @@ class AppointmentModel {
   String _telefone;
   DateTime _dataAgendamento;
   String _horarioAgendamento;
+  bool _hasPreDiagnosis;
 
   AppointmentModel({
     @required String nome,
     @required String telefone,
     @required DateTime appointmentDate,
     @required String appointmentTime,
+    bool hasPreDiagnosis,
     String email,
   }) {
     this._nome = nome.toUpperCase();
@@ -19,6 +21,7 @@ class AppointmentModel {
     this._telefone = telefone;
     this._dataAgendamento = appointmentDate;
     this._horarioAgendamento = appointmentTime;
+    this._hasPreDiagnosis = hasPreDiagnosis;
   }
 
   static AppointmentModel fromMap(Map<String, dynamic> map) {
@@ -46,4 +49,8 @@ class AppointmentModel {
   String get telefone => this._telefone;
   DateTime get appointmentDate => this._dataAgendamento;
   String get appointmentTime => this._horarioAgendamento;
+  bool get hasPreDiagnosis => this._hasPreDiagnosis;
+
+  set hasPreDiagnosis(bool hasPreDiagnosis) =>
+      this._hasPreDiagnosis = hasPreDiagnosis;
 }

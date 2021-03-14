@@ -187,10 +187,11 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
+          if (this.isReadOnly) {
+            Navigator.of(context).pop();
+          }
           if (this.formKey.currentState.validate()) {
-            this.isReadOnly
-                ? Navigator.of(context).pop()
-                : _createOrEditEvent();
+            _createOrEditEvent();
           }
         },
       ),

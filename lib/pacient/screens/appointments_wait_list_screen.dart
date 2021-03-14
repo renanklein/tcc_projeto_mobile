@@ -63,45 +63,100 @@ class _AppointmentsWaitListScreenState
             if (state is AppointmentLoadEventSuccess) {
               _appointmentList = state.appointmentsLoaded;
             } else if (state is PacientDetailLoadEventSuccess) {
-              Navigator.of(context).pushNamed(
-                preDiagnosisRoute,
-                arguments: state.pacientDetailLoaded,
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: new Text("Paciente Encontrado"),
+                    content: new Text(
+                        "O Paciente foi encontrado. Clique abaixo para inserir o Pré-Diagnóstico"),
+                    actions: <Widget>[
+                      // define os botões na base do dialogo
+                      new FlatButton(
+                        child: new Text("Fechar"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      new FlatButton(
+                        child: new Text("Inserir Pré-Diagnóstico"),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            preDiagnosisRoute,
+                            arguments: state.pacientDetailLoaded,
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
             } else if (state is PacientDetailLoadEventFail) {
-              Navigator.of(context).pushNamed(
-                createPacientRoute,
-                arguments: preDiagnosisRoute,
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: new Text("Paciente não encontrado"),
+                    content: new Text(
+                        "O paciente não foi encontrado, é necessaria a inclusão do paciente no banco de dados para continuar.\nClique abaixo para cadastrar o paciente."),
+                    actions: <Widget>[
+                      // define os botões na base do dialogo
+                      new FlatButton(
+                        child: new Text("Fechar"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      new FlatButton(
+                        child: new Text("Cadastrar Paciente"),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            createPacientRoute,
+                            arguments: preDiagnosisRoute,
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
-              cubit: this._pacientBloc,
-              builder: (context, state) {
-                return FutureBuilder(
-                    future: _loadAppointments(),
-                    builder: (context, snapshot) {
-                      return SafeArea(
-                          child: Center(
-                              child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.98,
-                                  child: Column(children: <Widget>[
-                                    Expanded(
-                                        child: (_appointmentList != null)
-                                            ? ListView.builder(
-                                                itemCount:
-                                                    _appointmentList.length,
-                                                itemBuilder: (context, index) =>
-                                                    _listAppointmentView(
-                                                  _appointmentList[index],
-                                                ),
-                                              )
-                                            : LayoutUtils
-                                                .buildCircularProgressIndicator(
-                                                    context))
-                                  ]))));
-                    });
-              }),
+            cubit: this._pacientBloc,
+            builder: (context, state) {
+              return FutureBuilder(
+                future: _loadAppointments(),
+                builder: (context, snapshot) {
+                  return SafeArea(
+                    child: Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.98,
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: (_appointmentList != null)
+                                  ? ListView.builder(
+                                      itemCount: _appointmentList.length,
+                                      itemBuilder: (context, index) =>
+                                          _listAppointmentView(
+                                        _appointmentList[index],
+                                      ),
+                                    )
+                                  : LayoutUtils.buildCircularProgressIndicator(
+                                      context),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

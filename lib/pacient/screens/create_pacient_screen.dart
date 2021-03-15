@@ -86,10 +86,34 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                 Colors.white,
               ));
               if (this.getPath == preDiagnosisRoute) {
-                Navigator.pushReplacementNamed(
-                  context,
-                  preDiagnosisRoute,
-                  arguments: state.pacientCreated,
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: new Text("Paciente Cadastrado"),
+                      content: new Text(
+                          "O Paciente foi cadastrado. Clique abaixo para inserir o Pré-Diagnóstico"),
+                      actions: <Widget>[
+                        // define os botões na base do dialogo
+                        new FlatButton(
+                          child: new Text("Fechar"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        new FlatButton(
+                          child: new Text("Inserir Pré-Diagnóstico"),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              preDiagnosisRoute,
+                              arguments: state.pacientCreated,
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               }
             }
@@ -272,7 +296,7 @@ Widget pacienteFormField(controller, label, hint, errorText) {
   var mask = MaskTextInputFormatter(
       mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: TextFormField(
       inputFormatters: label == "CPF:" ? [mask] : null,
       controller: controller,
@@ -295,7 +319,7 @@ Widget pacienteFormField(controller, label, hint, errorText) {
 
 Widget dateFormField(controller, label, hint, contexto) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -326,7 +350,7 @@ Widget dateFormField(controller, label, hint, contexto) {
 
 Widget dateField(label, controller) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: Column(
       children: <Widget>[
         Text(label),

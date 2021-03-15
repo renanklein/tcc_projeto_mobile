@@ -8,6 +8,8 @@ import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
+import '../blocs/pacient_bloc.dart';
+
 class AppointmentsWaitListScreen extends StatefulWidget {
   String userUid;
 
@@ -62,24 +64,34 @@ class _AppointmentsWaitListScreenState
           listener: (context, state) {
             if (state is AppointmentLoadEventSuccess) {
               _appointmentList = state.appointmentsLoaded;
+            } else if (state is PacientDetailWithPreDiagnosisSuccess) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Pacient com pré diagnóstico'),
+                      content: Text(
+                          "O paciente já possui pré-diagnóstico para esse agendamento"),
+                    );
+                  });
             } else if (state is PacientDetailLoadEventSuccess) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: new Text("Paciente Encontrado"),
-                    content: new Text(
+                    title: Text("Paciente Encontrado"),
+                    content: Text(
                         "O Paciente foi encontrado. Clique abaixo para inserir o Pré-Diagnóstico"),
                     actions: <Widget>[
                       // define os botões na base do dialogo
-                      new FlatButton(
-                        child: new Text("Fechar"),
+                      TextButton(
+                        child: Text("Fechar"),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                      new FlatButton(
-                        child: new Text("Inserir Pré-Diagnóstico"),
+                      TextButton(
+                        child: Text("Inserir Pré-Diagnóstico"),
                         onPressed: () {
                           Navigator.pushReplacementNamed(
                             context,
@@ -97,19 +109,19 @@ class _AppointmentsWaitListScreenState
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: new Text("Paciente não encontrado"),
-                    content: new Text(
+                    title: Text("Paciente não encontrado"),
+                    content: Text(
                         "O paciente não foi encontrado, é necessaria a inclusão do paciente no banco de dados para continuar.\nClique abaixo para cadastrar o paciente."),
                     actions: <Widget>[
                       // define os botões na base do dialogo
-                      new FlatButton(
-                        child: new Text("Fechar"),
+                      TextButton(
+                        child: Text("Fechar"),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                      new FlatButton(
-                        child: new Text("Cadastrar Paciente"),
+                      TextButton(
+                        child: Text("Cadastrar Paciente"),
                         onPressed: () {
                           Navigator.pushReplacementNamed(
                             context,

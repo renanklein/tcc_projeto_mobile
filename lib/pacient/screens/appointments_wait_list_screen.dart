@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
-import 'package:tcc_projeto_app/pacient/createPreDiagnosisArguments.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
-import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 import '../blocs/pacient_bloc.dart';
@@ -66,86 +64,6 @@ class _AppointmentsWaitListScreenState
           listener: (context, state) {
             if (state is AppointmentLoadEventSuccess) {
               _appointmentList = state.appointmentsLoaded;
-            } else if (state is PacientDetailWithPreDiagnosisSuccess) {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Paciente com pré diagnóstico'),
-                      content: Text(
-                          "O paciente já possui pré-diagnóstico para o dia ${state.preDiagnosisDate}"),
-                      actions: <Widget>[
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Fechar"))
-                      ],
-                    );
-                  });
-            } else if (state is PacientDetailLoadEventSuccess) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Paciente Encontrado"),
-                    content: Text(
-                        "O Paciente foi encontrado. Clique abaixo para inserir o Pré-Diagnóstico"),
-                    actions: <Widget>[
-                      // define os botões na base do dialogo
-                      TextButton(
-                        child: Text("Fechar"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: Text("Inserir Pré-Diagnóstico"),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            preDiagnosisRoute,
-                            arguments: CreatePreDiagnosisArguments(
-                                pacientModel: state.pacientDetailLoaded,
-                                appointmentEventDate:
-                                    this._appointmentModel.appointmentDate),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (state is PacientDetailLoadEventFail) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Paciente não encontrado"),
-                    content: Text(
-                        "O paciente não foi encontrado, é necessaria a inclusão do paciente no banco de dados para continuar.\nClique abaixo para cadastrar o paciente."),
-                    actions: <Widget>[
-                      // define os botões na base do dialogo
-                      TextButton(
-                        child: Text("Fechar"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: Text("Cadastrar Paciente"),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            createPacientRoute,
-                            arguments: preDiagnosisRoute,
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
@@ -202,14 +120,9 @@ class _AppointmentsWaitListScreenState
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                _loadPacientDetail(appointment);
-              },
-              child: AppointmentTile(
-                appointmentModel: appointment,
-                userUid: this.userUid,
-              ),
+            child: AppointmentTile(
+              appointmentModel: appointment,
+              userUid: this.userUid,
             ),
           ),
         ],

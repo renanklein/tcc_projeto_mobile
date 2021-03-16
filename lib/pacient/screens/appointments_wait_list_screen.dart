@@ -194,10 +194,8 @@ class _AppointmentsWaitListScreenState
                 _loadPacientDetail(appointment);
               },
               child: AppointmentTile(
-                nome: appointment.nome,
-                telefone: appointment.telefone,
-                dataAgendamento: appointment.appointmentDate,
-                horarioAgendamento: appointment.appointmentTime,
+                appointmentModel: appointment,
+                userUid: this.userUid,
               ),
             ),
           ),

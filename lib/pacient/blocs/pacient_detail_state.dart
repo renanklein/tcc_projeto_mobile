@@ -22,3 +22,13 @@ class PacientDetailLoadEventFail extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
+class PacientDetailWithPreDiagnosisSuccess extends PacientState {
+  String preDiagnosisDate;
+
+  PacientDetailWithPreDiagnosisSuccess({@required this.preDiagnosisDate});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+}

@@ -5,8 +5,9 @@ import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
-import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+
+import '../blocs/pacient_bloc.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
   String userUid;
@@ -21,6 +22,7 @@ class _AppointmentsWaitListScreenState
     extends State<AppointmentsWaitListScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
+  AppointmentModel _appointmentModel;
   List<AppointmentModel> _appointmentList;
 
   String get userUid => this.widget.userUid;
@@ -62,66 +64,6 @@ class _AppointmentsWaitListScreenState
           listener: (context, state) {
             if (state is AppointmentLoadEventSuccess) {
               _appointmentList = state.appointmentsLoaded;
-            } else if (state is PacientDetailLoadEventSuccess) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: new Text("Paciente Encontrado"),
-                    content: new Text(
-                        "O Paciente foi encontrado. Clique abaixo para inserir o Pré-Diagnóstico"),
-                    actions: <Widget>[
-                      // define os botões na base do dialogo
-                      new FlatButton(
-                        child: new Text("Fechar"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      new FlatButton(
-                        child: new Text("Inserir Pré-Diagnóstico"),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            preDiagnosisRoute,
-                            arguments: state.pacientDetailLoaded,
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (state is PacientDetailLoadEventFail) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: new Text("Paciente não encontrado"),
-                    content: new Text(
-                        "O paciente não foi encontrado, é necessaria a inclusão do paciente no banco de dados para continuar.\nClique abaixo para cadastrar o paciente."),
-                    actions: <Widget>[
-                      // define os botões na base do dialogo
-                      new FlatButton(
-                        child: new Text("Fechar"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      new FlatButton(
-                        child: new Text("Cadastrar Paciente"),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            createPacientRoute,
-                            arguments: preDiagnosisRoute,
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
@@ -168,6 +110,7 @@ class _AppointmentsWaitListScreenState
 
   Future _loadPacientDetail(AppointmentModel appointment) async {
     _pacientBloc.add(PacientDetailLoad(appointment));
+    this._appointmentModel = appointment;
   }
 
   Widget _listAppointmentView(AppointmentModel appointment) {
@@ -177,16 +120,9 @@ class _AppointmentsWaitListScreenState
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                _loadPacientDetail(appointment);
-              },
-              child: AppointmentTile(
-                nome: appointment.nome,
-                telefone: appointment.telefone,
-                dataAgendamento: appointment.appointmentDate,
-                horarioAgendamento: appointment.appointmentTime,
-              ),
+            child: AppointmentTile(
+              appointmentModel: appointment,
+              userUid: this.userUid,
             ),
           ),
         ],

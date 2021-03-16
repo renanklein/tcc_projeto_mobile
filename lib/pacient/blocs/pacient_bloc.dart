@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
+import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
@@ -96,9 +97,21 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
           var medRecord = await medRecordRepo.getMedRecordByHash(pacientHash);
 
-          if (medRecord.getPreDiagnosisList != null &&
-              medRecord.getPreDiagnosisList.isNotEmpty) {
-            yield PacientDetailWithPreDiagnosisSuccess();
+          var dateFormat = DateFormat("dd/MM/yyyy");
+
+          var hasPreDiagnosis = false;
+          var appoimentDateAsString =
+              dateFormat.format(event._appointmentModel.appointmentDate);
+
+          medRecord?.getPreDiagnosisList?.forEach((preDiagnosis) {
+            if (appoimentDateAsString == preDiagnosis.appointmentEventDate) {
+              hasPreDiagnosis = true;
+            }
+          });
+
+          if (hasPreDiagnosis) {
+            yield PacientDetailWithPreDiagnosisSuccess(
+                preDiagnosisDate: appoimentDateAsString);
           } else {
             yield PacientDetailLoadEventSuccess(_pacientDetail);
           }

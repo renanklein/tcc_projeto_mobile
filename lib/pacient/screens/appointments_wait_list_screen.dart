@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
+import 'package:tcc_projeto_app/pacient/createPreDiagnosisArguments.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
@@ -23,6 +24,7 @@ class _AppointmentsWaitListScreenState
     extends State<AppointmentsWaitListScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
+  AppointmentModel _appointmentModel;
   List<AppointmentModel> _appointmentList;
 
   String get userUid => this.widget.userUid;
@@ -69,9 +71,16 @@ class _AppointmentsWaitListScreenState
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Pacient com pré diagnóstico'),
+                      title: Text('Paciente com pré diagnóstico'),
                       content: Text(
-                          "O paciente já possui pré-diagnóstico para esse agendamento"),
+                          "O paciente já possui pré-diagnóstico para o dia ${state.preDiagnosisDate}"),
+                      actions: <Widget>[
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Fechar"))
+                      ],
                     );
                   });
             } else if (state is PacientDetailLoadEventSuccess) {
@@ -96,7 +105,10 @@ class _AppointmentsWaitListScreenState
                           Navigator.pushReplacementNamed(
                             context,
                             preDiagnosisRoute,
-                            arguments: state.pacientDetailLoaded,
+                            arguments: CreatePreDiagnosisArguments(
+                                pacientModel: state.pacientDetailLoaded,
+                                appointmentEventDate:
+                                    this._appointmentModel.appointmentDate),
                           );
                         },
                       ),
@@ -180,6 +192,7 @@ class _AppointmentsWaitListScreenState
 
   Future _loadPacientDetail(AppointmentModel appointment) async {
     _pacientBloc.add(PacientDetailLoad(appointment));
+    this._appointmentModel = appointment;
   }
 
   Widget _listAppointmentView(AppointmentModel appointment) {

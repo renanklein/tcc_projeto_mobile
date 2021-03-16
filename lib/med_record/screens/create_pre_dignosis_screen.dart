@@ -9,10 +9,10 @@ import 'package:tcc_projeto_app/utils/function_text_form_field.dart';
 
 class CreatePreDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
+  final DateTime appointmentEventDate;
 
-  CreatePreDiagnosisScreen({
-    @required this.pacient,
-  });
+  CreatePreDiagnosisScreen(
+      {@required this.pacient, @required this.appointmentEventDate});
   @override
   _CreatePreDiagnosisScreenState createState() =>
       _CreatePreDiagnosisScreenState();
@@ -23,6 +23,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   MedRecordRepository _medRecordRepository;
 
   PacientModel get pacient => this.widget.pacient;
+  DateTime get appointmentEventDate => this.widget.appointmentEventDate;
 
   final _preDiagnosisFormKey = new GlobalKey<FormState>();
 
@@ -285,26 +286,28 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                     .validate()) {
                                   this._medRecordBloc.add(
                                         PreDiagnosisCreateButtonPressed(
-                                          peso: pesoController.text,
-                                          altura: alturaController.text,
-                                          imc: '28.5',
-                                          pASistolica:
-                                              pASistolicaController.text,
-                                          pADiastolica:
-                                              pADiastolicaController.text,
-                                          freqCardiaca:
-                                              freqCardiacaController.text,
-                                          freqRepouso:
-                                              freqRepousoController.text,
-                                          temperatura:
-                                              temperaturaController.text,
-                                          glicemia: glicemiaController.text,
-                                          obs: obsController.text,
-                                          dtUltimaMestruacao:
-                                              dtUltimaMestruacaoController.text,
-                                          dtProvavelParto:
-                                              dtProvavelPartoController.text,
-                                        ),
+                                            peso: pesoController.text,
+                                            altura: alturaController.text,
+                                            imc: '28.5',
+                                            pASistolica:
+                                                pASistolicaController.text,
+                                            pADiastolica:
+                                                pADiastolicaController.text,
+                                            freqCardiaca:
+                                                freqCardiacaController.text,
+                                            freqRepouso:
+                                                freqRepousoController.text,
+                                            temperatura:
+                                                temperaturaController.text,
+                                            glicemia: glicemiaController.text,
+                                            obs: obsController.text,
+                                            dtUltimaMestruacao:
+                                                dtUltimaMestruacaoController
+                                                    .text,
+                                            dtProvavelParto:
+                                                dtProvavelPartoController.text,
+                                            dtAppointmentEvent:
+                                                this.appointmentEventDate),
                                       );
                                 }
                               },

@@ -13,21 +13,22 @@ class PreDiagnosisCreateButtonPressed extends MedRecordEvent {
   final obs;
   final dtUltimaMestruacao;
   final dtProvavelParto;
+  final dtAppointmentEvent;
 
-  PreDiagnosisCreateButtonPressed({
-    @required this.peso,
-    @required this.altura,
-    @required this.imc,
-    @required this.pASistolica,
-    @required this.pADiastolica,
-    @required this.freqCardiaca,
-    @required this.freqRepouso,
-    @required this.temperatura,
-    @required this.glicemia,
-    this.obs,
-    this.dtUltimaMestruacao,
-    this.dtProvavelParto,
-  });
+  PreDiagnosisCreateButtonPressed(
+      {@required this.peso,
+      @required this.altura,
+      @required this.imc,
+      @required this.pASistolica,
+      @required this.pADiastolica,
+      @required this.freqCardiaca,
+      @required this.freqRepouso,
+      @required this.temperatura,
+      @required this.glicemia,
+      this.obs,
+      this.dtUltimaMestruacao,
+      this.dtProvavelParto,
+      @required this.dtAppointmentEvent});
 
   @override
   List<Object> get props => [];

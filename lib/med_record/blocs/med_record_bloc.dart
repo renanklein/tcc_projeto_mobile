@@ -82,6 +82,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var now = new DateTime.now();
         var dateFormat = DateFormat("dd/MM/yyyy");
         var hoje = dateFormat.format(now);
+        var appointmentDate = dateFormat.format(event.dtAppointmentEvent);
 
         await this.medRecordRepository.createPacientPreDiagnosis(
               preDiagnosisModel: PreDiagnosisModel(
@@ -95,6 +96,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
                 temperatura: double.parse(event.temperatura),
                 glicemia: int.parse(event.glicemia),
                 observacao: event.obs,
+                appointmentEventDate: appointmentDate,
                 //dtUltimaMestruacao: event.dtUltimaMestruacao,
                 //dtProvavelParto: event.dtProvavelParto,
               ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
-import 'package:tcc_projeto_app/pacient/createPreDiagnosisArguments.dart';
+import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 import '../../utils/layout_utils.dart';
@@ -94,10 +94,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                       Navigator.pushReplacementNamed(
                         context,
                         preDiagnosisRoute,
-                        arguments: CreatePreDiagnosisArguments(
+                        arguments: RouteAppointmentArguments(
                             pacientModel: state.pacientDetailLoaded,
-                            appointmentEventDate:
-                                this.appointmentModel.appointmentDate),
+                            appointmentModel: this.appointmentModel),
                       );
                     },
                   ),
@@ -127,7 +126,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                       Navigator.pushReplacementNamed(
                         context,
                         createPacientRoute,
-                        arguments: preDiagnosisRoute,
+                        arguments: RouteAppointmentArguments(
+                            routePath: preDiagnosisRoute,
+                            appointmentModel: this.appointmentModel),
                       );
                     },
                   ),

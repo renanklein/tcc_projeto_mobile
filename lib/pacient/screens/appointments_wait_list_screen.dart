@@ -27,7 +27,7 @@ class _AppointmentsWaitListScreenState
 
   String get userUid => this.widget.userUid;
 
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

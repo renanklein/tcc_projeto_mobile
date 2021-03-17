@@ -38,7 +38,8 @@ class MedRecordModel {
     map.keys.forEach((k) {
       if (k != 'created') {
         if (map[k]['fulldiagnosis'] != null) {
-          CompleteDiagnosisModel diagnosisModel = CompleteDiagnosisModel.fromMap(map[k]['fulldiagnosis'], k);
+          CompleteDiagnosisModel diagnosisModel =
+              CompleteDiagnosisModel.fromMap(map[k]['fulldiagnosis'], k);
 
           _diagnosisList.add(diagnosisModel);
         }
@@ -52,21 +53,21 @@ class MedRecordModel {
       }
     });
 
+    var createDate;
     String data = map['created'];
-    int year = int.parse(data.split('/')[2]);
-    int mon = int.parse(data.split('/')[1]);
-    int day = int.parse(data.split('/')[0]);
+    if (data != null) {
+      int year = int.parse(data.split('/')[2]);
+      int mon = int.parse(data.split('/')[1]);
+      int day = int.parse(data.split('/')[0]);
+
+      createDate = DateTime(year, mon, day);
+    }
 
     return MedRecordModel(
-      overview: map['medRecordOverview'],
-      completeDiagnosis: _diagnosisList,
-      preDiagnosis: _preDiagnosisList,
-      createdDate: new DateTime(
-        year,
-        mon,
-        day,
-      ),
-    );
+        overview: map['medRecordOverview'],
+        completeDiagnosis: _diagnosisList,
+        preDiagnosis: _preDiagnosisList,
+        createdDate: createDate);
   }
 
   String get medRecordOverview => this._medRecordOverview;

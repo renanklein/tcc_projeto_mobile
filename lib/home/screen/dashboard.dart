@@ -6,6 +6,7 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
@@ -69,7 +70,8 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 createPacientRoute,
-                                arguments: 'Dashboard',
+                                arguments: RouteAppointmentArguments(
+                                    routePath: 'Dashboard'),
                               );
                             },
                             child: _dashboardItem(

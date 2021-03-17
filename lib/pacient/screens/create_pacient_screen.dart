@@ -10,14 +10,17 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
+import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 
 class CreatePacientScreen extends StatefulWidget {
+  final AppointmentModel appointmentModel;
   final String path;
 
-  CreatePacientScreen({this.path});
+  CreatePacientScreen({this.path, this.appointmentModel});
 
   @override
   _CreatePacientScreenState createState() => _CreatePacientScreenState();
@@ -29,6 +32,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   UserModel _userModel;
 
   String get getPath => this.widget.path;
+  AppointmentModel get appointmentModel => this.widget.appointmentModel;
 
   String sexoController = 'Masculino';
   String tipoDocumentoController = 'RG';
@@ -54,7 +58,9 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 
   @override
   void initState() {
-    this._pacientBloc = context.read<PacientBloc>();
+    this._pacientBloc = BlocProvider.of<PacientBloc>(context);
+    this.nomeController.text = this?.appointmentModel?.nome;
+    this.telefoneController.text = this?.appointmentModel?.telefone;
     super.initState();
   }
 
@@ -90,25 +96,25 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: new Text("Paciente Cadastrado"),
-                      content: new Text(
+                      title: Text("Paciente Cadastrado"),
+                      content: Text(
                           "O Paciente foi cadastrado. Clique abaixo para inserir o Pré-Diagnóstico"),
                       actions: <Widget>[
                         // define os botões na base do dialogo
-                        new FlatButton(
-                          child: new Text("Fechar"),
+                        TextButton(
+                          child: Text("Fechar"),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
-                        new FlatButton(
-                          child: new Text("Inserir Pré-Diagnóstico"),
+                        TextButton(
+                          child: Text("Inserir Pré-Diagnóstico"),
                           onPressed: () {
                             Navigator.pushReplacementNamed(
-                              context,
-                              preDiagnosisRoute,
-                              arguments: state.pacientCreated,
-                            );
+                                context, preDiagnosisRoute,
+                                arguments: RouteAppointmentArguments(
+                                    pacientModel: state.pacientCreated,
+                                    appointmentModel: this?.appointmentModel));
                           },
                         ),
                       ],
@@ -157,7 +163,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 ),
                                 InternationalPhoneNumberInput(
                                   initialValue: PhoneNumber(
-                                    phoneNumber: '21',
+                                    phoneNumber:
+                                        this.telefoneController.text ?? '21',
                                     dialCode: '+55',
                                     isoCode: 'BR',
                                   ),
@@ -255,21 +262,24 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 
                                         //TODO: check se necessita ir pro pré-atendimento
 
-                                        _pacientBloc.add(
-                                          PacientCreateButtonPressed(
-                                            userId: _userModel.uid,
-                                            nome: nomeController.text,
-                                            email: emailController.text,
-                                            telefone: telefoneController.text,
-                                            identidade:
-                                                tipoDocumentoController +
-                                                    ': ' +
-                                                    identidadeController.text,
-                                            cpf: cpfController.text,
-                                            dtNascimento: dtNascController.text,
-                                            sexo: sexoController,
-                                          ),
-                                        );
+                                        this._pacientBloc.add(
+                                              PacientCreateButtonPressed(
+                                                userId: _userModel.uid,
+                                                nome: nomeController.text,
+                                                email: emailController.text,
+                                                telefone:
+                                                    telefoneController.text,
+                                                identidade:
+                                                    tipoDocumentoController +
+                                                        ': ' +
+                                                        identidadeController
+                                                            .text,
+                                                cpf: cpfController.text,
+                                                dtNascimento:
+                                                    dtNascController.text,
+                                                sexo: sexoController,
+                                              ),
+                                            );
                                       }
                                     },
                                     child: Text('Cadastrar Paciente'),

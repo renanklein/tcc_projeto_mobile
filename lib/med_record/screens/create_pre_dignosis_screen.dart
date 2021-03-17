@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
@@ -9,10 +10,10 @@ import 'package:tcc_projeto_app/utils/function_text_form_field.dart';
 
 class CreatePreDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
-  final DateTime appointmentEventDate;
+  final AppointmentModel appointmentModel;
 
   CreatePreDiagnosisScreen(
-      {@required this.pacient, @required this.appointmentEventDate});
+      {@required this.pacient, @required this.appointmentModel});
   @override
   _CreatePreDiagnosisScreenState createState() =>
       _CreatePreDiagnosisScreenState();
@@ -23,7 +24,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   MedRecordRepository _medRecordRepository;
 
   PacientModel get pacient => this.widget.pacient;
-  DateTime get appointmentEventDate => this.widget.appointmentEventDate;
+  AppointmentModel get appointmentModel => this.widget.appointmentModel;
 
   final _preDiagnosisFormKey = new GlobalKey<FormState>();
 
@@ -306,8 +307,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                     .text,
                                             dtProvavelParto:
                                                 dtProvavelPartoController.text,
-                                            dtAppointmentEvent:
-                                                this.appointmentEventDate),
+                                            dtAppointmentEvent: this
+                                                .appointmentModel
+                                                .appointmentDate),
                                       );
                                 }
                               },

@@ -7,7 +7,7 @@ import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_pre_dignosis_screen.dart';
-import 'package:tcc_projeto_app/pacient/createPreDiagnosisArguments.dart';
+import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
@@ -58,11 +58,12 @@ class RouteGenerator {
         );
         break;
       case createPacientRoute:
-        var routePath = settings.arguments as String;
+        var arguments = settings.arguments as RouteAppointmentArguments;
 
         return MaterialPageRoute(
             builder: (_) => CreatePacientScreen(
-                  path: routePath,
+                  path: arguments?.routePath,
+                  appointmentModel: arguments?.appointmentModel,
                 ));
         break;
       case pacientDetailRoute:
@@ -90,11 +91,11 @@ class RouteGenerator {
         );
         break;
       case preDiagnosisRoute:
-        var data = settings.arguments as CreatePreDiagnosisArguments;
+        var data = settings.arguments as RouteAppointmentArguments;
         return MaterialPageRoute(
           builder: (_) => CreatePreDiagnosisScreen(
-            pacient: data.pacientModel,
-            appointmentEventDate: data.appointmentEventDate,
+            pacient: data?.pacientModel,
+            appointmentModel: data?.appointmentModel,
           ),
         );
         break;

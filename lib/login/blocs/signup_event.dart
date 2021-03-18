@@ -10,6 +10,7 @@ class SignupButtonPressed extends SignupEvent {
   final password;
   final access;
   final context;
+  final medicId;
 
   SignupButtonPressed({
     @required this.name,
@@ -17,6 +18,7 @@ class SignupButtonPressed extends SignupEvent {
     @required this.password,
     @required this.access,
     @required this.context,
+    this.medicId,
   });
 
   @override

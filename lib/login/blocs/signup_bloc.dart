@@ -35,6 +35,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
               name: event.name,
               email: event.email,
               uid: signupResult.user.uid,
+              medicId:
+                  (event.access != 'MEDIC') ? userRepository.getUser().uid : '',
               access: event.access,
             );
 

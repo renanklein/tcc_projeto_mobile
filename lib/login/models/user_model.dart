@@ -18,6 +18,17 @@ class UserModel {
     this._access = access;
   }
 
+  static UserModel fromMap(Map<String, dynamic> map, String userUid) {
+    if (map == null) return null;
+
+    return UserModel(
+      email: map["email"],
+      name: map["name"],
+      access: map["access"],
+      uid: userUid,
+    );
+  }
+
   String get email => this._email;
   String get name => this._name;
   String get uid => this._uid;

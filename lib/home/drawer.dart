@@ -6,7 +6,9 @@ import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
+import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -55,6 +57,11 @@ class _UserDrawerState extends State<UserDrawer> {
                           onTapCallback: _navigateToExameScreen,
                         ),
                         DrawerTile(
+                          icon: Icons.event_note,
+                          text: "Cadastrar Secretária",
+                          onTapCallback: _navigateToAssistantRegistrationScreen,
+                        ),
+                        DrawerTile(
                           icon: Icons.info,
                           text: "Relatorios",
                           onTapCallback: null,
@@ -76,10 +83,10 @@ class _UserDrawerState extends State<UserDrawer> {
   Future<void> _setUserModel() async {
     final user = this.userRepository.getUser();
     final userData = await this.userRepository.getUserData(user.uid);
-    this.userModel = UserModel(
-        email: userData.data()["email"],
-        name: userData.data()["name"],
-        uid: user.uid);
+    this.userModel = UserModel.fromMap(
+      userData.data(),
+      userData.id,
+    );
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
@@ -138,7 +145,10 @@ class _UserDrawerState extends State<UserDrawer> {
       onPressed: () async {
         this.authenticationBloc.add(LoggedOut());
         await Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LoginScreen()));
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
       },
     );
   }
@@ -147,7 +157,15 @@ class _UserDrawerState extends State<UserDrawer> {
 // TODO: Fazer arquivo de link???
 
   void _navigateToExameScreen() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ExamModelsScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ExamModelsScreen(),
+      ),
+    );
+  }
+
+  void _navigateToAssistantRegistrationScreen() {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => AssistantRegistrationScreen()));
   }
 }

@@ -56,11 +56,13 @@ class UserRepository {
     @required String email,
     @required String uid,
     String access,
+    String medicId,
   }) async {
     final userData = {
       "name": name,
       "email": email,
       "access": access,
+      "medicId": medicId,
     };
 
     await FirebaseFirestore.instance.collection("users").doc(uid).set(userData);

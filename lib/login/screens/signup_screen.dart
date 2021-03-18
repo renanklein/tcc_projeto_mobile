@@ -147,17 +147,17 @@ class _SignupScreenState extends State<SignupScreen> {
       child: Text("Paciente"),
     );
 
-    final secretaria = DropdownMenuItem(
+/*     final secretaria = DropdownMenuItem(
       value: "ASSISTANT",
       child: Text("Secretária"),
-    );
+    ); */
 
     final list = <DropdownMenuItem>[];
 
     list.add(medico);
     list.add(paciente);
-    list.add(secretaria);
-
+/*     list.add(secretaria);
+ */
     return list;
   }
 

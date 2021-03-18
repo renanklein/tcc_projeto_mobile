@@ -177,7 +177,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                             10.0, 10.0, 10.0, 10.0),
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(32.0)),
+                                                BorderRadius.circular(20.0)),
                                         hintText: "Telefone"),
                                     textFieldController:
                                         this.telefoneController,

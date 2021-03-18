@@ -28,6 +28,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       try {
         yield SignupProcessing();
 
+        final userId = await this.userRepository.getUser()?.uid;
+
         final signupResult = await this
             .userRepository
             .signUp(email: event.email, pass: event.password);
@@ -36,7 +38,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
               email: event.email,
               uid: signupResult.user.uid,
               medicId:
-                  (event.access != 'MEDIC') ? userRepository.getUser().uid : '',
+                  (event.access != 'MEDIC' && userId != null) ? userId : '',
               access: event.access,
             );
 

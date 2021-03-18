@@ -4,6 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 import '../../utils/layout_utils.dart';
 import '../blocs/pacient_bloc.dart';
@@ -67,7 +68,18 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Fechar"))
+                        child: Text("Fechar")),
+                    TextButton(
+                      child: Text("Ir para o Prontuário"),
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          medRecordRoute,
+                          arguments: MedRecordArguments(
+                              index: '3', pacientModel: state.pacientModel),
+                        );
+                      },
+                    ),
                   ],
                 );
               });

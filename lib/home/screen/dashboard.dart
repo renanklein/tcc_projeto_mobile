@@ -4,13 +4,12 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/home/drawer.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
-import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
-  final userRepository = Injector.appInstance.get<UserRepository>();
+  final _userModel = Injector.appInstance.get<UserModel>();
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -20,7 +19,7 @@ class _DashboardState extends State<Dashboard> {
   UserModel model;
   AuthenticationBloc _authenticationBloc;
 
-  UserRepository get userRepository => this.widget.userRepository;
+  UserModel get userModel => this.widget._userModel;
 
   @override
   void initState() {
@@ -84,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 pacientsRoute,
-                                arguments: this.userRepository.getUser().uid,
+                                arguments: this.userModel.uid,
                               );
                             },
                             child: _dashboardItem(
@@ -136,7 +135,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 appointmentsViewRoute,
-                                arguments: this.userRepository.getUser().uid,
+                                arguments: this.userModel.uid,
                               );
                             },
                             child: _dashboardItem(

@@ -111,6 +111,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
           if (hasPreDiagnosis) {
             yield PacientDetailWithPreDiagnosisSuccess(
+                pacientModel: _pacientDetail,
                 preDiagnosisDate: appoimentDateAsString);
           } else {
             yield PacientDetailLoadEventSuccess(_pacientDetail);

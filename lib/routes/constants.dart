@@ -9,6 +9,9 @@ const String createExamRoute = '/exam';
 const String dashboardRoute = '/';
 const String homeRoute = '/home';
 
+//management
+const String assistantRegistrationRoute = '/registrateAssistant';
+
 //med Record
 const String preDiagnosisRoute = '/preDiagnosis';
 const String medRecordRoute = '/medRecord';

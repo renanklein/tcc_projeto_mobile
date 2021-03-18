@@ -4,6 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 
 import '../../utils/layout_utils.dart';
 import '../blocs/pacient_bloc.dart';
@@ -67,7 +68,18 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Fechar"))
+                        child: Text("Fechar")),
+                    TextButton(
+                      child: Text("Ir para o Prontuário"),
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          medRecordRoute,
+                          arguments: MedRecordArguments(
+                              index: '3', pacientModel: state.pacientModel),
+                        );
+                      },
+                    ),
                   ],
                 );
               });
@@ -141,7 +153,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
       child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            borderRadius: BorderRadius.all(Radius.circular(16.0)),
             color: color,
             border: Border.all(
               color: Colors.black,
@@ -167,34 +179,43 @@ class _AppointmentTileState extends State<AppointmentTile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Text(
-                      dateTimeAgendamento,
-                      overflow: TextOverflow.visible,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 3.0, 0.0, 3.0),
+                      child: Text(
+                        dateTimeAgendamento,
+                        overflow: TextOverflow.visible,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 26.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A237E),
+                        ),
                       ),
                     ),
-                    Text(
-                      this.appointmentModel.nome,
-                      overflow: TextOverflow.visible,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 3.0, 0.0, 3.0),
+                      child: Text(
+                        this.appointmentModel.nome,
+                        overflow: TextOverflow.visible,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A237E),
+                        ),
                       ),
                     ),
-                    Text(
-                      this.appointmentModel.telefone,
-                      overflow: TextOverflow.visible,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 3.0, 0.0, 3.0),
+                      child: Text(
+                        "Tel.: " + this.appointmentModel.telefone,
+                        overflow: TextOverflow.visible,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A237E),
+                        ),
                       ),
                     ),
                   ],

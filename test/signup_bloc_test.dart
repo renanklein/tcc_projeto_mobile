@@ -60,6 +60,7 @@ void main() {
         email: "",
         name: "",
         password: "",
+        access: '',
         context: fakeContext,
       ));
     });
@@ -74,6 +75,7 @@ void main() {
         email: "",
         name: "",
         password: "",
+        access: '',
         context: fakeContext,
       ));
     });

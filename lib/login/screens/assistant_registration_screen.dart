@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/blocs/signup_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
@@ -11,18 +10,19 @@ import 'elements/email_field.dart';
 import 'elements/name_field.dart';
 import 'elements/password_field.dart';
 
-class SignupScreen extends StatefulWidget {
+class AssistantRegistrationScreen extends StatefulWidget {
   final userRepository = Injector.appInstance.getDependency<UserRepository>();
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _AssistantRegistrationScreenState createState() =>
+      _AssistantRegistrationScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _AssistantRegistrationScreenState
+    extends State<AssistantRegistrationScreen> {
   final _nameController = new TextEditingController();
   final _emailController = new TextEditingController();
   final _passController = new TextEditingController();
-  String _accessController;
 
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Criar Conta"),
+        title: Text("Cadastrar Secretária"),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -56,7 +56,6 @@ class _SignupScreenState extends State<SignupScreen> {
         listener: (context, state) {
           if (state is SignupSigned) {
             onSuccess();
-            redirectToHomePage();
           } else if (state is SignupFailed) {
             onFail();
           }
@@ -83,21 +82,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   LayoutUtils.buildVerticalSpacing(20.0),
                   LoginPasswordField(passController: this._passController),
                   LayoutUtils.buildVerticalSpacing(20.0),
-                  DropdownButtonFormField(
-                    items: _getDropdownMenuItems(),
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32.0)),
-                    ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        this._accessController = newValue;
-                      });
-                    },
-                  ),
-                  LayoutUtils.buildVerticalSpacing(20.0),
                   SizedBox(
                     height: 44.0,
                     child: ElevatedButton(
@@ -119,7 +103,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   name: this._nameController.text,
                                   email: this._emailController.text,
                                   password: this._passController.text,
-                                  access: this._accessController,
+                                  access: 'ASSISTANT',
                                   context: context,
                                 ),
                               );
@@ -136,44 +120,11 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  List<DropdownMenuItem> _getDropdownMenuItems() {
-    final medico = DropdownMenuItem(
-      value: "MEDIC",
-      child: Text("Médico"),
-    );
-
-    final paciente = DropdownMenuItem(
-      value: "PACIENT",
-      child: Text("Paciente"),
-    );
-
-/*     final secretaria = DropdownMenuItem(
-      value: "ASSISTANT",
-      child: Text("Secretária"),
-    ); */
-
-    final list = <DropdownMenuItem>[];
-
-    list.add(medico);
-    list.add(paciente);
-/*     list.add(secretaria);
- */
-    return list;
-  }
-
   void onSuccess() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Conta criada com sucesso !"),
         backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-  void redirectToHomePage() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => Dashboard(),
       ),
     );
   }

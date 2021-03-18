@@ -61,11 +61,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     this._pacientBloc = BlocProvider.of<PacientBloc>(context);
     this.nomeController.text = this?.appointmentModel?.nome;
     this.telefoneController.text = this?.appointmentModel?.telefone;
+    this._userModel = Injector.appInstance.get<UserModel>();
     super.initState();
-  }
-
-  Future<void> _setUserModel() async {
-    this._userModel = await this.userRepository.getUserModel();
   }
 
   @override
@@ -161,45 +158,75 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   'Insira o e-mail do paciente',
                                   'Por Favor, insira um e-mail válido',
                                 ),
-                                InternationalPhoneNumberInput(
-                                  initialValue: PhoneNumber(
-                                    phoneNumber:
-                                        this.telefoneController.text ?? '21',
-                                    dialCode: '+55',
-                                    isoCode: 'BR',
-                                  ),
-                                  onInputChanged: (phone) {},
-                                  inputDecoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          20.0, 10.0, 10.0, 20.0),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0)),
-                                      hintText: "Telefone"),
-                                  textFieldController: this.telefoneController,
-                                ),
-                                Column(
-                                  children: [
-                                    Text('Tipo de Documento'),
-                                    DropdownButton<String>(
-                                      hint: Text(
-                                          'Selecione o tipo de documento apresentado'),
-                                      items: tipoDocumentoList
-                                          .map((String dropDownStringItem) {
-                                        return DropdownMenuItem<String>(
-                                          value: dropDownStringItem,
-                                          child: Text(dropDownStringItem),
-                                        );
-                                      }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          this.tipoDocumentoController =
-                                              newValue;
-                                        });
-                                      },
-                                      value: tipoDocumentoController,
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0.0, 8.0, 0.0, 8.0),
+                                  child: InternationalPhoneNumberInput(
+                                    initialValue: PhoneNumber(
+                                      phoneNumber:
+                                          this.telefoneController.text ?? '21',
+                                      dialCode: '+55',
+                                      isoCode: 'BR',
                                     ),
-                                  ],
+                                    onInputChanged: (phone) {},
+                                    inputDecoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(
+                                            10.0, 10.0, 10.0, 10.0),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)),
+                                        hintText: "Telefone"),
+                                    textFieldController:
+                                        this.telefoneController,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0.0, 8.0, 0.0, 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.black54,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text('Tipo de Documento'),
+                                        DropdownButton<String>(
+                                          hint: Text(
+                                              'Selecione o tipo de documento apresentado'),
+                                          items: tipoDocumentoList
+                                              .map((String dropDownStringItem) {
+                                            return DropdownMenuItem<String>(
+                                                value: dropDownStringItem,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                    8.0,
+                                                    0.0,
+                                                    0.0,
+                                                    0.0,
+                                                  ),
+                                                  child: Text(
+                                                    dropDownStringItem,
+                                                  ),
+                                                ));
+                                          }).toList(),
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              this.tipoDocumentoController =
+                                                  newValue;
+                                            });
+                                          },
+                                          value: tipoDocumentoController,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                                 pacienteFormField(
                                   identidadeController,
@@ -207,36 +234,52 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                   'Insira o número do Documento do paciente',
                                   'Por Favor, insira um número válido',
                                 ),
+
                                 pacienteFormField(
                                   cpfController,
                                   'CPF:',
                                   'Insira o CPF do paciente',
                                   'Por Favor, insira um CPF válido',
                                 ),
-                                Column(
-                                  children: [
-                                    Text('Sexo do Paciente'),
-                                    DropdownButton<String>(
-                                      hint:
-                                          Text('Selecione o sexo do paciente'),
-                                      items: [
-                                        'Masculino',
-                                        'Feminino',
-                                        'Não Declarado'
-                                      ].map((String dropDownStringItem) {
-                                        return DropdownMenuItem<String>(
-                                          value: dropDownStringItem,
-                                          child: Text(dropDownStringItem),
-                                        );
-                                      }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          this.sexoController = newValue;
-                                        });
-                                      },
-                                      value: sexoController,
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0.0, 8.0, 0.0, 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.black54,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
                                     ),
-                                  ],
+                                    child: Column(
+                                      children: [
+                                        Text('Sexo do Paciente'),
+                                        DropdownButton<String>(
+                                          hint: Text(
+                                              'Selecione o sexo do paciente'),
+                                          items: [
+                                            'Masculino',
+                                            'Feminino',
+                                            'Não Declarado'
+                                          ].map((String dropDownStringItem) {
+                                            return DropdownMenuItem<String>(
+                                              value: dropDownStringItem,
+                                              child: Text(dropDownStringItem),
+                                            );
+                                          }).toList(),
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              this.sexoController = newValue;
+                                            });
+                                          },
+                                          value: sexoController,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ), //menudropdown
                                 dateFormField(
                                   dtNascController,
@@ -258,8 +301,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                       if (_createPacientFormKey.currentState
                                               .validate() &&
                                           sexoController != '') {
-                                        await _setUserModel();
-
                                         //TODO: check se necessita ir pro pré-atendimento
 
                                         this._pacientBloc.add(

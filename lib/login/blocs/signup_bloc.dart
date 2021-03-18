@@ -32,7 +32,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             .userRepository
             .signUp(email: event.email, pass: event.password);
         await this.userRepository.sendUserData(
-            name: event.name, email: event.email, uid: signupResult.user.uid);
+              name: event.name,
+              email: event.email,
+              uid: signupResult.user.uid,
+              access: event.access,
+            );
 
         final token = await signupResult.user.getIdToken();
 

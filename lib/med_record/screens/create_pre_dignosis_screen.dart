@@ -116,16 +116,21 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             onChangedFunction: (value) {
                               if (int.parse(pesoController.text) > 0 &&
                                   int.parse(alturaController.text) > 0) {
-                                setState(() {
-                                  imcController =
-                                      int.parse(pesoController.text) /
-                                          ((int.parse(alturaController.text) *
-                                                  int.parse(
-                                                      alturaController.text)) /
-                                              10000);
-                                  showImc = Text('IMC: ' +
-                                      imcController.toStringAsFixed(1));
-                                });
+                                setState(
+                                  () {
+                                    imcController = int.parse(
+                                            pesoController.text) /
+                                        ((int.parse(alturaController.text) *
+                                                int.parse(
+                                                    alturaController.text)) /
+                                            10000);
+                                    showImc = Text(
+                                      'IMC: ' +
+                                          imcController.toStringAsFixed(1),
+                                      style: TextStyle(fontSize: 22),
+                                    );
+                                  },
+                                );
                               }
                             },
                             validatorFunction: (value) {
@@ -153,8 +158,10 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                   int.parse(
                                                       alturaController.text)) /
                                               10000);
-                                  showImc = Text('IMC: ' +
-                                      imcController.toStringAsFixed(1));
+                                  showImc = Text(
+                                    'IMC: ' + imcController.toStringAsFixed(1),
+                                    style: TextStyle(fontSize: 22),
+                                  );
                                 });
                               }
                             },
@@ -168,7 +175,21 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             },
                             isNumber: true,
                           ),
-                          showImc,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black54,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                child: Center(child: showImc)),
+                          ),
                           FunctionTextFormField(
                             controller: pASistolicaController,
                             label: 'P.A.',

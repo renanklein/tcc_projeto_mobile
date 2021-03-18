@@ -22,6 +22,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _nameController = new TextEditingController();
   final _emailController = new TextEditingController();
   final _passController = new TextEditingController();
+  String _accessController;
+
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   AuthenticationBloc authenticationBloc;
@@ -51,87 +53,104 @@ class _SignupScreenState extends State<SignupScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: BlocListener<SignupBloc, SignupState>(
-          listener: (context, state) {
-            if (state is SignupSigned) {
-              onSuccess();
-              redirectToHomePage();
-            } else if (state is SignupFailed) {
-              onFail();
+        listener: (context, state) {
+          if (state is SignupSigned) {
+            onSuccess();
+            redirectToHomePage();
+          } else if (state is SignupFailed) {
+            onFail();
+          }
+        },
+        child: BlocBuilder(
+          cubit: signupBloc,
+          builder: (context, state) {
+            if (state is SignupProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
             }
-          },
-          child: BlocBuilder(
-              cubit: signupBloc,
-              builder: (context, state) {
-                if (state is SignupProcessing) {
-                  return LayoutUtils.buildCircularProgressIndicator(context);
-                }
-                return Form(
-                  key: formKey,
-                  child: ListView(
-                    padding: EdgeInsets.all(16.0),
-                    children: <Widget>[
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      LoginNameField(
-                        nameController: this._nameController,
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      LoginEmailField(
-                        emailController: this._emailController,
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      LoginPasswordField(passController: this._passController),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      DropdownButtonFormField(
-                        items: _getDropdownMenuItems(),
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0)),
-                        ),
-                        onChanged: (_) {},
-                      ),
-                      LayoutUtils.buildVerticalSpacing(20.0),
-                      SizedBox(
-                          height: 44.0,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                primary: Theme.of(context).primaryColor,
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                )),
-                            child: Text("Criar Conta",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
-                            onPressed: () {
-                              if (this.formKey.currentState.validate()) {
-                                this.signupBloc.add(SignupButtonPressed(
-                                    name: this._nameController.text,
-                                    email: this._emailController.text,
-                                    password: this._passController.text,
-                                    context: context));
-                              }
-                            },
-                          ))
-                    ],
+            return Form(
+              key: formKey,
+              child: ListView(
+                padding: EdgeInsets.all(16.0),
+                children: <Widget>[
+                  LayoutUtils.buildVerticalSpacing(20.0),
+                  LoginNameField(
+                    nameController: this._nameController,
                   ),
-                );
-              })),
+                  LayoutUtils.buildVerticalSpacing(20.0),
+                  LoginEmailField(
+                    emailController: this._emailController,
+                  ),
+                  LayoutUtils.buildVerticalSpacing(20.0),
+                  LoginPasswordField(passController: this._passController),
+                  LayoutUtils.buildVerticalSpacing(20.0),
+                  DropdownButtonFormField(
+                    items: _getDropdownMenuItems(),
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0)),
+                    ),
+                    onChanged: (newValue) {
+                      setState(() {
+                        this._accessController = newValue;
+                      });
+                    },
+                  ),
+                  LayoutUtils.buildVerticalSpacing(20.0),
+                  SizedBox(
+                    height: 44.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          primary: Theme.of(context).primaryColor,
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                          )),
+                      child: Text("Criar Conta",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      onPressed: () {
+                        if (this.formKey.currentState.validate()) {
+                          this.signupBloc.add(
+                                SignupButtonPressed(
+                                  name: this._nameController.text,
+                                  email: this._emailController.text,
+                                  password: this._passController.text,
+                                  access: this._accessController,
+                                  context: context,
+                                ),
+                              );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {
     final medico = DropdownMenuItem(
+      value: "MEDIC",
       child: Text("Médico"),
     );
 
-    final paciente = DropdownMenuItem(child: Text("Paciente"));
+    final paciente = DropdownMenuItem(
+      value: "PACIENT",
+      child: Text("Paciente"),
+    );
 
-    final secretaria = DropdownMenuItem(child: Text("Secretária"));
+    final secretaria = DropdownMenuItem(
+      value: "ASSISTANT",
+      child: Text("Secretária"),
+    );
 
     final list = <DropdownMenuItem>[];
 
@@ -143,21 +162,28 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void onSuccess() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Conta criada com sucesso !"),
-      backgroundColor: Colors.green,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Conta criada com sucesso !"),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void redirectToHomePage() {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => Dashboard(),
+      ),
+    );
   }
 
   void onFail() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Falha ao criar o usuário"),
-      backgroundColor: Colors.red,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Falha ao criar o usuário"),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 }

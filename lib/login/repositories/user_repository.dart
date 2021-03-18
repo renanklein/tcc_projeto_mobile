@@ -51,11 +51,17 @@ class UserRepository {
     return await FirebaseFirestore.instance.collection("users").doc(uid).get();
   }
 
-  Future<void> sendUserData(
-      {@required String name,
-      @required String email,
-      @required String uid}) async {
-    final userData = {"name": name, "email": email};
+  Future<void> sendUserData({
+    @required String name,
+    @required String email,
+    @required String uid,
+    String access,
+  }) async {
+    final userData = {
+      "name": name,
+      "email": email,
+      "access": access,
+    };
 
     await FirebaseFirestore.instance.collection("users").doc(uid).set(userData);
   }
@@ -78,6 +84,7 @@ class UserRepository {
     return UserModel(
       email: userData.data()["email"],
       name: userData.data()["name"],
+      access: userData.data()["access"],
       uid: user.uid,
     );
   }

@@ -11,7 +11,7 @@ import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class HomeScreen extends StatefulWidget {
-  final userRepository = Injector.appInstance.get<UserRepository>();
+  final _userModel = Injector.appInstance.get<UserModel>();
   final authenticationBloc = Injector.appInstance.get<AuthenticationBloc>();
 
   @override
@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   UserModel model;
 
-  UserRepository get userRepository => this.widget.userRepository;
+  UserModel get userModel => this.widget._userModel;
   AuthenticationBloc get authenticationBloc => this.widget.authenticationBloc;
 
   @override
@@ -54,11 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             color: Theme.of(context).primaryColor,
             onPressed: () async {
-              var user = this.userRepository.getUser();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => UserCalendar(
-                    uid: user.uid,
+                    uid: userModel.uid,
                   ),
                 ),
               );

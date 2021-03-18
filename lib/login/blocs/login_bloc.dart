@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:tcc_projeto_app/login/utils/userdata_utils.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -35,6 +36,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         this
             .authenticationBloc
             .add(LoggedIn(token: tokenResponse, context: event.context));
+
+        UserDataUtils.setUserData(userRepository.getUser().uid);
+
         yield LoginSucceded();
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);

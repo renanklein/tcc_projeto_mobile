@@ -5,14 +5,12 @@ import 'package:tcc_projeto_app/exams/screens/exam_model_screen.dart';
 import 'package:tcc_projeto_app/home/tiles/drawer_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
-import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
-import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
-  final userRepository = Injector.appInstance.get<UserRepository>();
+  final _userModel = Injector.appInstance.get<UserModel>();
   @override
   _UserDrawerState createState() => _UserDrawerState();
 }
@@ -20,9 +18,7 @@ class UserDrawer extends StatefulWidget {
 class _UserDrawerState extends State<UserDrawer> {
   AuthenticationBloc authenticationBloc;
 
-  UserRepository get userRepository => this.widget.userRepository;
-
-  UserModel userModel;
+  UserModel get userModel => this.widget._userModel;
 
   @override
   void initState() {
@@ -42,51 +38,41 @@ class _UserDrawerState extends State<UserDrawer> {
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             cubit: this.authenticationBloc,
             builder: (context, state) {
-              return FutureBuilder(
-                future: _setUserModel(),
+              /* return  FutureBuilder(
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return LayoutUtils.buildCircularProgressIndicator(context);
-                  } else {
-                    return ListView(
-                      children: <Widget>[
-                        _createDrawerHeader(this.userModel, context),
-                        DrawerTile(
-                          icon: Icons.event_note,
-                          text: "Modelo de exames",
-                          onTapCallback: _navigateToExameScreen,
-                        ),
-                        DrawerTile(
-                          icon: Icons.event_note,
-                          text: "Cadastrar Secretária",
-                          onTapCallback: _navigateToAssistantRegistrationScreen,
-                        ),
-                        DrawerTile(
-                          icon: Icons.info,
-                          text: "Relatorios",
-                          onTapCallback: null,
-                        ),
-                        Divider(),
-                        DrawerTile(
-                          icon: Icons.bug_report,
-                          text: "Relatar Erros",
-                          onTapCallback: null,
-                        ),
-                      ],
-                    );
-                  }
-                },
+                  } else { */
+              return ListView(
+                children: <Widget>[
+                  _createDrawerHeader(this.userModel, context),
+                  DrawerTile(
+                    icon: Icons.event_note,
+                    text: "Modelo de exames",
+                    onTapCallback: _navigateToExameScreen,
+                  ),
+                  DrawerTile(
+                    icon: Icons.event_note,
+                    text: "Cadastrar Secretária",
+                    onTapCallback: _navigateToAssistantRegistrationScreen,
+                  ),
+                  DrawerTile(
+                    icon: Icons.info,
+                    text: "Relatorios",
+                    onTapCallback: null,
+                  ),
+                  Divider(),
+                  DrawerTile(
+                    icon: Icons.bug_report,
+                    text: "Relatar Erros",
+                    onTapCallback: null,
+                  ),
+                ],
               );
+              /*      }
+                },
+              ) ;*/
             }));
-  }
-
-  Future<void> _setUserModel() async {
-    final user = this.userRepository.getUser();
-    final userData = await this.userRepository.getUserData(user.uid);
-    this.userModel = UserModel.fromMap(
-      userData.data(),
-      userData.id,
-    );
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {

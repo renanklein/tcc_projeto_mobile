@@ -11,7 +11,6 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/details_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ListDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -66,8 +65,9 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                 return LayoutUtils.buildCircularProgressIndicator(context);
               } else if (state is MedRecordLoadEventFail) {
                 return Center(
-                    child: Text(
-                        'Não há informações de diagnostico cadastradas para esse paciente'));
+                  child: Text(
+                      'Não há informações de diagnostico cadastradas para esse paciente'),
+                );
               } else {
                 return Padding(
                     padding: EdgeInsets.all(8.0),

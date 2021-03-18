@@ -3,6 +3,7 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
@@ -29,8 +30,8 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     String uid;
     //final MedRecordArguments mDArgs = settings.arguments as Type;
-    final userRepo = Injector.appInstance.get<UserRepository>();
-    uid = userRepo.getUser().uid;
+    final userModel = Injector.appInstance.get<UserModel>();
+    uid = userModel.uid;
 
     switch (settings.name) {
       case dashboardRoute:

@@ -61,11 +61,8 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     this._pacientBloc = BlocProvider.of<PacientBloc>(context);
     this.nomeController.text = this?.appointmentModel?.nome;
     this.telefoneController.text = this?.appointmentModel?.telefone;
+    this._userModel = Injector.appInstance.get<UserModel>();
     super.initState();
-  }
-
-  Future<void> _setUserModel() async {
-    this._userModel = await this.userRepository.getUserModel();
   }
 
   @override
@@ -304,8 +301,6 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                       if (_createPacientFormKey.currentState
                                               .validate() &&
                                           sexoController != '') {
-                                        await _setUserModel();
-
                                         //TODO: check se necessita ir pro pré-atendimento
 
                                         this._pacientBloc.add(

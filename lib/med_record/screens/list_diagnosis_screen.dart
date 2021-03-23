@@ -8,6 +8,7 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_m
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/tile/diagnosis_tile.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/details_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -126,11 +127,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
 
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
-    medRecordModel.getPreDiagnosisList.forEach((element) {
-      fields.addAll(displayPreDiagnosis(element, pacientModel));
-    });
-
-    return fields;
+    return DiagnosisTile.fromPreDiagnosisList(
+        medRecordModel.getPreDiagnosisList);
   }
 
   void _loadDiagnosis() {

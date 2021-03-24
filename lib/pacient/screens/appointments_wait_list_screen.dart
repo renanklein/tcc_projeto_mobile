@@ -12,7 +12,9 @@ import '../blocs/pacient_bloc.dart';
 class AppointmentsWaitListScreen extends StatefulWidget {
   String userUid;
 
-  AppointmentsWaitListScreen({@required this.userUid});
+  AppointmentsWaitListScreen({
+    @required this.userUid,
+  });
   @override
   _AppointmentsWaitListScreenState createState() =>
       _AppointmentsWaitListScreenState();
@@ -22,7 +24,7 @@ class _AppointmentsWaitListScreenState
     extends State<AppointmentsWaitListScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
-  AppointmentModel _appointmentModel;
+  //AppointmentModel _appointmentModel;
   List<AppointmentModel> _appointmentList;
 
   String get userUid => this.widget.userUid;
@@ -108,10 +110,10 @@ class _AppointmentsWaitListScreenState
     _pacientBloc.add(AppointmentsLoad());
   }
 
-  Future _loadPacientDetail(AppointmentModel appointment) async {
+  /* Future _loadPacientDetail(AppointmentModel appointment) async {
     _pacientBloc.add(PacientDetailLoad(appointment));
     this._appointmentModel = appointment;
-  }
+  } */
 
   Widget _listAppointmentView(AppointmentModel appointment) {
     return Container(

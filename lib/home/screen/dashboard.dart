@@ -9,8 +9,6 @@ import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 
 class Dashboard extends StatefulWidget {
-  final _userModel = Injector.appInstance.get<UserModel>();
-
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -19,11 +17,12 @@ class _DashboardState extends State<Dashboard> {
   UserModel model;
   AuthenticationBloc _authenticationBloc;
 
-  UserModel get userModel => this.widget._userModel;
+  UserModel _userModel;
 
   @override
   void initState() {
     this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    this._userModel = Injector.appInstance.get<UserModel>();
 
     super.initState();
   }
@@ -83,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 pacientsRoute,
-                                arguments: this.userModel.uid,
+                                arguments: this._userModel.uid,
                               );
                             },
                             child: _dashboardItem(
@@ -135,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                 appointmentsViewRoute,
-                                arguments: this.userModel.uid,
+                                arguments: this._userModel.uid,
                               );
                             },
                             child: _dashboardItem(

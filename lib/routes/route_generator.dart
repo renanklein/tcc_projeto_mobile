@@ -4,7 +4,6 @@ import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
-import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
@@ -28,10 +27,8 @@ class RouteGenerator {
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    String uid;
     //final MedRecordArguments mDArgs = settings.arguments as Type;
     final userModel = Injector.appInstance.get<UserModel>();
-    uid = userModel.uid;
 
     switch (settings.name) {
       case dashboardRoute:
@@ -41,11 +38,20 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case assistantRegistrationRoute:
-        return MaterialPageRoute(builder: (_) => AssistantRegistrationScreen());
+        if (userModel.getAccess == "MEDIC") {
+          return MaterialPageRoute(
+              builder: (_) => AssistantRegistrationScreen());
+        } else {
+          return _notAllowedAccess();
+        }
         break;
       case pacientsRoute:
-        String uid = settings.arguments;
-
+        String uid;
+        if (userModel.getAccess == "ASSISTANT") {
+          uid = userModel.getMedicId;
+        } else {
+          uid = userModel.uid;
+        }
         return MaterialPageRoute(
           builder: (_) => ListPacientScreen(
             userUid: uid,
@@ -53,14 +59,25 @@ class RouteGenerator {
         );
         break;
       case createDiagnosisRoute:
-        return MaterialPageRoute(builder: (_) => CreateDiagnosisScreen());
+        if (userModel.getAccess == "MEDIC") {
+          return MaterialPageRoute(builder: (_) => CreateDiagnosisScreen());
+        } else {
+          return _notAllowedAccess();
+        }
         break;
       case calendarRoute:
+        String uid;
+        if (userModel.getAccess == "ASSISTANT") {
+          uid = userModel.getMedicId;
+        } else {
+          uid = userModel.uid;
+        }
         return MaterialPageRoute(
           builder: (_) => UserCalendar(
             uid: uid,
           ),
         );
+
         break;
       case createPacientRoute:
         var arguments = settings.arguments as RouteAppointmentArguments;
@@ -80,7 +97,12 @@ class RouteGenerator {
         );
         break;
       case appointmentsViewRoute:
-        String uid = settings.arguments;
+        String uid;
+        if (userModel.getAccess == "ASSISTANT") {
+          uid = userModel.getMedicId;
+        } else {
+          uid = userModel.uid;
+        }
         return MaterialPageRoute(
           builder: (_) => AppointmentsWaitListScreen(
             userUid: uid,
@@ -88,12 +110,16 @@ class RouteGenerator {
         );
         break;
       case medRecordRoute:
-        var data = settings.arguments as MedRecordArguments;
-        return MaterialPageRoute(
-          builder: (_) => MedRecordScreen(
-            medRecordArguments: data,
-          ),
-        );
+        if (userModel.getAccess == "MEDIC") {
+          var data = settings.arguments as MedRecordArguments;
+          return MaterialPageRoute(
+            builder: (_) => MedRecordScreen(
+              medRecordArguments: data,
+            ),
+          );
+        } else {
+          return _notAllowedAccess();
+        }
         break;
       case preDiagnosisRoute:
         var data = settings.arguments as RouteAppointmentArguments;
@@ -103,9 +129,6 @@ class RouteGenerator {
             appointmentModel: data?.appointmentModel,
           ),
         );
-        break;
-      case '/newPacientDetail':
-        //return MaterialPageRoute(builder: (_) => NewPacientDetailScreen());
         break;
       default:
         return _errorRoute();
@@ -121,6 +144,20 @@ class RouteGenerator {
         ),
         body: Center(
           child: Text('Erro de Rota'),
+        ),
+      );
+    });
+  }
+
+  static Route<dynamic> _notAllowedAccess() {
+    return MaterialPageRoute(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Acesso Não Permitido'),
+        ),
+        body: Center(
+          child: Text(
+              'Seu Nível de Acesso não permite o acesso a esse conteúdo. Por favor, retorne a página anterior.'),
         ),
       );
     });

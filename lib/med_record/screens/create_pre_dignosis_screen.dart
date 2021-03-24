@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
-import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/utils/function_text_form_field.dart';
@@ -21,7 +20,7 @@ class CreatePreDiagnosisScreen extends StatefulWidget {
 
 class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
-  MedRecordRepository _medRecordRepository;
+  //MedRecordRepository _medRecordRepository;
 
   PacientModel get pacient => this.widget.pacient;
   AppointmentModel get appointmentModel => this.widget.appointmentModel;

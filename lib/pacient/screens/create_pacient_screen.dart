@@ -11,7 +11,6 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
-import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
@@ -28,7 +27,7 @@ class CreatePacientScreen extends StatefulWidget {
 
 class _CreatePacientScreenState extends State<CreatePacientScreen> {
   PacientBloc _pacientBloc;
-  PacientRepository _pacientRepository;
+  //PacientRepository _pacientRepository;
   UserModel _userModel;
 
   String get getPath => this.widget.path;
@@ -301,11 +300,12 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                       if (_createPacientFormKey.currentState
                                               .validate() &&
                                           sexoController != '') {
-                                        //TODO: check se necessita ir pro pré-atendimento
-
                                         this._pacientBloc.add(
                                               PacientCreateButtonPressed(
-                                                userId: _userModel.uid,
+                                                userId: (_userModel.getAccess ==
+                                                        "ASSISTANT")
+                                                    ? _userModel.getMedicId
+                                                    : _userModel.uid,
                                                 nome: nomeController.text,
                                                 email: emailController.text,
                                                 telefone:

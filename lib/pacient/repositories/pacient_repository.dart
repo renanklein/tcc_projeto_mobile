@@ -56,12 +56,12 @@ class PacientRepository extends ChangeNotifier {
       return pacientModel;
     } on Exception catch (e) {
       e.toString();
+      return null;
     }
   }
 
   Future<List<AppointmentModel>> getAppointments() async {
     List<AppointmentModel> _appointmentsList = <AppointmentModel>[];
-    var docs;
     await _agendaCollectionReference
         .doc(this._userId)
         .collection("events")

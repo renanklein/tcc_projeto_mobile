@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/utils/userdata_utils.dart';
@@ -48,6 +49,7 @@ class AuthenticationBloc
       }
     } else if (event is LoggedOut) {
       yield AuthenticationProcessing();
+      Injector.appInstance.removeByKey<UserModel>(dependencyName: 'modeloId');
       await this.userRepository.logOut();
       yield AuthenticationUnauthenticated();
     }

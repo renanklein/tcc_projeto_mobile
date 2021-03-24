@@ -54,7 +54,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Menu principal"),
+        title: Text("Listagem de Pacientes"),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
@@ -146,6 +146,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                                   if (value.isEmpty) {
                                     return '';
                                   }
+                                  return null;
                                 },
                               ),
                             ),

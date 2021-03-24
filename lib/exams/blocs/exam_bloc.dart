@@ -60,6 +60,5 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
     }
   }
 
-  @override
   ExamState get initialState => ExamInitial();
 }

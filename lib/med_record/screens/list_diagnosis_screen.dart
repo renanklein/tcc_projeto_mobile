@@ -30,7 +30,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
 
   PacientModel get pacient => this.widget.pacient;
 
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  //final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

@@ -18,6 +18,7 @@ class LoginEmailField extends StatelessWidget {
         if (text.isEmpty || !text.contains("@")) {
           return "Email inválido";
         }
+        return null;
       },
     );
   }

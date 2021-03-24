@@ -65,22 +65,22 @@ class MedRecordRepository {
 
   Future<MedRecordModel> getMedRecordByHash(String pacientHash) async {
     try {
-      //TODO: Pegar o Prontuario Médico
-
       MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
 
       bool boolMedRecordCreated;
 
-      await document.get().then((value) {
-        var response = value.data();
-        if (response != null) {
-          boolMedRecordCreated = true;
-          medRecord = MedRecordModel.fromMap(response);
-        } else {
-          boolMedRecordCreated = false;
-        }
-      });
+      await document.get().then(
+        (value) {
+          var response = value.data();
+          if (response != null) {
+            boolMedRecordCreated = true;
+            medRecord = MedRecordModel.fromMap(response);
+          } else {
+            boolMedRecordCreated = false;
+          }
+        },
+      );
 
       if (boolMedRecordCreated == false) {
         String dt = dateFormat.format(date);
@@ -94,6 +94,7 @@ class MedRecordRepository {
       return medRecord;
     } on Exception catch (e) {
       e.toString();
+      return null;
     }
   }
 

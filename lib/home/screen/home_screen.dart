@@ -44,7 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
         ),
-        drawer: UserDrawer(),
+        drawer: UserDrawer(
+          userModel: this.userModel,
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {},
           child: IconButton(

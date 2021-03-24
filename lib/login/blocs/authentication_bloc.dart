@@ -26,30 +26,28 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AppStarted) {
+      yield AuthenticationProcessing();
       final user = this.userRepository.getUser();
       if (user == null) {
         yield AuthenticationUnauthenticated();
       } else {
-        await UserDataUtils.setUserData(user.uid);
+        var token = await user.getIdTokenResult();
+        if (token.expirationTime.isBefore(DateTime.now())) {
+          this.userRepository.refreshToken();
+        }
+        await UserDataUtils.setUserData(this.userRepository.getUser().uid);
         await this.userRepository.setupFcmNotification(user);
         yield AuthenticationAuthenticated();
       }
     } else if (event is LoggedIn) {
       yield AuthenticationProcessing();
-
-      final token = event.token;
-
-      if (token == null ||
-          token.expirationTime.difference(DateTime.now()).inMilliseconds <= 0) {
-        yield AuthenticationUnauthenticated();
-      } else {
-        final user = this.userRepository.getUser();
-        await this.userRepository.setupFcmNotification(user);
-        yield AuthenticationAuthenticated();
-      }
+      final user = this.userRepository.getUser();
+      await UserDataUtils.setUserData(this.userRepository.getUser().uid);
+      await this.userRepository.setupFcmNotification(user);
+      yield AuthenticationAuthenticated();
     } else if (event is LoggedOut) {
       yield AuthenticationProcessing();
-      Injector.appInstance.removeByKey<UserModel>(dependencyName: 'modeloId');
+      Injector.appInstance.removeByKey<UserModel>();
       await this.userRepository.logOut();
       yield AuthenticationUnauthenticated();
     }

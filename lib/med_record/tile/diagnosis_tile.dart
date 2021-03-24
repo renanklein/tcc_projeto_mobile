@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:reflectable/reflectable.dart';
-import 'package:tcc_projeto_app/main.dart';
+import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 
 class DiagnosisTile extends StatefulWidget {
@@ -9,6 +8,46 @@ class DiagnosisTile extends StatefulWidget {
   final List<Map> fields;
 
   DiagnosisTile({@required this.date, @required this.fields});
+
+  static List<DiagnosisTile> fromDiagnosis(
+      List<CompleteDiagnosisModel> diagnosisList) {
+    return diagnosisList.map((diagnosis) {
+      return DiagnosisTile(date: diagnosis.diagnosisDate, fields: [
+        {
+          'placeholder': 'Cid do diagnóstico',
+          "value": diagnosis?.diagnosis?.diagnosisCid
+        },
+        {
+          "placeholder": "Descrição do problema",
+          "value": diagnosis?.problem?.problemDescription
+        },
+        {
+          "placeholder": "Descrição do diagnóstico",
+          "value": diagnosis?.diagnosis?.diagnosisDescription
+        },
+        {
+          "placeholder": "Medicamento",
+          "value": diagnosis?.prescription?.prescriptionMedicine
+        },
+        {
+          "placeholder": "Orientação de uso",
+          "value": diagnosis?.prescription?.prescriptionUsageOrientation
+        },
+        {
+          "placeholder": "Duração de uso",
+          "value": diagnosis?.prescription?.prescriptionUsageDuration
+        },
+        {
+          "placeholder": "Dosagem",
+          "value": diagnosis?.prescription?.prescriptionDosageForm
+        },
+        {
+          "placeholder": "Formulário de dosagem",
+          "value": diagnosis?.prescription?.prescriptionDosageForm
+        }
+      ]);
+    }).toList();
+  }
 
   static List<DiagnosisTile> fromPreDiagnosisList(
       List<PreDiagnosisModel> prediagnosisList) {
@@ -38,26 +77,6 @@ class DiagnosisTile extends StatefulWidget {
         },
       ]);
     }).toList();
-  }
-
-  static List<DiagnosisTile> fromDiagnosisClass(List diagnosisList) {
-    var date;
-    var type;
-    var variables;
-    var tiles = diagnosisList.map((diagnosis) {
-      type = reflector.reflectType(diagnosis);
-      variables = type.typeVariables;
-      print(type.toString());
-      _fromClassFields(variables);
-    });
-
-    return <DiagnosisTile>[];
-  }
-
-  static List<Map> _fromClassFields(List<TypeVariableMirror> variables) {
-    variables.forEach((element) {
-      print(element.toString());
-    });
   }
 
   @override
@@ -90,13 +109,16 @@ class DiagnosisField extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController(
         text: "${this.field['placeholder']} : ${this.field['value']}");
-    return TextField(
-      readOnly: true,
-      controller: controller,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
-    );
+    return Padding(
+        padding: EdgeInsets.only(bottom: 10.0),
+        child: TextField(
+          readOnly: true,
+          controller: controller,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          ),
+        ));
   }
 }

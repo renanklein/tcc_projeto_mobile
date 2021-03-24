@@ -16,7 +16,6 @@ class UserDataUtils {
       injector.registerSingleton<UserModel>(
         () => user,
         override: true,
-        dependencyName: 'modeloId',
       );
     }
   }

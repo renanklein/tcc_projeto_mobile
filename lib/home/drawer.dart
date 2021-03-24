@@ -9,15 +9,17 @@ import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
 
 class UserDrawer extends StatefulWidget {
-  final _userModel = Injector.appInstance.get<UserModel>();
+  final userModel;
+
+  UserDrawer({@required this.userModel});
+
   @override
   _UserDrawerState createState() => _UserDrawerState();
 }
 
 class _UserDrawerState extends State<UserDrawer> {
   AuthenticationBloc authenticationBloc;
-
-  UserModel get userModel => this.widget._userModel;
+  UserModel get userModel => this.widget.userModel;
 
   @override
   void initState() {

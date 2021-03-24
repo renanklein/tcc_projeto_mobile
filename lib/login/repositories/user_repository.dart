@@ -28,14 +28,14 @@ class UserRepository {
     return await this.firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<String> getToken() async {
+  Future<String> refreshToken() async {
     final user = getUser();
 
     if (user == null) {
       return null;
     }
 
-    return await user.getIdToken();
+    return await user.getIdToken(true);
   }
 
   Future<void> logOut() async {

@@ -6,8 +6,8 @@ import 'package:tcc_projeto_app/home/drawer.dart';
 import 'package:tcc_projeto_app/home/tiles/home_card_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
-import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,7 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
         ),
-        drawer: UserDrawer(),
+        drawer: UserDrawer(
+          userModel: this.userModel,
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {},
           child: IconButton(
@@ -54,13 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             color: Theme.of(context).primaryColor,
             onPressed: () async {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => UserCalendar(
-                    uid: userModel.uid,
-                  ),
-                ),
-              );
+              Navigator.of(context).pushReplacementNamed(calendarRoute);
             },
           ),
         ),

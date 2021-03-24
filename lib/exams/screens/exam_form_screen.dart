@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_form_model_screen.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
@@ -288,7 +287,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     }
   }
 
-  Widget _createFieldsModelButton() {
+  /* Widget _createFieldsModelButton() {
     return SizedBox(
       height: 44.0,
       child: ElevatedButton(
@@ -311,7 +310,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
         },
       ),
     );
-  }
+  } */
 
   Widget _createSubmitButton() {
     return SizedBox(

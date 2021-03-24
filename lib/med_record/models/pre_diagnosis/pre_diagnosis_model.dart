@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/main.dart';
 
+@reflector
 class PreDiagnosisModel {
   int _peso;
   int _altura;

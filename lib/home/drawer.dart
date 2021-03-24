@@ -7,18 +7,19 @@ import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/screens/assistant_registration_screen.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
-import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserDrawer extends StatefulWidget {
-  final _userModel = Injector.appInstance.get<UserModel>();
+  final userModel;
+
+  UserDrawer({@required this.userModel});
+
   @override
   _UserDrawerState createState() => _UserDrawerState();
 }
 
 class _UserDrawerState extends State<UserDrawer> {
   AuthenticationBloc authenticationBloc;
-
-  UserModel get userModel => this.widget._userModel;
+  UserModel get userModel => this.widget.userModel;
 
   @override
   void initState() {
@@ -34,45 +35,48 @@ class _UserDrawerState extends State<UserDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        elevation: 16.0,
-        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            cubit: this.authenticationBloc,
-            builder: (context, state) {
-              /* return  FutureBuilder(
+      elevation: 16.0,
+      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        cubit: this.authenticationBloc,
+        builder: (context, state) {
+          /* return  FutureBuilder(
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return LayoutUtils.buildCircularProgressIndicator(context);
                   } else { */
-              return ListView(
-                children: <Widget>[
-                  _createDrawerHeader(this.userModel, context),
-                  DrawerTile(
-                    icon: Icons.event_note,
-                    text: "Modelo de exames",
-                    onTapCallback: _navigateToExameScreen,
-                  ),
-                  DrawerTile(
-                    icon: Icons.event_note,
-                    text: "Cadastrar Secretária",
-                    onTapCallback: _navigateToAssistantRegistrationScreen,
-                  ),
-                  DrawerTile(
-                    icon: Icons.info,
-                    text: "Relatorios",
-                    onTapCallback: null,
-                  ),
-                  Divider(),
-                  DrawerTile(
-                    icon: Icons.bug_report,
-                    text: "Relatar Erros",
-                    onTapCallback: null,
-                  ),
-                ],
-              );
-              /*      }
-                },
-              ) ;*/
-            }));
+          return ListView(
+            children: <Widget>[
+              _createDrawerHeader(this.userModel, context),
+              (userModel.getAccess == "MEDIC")
+                  ? DrawerTile(
+                      icon: Icons.event_note,
+                      text: "Modelo de exames",
+                      onTapCallback: _navigateToExameScreen,
+                    )
+                  : Text(''),
+              (userModel.getAccess == "MEDIC")
+                  ? DrawerTile(
+                      icon: Icons.event_note,
+                      text: "Cadastrar Secretária",
+                      onTapCallback: _navigateToAssistantRegistrationScreen,
+                    )
+                  : Text(''),
+              DrawerTile(
+                icon: Icons.info,
+                text: "Relatorios",
+                onTapCallback: null,
+              ),
+              Divider(),
+              DrawerTile(
+                icon: Icons.bug_report,
+                text: "Relatar Erros",
+                onTapCallback: null,
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Widget _createDrawerHeader(UserModel model, BuildContext context) {
@@ -138,9 +142,6 @@ class _UserDrawerState extends State<UserDrawer> {
       },
     );
   }
-
-// TODO: Verificar o Link de Exame seguindo pela lista de pacientes
-// TODO: Fazer arquivo de link???
 
   void _navigateToExameScreen() {
     Navigator.of(context).push(

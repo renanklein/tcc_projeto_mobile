@@ -33,8 +33,6 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
   String _pacientHash;
 
-  //TODO: Implementar modelo de prontuario
-
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
 
   int _selectedIndex;
@@ -255,8 +253,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 child: Text("Cadastrar diagnostico"),
                 color: Color(0xFF84FFFF),
                 height: 55.0,
-                shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(15.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
                 onPressed: () {
                   Navigator.of(context).pushNamed(createDiagnosisRoute);

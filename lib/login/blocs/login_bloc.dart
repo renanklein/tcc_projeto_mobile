@@ -28,16 +28,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginButtonPressed) {
       try {
         yield LoginProcessing();
-        await this
+        var credentials = await this
             .userRepository
             .signIn(email: event.email, pass: event.password);
 
-        final tokenResponse = await this.userRepository.getToken();
-        this
-            .authenticationBloc
-            .add(LoggedIn(token: tokenResponse, context: event.context));
+        var token = await credentials.user.getIdTokenResult();
 
-        UserDataUtils.setUserData(userRepository.getUser().uid);
+        if (token.expirationTime.isBefore(DateTime.now())) {
+          await this.userRepository.refreshToken();
+        }
+        await UserDataUtils.setUserData(this.userRepository.getUser().uid);
 
         yield LoginSucceded();
       } catch (error, stack_trace) {

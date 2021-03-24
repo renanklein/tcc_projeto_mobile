@@ -15,7 +15,10 @@ class AppointmentTile extends StatefulWidget {
   final AppointmentModel appointmentModel;
   final String userUid;
 
-  AppointmentTile({@required this.appointmentModel, @required this.userUid});
+  AppointmentTile({
+    @required this.appointmentModel,
+    @required this.userUid,
+  });
 
   @override
   _AppointmentTileState createState() => _AppointmentTileState();

@@ -12,7 +12,6 @@ class CreatePacientEventProcessing extends PacientState {
   List<Object> get props => throw UnimplementedError();
 }
 
-//TODO: Incluir modelo paciente para pre diagnose
 class CreatePacientEventSuccess extends PacientState {
   PacientModel _createdPacient;
 
@@ -86,12 +85,10 @@ class GetPacientByNameSuccess extends PacientState {
   GetPacientByNameSuccess({@required this.pacient});
 
   @override
-  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }
 
 class GetPacientByNameFail extends PacientState {
   @override
-  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }

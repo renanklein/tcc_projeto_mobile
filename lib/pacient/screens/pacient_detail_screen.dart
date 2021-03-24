@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
-import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 
 class PacientDetailScreen extends StatefulWidget {
   PacientModel pacient;
@@ -16,11 +14,11 @@ class PacientDetailScreen extends StatefulWidget {
 
 class _PacientDetailScreenState extends State<PacientDetailScreen> {
   PacientBloc _pacientBloc;
-  PacientRepository _pacientRepository;
+  //PacientRepository _pacientRepository;
 
   PacientModel get getPacient => this.widget.pacient;
 
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  //final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

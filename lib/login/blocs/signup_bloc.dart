@@ -29,7 +29,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       try {
         yield SignupProcessing();
 
-        final userId = await this.userRepository.getUser()?.uid;
+        final userId = this.userRepository.getUser()?.uid;
 
         final signupResult = await this
             .userRepository

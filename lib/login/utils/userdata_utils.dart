@@ -13,7 +13,10 @@ class UserDataUtils {
     var user = UserModel.fromMap(userData.data(), userId);
 
     if (userId != null) {
-      injector.registerSingleton<UserModel>(() => user);
+      injector.registerSingleton<UserModel>(
+        () => user,
+        override: true,
+      );
     }
   }
 }

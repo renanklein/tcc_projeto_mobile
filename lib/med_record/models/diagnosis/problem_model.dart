@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/main.dart';
 
+@reflector
 class ProblemModel {
   String _description;
   String _problemId;

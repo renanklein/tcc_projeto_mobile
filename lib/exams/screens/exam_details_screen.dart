@@ -4,6 +4,7 @@ import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final examDetails;
@@ -42,7 +43,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   void initState() {
     this.hideButtonTitle = this.hidePressed ? "Hide" : "Show";
     this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
-    if (this.filePath.isNotEmpty) {
+    if (this.filePath != null && this.filePath.isNotEmpty) {
       this
           .medRecordBloc
           .add(DecryptExam(fileDownloadURL: this.filePath, iv: this.iv));
@@ -90,17 +91,12 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       LayoutUtils.buildVerticalSpacing(10.0),
       this.examImage == null ? Container() : _showHideImageButton(),
       LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-        fieldValue: this.exameType,
-        fieldPlaceholder: "Tipo de exame",
-        isReadOnly: true,
+      ReadonlyTextField(
+        value: this.exameType,
+        placeholder: "Tipo de exame",
       ),
       LayoutUtils.buildVerticalSpacing(10.0),
-      ExamDetailsField(
-        fieldValue: this.examDate,
-        fieldPlaceholder: "Data do exame",
-        isReadOnly: true,
-      ),
+      ReadonlyTextField(value: this.examDate, placeholder: "Data do exame"),
       LayoutUtils.buildVerticalSpacing(10.0),
       ...this.examDetails.getFieldsWidgetList
     ];

@@ -5,6 +5,7 @@ import 'package:tcc_projeto_app/home/drawer.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/screens/login_screen.dart';
+import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -24,6 +25,8 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     this._authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     this._userModel = Injector.appInstance.get<UserModel>();
+    BlocProvider.of<PacientBloc>(context).pacientRepository.userId =
+        this._userModel.uid;
     super.initState();
   }
 
@@ -145,7 +148,7 @@ class _DashboardState extends State<Dashboard> {
                           },
                           child: _dashboardItem(
                             Icons.library_add,
-                            'Listar Agendamentos Futuros',
+                            'Agendamentos Futuros',
                             0xFF1A237E,
                           ),
                         ),

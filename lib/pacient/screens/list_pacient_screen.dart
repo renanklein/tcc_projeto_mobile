@@ -68,7 +68,9 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           ),
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            Navigator.of(context).pushNamed(createPacientRoute);
+            Navigator.of(context)
+                .pushNamed(createPacientRoute)
+                .then((value) => this._pacientBloc.add(PacientLoad()));
           },
         ),
       ),

@@ -10,7 +10,7 @@ import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import '../blocs/pacient_bloc.dart';
 
 class AppointmentsWaitListScreen extends StatefulWidget {
-  String userUid;
+  final String userUid;
 
   AppointmentsWaitListScreen({
     @required this.userUid,
@@ -24,7 +24,6 @@ class _AppointmentsWaitListScreenState
     extends State<AppointmentsWaitListScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
-  //AppointmentModel _appointmentModel;
   List<AppointmentModel> _appointmentList;
 
   String get userUid => this.widget.userUid;
@@ -71,33 +70,28 @@ class _AppointmentsWaitListScreenState
           child: BlocBuilder<PacientBloc, PacientState>(
             cubit: this._pacientBloc,
             builder: (context, state) {
-              return FutureBuilder(
-                future: _loadAppointments(),
-                builder: (context, snapshot) {
-                  return SafeArea(
-                    child: Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.98,
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: (_appointmentList != null)
-                                  ? ListView.builder(
-                                      itemCount: _appointmentList.length,
-                                      itemBuilder: (context, index) =>
-                                          _listAppointmentView(
-                                        _appointmentList[index],
-                                      ),
-                                    )
-                                  : LayoutUtils.buildCircularProgressIndicator(
-                                      context),
-                            )
-                          ],
-                        ),
-                      ),
+              return SafeArea(
+                child: Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.98,
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: (_appointmentList != null)
+                              ? ListView.builder(
+                                  itemCount: _appointmentList.length,
+                                  itemBuilder: (context, index) =>
+                                      _listAppointmentView(
+                                    _appointmentList[index],
+                                  ),
+                                )
+                              : LayoutUtils.buildCircularProgressIndicator(
+                                  context),
+                        )
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),
@@ -106,14 +100,9 @@ class _AppointmentsWaitListScreenState
     );
   }
 
-  Future _loadAppointments() async {
+  void _loadAppointments() {
     _pacientBloc.add(AppointmentsLoad());
   }
-
-  /* Future _loadPacientDetail(AppointmentModel appointment) async {
-    _pacientBloc.add(PacientDetailLoad(appointment));
-    this._appointmentModel = appointment;
-  } */
 
   Widget _listAppointmentView(AppointmentModel appointment) {
     return Container(
@@ -125,6 +114,7 @@ class _AppointmentsWaitListScreenState
             child: AppointmentTile(
               appointmentModel: appointment,
               userUid: this.userUid,
+              loadAppointments: _loadAppointments,
             ),
           ),
         ],

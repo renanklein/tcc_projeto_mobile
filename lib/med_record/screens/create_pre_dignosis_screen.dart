@@ -77,6 +77,8 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                   Colors.white,
                 ),
               );
+
+              Navigator.of(context).pop();
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -302,7 +304,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
-                              onPressed: () async {
+                              onPressed: () {
                                 if (_preDiagnosisFormKey.currentState
                                     .validate()) {
                                   this._medRecordBloc.add(

@@ -51,11 +51,6 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,

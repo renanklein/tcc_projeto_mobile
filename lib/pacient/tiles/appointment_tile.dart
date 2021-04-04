@@ -14,11 +14,12 @@ import '../repositories/pacient_repository.dart';
 class AppointmentTile extends StatefulWidget {
   final AppointmentModel appointmentModel;
   final String userUid;
+  final Function loadAppointments;
 
-  AppointmentTile({
-    @required this.appointmentModel,
-    @required this.userUid,
-  });
+  AppointmentTile(
+      {@required this.appointmentModel,
+      @required this.userUid,
+      @required this.loadAppointments});
 
   @override
   _AppointmentTileState createState() => _AppointmentTileState();
@@ -27,7 +28,9 @@ class AppointmentTile extends StatefulWidget {
 class _AppointmentTileState extends State<AppointmentTile> {
   AppointmentModel get appointmentModel => this.widget.appointmentModel;
   String get userUid => this.widget.userUid;
+  PacientState get getPacientCurrentState => this._pacientBloc.state;
   PacientBloc _pacientBloc;
+  Function get refreshAppointments => this.widget.loadAppointments;
 
   Color color = Color(0xFF84FFFF);
   var dateFormat = DateFormat("dd/MM/yyyy");
@@ -112,7 +115,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         arguments: RouteAppointmentArguments(
                             pacientModel: state.pacientDetailLoaded,
                             appointmentModel: this.appointmentModel),
-                      );
+                      ).then((value) => this
+                          ._pacientBloc
+                          .add(PacientDetailLoad(this.appointmentModel)));
                     },
                   ),
                 ],
@@ -157,7 +162,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
-            color: color,
+            color: this.color,
             border: Border.all(
               color: Colors.black,
               width: 2.0,
@@ -168,7 +173,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
             cubit: this._pacientBloc,
             listener: (context, state) {
               if (state is PacientDetailWithPreDiagnosisSuccess) {
-                this.color = Colors.yellow;
+                setState(() {
+                  this.color = Colors.yellow;
+                });
               }
             },
             child: BlocBuilder<PacientBloc, PacientState>(

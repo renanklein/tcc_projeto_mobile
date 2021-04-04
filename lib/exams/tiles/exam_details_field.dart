@@ -40,6 +40,7 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
     return TextFormField(
       controller: this.controller,
       validator: (value) {
+        this.controller.text = value;
         if (value.isEmpty) {
           return "O campo não foi preenchido";
         }
@@ -75,7 +76,8 @@ class _ExamDetailsFieldState extends State<ExamDetailsField> {
 
   InputDecoration _buildFieldDecoration() {
     return InputDecoration(
-      hintText: this.fieldPlaceholder,
+      labelText: this.fieldPlaceholder,
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
     );

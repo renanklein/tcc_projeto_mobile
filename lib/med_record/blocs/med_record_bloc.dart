@@ -97,8 +97,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
                 glicemia: int.parse(event.glicemia),
                 observacao: event.obs,
                 appointmentEventDate: appointmentDate,
-                //dtUltimaMestruacao: event.dtUltimaMestruacao,
-                //dtProvavelParto: event.dtProvavelParto,
               ),
               date: hoje,
             );
@@ -247,7 +245,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var fileDownloadURL = event.fileDownloadURL;
 
-        var response = await http.get(fileDownloadURL);
+        var response = await http.get(Uri.parse(fileDownloadURL));
         var bytes = response.body;
 
         var keyUrl = await this.examRepository.getCryptoKeyDownload();

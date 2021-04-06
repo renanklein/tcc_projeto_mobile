@@ -12,7 +12,7 @@ class DiagnosisTile extends StatefulWidget {
   static List<DiagnosisTile> fromDiagnosis(
       List<CompleteDiagnosisModel> diagnosisList) {
     return diagnosisList.map((diagnosis) {
-      return DiagnosisTile(date: diagnosis.diagnosisDate, fields: [
+      var fields = [
         {
           'placeholder': 'Cid do diagnóstico',
           "value": diagnosis?.diagnosis?.diagnosisCid
@@ -45,7 +45,13 @@ class DiagnosisTile extends StatefulWidget {
           "placeholder": "Formulário de dosagem",
           "value": diagnosis?.prescription?.prescriptionDosageForm
         }
-      ]);
+      ];
+
+      diagnosis.dynamicFields.forEach((field) {
+        fields.add(
+            {"placeholder": field['placeholder'], 'value': field['value']});
+      });
+      return DiagnosisTile(date: diagnosis.diagnosisDate, fields: fields);
     }).toList();
   }
 

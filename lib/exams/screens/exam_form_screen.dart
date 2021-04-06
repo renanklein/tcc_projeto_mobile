@@ -10,12 +10,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_dynamic_fields.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
+import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -124,7 +123,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           ElevatedButton(
             onPressed: () {
               this._scaffoldKey.currentState.showBottomSheet(
-                    (context) => ExamDynamicFieldsBottomsheet(
+                    (context) => DynamicFieldBottomSheet(
                       dynamicFieldsList: this.dynamicFieldsList,
                       refreshForm: this.refreshFields,
                     ),
@@ -204,8 +203,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     this.examModelsFields = <Widget>[];
     if (fields != null) {
       fields.forEach((type) {
-        var examDetailsField = ExamDetailsField(
-            fieldPlaceholder: type, fieldValue: "", isReadOnly: false);
+        var examDetailsField = Field(
+            fieldPlaceholder: type,
+            textController: TextEditingController(),
+            isReadOnly: false);
         this.examModelsFields.add(examDetailsField);
         var row = Row(
           children: [
@@ -232,7 +233,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     var examDetailFields = <Widget>[];
     if (this.dynamicFieldsList != null) {
       this.dynamicFieldsList.forEach((el) {
-        if (el is ExamDetailsField) {
+        if (el is Field) {
           var row = IntrinsicHeight(
             child: Row(
               children: [
@@ -286,31 +287,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
       this._examFile = await FilePicker.getFile();
     }
   }
-
-  /* Widget _createFieldsModelButton() {
-    return SizedBox(
-      height: 44.0,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
-          ),
-          primary: Theme.of(context).primaryColor,
-        ),
-        child: Text(
-          "Modelos de exames",
-          style: TextStyle(
-              fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ExamFormModelScreen(
-                  dynamicFieldsList: this.dynamicFieldsList,
-                  refreshExamFormModel: refreshFieldsModel)));
-        },
-      ),
-    );
-  } */
 
   Widget _createSubmitButton() {
     return SizedBox(

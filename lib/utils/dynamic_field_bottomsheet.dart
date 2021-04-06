@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
-class ExamDynamicFieldsBottomsheet extends StatefulWidget {
+class DynamicFieldBottomSheet extends StatefulWidget {
   final fieldNameController = TextEditingController();
   final fieldValueController = TextEditingController();
   final dynamicFieldsList;
   final refreshForm;
 
-  ExamDynamicFieldsBottomsheet(
+  DynamicFieldBottomSheet(
       {@required this.dynamicFieldsList, @required this.refreshForm});
 
   @override
-  _ExamDinamicFieldsBottomsheetState createState() =>
-      _ExamDinamicFieldsBottomsheetState();
+  _DynamicFieldBottomSheetState createState() =>
+      _DynamicFieldBottomSheetState();
 }
 
-class _ExamDinamicFieldsBottomsheetState
-    extends State<ExamDynamicFieldsBottomsheet> {
+class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
   MedRecordBloc medRecordBloc;
 
   TextEditingController get fieldNameController =>
@@ -82,8 +80,8 @@ class _ExamDinamicFieldsBottomsheetState
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          var newField = ExamDetailsField(
-                            fieldValue: this.fieldValueController.text,
+                          var newField = Field(
+                            textController: this.fieldValueController,
                             fieldPlaceholder: this.fieldNameController.text,
                             isReadOnly: false,
                           );

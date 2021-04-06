@@ -149,7 +149,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         arguments: RouteAppointmentArguments(
                             routePath: preDiagnosisRoute,
                             appointmentModel: this.appointmentModel),
-                      );
+                      ).then((value) => this
+                          ._pacientBloc
+                          .add(PacientDetailLoad(this.appointmentModel)));
                     },
                   ),
                 ],

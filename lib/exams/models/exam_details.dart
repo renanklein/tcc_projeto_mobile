@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamDetails {
   final fieldsWidgetList;
@@ -13,8 +13,8 @@ class ExamDetails {
   Map toMap() {
     Map fieldValues = Map();
     this.getFieldsWidgetList.forEach((field) {
-      if (field is ExamDetailsField) {
-        fieldValues.addAll({field.fieldPlaceholder: field.controller.text});
+      if (field is Field) {
+        fieldValues.addAll({field.fieldPlaceholder: field.textController.text});
       }
     });
 

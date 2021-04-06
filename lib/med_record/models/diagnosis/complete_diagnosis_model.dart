@@ -10,6 +10,7 @@ class CompleteDiagnosisModel {
   DiagnosisModel _diagnosisModel;
   PrescriptionModel _prescriptionModel;
   DateTime _diagnosisDate;
+  List<Map> _dynamicFields;
 
   CompleteDiagnosisModel({
     @required ProblemModel problem,
@@ -21,6 +22,7 @@ class CompleteDiagnosisModel {
     this._diagnosisModel = diagnosis;
     this._prescriptionModel = prescription;
     this._diagnosisDate = date;
+    this._dynamicFields = <Map>[];
   }
 
   Map<String, dynamic> toMap() {
@@ -57,6 +59,5 @@ class CompleteDiagnosisModel {
   DiagnosisModel get diagnosis => this._diagnosisModel;
   PrescriptionModel get prescription => this._prescriptionModel;
   DateTime get diagnosisDate => this._diagnosisDate;
-
-  //set userUid(String uid) => this._userId = uid;
+  List<Map> get dynamicFields => this._dynamicFields;
 }

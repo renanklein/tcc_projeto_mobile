@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class ExamDetailsField extends StatefulWidget {
   final fieldValue;
@@ -11,7 +10,6 @@ class ExamDetailsField extends StatefulWidget {
       {@required this.fieldValue,
       @required this.fieldPlaceholder,
       @required this.isReadOnly});
-
   @override
   _ExamDetailsFieldState createState() => _ExamDetailsFieldState();
 }

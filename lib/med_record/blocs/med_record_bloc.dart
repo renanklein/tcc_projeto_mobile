@@ -11,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
-import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
@@ -22,6 +21,7 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart';
@@ -245,7 +245,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var fileDownloadURL = event.fileDownloadURL;
 
-        var response = await http.get(Uri.parse(fileDownloadURL));
+        var response = await http.get(Uri.tryParse(fileDownloadURL));
         var bytes = response.body;
 
         var keyUrl = await this.examRepository.getCryptoKeyDownload();
@@ -265,11 +265,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield DynamicExamFieldProcessing();
 
-        var fieldWidget = ExamDetailsField(
-          fieldPlaceholder: event.fieldName,
-          fieldValue: event.fieldValue,
-          isReadOnly: true,
-        );
+        var fieldWidget = ReadonlyTextField(
+            placeholder: event.fieldName, value: event.fieldValue);
 
         yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
       } catch (error, stack_trace) {

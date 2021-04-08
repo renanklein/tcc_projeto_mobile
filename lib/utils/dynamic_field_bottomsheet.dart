@@ -87,6 +87,7 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
                           );
 
                           this.refreshForm(this.dynamicFieldsList, newField);
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

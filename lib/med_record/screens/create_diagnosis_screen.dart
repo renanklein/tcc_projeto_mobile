@@ -218,7 +218,8 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                         if (_diagnosisScreenKey.currentState
                                             .validate()) {
                                           _medRecordBloc.add(
-                                            DiagnosisCreateButtonPressed(
+                                            DiagnosisCreateOrUpdateButtonPressed(
+                                              isUpdate: false,
                                               problemId:
                                                   problemIdController.text,
                                               problemDescription:

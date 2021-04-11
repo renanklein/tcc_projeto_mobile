@@ -1,6 +1,6 @@
 part of 'med_record_bloc.dart';
 
-class DiagnosisCreateButtonPressed extends MedRecordEvent {
+class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final problemId;
   final problemDescription;
   final diagnosisCid;
@@ -10,18 +10,39 @@ class DiagnosisCreateButtonPressed extends MedRecordEvent {
   final prescriptionDosageForm;
   final prescriptionUsageOrientation;
   final prescriptionUsageDuration;
+  final bool isUpdate;
+  final int id;
 
-  DiagnosisCreateButtonPressed({
-    @required this.problemId,
-    @required this.problemDescription,
-    @required this.diagnosisCid,
-    @required this.diagnosisDescription,
-    @required this.prescriptionMedicine,
-    @required this.prescriptionDosage,
-    @required this.prescriptionDosageForm,
-    @required this.prescriptionUsageOrientation,
-    @required this.prescriptionUsageDuration,
-  });
+  DiagnosisCreateOrUpdateButtonPressed(
+      {@required this.problemId,
+      @required this.problemDescription,
+      @required this.diagnosisCid,
+      @required this.diagnosisDescription,
+      @required this.prescriptionMedicine,
+      @required this.prescriptionDosage,
+      @required this.prescriptionDosageForm,
+      @required this.prescriptionUsageOrientation,
+      @required this.prescriptionUsageDuration,
+      @required this.isUpdate,
+      this.id});
+
+  static DiagnosisCreateOrUpdateButtonPressed fromModel(
+      bool isUpdate, CompleteDiagnosisModel diagnosisModel) {
+    return DiagnosisCreateOrUpdateButtonPressed(
+        isUpdate: isUpdate,
+        problemId: diagnosisModel.problem.problemId,
+        problemDescription: diagnosisModel.problem.problemDescription,
+        diagnosisCid: diagnosisModel.diagnosis.diagnosisCid,
+        diagnosisDescription: diagnosisModel.diagnosis.diagnosisDescription,
+        prescriptionDosage: diagnosisModel.prescription.prescriptionDosage,
+        prescriptionDosageForm:
+            diagnosisModel.prescription.prescriptionDosageForm,
+        prescriptionUsageOrientation:
+            diagnosisModel.prescription.prescriptionUsageOrientation,
+        prescriptionUsageDuration:
+            diagnosisModel.prescription.prescriptionUsageDuration,
+        prescriptionMedicine: diagnosisModel.prescription.prescriptionMedicine);
+  }
 
   @override
   List<Object> get props => [];

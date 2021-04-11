@@ -68,6 +68,23 @@ class PreDiagnosisModel {
     };
   }
 
+  List<Widget> toWidgetFields() {
+    return <Widget>[
+      Text("PA Sistolica: ${this?.pASistolica?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Peso: ${this?.peso?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("IMC: ${this?.imc?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Glicemia : ${this?.glicemia?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Observacao: ${this?.observacao?.toString()}",
+          style: TextStyle(fontSize: 17.0))
+    ];
+  }
+
   static PreDiagnosisModel fromMap(Map<String, dynamic> map, String key) {
     if (map == null) return null;
 
@@ -87,20 +104,6 @@ class PreDiagnosisModel {
       glicemia: map['glicemia'],
       observacao: map['observacao'],
       appointmentEventDate: map['appointmentEventDate'],
-      /* ultimaMestruacao: (map['ultimaMestruacao'] != null)
-          ? new DateTime(
-              int.parse(map['ultimaMestruacao'].split('/')[2]),
-              int.parse(map['ultimaMestruacao'].split('/')[1]),
-              int.parse(map['ultimaMestruacao'].split('/')[0]),
-            )
-          : null,
-      dtProvavelParto: (map['dtProvavelParto'] != null)
-          ? new DateTime(
-              int.parse(map['dtProvavelParto'].split('/')[2]),
-              int.parse(map['dtProvavelParto'].split('/')[1]),
-              int.parse(map['dtProvavelParto'].split('/')[0]),
-            )
-          : null, */
       dtPreDiagnosis: new DateTime(
         year,
         mon,

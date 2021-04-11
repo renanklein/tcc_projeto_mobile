@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
@@ -9,46 +11,32 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class DiagnosisTile extends StatefulWidget {
   final DateTime date;
   final List<Widget> fields;
+  final bool isPrediagnosis;
+  final CompleteDiagnosisModel diagnosisModel;
+  final PreDiagnosisModel preDiagnosisModel;
+  final Function refresh;
 
-  DiagnosisTile({@required this.date, @required this.fields});
+  DiagnosisTile(
+      {@required this.date,
+      @required this.fields,
+      @required this.isPrediagnosis,
+      @required this.diagnosisModel,
+      @required this.preDiagnosisModel,
+      @required this.refresh});
 
   static List<DiagnosisTile> fromDiagnosis(
       List<CompleteDiagnosisModel> diagnosisList,
       BuildContext context,
       Function refreshDiagnosis) {
     return diagnosisList.map((diagnosis) {
-      var fields = [
-        Text(
-          "Cid do diagnóstico: ${diagnosis?.diagnosis?.diagnosisCid}",
-          style: TextStyle(fontSize: 17.0),
-        ),
-        Text("Descrição do problema: ${diagnosis?.problem?.problemDescription}",
-            style: TextStyle(fontSize: 17.0)),
-        Text(
-            "Descrição do diagnóstico: ${diagnosis?.diagnosis?.diagnosisDescription}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Medicamento: ${diagnosis?.prescription?.prescriptionMedicine}"),
-        Text(
-            "Orientação de uso: ${diagnosis?.prescription?.prescriptionUsageOrientation}",
-            style: TextStyle(fontSize: 17.0)),
-        Text(
-            "Duração de uso: ${diagnosis?.prescription?.prescriptionUsageDuration}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Dosagem: ${diagnosis?.prescription?.prescriptionDosageForm}",
-            style: TextStyle(fontSize: 17.0)),
-        Text(
-            "Formulário de dosagem: ${diagnosis?.prescription?.prescriptionDosageForm}",
-            style: TextStyle(fontSize: 17.0))
-      ];
-
-      diagnosis.dynamicFields.forEach((field) {
-        fields.add(Text(field['placeholder'] + ": ${field['value']}",
-            style: TextStyle(fontSize: 17.0)));
-      });
       return DiagnosisTile(
+        isPrediagnosis: false,
+        refresh: refreshDiagnosis,
         date: diagnosis.diagnosisDate,
+        diagnosisModel: diagnosis,
+        preDiagnosisModel: null,
         fields: [
-          ...fields,
+          ...diagnosis.toWidgetFields(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -68,24 +56,15 @@ class DiagnosisTile extends StatefulWidget {
   }
 
   static List<DiagnosisTile> fromPreDiagnosisList(
-      List<PreDiagnosisModel> prediagnosisList) {
+      List<PreDiagnosisModel> prediagnosisList, Function refreshPreDiagnosis) {
     return prediagnosisList.map((preDiagnosis) {
-      return DiagnosisTile(date: preDiagnosis.getPreDiagnosisDate, fields: [
-        Text("PA Sistolica: ${preDiagnosis?.pASistolica?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("PA Diastolica: ${preDiagnosis?.pADiastolica?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Peso: ${preDiagnosis?.peso?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("IMC: ${preDiagnosis?.imc?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Glicemia : ${preDiagnosis?.glicemia?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Freq Cardíaca: ${preDiagnosis?.freqCardiaca?.toString()}",
-            style: TextStyle(fontSize: 17.0)),
-        Text("Observacao: ${preDiagnosis?.observacao?.toString()}",
-            style: TextStyle(fontSize: 17.0))
-      ]);
+      return DiagnosisTile(
+          isPrediagnosis: true,
+          refresh: refreshPreDiagnosis,
+          preDiagnosisModel: preDiagnosis,
+          diagnosisModel: null,
+          date: preDiagnosis.getPreDiagnosisDate,
+          fields: preDiagnosis.toWidgetFields());
     }).toList();
   }
 
@@ -96,16 +75,23 @@ class DiagnosisTile extends StatefulWidget {
 class _DiagnosisTileState extends State<DiagnosisTile> {
   DateTime get date => this.widget.date;
   List<Widget> get fields => this.widget.fields;
+  PreDiagnosisModel get preDiagnosis => this.widget.preDiagnosisModel;
+  CompleteDiagnosisModel get completeDiagnosisModel =>
+      this.widget.diagnosisModel;
+  bool get isPrediagnosis => this.widget.isPrediagnosis;
   List<Widget> children = <Widget>[];
+  Function get refresh => this.refresh;
+  MedRecordBloc medRecordBloc;
 
   @override
   void initState() {
+    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
     this.children = [
       ...fields,
       IconButton(
           icon: Icon(Icons.edit),
           onPressed: () {
-            this._changeToEditMode();
+            this._changeToEditMode(updateDiagnosisOrPrediagnosis);
           })
     ];
     super.initState();
@@ -115,20 +101,65 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   Widget build(BuildContext context) {
     var formatter = DateFormat('dd/MM/yyyy');
     var dateAsString = formatter.format(this.date);
-    return Card(
-      child: ExpansionTile(title: Text(dateAsString), children: this.children),
-    );
+    return BlocListener<MedRecordBloc, MedRecordState>(
+        listener: (context, state) {
+      if (state is DiagnosisCreateOrUpdateSuccess) {
+        setState(() {
+          this.children = <Widget>[
+            ...state.diagnosisModel.toWidgetFields(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Scaffold.of(context).showBottomSheet((context) =>
+                          DynamicFieldBottomSheet(
+                              dynamicFieldsList:
+                                  state.diagnosisModel.dynamicFields,
+                              refreshForm: this.refresh));
+                    }),
+                IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                    })
+              ],
+            )
+          ];
+        });
+      } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
+        this.children = <Widget>[
+          ...state.preDiagnosisModel.toWidgetFields(),
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+              })
+        ];
+      }
+    }, child: BlocBuilder<MedRecordBloc, MedRecordState>(
+      builder: (context, state) {
+        if (state is MedRecordEventProcessing) {
+          return LayoutUtils.buildCircularProgressIndicator(context);
+        }
+        return Card(
+          child:
+              ExpansionTile(title: Text(dateAsString), children: this.children),
+        );
+      },
+    ));
   }
 
-  void _changeToEditMode() {
+  void _changeToEditMode(Function onTap) {
     var newFields = <Widget>[];
 
     this.children.forEach((field) {
       if (field is Text) {
         var dataSplited = field.data.split(':');
         newFields.add(Field(
-            textController: TextEditingController(text: dataSplited[0]),
-            fieldPlaceholder: dataSplited[1],
+            fieldPlaceholder: dataSplited[0],
+            textController: TextEditingController(text: dataSplited[1]),
             isReadOnly: false));
         newFields.add(LayoutUtils.buildVerticalSpacing(5.0));
       }
@@ -138,7 +169,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         this._buildButton("Voltar", this._changeToReadOnlyMode),
-        this._buildButton("Salvar", () {}),
+        this._buildButton("Salvar", onTap),
       ],
     ));
 
@@ -159,7 +190,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
     newFields.add(IconButton(
         icon: Icon(Icons.edit),
         onPressed: () {
-          this._changeToEditMode();
+          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
         }));
     setState(() {
       this.children = newFields;
@@ -183,5 +214,14 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
             fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
+  }
+
+  void updateDiagnosisOrPrediagnosis() {
+    this.isPrediagnosis
+        ? this.medRecordBloc.add(
+            PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
+                this.preDiagnosis))
+        : this.medRecordBloc.add(DiagnosisCreateOrUpdateButtonPressed.fromModel(
+            true, this.completeDiagnosisModel));
   }
 }

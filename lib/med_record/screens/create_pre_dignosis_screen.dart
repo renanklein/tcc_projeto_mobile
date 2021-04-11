@@ -281,7 +281,6 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                           },
                           isNumber: true,
                         ),
-                        //formFieldFemalePacient(),
                         FunctionTextFormField(
                           controller: obsController,
                           label: 'Observações',
@@ -303,7 +302,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                               if (_preDiagnosisFormKey.currentState
                                   .validate()) {
                                 this._medRecordBloc.add(
-                                      PreDiagnosisCreateButtonPressed(
+                                      PreDiagnosisCreateOrUpdateButtonPressed(
                                           peso: pesoController.text,
                                           altura: alturaController.text,
                                           imc: '28.5',

@@ -25,17 +25,37 @@ class MedRecordRepository {
     @required String date,
   }) async {
     try {
+      var diagnosisList = await getCompleteDiagnosis();
+      var diagnosis = completeDiagnosisModel.toMap();
+      diagnosis['id'] = diagnosisList.length + 1;
+      diagnosisList.add(diagnosis);
       await _medRecordCollectionReference.doc(_pacientHash).set({
-        date: {
-          'fulldiagnosis': completeDiagnosisModel.toMap(),
-        },
+        date: {'fulldiagnosis': diagnosisList},
       }, SetOptions(merge: true));
     } on Exception catch (e) {
       return e.toString();
     }
   }
 
-  Future createPacientPreDiagnosis({
+  Future updatePacientDiagnosis({
+    @required CompleteDiagnosisModel completeDiagnosisModel,
+    @required String date,
+  }) async {
+    var diagnosisList = await getCompleteDiagnosis();
+    var updatedDiagnosisList = diagnosisList.map((diagnosis) {
+      if (diagnosis['id'] == completeDiagnosisModel.id) {
+        return completeDiagnosisModel.toMap();
+      }
+
+      return diagnosis;
+    }).toList();
+
+    await _medRecordCollectionReference.doc(_pacientHash).set({
+      date: {'fulldiagnosis': updatedDiagnosisList},
+    }, SetOptions(merge: true));
+  }
+
+  Future createOrUpdatePacientPreDiagnosis({
     @required PreDiagnosisModel preDiagnosisModel,
     @required String date,
   }) async {
@@ -96,6 +116,24 @@ class MedRecordRepository {
       e.toString();
       return null;
     }
+  }
+
+  Future<List> getCompleteDiagnosis() async {
+    var diagnosisList = <Map>[];
+    await _medRecordCollectionReference
+        .doc(_pacientHash)
+        .get()
+        .then((snapshot) {
+      var data = snapshot.data();
+      if (data.containsKey('fulldiagnosis')) {
+        var fullDiagnosis = data['fulldiagnosis'];
+        fullDiagnosis is List
+            ? diagnosisList = fullDiagnosis
+            : diagnosisList.add(fullDiagnosis);
+      }
+    });
+
+    return diagnosisList;
   }
 
   Future getmedRecordList() async {}

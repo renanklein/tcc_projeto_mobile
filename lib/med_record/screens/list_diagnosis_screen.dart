@@ -150,8 +150,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       MedRecordModel medRecordModel, PacientModel pacientModel) {
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
-    var fields =
-        DiagnosisTile.fromPreDiagnosisList(medRecordModel.getPreDiagnosisList);
+    var fields = DiagnosisTile.fromPreDiagnosisList(
+        medRecordModel.getPreDiagnosisList, refreshDiagnosis);
 
     if (fields.isEmpty) {
       return <Widget>[

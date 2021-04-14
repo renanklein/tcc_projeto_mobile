@@ -25,7 +25,7 @@ class MedRecordRepository {
     @required String date,
   }) async {
     try {
-      var diagnosisList = await getCompleteDiagnosis();
+      var diagnosisList = await getCompleteDiagnosis(date: date);
       var diagnosis = completeDiagnosisModel.toMap();
       diagnosis['id'] = diagnosisList.length + 1;
       diagnosisList.add(diagnosis);
@@ -41,7 +41,7 @@ class MedRecordRepository {
     @required CompleteDiagnosisModel completeDiagnosisModel,
     @required String date,
   }) async {
-    var diagnosisList = await getCompleteDiagnosis();
+    var diagnosisList = await getCompleteDiagnosis(date: date);
     var updatedDiagnosisList = diagnosisList.map((diagnosis) {
       if (diagnosis['id'] == completeDiagnosisModel.id) {
         return completeDiagnosisModel.toMap();
@@ -118,18 +118,16 @@ class MedRecordRepository {
     }
   }
 
-  Future<List> getCompleteDiagnosis() async {
-    var diagnosisList = <Map>[];
+  Future<List> getCompleteDiagnosis({@required String date}) async {
+    var diagnosisList = [];
     await _medRecordCollectionReference
         .doc(_pacientHash)
         .get()
         .then((snapshot) {
-      var data = snapshot.data();
-      if (data.containsKey('fulldiagnosis')) {
+      var data = snapshot.data()[date];
+      if (data != null && data.containsKey('fulldiagnosis')) {
         var fullDiagnosis = data['fulldiagnosis'];
-        fullDiagnosis is List
-            ? diagnosisList = fullDiagnosis
-            : diagnosisList.add(fullDiagnosis);
+        diagnosisList = fullDiagnosis;
       }
     });
 

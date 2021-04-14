@@ -3,6 +3,7 @@ import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 @reflector
 class CompleteDiagnosisModel {
@@ -36,6 +37,62 @@ class CompleteDiagnosisModel {
     };
   }
 
+  static CompleteDiagnosisModel fromWidgetFields(
+      List<Widget> fields, String date) {
+    var diagnosisCompleteMap = Map();
+    var problemMap = Map();
+    var prescriptionMap = Map();
+    var diagnosisMap = Map();
+
+    fields.forEach((field) {
+      if (field is Field) {
+        switch (field.fieldPlaceholder) {
+          case "Cid do diagnóstico":
+            diagnosisMap['cid'] = field.textController.text;
+            break;
+
+          case "Descrição do diagnóstico":
+            diagnosisMap['description'] = field.textController.text;
+            break;
+
+          case "Descrição do problema":
+            problemMap['description'] = field.textController.text;
+            break;
+
+          case "Medicamento":
+            prescriptionMap['medicine'] = field.textController.text;
+            break;
+
+          case "Orientação de uso":
+            prescriptionMap['usage'] = field.textController.text;
+            break;
+
+          case "Duração de uso":
+            prescriptionMap['duration'] = field.textController.text;
+            break;
+
+          case "Dosagem":
+            prescriptionMap['dosage'] = field.textController.text;
+            break;
+
+          case "Formulário de dosagem":
+            prescriptionMap['dosageForm'] = field.textController.text;
+            break;
+
+          default:
+            diagnosisCompleteMap[field.fieldPlaceholder] =
+                field.textController.text;
+        }
+      }
+    });
+
+    diagnosisCompleteMap['problem'] = problemMap;
+    diagnosisCompleteMap['diagnosis'] = diagnosisMap;
+    diagnosisCompleteMap['prescription'] = prescriptionMap;
+
+    return CompleteDiagnosisModel.fromList([diagnosisCompleteMap], date).first;
+  }
+
   List<Widget> toWidgetFields() {
     var fields = <Widget>[
       Text(
@@ -67,23 +124,34 @@ class CompleteDiagnosisModel {
     return fields;
   }
 
-  static CompleteDiagnosisModel fromMap(Map<String, dynamic> map, String key) {
-    if (map == null || map.length < 2) return null;
+  static List<CompleteDiagnosisModel> fromList(List diagnosisList, String key) {
+    return diagnosisList.map((map) {
+      if (map == null || map.length < 2) return null;
 
-    int year = int.parse(key.split('/')[2]);
-    int mon = int.parse(key.split('/')[1]);
-    int day = int.parse(key.split('/')[0]);
+      int year = int.parse(key.split('/')[2]);
+      int mon = int.parse(key.split('/')[1]);
+      int day = int.parse(key.split('/')[0]);
 
-    return CompleteDiagnosisModel(
-        problem: ProblemModel.fromMap(map['problem']),
-        diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
-        prescription: PrescriptionModel.fromMap(map['prescription']),
-        date: new DateTime(
-          year,
-          mon,
-          day,
-        ),
-        id: map['id']);
+      var completeDiagnosis = CompleteDiagnosisModel(
+          problem: ProblemModel.fromMap(map['problem']),
+          diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
+          prescription: PrescriptionModel.fromMap(map['prescription']),
+          date: new DateTime(
+            year,
+            mon,
+            day,
+          ),
+          id: map['id']);
+
+      map.remove('problem');
+      map.remove('diagnosis');
+      map.remove("prescription");
+      map.remove('id');
+
+      map.forEach((key, value) {
+        completeDiagnosis.dynamicFields.add({key: value});
+      });
+    }).toList();
   }
 
   DateTime get getDate => this._diagnosisDate;

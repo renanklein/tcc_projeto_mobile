@@ -38,10 +38,12 @@ class MedRecordModel {
     map.keys.forEach((k) {
       if (k != 'created') {
         if (map[k]['fulldiagnosis'] != null) {
-          CompleteDiagnosisModel diagnosisModel =
-              CompleteDiagnosisModel.fromMap(map[k]['fulldiagnosis'], k);
+          List diagnosisModels =
+              CompleteDiagnosisModel.fromList(map[k]['fulldiagnosis'], k);
 
-          _diagnosisList.add(diagnosisModel);
+          diagnosisModels.forEach((diagnosisModel) {
+            _diagnosisList.add(diagnosisModel);
+          });
         }
 
         if (map[k]['prediagnosis'] != null) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
+import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
@@ -40,20 +41,6 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
     );
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    problemIdController.dispose();
-    problemDescriptionController.dispose();
-    diagnosisCidController.dispose();
-    diagnosisDescriptionController.dispose();
-    prescriptionMedicineController.dispose();
-    prescriptionDosageController.dispose();
-    prescriptionDosageFormController.dispose();
-    prescriptionUsageOrientationController.dispose();
-    prescriptionUsageDurationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -119,11 +106,11 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                           'Por Favor, descreva o problema',
                                         ),
                                         _diagnosisFormField(
-                                          problemIdController,
-                                          'Id da Queixa:',
-                                          'Digite um Número para indicar problemas relacionados',
-                                          'Por Favor, digite algum número',
-                                        ),
+                                            problemIdController,
+                                            'Id da Queixa:',
+                                            'Digite um Número para indicar problemas relacionados',
+                                            'Por Favor, digite algum número',
+                                            keyboardType: TextInputType.number),
                                       ],
                                     ),
                                   ),
@@ -217,8 +204,14 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                       onPressed: () async {
                                         if (_diagnosisScreenKey.currentState
                                             .validate()) {
+                                          var diagnosisDate = DateTime.now();
+                                          var formatter =
+                                              DateFormat('dd/MM/yyyy');
+                                          var dateAsString =
+                                              formatter.format(diagnosisDate);
                                           _medRecordBloc.add(
                                             DiagnosisCreateOrUpdateButtonPressed(
+                                              diagnosisDate: dateAsString,
                                               isUpdate: false,
                                               problemId:
                                                   problemIdController.text,
@@ -276,10 +269,12 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   }
 }
 
-Widget _diagnosisFormField(controller, label, hint, errorText) {
+Widget _diagnosisFormField(controller, label, hint, errorText,
+    {TextInputType keyboardType = TextInputType.name}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: TextFormField(
+      keyboardType: keyboardType,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

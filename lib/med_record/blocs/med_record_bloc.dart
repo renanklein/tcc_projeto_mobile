@@ -115,6 +115,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var hoje = dateFormat.format(now);
 
         var diagnosisModel = CompleteDiagnosisModel(
+            date: now,
             id: event.id,
             problem: ProblemModel(
                 description: event.problemDescription,

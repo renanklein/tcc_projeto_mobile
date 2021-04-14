@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
+import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
@@ -32,11 +34,11 @@ class DiagnosisTile extends StatefulWidget {
       return DiagnosisTile(
         isPrediagnosis: false,
         refresh: refreshDiagnosis,
-        date: diagnosis.diagnosisDate,
+        date: diagnosis?.diagnosisDate,
         diagnosisModel: diagnosis,
         preDiagnosisModel: null,
         fields: [
-          ...diagnosis.toWidgetFields(),
+          ...diagnosis?.toWidgetFields(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -45,7 +47,7 @@ class DiagnosisTile extends StatefulWidget {
                   onPressed: () {
                     Scaffold.of(context).showBottomSheet((context) =>
                         DynamicFieldBottomSheet(
-                            dynamicFieldsList: diagnosis.dynamicFields,
+                            dynamicFieldsList: diagnosis?.dynamicFields,
                             refreshForm: refreshDiagnosis));
                   })
             ],
@@ -82,10 +84,14 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   List<Widget> children = <Widget>[];
   Function get refresh => this.refresh;
   MedRecordBloc medRecordBloc;
+  String dateAsString;
 
   @override
   void initState() {
-    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
+    var medRepository = Injector.appInstance.get<MedRecordRepository>();
+    this.medRecordBloc = MedRecordBloc(medRecordRepository: medRepository);
+    var formatter = DateFormat('dd/MM/yyyy');
+    this.dateAsString = formatter.format(this.date);
     this.children = [
       ...fields,
       IconButton(
@@ -99,56 +105,57 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
 
   @override
   Widget build(BuildContext context) {
-    var formatter = DateFormat('dd/MM/yyyy');
-    var dateAsString = formatter.format(this.date);
     return BlocListener<MedRecordBloc, MedRecordState>(
+        cubit: this.medRecordBloc,
         listener: (context, state) {
-      if (state is DiagnosisCreateOrUpdateSuccess) {
-        setState(() {
-          this.children = <Widget>[
-            ...state.diagnosisModel.toWidgetFields(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Scaffold.of(context).showBottomSheet((context) =>
-                          DynamicFieldBottomSheet(
-                              dynamicFieldsList:
-                                  state.diagnosisModel.dynamicFields,
-                              refreshForm: this.refresh));
-                    }),
-                IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-                    })
-              ],
-            )
-          ];
-        });
-      } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
-        this.children = <Widget>[
-          ...state.preDiagnosisModel.toWidgetFields(),
-          IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-              })
-        ];
-      }
-    }, child: BlocBuilder<MedRecordBloc, MedRecordState>(
-      builder: (context, state) {
-        if (state is MedRecordEventProcessing) {
-          return LayoutUtils.buildCircularProgressIndicator(context);
-        }
-        return Card(
-          child:
-              ExpansionTile(title: Text(dateAsString), children: this.children),
-        );
-      },
-    ));
+          if (state is DiagnosisCreateOrUpdateSuccess) {
+            setState(() {
+              this.children = <Widget>[
+                ...state.diagnosisModel.toWidgetFields(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet((context) =>
+                              DynamicFieldBottomSheet(
+                                  dynamicFieldsList:
+                                      state.diagnosisModel.dynamicFields,
+                                  refreshForm: this.refresh));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                        })
+                  ],
+                )
+              ];
+            });
+          } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
+            this.children = <Widget>[
+              ...state.preDiagnosisModel.toWidgetFields(),
+              IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                  })
+            ];
+          }
+        },
+        child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          cubit: this.medRecordBloc,
+          builder: (context, state) {
+            if (state is MedRecordEventProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            }
+            return Card(
+              child: ExpansionTile(
+                  title: Text(dateAsString), children: this.children),
+            );
+          },
+        ));
   }
 
   void _changeToEditMode(Function onTap) {
@@ -220,8 +227,11 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
     this.isPrediagnosis
         ? this.medRecordBloc.add(
             PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
-                this.preDiagnosis))
+                PreDiagnosisModel.fromWidgetFields(
+                    this.children, this.preDiagnosis.appointmentEventDate)))
         : this.medRecordBloc.add(DiagnosisCreateOrUpdateButtonPressed.fromModel(
-            true, this.completeDiagnosisModel));
+            true,
+            CompleteDiagnosisModel.fromWidgetFields(
+                this.children, this.dateAsString)));
   }
 }

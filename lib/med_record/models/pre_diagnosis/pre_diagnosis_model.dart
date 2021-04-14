@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 @reflector
 class PreDiagnosisModel {
@@ -68,17 +69,74 @@ class PreDiagnosisModel {
     };
   }
 
+  static PreDiagnosisModel fromWidgetFields(List<Widget> fields, String date) {
+    var preDiagnosis = Map();
+    fields.forEach((field) {
+      if (field is Field) {
+        switch (field.fieldPlaceholder) {
+          case "PA Sistolica":
+            preDiagnosis['paSistolica'] = field.textController.text;
+            break;
+
+          case "PA Diastolica":
+            preDiagnosis['pADiastolica'] = field.textController.text;
+            break;
+
+          case "Peso":
+            preDiagnosis['peso'] = field.textController.text;
+            break;
+
+          case "Altura":
+            preDiagnosis['altura'] = field.textController.text;
+            break;
+
+          case "Temperatura":
+            preDiagnosis['temperatura'] = field.textController.text;
+            break;
+
+          case "IMC":
+            preDiagnosis['imc'] = field.textController.text;
+            break;
+
+          case "Glicemia":
+            preDiagnosis['glicemia'] = field.textController.text;
+            break;
+
+          case "Freq Cardíaca":
+            preDiagnosis['freqCardiaca'] = field.textController.text;
+            break;
+
+          case "Freq Repouso":
+            preDiagnosis['freqRepouso'] = field.textController.text;
+            break;
+
+          case "Observacao":
+            preDiagnosis['observacao'] = field.textController.text;
+            break;
+        }
+      }
+    });
+
+    return PreDiagnosisModel.fromMap(preDiagnosis, date);
+  }
+
   List<Widget> toWidgetFields() {
     return <Widget>[
+      Text("Peso: ${this?.peso?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Altura: ${this?.altura?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("IMC: ${this?.imc?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Temperatura: ${this?.temperatura?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
       Text("PA Sistolica: ${this?.pASistolica?.toString()}",
           style: TextStyle(fontSize: 17.0)),
       Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
           style: TextStyle(fontSize: 17.0)),
-      Text("Peso: ${this?.peso?.toString()}", style: TextStyle(fontSize: 17.0)),
-      Text("IMC: ${this?.imc?.toString()}", style: TextStyle(fontSize: 17.0)),
       Text("Glicemia : ${this?.glicemia?.toString()}",
           style: TextStyle(fontSize: 17.0)),
       Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
           style: TextStyle(fontSize: 17.0)),
       Text("Observacao: ${this?.observacao?.toString()}",
           style: TextStyle(fontSize: 17.0))

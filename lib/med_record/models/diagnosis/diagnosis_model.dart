@@ -21,7 +21,7 @@ class DiagnosisModel {
     };
   }
 
-  static DiagnosisModel fromMap(Map<String, dynamic> map) {
+  static DiagnosisModel fromMap(Map map) {
     if (map == null) return null;
 
     return DiagnosisModel(

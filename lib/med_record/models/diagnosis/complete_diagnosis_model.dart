@@ -48,7 +48,7 @@ class CompleteDiagnosisModel {
       if (field is Field) {
         switch (field.fieldPlaceholder) {
           case "Cid do diagnóstico":
-            diagnosisMap['cid'] = field.textController.text;
+            diagnosisMap['id'] = field.textController.text;
             break;
 
           case "Descrição do diagnóstico":
@@ -97,29 +97,32 @@ class CompleteDiagnosisModel {
     var fields = <Widget>[
       Text(
         "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid}",
-        style: TextStyle(fontSize: 17.0),
+        style: TextStyle(fontSize: 14.0),
       ),
       Text("Descrição do problema: ${this?.problem?.problemDescription}",
-          style: TextStyle(fontSize: 17.0)),
+          style: TextStyle(fontSize: 14.0)),
       Text("Descrição do diagnóstico: ${this?.diagnosis?.diagnosisDescription}",
-          style: TextStyle(fontSize: 17.0)),
-      Text("Medicamento: ${this?.prescription?.prescriptionMedicine}"),
+          style: TextStyle(fontSize: 14.0)),
+      Text("Medicamento: ${this?.prescription?.prescriptionMedicine}",
+          style: TextStyle(fontSize: 14.0)),
       Text(
           "Orientação de uso: ${this?.prescription?.prescriptionUsageOrientation}",
-          style: TextStyle(fontSize: 17.0)),
+          style: TextStyle(fontSize: 14.0)),
       Text("Duração de uso: ${this?.prescription?.prescriptionUsageDuration}",
-          style: TextStyle(fontSize: 17.0)),
+          style: TextStyle(fontSize: 14.0)),
       Text("Dosagem: ${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 17.0)),
+          style: TextStyle(fontSize: 14.0)),
       Text(
           "Formulário de dosagem: ${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 17.0))
+          style: TextStyle(fontSize: 14.0))
     ];
 
-    this.dynamicFields.forEach((field) {
-      fields.add(Text(field['placeholder'] + ": ${field['value']}",
-          style: TextStyle(fontSize: 17.0)));
-    });
+    if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
+      this.dynamicFields.forEach((field) {
+        fields.add(Text("${field['placeholder']}: ${field['value']}",
+            style: TextStyle(fontSize: 17.0)));
+      });
+    }
 
     return fields;
   }
@@ -136,21 +139,20 @@ class CompleteDiagnosisModel {
           problem: ProblemModel.fromMap(map['problem']),
           diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
           prescription: PrescriptionModel.fromMap(map['prescription']),
-          date: new DateTime(
+          date: DateTime(
             year,
             mon,
             day,
           ),
           id: map['id']);
 
-      map.remove('problem');
-      map.remove('diagnosis');
-      map.remove("prescription");
-      map.remove('id');
-
       map.forEach((key, value) {
-        completeDiagnosis.dynamicFields.add({key: value});
+        if (key != 'problem' && key != 'diagnosis' && key != 'prescription') {
+          completeDiagnosis.dynamicFields.add({key: value});
+        }
       });
+
+      return completeDiagnosis;
     }).toList();
   }
 
@@ -162,5 +164,7 @@ class CompleteDiagnosisModel {
   PrescriptionModel get prescription => this._prescriptionModel;
   DateTime get diagnosisDate => this._diagnosisDate;
   List<Map> get dynamicFields => this._dynamicFields;
+
   int get id => this._id;
+  set setId(int id) => this._id = id;
 }

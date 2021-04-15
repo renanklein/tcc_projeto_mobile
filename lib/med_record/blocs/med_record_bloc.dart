@@ -115,7 +115,6 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var hoje = dateFormat.format(now);
 
         var diagnosisModel = CompleteDiagnosisModel(
-            date: now,
             id: event.id,
             problem: ProblemModel(
                 description: event.problemDescription,
@@ -132,7 +131,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         if (event.isUpdate) {
           await this.medRecordRepository.updatePacientDiagnosis(
-              completeDiagnosisModel: diagnosisModel, date: hoje);
+              completeDiagnosisModel: diagnosisModel,
+              date: event.diagnosisDate);
         } else {
           await this.medRecordRepository.createPacientDiagnosis(
               completeDiagnosisModel: diagnosisModel, date: hoje);

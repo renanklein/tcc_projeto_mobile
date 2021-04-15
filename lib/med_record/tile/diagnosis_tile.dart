@@ -224,14 +224,16 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   }
 
   void updateDiagnosisOrPrediagnosis() {
-    this.isPrediagnosis
-        ? this.medRecordBloc.add(
-            PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
-                PreDiagnosisModel.fromWidgetFields(
-                    this.children, this.preDiagnosis.appointmentEventDate)))
-        : this.medRecordBloc.add(DiagnosisCreateOrUpdateButtonPressed.fromModel(
-            true,
-            CompleteDiagnosisModel.fromWidgetFields(
-                this.children, this.dateAsString)));
+    if (this.isPrediagnosis) {
+      this.medRecordBloc.add(PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
+          PreDiagnosisModel.fromWidgetFields(
+              this.children, this.preDiagnosis.appointmentEventDate)));
+    } else {
+      var newDiagnosis = CompleteDiagnosisModel.fromWidgetFields(
+          this.children, this.dateAsString);
+      newDiagnosis.setId = this.completeDiagnosisModel.id;
+      this.medRecordBloc.add(
+          DiagnosisCreateOrUpdateButtonPressed.fromModel(true, newDiagnosis));
+    }
   }
 }

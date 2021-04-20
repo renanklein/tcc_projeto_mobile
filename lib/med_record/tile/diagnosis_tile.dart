@@ -39,19 +39,6 @@ class DiagnosisTile extends StatefulWidget {
         preDiagnosisModel: null,
         fields: [
           ...diagnosis?.toWidgetFields(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    Scaffold.of(context).showBottomSheet((context) =>
-                        DynamicFieldBottomSheet(
-                            dynamicFieldsList: diagnosis?.dynamicFields,
-                            refreshForm: refreshDiagnosis));
-                  })
-            ],
-          )
         ],
       );
     }).toList();
@@ -94,11 +81,24 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
     this.dateAsString = formatter.format(this.date);
     this.children = [
       ...fields,
-      IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-            this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-          })
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Scaffold.of(context).showBottomSheet((context) =>
+                    DynamicFieldBottomSheet(
+                        dynamicFieldsList: this.children,
+                        refreshForm: refreshTile));
+              }),
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+              })
+        ],
+      ),
     ];
     super.initState();
   }
@@ -134,14 +134,30 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               ];
             });
           } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
-            this.children = <Widget>[
-              ...state.preDiagnosisModel.toWidgetFields(),
-              IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-                  })
-            ];
+            setState(() {
+              this.children = <Widget>[
+                ...state.preDiagnosisModel.toWidgetFields(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet((context) =>
+                              DynamicFieldBottomSheet(
+                                  dynamicFieldsList:
+                                      state.preDiagnosisModel.dynamicFields,
+                                  refreshForm: this.refresh));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                        })
+                  ],
+                )
+              ];
+            });
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -226,8 +242,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   void updateDiagnosisOrPrediagnosis() {
     if (this.isPrediagnosis) {
       this.medRecordBloc.add(PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
-          PreDiagnosisModel.fromWidgetFields(
-              this.children, this.preDiagnosis.appointmentEventDate)));
+          PreDiagnosisModel.fromWidgetFields(this.children, this.dateAsString),
+          true));
     } else {
       var newDiagnosis = CompleteDiagnosisModel.fromWidgetFields(
           this.children, this.dateAsString);
@@ -235,5 +251,21 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
       this.medRecordBloc.add(
           DiagnosisCreateOrUpdateButtonPressed.fromModel(true, newDiagnosis));
     }
+  }
+
+  void refreshTile(List dynamicList, Field newField) {
+    var text = Text(
+        "${newField.fieldPlaceholder}: ${newField.textController.text}",
+        style: TextStyle(fontSize: 14.0));
+    setState(() {
+      var index = 0;
+      for (int i = 0; i < dynamicList.length; i++) {
+        if (dynamicList[i] is Row) {
+          index = i;
+        }
+      }
+
+      dynamicList.insert(index, text);
+    });
   }
 }

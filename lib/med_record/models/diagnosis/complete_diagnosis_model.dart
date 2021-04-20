@@ -19,22 +19,30 @@ class CompleteDiagnosisModel {
       @required DiagnosisModel diagnosis,
       PrescriptionModel prescription,
       DateTime date,
+      List<Map> dynamicFields,
       int id}) {
     this._problemModel = problem;
     this._diagnosisModel = diagnosis;
     this._prescriptionModel = prescription;
     this._diagnosisDate = date;
-    this._dynamicFields = <Map>[];
+    dynamicFields == null
+        ? this._dynamicFields = <Map>[]
+        : this._dynamicFields = dynamicFields;
     this._id = id;
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    var diagnosis = {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
       'prescription': _prescriptionModel.toMap(),
-      'id': this.id
+      'id': this.id,
     };
+
+    this
+        .dynamicFields
+        .forEach((element) => diagnosis.addAll(Map.from(element)));
+    return diagnosis;
   }
 
   static CompleteDiagnosisModel fromWidgetFields(
@@ -99,28 +107,30 @@ class CompleteDiagnosisModel {
         "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid}",
         style: TextStyle(fontSize: 14.0),
       ),
-      Text("Descrição do problema: ${this?.problem?.problemDescription}",
+      Text("Descrição do problema:${this?.problem?.problemDescription}",
           style: TextStyle(fontSize: 14.0)),
-      Text("Descrição do diagnóstico: ${this?.diagnosis?.diagnosisDescription}",
+      Text("Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription}",
           style: TextStyle(fontSize: 14.0)),
-      Text("Medicamento: ${this?.prescription?.prescriptionMedicine}",
-          style: TextStyle(fontSize: 14.0)),
-      Text(
-          "Orientação de uso: ${this?.prescription?.prescriptionUsageOrientation}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Duração de uso: ${this?.prescription?.prescriptionUsageDuration}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Dosagem: ${this?.prescription?.prescriptionDosageForm}",
+      Text("Medicamento:${this?.prescription?.prescriptionMedicine}",
           style: TextStyle(fontSize: 14.0)),
       Text(
-          "Formulário de dosagem: ${this?.prescription?.prescriptionDosageForm}",
+          "Orientação de uso:${this?.prescription?.prescriptionUsageOrientation}",
+          style: TextStyle(fontSize: 14.0)),
+      Text("Duração de uso:${this?.prescription?.prescriptionUsageDuration}",
+          style: TextStyle(fontSize: 14.0)),
+      Text("Dosagem:${this?.prescription?.prescriptionDosageForm}",
+          style: TextStyle(fontSize: 14.0)),
+      Text(
+          "Formulário de dosagem:${this?.prescription?.prescriptionDosageForm}",
           style: TextStyle(fontSize: 14.0))
     ];
 
     if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
       this.dynamicFields.forEach((field) {
-        fields.add(Text("${field['placeholder']}: ${field['value']}",
-            style: TextStyle(fontSize: 17.0)));
+        if (field.keys.first != "id") {
+          fields.add(Text("${field.keys.first}:${field.values.first}",
+              style: TextStyle(fontSize: 14.0)));
+        }
       });
     }
 

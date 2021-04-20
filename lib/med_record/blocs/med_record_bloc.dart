@@ -82,24 +82,26 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var now = new DateTime.now();
         var dateFormat = DateFormat("dd/MM/yyyy");
         var hoje = dateFormat.format(now);
-        var appointmentDate = dateFormat.format(event.dtAppointmentEvent);
         var preDiagnosis = PreDiagnosisModel(
-          peso: int.parse(event.peso),
-          altura: int.parse(event.altura),
-          imc: double.parse(event.imc),
-          paSistolica: int.parse(event.pASistolica),
-          pADiastolica: int.parse(event.pADiastolica),
-          freqCardiaca: int.parse(event.freqCardiaca),
-          freqRepouso: int.parse(event.freqRepouso),
-          temperatura: double.parse(event.temperatura),
-          glicemia: int.parse(event.glicemia),
-          observacao: event.obs,
-          appointmentEventDate: appointmentDate,
-        );
+            peso: event.peso,
+            altura: event.altura,
+            imc: event.imc,
+            paSistolica: event.pASistolica,
+            pADiastolica: event.pADiastolica,
+            freqCardiaca: event.freqCardiaca,
+            freqRepouso: event.freqRepouso,
+            temperatura: event.temperatura,
+            glicemia: event.glicemia,
+            observacao: event.obs,
+            appointmentEventDate: event.dtAppointmentEvent,
+            dynamicFields: event.dynamicFields,
+            dtPreDiagnosis: event.dtPrediagnosis);
 
         await this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
               preDiagnosisModel: preDiagnosis,
-              date: hoje,
+              date: event.isUpdate
+                  ? dateFormat.format(preDiagnosis.getPreDiagnosisDate)
+                  : hoje,
             );
 
         yield MedRecordEventSuccess();
@@ -116,6 +118,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var diagnosisModel = CompleteDiagnosisModel(
             id: event.id,
+            dynamicFields: event.dynamicFields,
             problem: ProblemModel(
                 description: event.problemDescription,
                 problemId: event.problemId),

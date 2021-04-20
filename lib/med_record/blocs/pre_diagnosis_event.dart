@@ -14,6 +14,9 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final dtUltimaMestruacao;
   final dtProvavelParto;
   final dtAppointmentEvent;
+  final dtPrediagnosis;
+  final bool isUpdate;
+  final dynamicFields;
 
   PreDiagnosisCreateOrUpdateButtonPressed(
       {@required this.peso,
@@ -25,14 +28,18 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
       @required this.freqRepouso,
       @required this.temperatura,
       @required this.glicemia,
+      @required this.isUpdate,
       this.obs,
       this.dtUltimaMestruacao,
       this.dtProvavelParto,
-      @required this.dtAppointmentEvent});
+      @required this.dtAppointmentEvent,
+      @required this.dtPrediagnosis,
+      this.dynamicFields});
 
   static PreDiagnosisCreateOrUpdateButtonPressed fromModel(
-      PreDiagnosisModel preDiagnosis) {
+      PreDiagnosisModel preDiagnosis, bool isUpdate) {
     return PreDiagnosisCreateOrUpdateButtonPressed(
+        isUpdate: isUpdate,
         peso: preDiagnosis.peso,
         altura: preDiagnosis.altura,
         imc: preDiagnosis.imc,
@@ -45,7 +52,9 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
         obs: preDiagnosis.observacao,
         dtUltimaMestruacao: preDiagnosis.dtUltimaMestruacao,
         dtProvavelParto: preDiagnosis.dtProvavelParto,
-        dtAppointmentEvent: preDiagnosis.appointmentEventDate);
+        dtAppointmentEvent: preDiagnosis.appointmentEventDate,
+        dtPrediagnosis: preDiagnosis.getPreDiagnosisDate,
+        dynamicFields: preDiagnosis.dynamicFields);
   }
 
   @override

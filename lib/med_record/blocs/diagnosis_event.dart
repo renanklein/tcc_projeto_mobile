@@ -10,6 +10,7 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final prescriptionDosageForm;
   final prescriptionUsageOrientation;
   final prescriptionUsageDuration;
+  final dynamicFields;
   final String diagnosisDate;
   final bool isUpdate;
   final int id;
@@ -26,6 +27,7 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
       @required this.prescriptionUsageDuration,
       @required this.diagnosisDate,
       @required this.isUpdate,
+      this.dynamicFields,
       this.id});
 
   static DiagnosisCreateOrUpdateButtonPressed fromModel(
@@ -47,6 +49,7 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
             diagnosisModel.prescription.prescriptionUsageOrientation,
         prescriptionUsageDuration:
             diagnosisModel.prescription.prescriptionUsageDuration,
+        dynamicFields: diagnosisModel.dynamicFields,
         prescriptionMedicine: diagnosisModel.prescription.prescriptionMedicine);
   }
 

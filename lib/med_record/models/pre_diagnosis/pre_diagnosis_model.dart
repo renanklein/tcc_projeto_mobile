@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 @reflector
 class PreDiagnosisModel {
@@ -17,23 +18,24 @@ class PreDiagnosisModel {
   DateTime _dtProvavelParto;
   DateTime _dtPreDiagnosis;
   String _appointmentEventDate;
+  List<Map> _dynamicFields;
 
-  PreDiagnosisModel({
-    @required int peso,
-    @required int altura,
-    @required double imc,
-    @required int paSistolica,
-    @required int pADiastolica,
-    @required int freqCardiaca,
-    @required int freqRepouso,
-    @required double temperatura,
-    @required int glicemia,
-    @required String appointmentEventDate,
-    String observacao,
-    DateTime dtUltimaMestruacao,
-    DateTime dtProvavelParto,
-    DateTime dtPreDiagnosis,
-  }) {
+  PreDiagnosisModel(
+      {@required int peso,
+      @required int altura,
+      @required double imc,
+      @required int paSistolica,
+      @required int pADiastolica,
+      @required int freqCardiaca,
+      @required int freqRepouso,
+      @required double temperatura,
+      @required int glicemia,
+      @required String appointmentEventDate,
+      String observacao,
+      DateTime dtUltimaMestruacao,
+      DateTime dtProvavelParto,
+      DateTime dtPreDiagnosis,
+      List<Map> dynamicFields}) {
     this._peso = peso;
     this._altura = altura;
     this._imc = imc;
@@ -48,10 +50,13 @@ class PreDiagnosisModel {
     this._dtProvavelParto = dtProvavelParto;
     this._dtPreDiagnosis = dtPreDiagnosis;
     this._appointmentEventDate = appointmentEventDate;
+    dynamicFields == null
+        ? this._dynamicFields = <Map>[]
+        : this._dynamicFields = dynamicFields;
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    var preDiagnosisMap = {
       'peso': this._peso,
       'altura': this._altura,
       'imc': this._imc,
@@ -66,47 +71,150 @@ class PreDiagnosisModel {
       'dtProvavelParto': this._dtProvavelParto,
       'appointmentEventDate': this._appointmentEventDate
     };
+
+    this
+        ._dynamicFields
+        .forEach((element) => preDiagnosisMap.addAll(Map.from(element)));
+
+    return preDiagnosisMap;
   }
 
-  static PreDiagnosisModel fromMap(Map<String, dynamic> map, String key) {
+  static PreDiagnosisModel fromWidgetFields(List<Widget> fields, String date) {
+    var preDiagnosis = Map();
+    fields.forEach((field) {
+      if (field is Field) {
+        switch (field.fieldPlaceholder) {
+          case "PA Sistolica":
+            preDiagnosis['paSistolica'] = field.textController.text;
+            break;
+
+          case "PA Diastolica":
+            preDiagnosis['pADiastolica'] = field.textController.text;
+            break;
+
+          case "Peso":
+            preDiagnosis['peso'] = field.textController.text;
+            break;
+
+          case "Altura":
+            preDiagnosis['altura'] = field.textController.text;
+            break;
+
+          case "Temperatura":
+            preDiagnosis['temperatura'] = field.textController.text;
+            break;
+
+          case "IMC":
+            preDiagnosis['imc'] = field.textController.text;
+            break;
+
+          case "Glicemia":
+            preDiagnosis['glicemia'] = field.textController.text;
+            break;
+
+          case "Freq Cardíaca":
+            preDiagnosis['freqCardiaca'] = field.textController.text;
+            break;
+
+          case "Freq Repouso":
+            preDiagnosis['freqRepouso'] = field.textController.text;
+            break;
+
+          case "Observacao":
+            preDiagnosis['observacao'] = field.textController.text;
+            break;
+
+          default:
+            preDiagnosis[field.fieldPlaceholder] = field.textController.text;
+            break;
+        }
+      }
+    });
+
+    return PreDiagnosisModel.fromMap(preDiagnosis, date);
+  }
+
+  List<Widget> toWidgetFields() {
+    var fields = <Widget>[
+      Text("Peso: ${this?.peso?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Altura: ${this?.altura?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("IMC: ${this?.imc?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Temperatura: ${this?.temperatura?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("PA Sistolica: ${this?.pASistolica?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Glicemia: ${this?.glicemia?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
+          style: TextStyle(fontSize: 17.0)),
+      Text("Observacao: ${this?.observacao?.toString()}",
+          style: TextStyle(fontSize: 17.0))
+    ];
+
+    if (this._dynamicFields != null && this._dynamicFields.isNotEmpty) {
+      this._dynamicFields.forEach((field) {
+        fields.add(Text("${field.keys.first}:${field.values.first}",
+            style: TextStyle(fontSize: 17.0)));
+      });
+    }
+
+    return fields;
+  }
+
+  static PreDiagnosisModel fromMap(Map map, String date) {
     if (map == null) return null;
 
-    int year = int.parse(key.split('/')[2]);
-    int mon = int.parse(key.split('/')[1]);
-    int day = int.parse(key.split('/')[0]);
+    int year = int.parse(date.split('/')[2]);
+    int mon = int.parse(date.split('/')[1]);
+    int day = int.parse(date.split('/')[0]);
 
-    return PreDiagnosisModel(
-      peso: map['peso'],
-      altura: map['altura'],
-      imc: map['imc'],
-      paSistolica: map['paSistolica'],
-      pADiastolica: map['pADiastolica'],
-      freqCardiaca: map['freqCardiaca'],
-      freqRepouso: map['freqRepouso'],
-      temperatura: map['temperatura'],
-      glicemia: map['glicemia'],
-      observacao: map['observacao'],
-      appointmentEventDate: map['appointmentEventDate'],
-      /* ultimaMestruacao: (map['ultimaMestruacao'] != null)
-          ? new DateTime(
-              int.parse(map['ultimaMestruacao'].split('/')[2]),
-              int.parse(map['ultimaMestruacao'].split('/')[1]),
-              int.parse(map['ultimaMestruacao'].split('/')[0]),
-            )
-          : null,
-      dtProvavelParto: (map['dtProvavelParto'] != null)
-          ? new DateTime(
-              int.parse(map['dtProvavelParto'].split('/')[2]),
-              int.parse(map['dtProvavelParto'].split('/')[1]),
-              int.parse(map['dtProvavelParto'].split('/')[0]),
-            )
-          : null, */
+    var prediagnosis = PreDiagnosisModel(
+      peso: map['peso'] is int
+          ? map.remove('peso')
+          : int.parse(map.remove('peso')),
+      altura: map['altura'] is int
+          ? map.remove('altura')
+          : int.parse(map.remove("altura")),
+      imc: map['imc'] is double
+          ? map.remove('imc')
+          : double.parse(map.remove('imc')),
+      paSistolica: map['paSistolica'] is int
+          ? map.remove('paSistolica')
+          : int.parse(map.remove('paSistolica')),
+      pADiastolica: map['pADiastolica'] is int
+          ? map.remove('pADiastolica')
+          : int.parse(map.remove('pADiastolica')),
+      freqCardiaca: map['freqCardiaca'] is int
+          ? map.remove('freqCardiaca')
+          : int.parse(map.remove('freqCardiaca')),
+      freqRepouso: map['freqRepouso'] is int
+          ? map.remove('freqRepouso')
+          : int.parse(map.remove('freqRepouso')),
+      temperatura: map['temperatura'] is double
+          ? map.remove('temperatura')
+          : double.parse(map.remove('temperatura')),
+      glicemia: map['glicemia'] is int
+          ? map.remove('glicemia')
+          : int.parse(map.remove('glicemia')),
+      observacao: map.remove('observacao'),
+      appointmentEventDate: map.remove('appointmentEventDate'),
       dtPreDiagnosis: new DateTime(
         year,
         mon,
         day,
       ),
     );
+
+    map.entries.forEach((elem) {
+      prediagnosis._dynamicFields.add({elem.key: elem.value});
+    });
+
+    return prediagnosis;
   }
 
   int get peso => _peso;
@@ -123,4 +231,5 @@ class PreDiagnosisModel {
   DateTime get dtProvavelParto => _dtProvavelParto;
   DateTime get getPreDiagnosisDate => _dtPreDiagnosis;
   String get appointmentEventDate => _appointmentEventDate;
+  List<Map> get dynamicFields => _dynamicFields;
 }

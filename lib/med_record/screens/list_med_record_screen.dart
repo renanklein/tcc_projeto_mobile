@@ -185,12 +185,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return ListView(
           shrinkWrap: true,
           children: [
-            ListDiagnosisScreen(
-              pacient: this.medRecordArguments.pacientModel,
-            ),
-            LayoutUtils.buildVerticalSpacing(10.0),
             PacientDetailScreen(
               pacient: medRecordArguments.pacientModel,
+            ),
+            LayoutUtils.buildVerticalSpacing(10.0),
+            ListDiagnosisScreen(
+              pacient: this.medRecordArguments.pacientModel,
             ),
             LayoutUtils.buildVerticalSpacing(30.0),
           ],

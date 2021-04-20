@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
@@ -78,28 +79,25 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
                     LayoutUtils.buildVerticalSpacing(10.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          var newField = Field(
-                            textController: this.fieldValueController,
-                            fieldPlaceholder: this.fieldNameController.text,
-                            isReadOnly: false,
-                          );
-
-                          this.refreshForm(this.dynamicFieldsList, newField);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style:
+                                TextStyle(color: Colors.blue, fontSize: 16.0),
+                            text: "Inserir campo",
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                var newField = Field(
+                                  textController: this.fieldValueController,
+                                  fieldPlaceholder:
+                                      this.fieldNameController.text,
+                                  isReadOnly: false,
+                                );
+                                this.refreshForm(
+                                    this.dynamicFieldsList, newField);
+                                Navigator.of(context).pop();
+                              },
                           ),
-                          primary: Theme.of(context).primaryColor,
-                        ),
-                        child: Text(
-                          "Criar campo",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
                         ),
                       ),
                     ),

@@ -34,7 +34,7 @@ class PrescriptionModel {
     };
   }
 
-  static PrescriptionModel fromMap(Map<String, dynamic> map) {
+  static PrescriptionModel fromMap(Map map) {
     if (map == null) return null;
 
     return PrescriptionModel(

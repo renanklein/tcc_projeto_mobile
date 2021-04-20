@@ -1,87 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
+import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class DiagnosisTile extends StatefulWidget {
   final DateTime date;
-  final List<Map> fields;
+  final List<Widget> fields;
+  final bool isPrediagnosis;
+  final CompleteDiagnosisModel diagnosisModel;
+  final PreDiagnosisModel preDiagnosisModel;
+  final Function refresh;
 
-  DiagnosisTile({@required this.date, @required this.fields});
+  DiagnosisTile(
+      {@required this.date,
+      @required this.fields,
+      @required this.isPrediagnosis,
+      @required this.diagnosisModel,
+      @required this.preDiagnosisModel,
+      @required this.refresh});
 
   static List<DiagnosisTile> fromDiagnosis(
-      List<CompleteDiagnosisModel> diagnosisList) {
+      List<CompleteDiagnosisModel> diagnosisList,
+      BuildContext context,
+      Function refreshDiagnosis) {
     return diagnosisList.map((diagnosis) {
-      var fields = [
-        {
-          'placeholder': 'Cid do diagnóstico',
-          "value": diagnosis?.diagnosis?.diagnosisCid
-        },
-        {
-          "placeholder": "Descrição do problema",
-          "value": diagnosis?.problem?.problemDescription
-        },
-        {
-          "placeholder": "Descrição do diagnóstico",
-          "value": diagnosis?.diagnosis?.diagnosisDescription
-        },
-        {
-          "placeholder": "Medicamento",
-          "value": diagnosis?.prescription?.prescriptionMedicine
-        },
-        {
-          "placeholder": "Orientação de uso",
-          "value": diagnosis?.prescription?.prescriptionUsageOrientation
-        },
-        {
-          "placeholder": "Duração de uso",
-          "value": diagnosis?.prescription?.prescriptionUsageDuration
-        },
-        {
-          "placeholder": "Dosagem",
-          "value": diagnosis?.prescription?.prescriptionDosageForm
-        },
-        {
-          "placeholder": "Formulário de dosagem",
-          "value": diagnosis?.prescription?.prescriptionDosageForm
-        }
-      ];
-
-      diagnosis.dynamicFields.forEach((field) {
-        fields.add(
-            {"placeholder": field['placeholder'], 'value': field['value']});
-      });
-      return DiagnosisTile(date: diagnosis.diagnosisDate, fields: fields);
+      return DiagnosisTile(
+        isPrediagnosis: false,
+        refresh: refreshDiagnosis,
+        date: diagnosis?.diagnosisDate,
+        diagnosisModel: diagnosis,
+        preDiagnosisModel: null,
+        fields: [
+          ...diagnosis?.toWidgetFields(),
+        ],
+      );
     }).toList();
   }
 
   static List<DiagnosisTile> fromPreDiagnosisList(
-      List<PreDiagnosisModel> prediagnosisList) {
+      List<PreDiagnosisModel> prediagnosisList, Function refreshPreDiagnosis) {
     return prediagnosisList.map((preDiagnosis) {
-      return DiagnosisTile(date: preDiagnosis.getPreDiagnosisDate, fields: [
-        {
-          "placeholder": "PA Sistolica",
-          "value": preDiagnosis?.pASistolica?.toString()
-        },
-        {
-          "placeholder": "PA Diastolica",
-          "value": preDiagnosis?.pADiastolica?.toString()
-        },
-        {"placeholder": "Peso", "value": preDiagnosis?.peso?.toString()},
-        {"placeholder": "IMC", "value": preDiagnosis?.imc?.toString()},
-        {
-          "placeholder": "Glicemia",
-          "value": preDiagnosis?.glicemia?.toString(),
-        },
-        {
-          "placeholder": "Freq Cardíaca",
-          "value": preDiagnosis?.freqCardiaca?.toString(),
-        },
-        {
-          "placeholder": "Observacao",
-          "value": preDiagnosis?.observacao?.toString(),
-        },
-      ]);
+      return DiagnosisTile(
+          isPrediagnosis: true,
+          refresh: refreshPreDiagnosis,
+          preDiagnosisModel: preDiagnosis,
+          diagnosisModel: null,
+          date: preDiagnosis.getPreDiagnosisDate,
+          fields: preDiagnosis.toWidgetFields());
     }).toList();
   }
 
@@ -91,40 +63,209 @@ class DiagnosisTile extends StatefulWidget {
 
 class _DiagnosisTileState extends State<DiagnosisTile> {
   DateTime get date => this.widget.date;
-  List<Map> get fields => this.widget.fields;
+  List<Widget> get fields => this.widget.fields;
+  PreDiagnosisModel get preDiagnosis => this.widget.preDiagnosisModel;
+  CompleteDiagnosisModel get completeDiagnosisModel =>
+      this.widget.diagnosisModel;
+  bool get isPrediagnosis => this.widget.isPrediagnosis;
+  List<Widget> children = <Widget>[];
+  Function get refresh => this.refresh;
+  MedRecordBloc medRecordBloc;
+  String dateAsString;
+
+  @override
+  void initState() {
+    var medRepository = Injector.appInstance.get<MedRecordRepository>();
+    this.medRecordBloc = MedRecordBloc(medRecordRepository: medRepository);
+    var formatter = DateFormat('dd/MM/yyyy');
+    this.dateAsString = formatter.format(this.date);
+    this.children = [
+      ...fields,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Scaffold.of(context).showBottomSheet((context) =>
+                    DynamicFieldBottomSheet(
+                        dynamicFieldsList: this.children,
+                        refreshForm: refreshTile));
+              }),
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+              })
+        ],
+      ),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var formatter = DateFormat('dd/MM/yyyy');
-    var dateAsString = formatter.format(this.date);
-    return ExpansionTile(
-      title: Text(dateAsString),
-      children: _buildDiagnosisFields(),
+    return BlocListener<MedRecordBloc, MedRecordState>(
+        cubit: this.medRecordBloc,
+        listener: (context, state) {
+          if (state is DiagnosisCreateOrUpdateSuccess) {
+            setState(() {
+              this.children = <Widget>[
+                ...state.diagnosisModel.toWidgetFields(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet((context) =>
+                              DynamicFieldBottomSheet(
+                                  dynamicFieldsList:
+                                      state.diagnosisModel.dynamicFields,
+                                  refreshForm: this.refresh));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                        })
+                  ],
+                )
+              ];
+            });
+          } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
+            setState(() {
+              this.children = <Widget>[
+                ...state.preDiagnosisModel.toWidgetFields(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet((context) =>
+                              DynamicFieldBottomSheet(
+                                  dynamicFieldsList:
+                                      state.preDiagnosisModel.dynamicFields,
+                                  refreshForm: this.refresh));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                        })
+                  ],
+                )
+              ];
+            });
+          }
+        },
+        child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          cubit: this.medRecordBloc,
+          builder: (context, state) {
+            if (state is MedRecordEventProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            }
+            return Card(
+              child: ExpansionTile(
+                  title: Text(dateAsString), children: this.children),
+            );
+          },
+        ));
+  }
+
+  void _changeToEditMode(Function onTap) {
+    var newFields = <Widget>[];
+
+    this.children.forEach((field) {
+      if (field is Text) {
+        var dataSplited = field.data.split(':');
+        newFields.add(Field(
+            fieldPlaceholder: dataSplited[0],
+            textController: TextEditingController(text: dataSplited[1]),
+            isReadOnly: false));
+        newFields.add(LayoutUtils.buildVerticalSpacing(5.0));
+      }
+    });
+
+    newFields.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        this._buildButton("Voltar", this._changeToReadOnlyMode),
+        this._buildButton("Salvar", onTap),
+      ],
+    ));
+
+    setState(() {
+      this.children = newFields;
+    });
+  }
+
+  void _changeToReadOnlyMode() {
+    var newFields = <Widget>[];
+
+    this.children.forEach((field) {
+      if (field is Field) {
+        newFields.add(
+            Text("${field.fieldPlaceholder}: ${field.textController.text}"));
+      }
+    });
+    newFields.add(IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+        }));
+    setState(() {
+      this.children = newFields;
+    });
+  }
+
+  Widget _buildButton(String text, Function onPressBehaviour) {
+    return ElevatedButton(
+      onPressed: () {
+        onPressBehaviour();
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
     );
   }
 
-  List<Widget> _buildDiagnosisFields() {
-    return this.fields.map((field) => DiagnosisField(field: field)).toList();
+  void updateDiagnosisOrPrediagnosis() {
+    if (this.isPrediagnosis) {
+      this.medRecordBloc.add(PreDiagnosisCreateOrUpdateButtonPressed.fromModel(
+          PreDiagnosisModel.fromWidgetFields(this.children, this.dateAsString),
+          true));
+    } else {
+      var newDiagnosis = CompleteDiagnosisModel.fromWidgetFields(
+          this.children, this.dateAsString);
+      newDiagnosis.setId = this.completeDiagnosisModel.id;
+      this.medRecordBloc.add(
+          DiagnosisCreateOrUpdateButtonPressed.fromModel(true, newDiagnosis));
+    }
   }
-}
 
-class DiagnosisField extends StatelessWidget {
-  final Map field;
-  DiagnosisField({@required this.field});
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController(
-        text: "${this.field['placeholder']} : ${this.field['value']}");
-    return Padding(
-        padding: EdgeInsets.only(bottom: 10.0),
-        child: TextField(
-          readOnly: true,
-          controller: controller,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          ),
-        ));
+  void refreshTile(List dynamicList, Field newField) {
+    var text = Text(
+        "${newField.fieldPlaceholder}: ${newField.textController.text}",
+        style: TextStyle(fontSize: 14.0));
+    setState(() {
+      var index = 0;
+      for (int i = 0; i < dynamicList.length; i++) {
+        if (dynamicList[i] is Row) {
+          index = i;
+        }
+      }
+
+      dynamicList.insert(index, text);
+    });
   }
 }

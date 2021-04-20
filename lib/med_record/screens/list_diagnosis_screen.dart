@@ -8,6 +8,7 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/med_record/tile/diagnosis_tile.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ListDiagnosisScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -76,7 +77,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                         (state is DiagnosisLoadEventSuccess)
                             ? Column(children: [
                                 _listsHeaders("Listar Diagnósticos"),
-                                ...listDiagnosisScreen(state.medRecordLoaded),
+                                ...listDiagnosisScreen(
+                                    state.medRecordLoaded, context),
                                 _listsHeaders("Listar Pré-diagnósticos"),
                                 ...listPreDiagnosisScreen(
                                     state.medRecordLoaded, pacient)
@@ -110,10 +112,21 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
         ));
   }
 
-  List<Widget> listDiagnosisScreen(MedRecordModel medRecordModel) {
+  void refreshDiagnosis(List dynamicFields, Field newField) {
+    setState(() {
+      dynamicFields.add({
+        'placeholder': newField.fieldPlaceholder,
+        'value': newField.textController.text
+      });
+    });
+  }
+
+  List<Widget> listDiagnosisScreen(
+      MedRecordModel medRecordModel, BuildContext context) {
     if (medRecordModel.getDiagnosisList == null) return null;
 
-    var fields = DiagnosisTile.fromDiagnosis(medRecordModel.getDiagnosisList);
+    var fields = DiagnosisTile.fromDiagnosis(
+        medRecordModel.getDiagnosisList, context, refreshDiagnosis);
 
     if (fields.isEmpty) {
       return <Widget>[
@@ -129,15 +142,16 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       ];
     }
 
-    return DiagnosisTile.fromDiagnosis(medRecordModel.getDiagnosisList);
+    return DiagnosisTile.fromDiagnosis(
+        medRecordModel.getDiagnosisList, context, refreshDiagnosis);
   }
 
   List<Widget> listPreDiagnosisScreen(
       MedRecordModel medRecordModel, PacientModel pacientModel) {
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
-    var fields =
-        DiagnosisTile.fromPreDiagnosisList(medRecordModel.getPreDiagnosisList);
+    var fields = DiagnosisTile.fromPreDiagnosisList(
+        medRecordModel.getPreDiagnosisList, refreshDiagnosis);
 
     if (fields.isEmpty) {
       return <Widget>[

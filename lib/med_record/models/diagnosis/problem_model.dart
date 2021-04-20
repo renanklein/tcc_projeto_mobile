@@ -21,7 +21,7 @@ class ProblemModel {
     };
   }
 
-  static ProblemModel fromMap(Map<String, dynamic> map) {
+  static ProblemModel fromMap(Map map) {
     if (map == null) return null;
 
     return ProblemModel(

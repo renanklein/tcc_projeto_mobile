@@ -75,37 +75,40 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       } catch (error) {
         yield MedRecordPacientDetailLoadEventFailure();
       }
-    } else if (event is PreDiagnosisCreateButtonPressed) {
+    } else if (event is PreDiagnosisCreateOrUpdateButtonPressed) {
       try {
         yield MedRecordEventProcessing();
 
         var now = new DateTime.now();
         var dateFormat = DateFormat("dd/MM/yyyy");
         var hoje = dateFormat.format(now);
-        var appointmentDate = dateFormat.format(event.dtAppointmentEvent);
+        var preDiagnosis = PreDiagnosisModel(
+            peso: event.peso,
+            altura: event.altura,
+            imc: event.imc,
+            paSistolica: event.pASistolica,
+            pADiastolica: event.pADiastolica,
+            freqCardiaca: event.freqCardiaca,
+            freqRepouso: event.freqRepouso,
+            temperatura: event.temperatura,
+            glicemia: event.glicemia,
+            observacao: event.obs,
+            appointmentEventDate: event.dtAppointmentEvent,
+            dynamicFields: event.dynamicFields,
+            dtPreDiagnosis: event.dtPrediagnosis);
 
-        await this.medRecordRepository.createPacientPreDiagnosis(
-              preDiagnosisModel: PreDiagnosisModel(
-                peso: int.parse(event.peso),
-                altura: int.parse(event.altura),
-                imc: double.parse(event.imc),
-                paSistolica: int.parse(event.pASistolica),
-                pADiastolica: int.parse(event.pADiastolica),
-                freqCardiaca: int.parse(event.freqCardiaca),
-                freqRepouso: int.parse(event.freqRepouso),
-                temperatura: double.parse(event.temperatura),
-                glicemia: int.parse(event.glicemia),
-                observacao: event.obs,
-                appointmentEventDate: appointmentDate,
-              ),
-              date: hoje,
+        await this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
+              preDiagnosisModel: preDiagnosis,
+              date: event.isUpdate
+                  ? dateFormat.format(preDiagnosis.getPreDiagnosisDate)
+                  : hoje,
             );
 
         yield MedRecordEventSuccess();
       } catch (error) {
         yield MedRecordEventFailure();
       }
-    } else if (event is DiagnosisCreateButtonPressed) {
+    } else if (event is DiagnosisCreateOrUpdateButtonPressed) {
       try {
         yield MedRecordEventProcessing();
 
@@ -113,23 +116,31 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var dateFormat = DateFormat("dd/MM/yyyy");
         var hoje = dateFormat.format(now);
 
-        await this.medRecordRepository.createPacientDiagnosis(
-            completeDiagnosisModel: CompleteDiagnosisModel(
-                problem: ProblemModel(
-                    description: event.problemDescription,
-                    problemId: event.problemId),
-                diagnosis: DiagnosisModel(
-                    description: event.diagnosisDescription,
-                    cid: event.diagnosisCid),
-                prescription: PrescriptionModel(
-                    medicine: event.prescriptionMedicine,
-                    dosage: event.prescriptionDosage,
-                    dosageForm: event.prescriptionDosageForm,
-                    usageOrientation: event.prescriptionUsageOrientation,
-                    usageDuration: event.prescriptionUsageDuration)),
-            date: hoje);
+        var diagnosisModel = CompleteDiagnosisModel(
+            id: event.id,
+            dynamicFields: event.dynamicFields,
+            problem: ProblemModel(
+                description: event.problemDescription,
+                problemId: event.problemId),
+            diagnosis: DiagnosisModel(
+                description: event.diagnosisDescription,
+                cid: event.diagnosisCid),
+            prescription: PrescriptionModel(
+                medicine: event.prescriptionMedicine,
+                dosage: event.prescriptionDosage,
+                dosageForm: event.prescriptionDosageForm,
+                usageOrientation: event.prescriptionUsageOrientation,
+                usageDuration: event.prescriptionUsageDuration));
 
-        yield MedRecordEventSuccess();
+        if (event.isUpdate) {
+          await this.medRecordRepository.updatePacientDiagnosis(
+              completeDiagnosisModel: diagnosisModel,
+              date: event.diagnosisDate);
+        } else {
+          await this.medRecordRepository.createPacientDiagnosis(
+              completeDiagnosisModel: diagnosisModel, date: hoje);
+        }
+        yield DiagnosisCreateOrUpdateSuccess(diagnosisModel: diagnosisModel);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield MedRecordEventFailure();

@@ -196,3 +196,20 @@ class LoadExamModelSuccess extends MedRecordState {
   @override
   List<Object> get props => [];
 }
+
+class PreDiagnosisCreateOrUpdateSuccess extends MedRecordState {
+  final PreDiagnosisModel preDiagnosisModel;
+  PreDiagnosisCreateOrUpdateSuccess({@required this.preDiagnosisModel});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class DiagnosisCreateOrUpdateSuccess extends MedRecordState {
+  final CompleteDiagnosisModel diagnosisModel;
+
+  DiagnosisCreateOrUpdateSuccess({@required this.diagnosisModel});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}

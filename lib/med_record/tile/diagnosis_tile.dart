@@ -134,30 +134,14 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               ];
             });
           } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
-            setState(() {
-              this.children = <Widget>[
-                ...state.preDiagnosisModel.toWidgetFields(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          Scaffold.of(context).showBottomSheet((context) =>
-                              DynamicFieldBottomSheet(
-                                  dynamicFieldsList:
-                                      state.preDiagnosisModel.dynamicFields,
-                                  refreshForm: this.refresh));
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-                        })
-                  ],
-                )
-              ];
-            });
+            this.children = <Widget>[
+              ...state.preDiagnosisModel.toWidgetFields(),
+              IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                  })
+            ];
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -210,11 +194,26 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
             Text("${field.fieldPlaceholder}: ${field.textController.text}"));
       }
     });
-    newFields.add(IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-        }));
+    newFields.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Scaffold.of(context).showBottomSheet((context) =>
+                    DynamicFieldBottomSheet(
+                        dynamicFieldsList: this.children,
+                        refreshForm: refreshTile));
+              }),
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+              })
+        ],
+      ),
+    );
     setState(() {
       this.children = newFields;
     });

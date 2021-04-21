@@ -100,11 +100,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             dtPreDiagnosis: event.dtPrediagnosis);
 
         await this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
-              preDiagnosisModel: preDiagnosis,
-              date: event.isUpdate
-                  ? dateFormat.format(preDiagnosis.getPreDiagnosisDate)
-                  : hoje,
-            );
+            preDiagnosisModel: preDiagnosis,
+            date: preDiagnosis.appointmentEventDate);
 
         yield MedRecordEventSuccess();
       } catch (error) {

@@ -158,8 +158,12 @@ class PreDiagnosisModel {
 
     if (this._dynamicFields != null && this._dynamicFields.isNotEmpty) {
       this._dynamicFields.forEach((field) {
-        fields.add(Text("${field.keys.first}:${field.values.first}",
-            style: TextStyle(fontSize: 17.0)));
+        if (field.keys.first != "appointmentEventDate" &&
+            field.keys.first != "ultimaMestruacao" &&
+            field.keys.first != "dtProvavelParto") {
+          fields.add(Text("${field.keys.first}:${field.values.first}",
+              style: TextStyle(fontSize: 17.0)));
+        }
       });
     }
 
@@ -202,7 +206,7 @@ class PreDiagnosisModel {
           ? map.remove('glicemia')
           : int.parse(map.remove('glicemia')),
       observacao: map.remove('observacao'),
-      appointmentEventDate: map.remove('appointmentEventDate'),
+      appointmentEventDate: date,
       dtPreDiagnosis: new DateTime(
         year,
         mon,

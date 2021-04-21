@@ -103,7 +103,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             preDiagnosisModel: preDiagnosis,
             date: preDiagnosis.appointmentEventDate);
 
-        yield MedRecordEventSuccess();
+        yield PreDiagnosisCreateOrUpdateSuccess(
+            preDiagnosisModel: preDiagnosis);
       } catch (error) {
         yield MedRecordEventFailure();
       }

@@ -6,6 +6,7 @@ import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/pacient/tiles/appointment_tile.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/search_bar.dart';
 
 import '../blocs/pacient_bloc.dart';
 
@@ -25,7 +26,8 @@ class _AppointmentsWaitListScreenState
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
   List<AppointmentModel> _appointmentList;
-
+  List<AppointmentModel> _suggestionAppointments = <AppointmentModel>[];
+  TextEditingController _searchBarController = TextEditingController();
   String get userUid => this.widget.userUid;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -76,15 +78,23 @@ class _AppointmentsWaitListScreenState
                     width: MediaQuery.of(context).size.width * 0.98,
                     child: Column(
                       children: <Widget>[
+                        SearchBar(
+                            placeholder:
+                                "Digite o nome do paciente para pesquisar",
+                            onChange: onSearchChange,
+                            searchBarController: this._searchBarController),
                         Expanded(
                           child: (_appointmentList != null)
                               ? ListView.builder(
-                                  itemCount: _appointmentList.length,
+                                  itemCount: _suggestionAppointments.isNotEmpty
+                                      ? _suggestionAppointments.length
+                                      : _appointmentList.length,
                                   itemBuilder: (context, index) =>
-                                      _listAppointmentView(
-                                    _appointmentList[index],
-                                  ),
-                                )
+                                      _suggestionAppointments.isNotEmpty
+                                          ? _listAppointmentView(
+                                              _suggestionAppointments[index])
+                                          : _listAppointmentView(
+                                              _appointmentList[index]))
                               : LayoutUtils.buildCircularProgressIndicator(
                                   context),
                         )
@@ -119,6 +129,46 @@ class _AppointmentsWaitListScreenState
           ),
         ],
       ),
+    );
+  }
+
+  Widget messageSnackBar(
+      context, String message, Color backGroundColor, Color fontColor) {
+    return SnackBar(
+      backgroundColor: backGroundColor,
+      content: Text(
+        message,
+        style: TextStyle(
+            fontSize: 16.0, fontWeight: FontWeight.w500, color: fontColor),
+      ),
+    );
+  }
+
+  void onSearchChange(String value) {
+    setState(
+      () {
+        _suggestionAppointments.clear();
+
+        if (value.length > 0) {
+          var nome = value.toUpperCase();
+          for (final e in _appointmentList) {
+            if (e.nome.contains(nome)) {
+              _suggestionAppointments.add(e);
+            }
+          }
+          if (_suggestionAppointments.length < 1) {
+            ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
+              context,
+              "Paciente não encontrado",
+              Colors.red,
+              Colors.white,
+            ));
+            _searchBarController.text = '';
+          }
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
+      },
     );
   }
 }

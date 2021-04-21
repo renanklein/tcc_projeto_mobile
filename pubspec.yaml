@@ -56,6 +56,7 @@ dependencies:
   instant: ^0.4.1
   mask_text_input_formatter: ^1.2.1
   reflectable: ^2.2.9
+  cpfcnpj: ^1.0.3
   
 
 dev_dependencies:

@@ -134,14 +134,30 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               ];
             });
           } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
-            this.children = <Widget>[
-              ...state.preDiagnosisModel.toWidgetFields(),
-              IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-                  })
-            ];
+            setState(() {
+              this.children = <Widget>[
+                ...state.preDiagnosisModel.toWidgetFields(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet((context) =>
+                              DynamicFieldBottomSheet(
+                                  dynamicFieldsList:
+                                      state.preDiagnosisModel.dynamicFields,
+                                  refreshForm: this.refresh));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                        })
+                  ],
+                )
+              ];
+            });
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(

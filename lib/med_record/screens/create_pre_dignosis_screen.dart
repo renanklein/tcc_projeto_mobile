@@ -66,7 +66,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
       key: _scaffoldKey,
       body: BlocListener<MedRecordBloc, MedRecordState>(
         listener: (context, state) {
-          if (state is MedRecordEventSuccess) {
+          if (state is PreDiagnosisCreateOrUpdateSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               messageSnackBar(
                 context,

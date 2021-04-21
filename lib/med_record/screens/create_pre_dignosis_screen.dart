@@ -303,25 +303,31 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                   .validate()) {
                                 this._medRecordBloc.add(
                                       PreDiagnosisCreateOrUpdateButtonPressed(
-                                          peso: pesoController.text,
-                                          altura: alturaController.text,
-                                          imc: '28.5',
-                                          pASistolica:
-                                              pASistolicaController.text,
-                                          pADiastolica:
-                                              pADiastolicaController.text,
-                                          freqCardiaca:
-                                              freqCardiacaController.text,
-                                          freqRepouso:
-                                              freqRepousoController.text,
-                                          temperatura:
-                                              temperaturaController.text,
-                                          glicemia: glicemiaController.text,
+                                          isUpdate: false,
+                                          peso: int.parse(pesoController.text),
+                                          altura:
+                                              int.parse(alturaController.text),
+                                          imc: double.parse('28.5'),
+                                          pASistolica: int.parse(
+                                              pASistolicaController.text),
+                                          pADiastolica: int.parse(
+                                              pADiastolicaController.text),
+                                          freqCardiaca: int.parse(
+                                              freqCardiacaController.text),
+                                          freqRepouso: int.parse(
+                                              freqRepousoController.text),
+                                          temperatura: double.parse(
+                                              temperaturaController.text),
+                                          glicemia: int.parse(
+                                              glicemiaController.text),
                                           obs: obsController.text,
                                           dtUltimaMestruacao:
                                               dtUltimaMestruacaoController.text,
                                           dtProvavelParto:
                                               dtProvavelPartoController.text,
+                                          dtPrediagnosis: this
+                                              .appointmentModel
+                                              .appointmentDate,
                                           dtAppointmentEvent: this
                                               .appointmentModel
                                               .appointmentDate),

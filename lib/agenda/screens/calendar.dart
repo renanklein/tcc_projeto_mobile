@@ -71,7 +71,9 @@ class _UserCalendarState extends State<UserCalendar> {
               } else if (state is AgendaLoadSuccess) {
                 this._events = state.eventsLoaded;
                 this._agendaRepository.events = this._events;
-                this._selectedDay = DateTime.now();
+                if (this._selectedDay == null) {
+                  this._selectedDay = DateTime.now();
+                }
                 this._selectedDayDescriptions = _retrieveListOfEvents();
               } else if (state is AgendaLoadFail) {
                 _buildFailSnackBar();
@@ -87,6 +89,7 @@ class _UserCalendarState extends State<UserCalendar> {
                   children: <Widget>[
                     TableCalendar(
                       locale: "pt_BR",
+                      initialSelectedDay: this._selectedDay,
                       onDaySelected: (date, events, _) {
                         setState(() {
                           this._selectedDay = date;

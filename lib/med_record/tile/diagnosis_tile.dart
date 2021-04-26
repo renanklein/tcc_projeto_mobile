@@ -89,6 +89,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               onPressed: () {
                 Scaffold.of(context).showBottomSheet((context) =>
                     DynamicFieldBottomSheet(
+                      popBottomsheet: true,
                         dynamicFieldsList: this.children,
                         refreshForm: refreshTile));
               }),
@@ -120,6 +121,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet((context) =>
                               DynamicFieldBottomSheet(
+                                popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.diagnosisModel.dynamicFields,
                                   refreshForm: this.refresh));
@@ -145,6 +147,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet((context) =>
                               DynamicFieldBottomSheet(
+                                popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.preDiagnosisModel.dynamicFields,
                                   refreshForm: this.refresh));
@@ -219,6 +222,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               onPressed: () {
                 Scaffold.of(context).showBottomSheet((context) =>
                     DynamicFieldBottomSheet(
+                      popBottomsheet: true,
                         dynamicFieldsList: this.children,
                         refreshForm: refreshTile));
               }),

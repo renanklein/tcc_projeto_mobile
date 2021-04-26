@@ -113,6 +113,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   void refreshDiagnosis(List dynamicFields, Field newField) {
+    Navigator.of(context).pop();
     setState(() {
       dynamicFields.add({
         'placeholder': newField.fieldPlaceholder,

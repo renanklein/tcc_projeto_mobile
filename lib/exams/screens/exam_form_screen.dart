@@ -124,6 +124,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
             onPressed: () {
               this._scaffoldKey.currentState.showBottomSheet(
                     (context) => DynamicFieldBottomSheet(
+                      popBottomsheet: true,
                       dynamicFieldsList: this.dynamicFieldsList,
                       refreshForm: this.refreshFields,
                     ),
@@ -326,7 +327,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   void refreshFields(List fieldsList, Widget newField) {
-    Navigator.of(context).pop();
     setState(() {
       fieldsList.add(newField);
       fieldsList.add(LayoutUtils.buildVerticalSpacing(10.0));
@@ -334,7 +334,6 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   }
 
   void refreshFieldsModel(List fieldsList) {
-    Navigator.of(context).pop();
     setState(() {
       this.widget.dynamicFieldsList = fieldsList;
     });

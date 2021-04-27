@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
@@ -240,22 +241,20 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   }
 
   Widget _buildButton(String text, Function onPressBehaviour) {
-    return ElevatedButton(
-      onPressed: () {
-        onPressBehaviour();
-      },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        primary: Theme.of(context).primaryColor,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-    );
+    return  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style:
+                                TextStyle(color: Colors.blue, fontSize: 16.0),
+                            text: text,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = onPressBehaviour
+                          ),
+                        ),
+                      ),
+                    );
   }
 
   void updateDiagnosisOrPrediagnosis() {

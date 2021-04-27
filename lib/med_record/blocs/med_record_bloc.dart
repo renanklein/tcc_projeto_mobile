@@ -78,10 +78,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     } else if (event is PreDiagnosisCreateOrUpdateButtonPressed) {
       try {
         yield MedRecordEventProcessing();
-
-        var now = new DateTime.now();
         var dateFormat = DateFormat("dd/MM/yyyy");
-        var hoje = dateFormat.format(now);
         var preDiagnosis = PreDiagnosisModel(
             peso: event.peso,
             altura: event.altura,

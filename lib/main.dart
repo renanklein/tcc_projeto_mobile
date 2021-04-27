@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:injector/injector.dart';
+import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
@@ -25,6 +26,9 @@ import 'package:reflectable/reflectable.dart';
 import 'package:flutter/foundation.dart' as flutter_foundation;
 
 const reflector = Reflector();
+const emailSender = "ecoescamboMailer@gmail.com";
+const emailSenderPassword = "TrabalhoLPW";
+final dateFormatter = DateFormat("dd/MM/yyyy");
 
 class MyApp extends StatefulWidget {
   @override

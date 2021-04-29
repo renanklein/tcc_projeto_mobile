@@ -78,7 +78,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                             ? Column(children: [
                                 _listsHeaders("Listar Diagnósticos"),
                                 ...listDiagnosisScreen(
-                                    state.medRecordLoaded, context),
+                                    state.medRecordLoaded, context, pacient),
                                 _listsHeaders("Listar Pré-diagnósticos"),
                                 ...listPreDiagnosisScreen(
                                     state.medRecordLoaded, pacient)
@@ -123,11 +123,11 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   List<Widget> listDiagnosisScreen(
-      MedRecordModel medRecordModel, BuildContext context) {
+      MedRecordModel medRecordModel, BuildContext context, PacientModel pacient) {
     if (medRecordModel.getDiagnosisList == null) return null;
 
     var fields = DiagnosisTile.fromDiagnosis(
-        medRecordModel.getDiagnosisList, context, refreshDiagnosis);
+        medRecordModel.getDiagnosisList, context, refreshDiagnosis, pacient);
 
     if (fields.isEmpty) {
       return <Widget>[
@@ -144,7 +144,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     }
 
     return DiagnosisTile.fromDiagnosis(
-        medRecordModel.getDiagnosisList, context, refreshDiagnosis);
+        medRecordModel.getDiagnosisList, context, refreshDiagnosis, pacient);
   }
 
   List<Widget> listPreDiagnosisScreen(
@@ -152,7 +152,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
     var fields = DiagnosisTile.fromPreDiagnosisList(
-        medRecordModel.getPreDiagnosisList, refreshDiagnosis);
+        medRecordModel.getPreDiagnosisList, refreshDiagnosis, pacientModel);
 
     if (fields.isEmpty) {
       return <Widget>[

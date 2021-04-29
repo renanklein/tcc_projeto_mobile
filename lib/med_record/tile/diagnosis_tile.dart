@@ -1,13 +1,17 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/prescription_sender.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class DiagnosisTile extends StatefulWidget {
@@ -17,6 +21,7 @@ class DiagnosisTile extends StatefulWidget {
   final CompleteDiagnosisModel diagnosisModel;
   final PreDiagnosisModel preDiagnosisModel;
   final Function refresh;
+  final PacientModel pacient;
 
   DiagnosisTile(
       {@required this.date,
@@ -24,18 +29,21 @@ class DiagnosisTile extends StatefulWidget {
       @required this.isPrediagnosis,
       @required this.diagnosisModel,
       @required this.preDiagnosisModel,
-      @required this.refresh});
+      @required this.refresh,
+      @required this.pacient});
 
   static List<DiagnosisTile> fromDiagnosis(
       List<CompleteDiagnosisModel> diagnosisList,
       BuildContext context,
-      Function refreshDiagnosis) {
+      Function refreshDiagnosis,
+      PacientModel pacient) {
     return diagnosisList.map((diagnosis) {
       return DiagnosisTile(
         isPrediagnosis: false,
         refresh: refreshDiagnosis,
         date: diagnosis?.diagnosisDate,
         diagnosisModel: diagnosis,
+        pacient: pacient,
         preDiagnosisModel: null,
         fields: [
           ...diagnosis?.toWidgetFields(),
@@ -45,12 +53,15 @@ class DiagnosisTile extends StatefulWidget {
   }
 
   static List<DiagnosisTile> fromPreDiagnosisList(
-      List<PreDiagnosisModel> prediagnosisList, Function refreshPreDiagnosis) {
+      List<PreDiagnosisModel> prediagnosisList,
+      Function refreshPreDiagnosis,
+      PacientModel pacient) {
     return prediagnosisList.map((preDiagnosis) {
       return DiagnosisTile(
           isPrediagnosis: true,
           refresh: refreshPreDiagnosis,
           preDiagnosisModel: preDiagnosis,
+          pacient: pacient,
           diagnosisModel: null,
           date: preDiagnosis.getPreDiagnosisDate,
           fields: preDiagnosis.toWidgetFields());
@@ -68,6 +79,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   CompleteDiagnosisModel get completeDiagnosisModel =>
       this.widget.diagnosisModel;
   bool get isPrediagnosis => this.widget.isPrediagnosis;
+  PacientModel get pacient => this.widget.pacient;
   List<Widget> children = <Widget>[];
   Function get refresh => this.refresh;
   MedRecordBloc medRecordBloc;
@@ -89,7 +101,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               onPressed: () {
                 Scaffold.of(context).showBottomSheet((context) =>
                     DynamicFieldBottomSheet(
-                      popBottomsheet: true,
+                        popBottomsheet: true,
                         dynamicFieldsList: this.children,
                         refreshForm: refreshTile));
               }),
@@ -97,9 +109,21 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               icon: Icon(Icons.edit),
               onPressed: () {
                 this._changeToEditMode(updateDiagnosisOrPrediagnosis);
-              })
+              }),
         ],
       ),
+      LayoutUtils.buildVerticalSpacing(3.0),
+      this.isPrediagnosis
+          ? Container()
+          : _buildButton("Enviar prescrição por email", () async {
+              await this._processPrescriptionEmail();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Prescrição enviada com sucesso!"),
+                backgroundColor: Colors.green,
+              ));
+            }),
+
+      LayoutUtils.buildVerticalSpacing(5.0),
     ];
     super.initState();
   }
@@ -121,7 +145,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet((context) =>
                               DynamicFieldBottomSheet(
-                                popBottomsheet: true,
+                                  popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.diagnosisModel.dynamicFields,
                                   refreshForm: this.refresh));
@@ -132,7 +156,16 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                           this._changeToEditMode(updateDiagnosisOrPrediagnosis);
                         })
                   ],
-                )
+                ),
+                LayoutUtils.buildVerticalSpacing(3.0),
+                _buildButton("Enviar prescrição por email", () async {
+                  await this._processPrescriptionEmail();
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Prescrição enviada com sucesso!"),
+                    backgroundColor: Colors.green,
+                  ));
+                }),
+                LayoutUtils.buildVerticalSpacing(5.0)
               ];
             });
           } else if (state is PreDiagnosisCreateOrUpdateSuccess) {
@@ -147,7 +180,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet((context) =>
                               DynamicFieldBottomSheet(
-                                popBottomsheet: true,
+                                  popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.preDiagnosisModel.dynamicFields,
                                   refreshForm: this.refresh));
@@ -222,7 +255,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               onPressed: () {
                 Scaffold.of(context).showBottomSheet((context) =>
                     DynamicFieldBottomSheet(
-                      popBottomsheet: true,
+                        popBottomsheet: true,
                         dynamicFieldsList: this.children,
                         refreshForm: refreshTile));
               }),
@@ -240,20 +273,15 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   }
 
   Widget _buildButton(String text, Function onPressBehaviour) {
-    return ElevatedButton(
-      onPressed: () {
-        onPressBehaviour();
-      },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Center(
+        child: RichText(
+          text: TextSpan(
+              style: TextStyle(color: Colors.blue, fontSize: 16.0),
+              text: text,
+              recognizer: TapGestureRecognizer()..onTap = onPressBehaviour),
         ),
-        primary: Theme.of(context).primaryColor,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -270,6 +298,17 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
       this.medRecordBloc.add(
           DiagnosisCreateOrUpdateButtonPressed.fromModel(true, newDiagnosis));
     }
+  }
+
+  Future _processPrescriptionEmail() async {
+    var diagnosis = CompleteDiagnosisModel.fromWidgetFields(
+        this.children, this.dateAsString);
+    var prescriptionPdf =
+        await PrescriptionSender.prescriptionToPdf(diagnosis, this.pacient);
+    var user = Injector.appInstance.get<UserModel>();
+    var recipients = [user.email, this.pacient.getEmail];
+    var body = "Segue me anexo a prescrição do diagnóstico";
+    await PrescriptionSender.sendEmail(recipients, body, prescriptionPdf);
   }
 
   void refreshTile(List dynamicList, Field newField) {

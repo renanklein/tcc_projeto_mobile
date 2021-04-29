@@ -57,6 +57,8 @@ dependencies:
   mask_text_input_formatter: ^1.2.1
   reflectable: ^2.2.9
   cpfcnpj: ^1.0.3
+  pdf: ^2.1.0
+  flutter_email_sender: ^5.0.0
   
 
 dev_dependencies:

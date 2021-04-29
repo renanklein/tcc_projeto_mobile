@@ -53,43 +53,57 @@ class CompleteDiagnosisModel {
     var diagnosisMap = Map();
 
     fields.forEach((field) {
-      if (field is Field) {
-        switch (field.fieldPlaceholder) {
+      if (field is Field || field is Text) {
+        String placeholder = "";
+
+        if (field is Field) {
+          placeholder = field.fieldPlaceholder;
+        } else if (field is Text) {
+          placeholder = field.data.split(":")[0];
+        }
+
+        String value = "";
+
+        if (field is Field) {
+          value = field.textController.text;
+        } else if (field is Text) {
+          value = field.data.split(":")[1];
+        }
+        switch (placeholder) {
           case "Cid do diagnóstico":
-            diagnosisMap['id'] = field.textController.text;
+            diagnosisMap['id'] = value;
             break;
 
           case "Descrição do diagnóstico":
-            diagnosisMap['description'] = field.textController.text;
+            diagnosisMap['description'] = value;
             break;
 
           case "Descrição do problema":
-            problemMap['description'] = field.textController.text;
+            problemMap['description'] = value;
             break;
 
           case "Medicamento":
-            prescriptionMap['medicine'] = field.textController.text;
+            prescriptionMap['medicine'] = value;
             break;
 
           case "Orientação de uso":
-            prescriptionMap['usage'] = field.textController.text;
+            prescriptionMap['usage'] = value;
             break;
 
           case "Duração de uso":
-            prescriptionMap['duration'] = field.textController.text;
+            prescriptionMap['duration'] = value;
             break;
 
           case "Dosagem":
-            prescriptionMap['dosage'] = field.textController.text;
+            prescriptionMap['dosage'] = value;
             break;
 
           case "Formulário de dosagem":
-            prescriptionMap['dosageForm'] = field.textController.text;
+            prescriptionMap['dosageForm'] = value;
             break;
 
           default:
-            diagnosisCompleteMap[field.fieldPlaceholder] =
-                field.textController.text;
+            diagnosisCompleteMap[placeholder] = value;
         }
       }
     });

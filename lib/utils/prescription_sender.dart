@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:injector/injector.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
@@ -30,8 +31,9 @@ class PrescriptionSender{
         );
       }
     ));
-
-    var file = File("prescricao_${pacient.getNome}_$diagnosisDate.pdf");
+    var tempDir = await getTemporaryDirectory();
+    var fileName = "prescricao.pdf";
+    var file = File("${tempDir.path}/$fileName");
     await file.writeAsBytes(await pdf.save());
     return file;
   }

@@ -3,18 +3,28 @@ import 'package:tcc_projeto_app/main.dart';
 
 @reflector
 class DiagnosisModel {
-  String _description;
-  String _cid;
+  List<String> _descriptionList;
+  List<String> _cidList;
 
   DiagnosisModel({
-    @required String description,
-    @required String cid,
+    @required List<String> descriptionList,
+    @required List<String> cidList,
   }) {
-    this._description = description;
-    this._cid = cid;
+    this._descriptionList = descriptionList;
+    this._cidList = cidList;
   }
 
   Map<String, dynamic> toMap() {
+    var _description = '';
+    var _cid = '';
+
+    for (int i = 0; i < _descriptionList.length - 1; i++) {
+      _description += _descriptionList[i] + ';';
+      _cid += _cidList[i] + ';';
+    }
+    _description += _descriptionList[_descriptionList.length - 1];
+    _cid += _cidList[_cidList.length - 1];
+
     return {
       'description': _description,
       'id': _cid,
@@ -25,11 +35,11 @@ class DiagnosisModel {
     if (map == null) return null;
 
     return DiagnosisModel(
-      description: map['description'],
-      cid: map['id'],
+      descriptionList: map['description'].split(';'),
+      cidList: map['id'].split(';'),
     );
   }
 
-  String get diagnosisDescription => this._description;
-  String get diagnosisCid => this._cid;
+  List<String> get diagnosisDescription => this._descriptionList;
+  List<String> get diagnosisCid => this._cidList;
 }

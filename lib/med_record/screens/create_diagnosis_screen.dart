@@ -17,19 +17,21 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   MedRecordRepository _medRecordRepository;
   MedRecordStyle _medRecordStyle = new MedRecordStyle();
 
-  final diagnosisFormKey = new GlobalKey<FormState>();
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  static List<String> diagnosisDescriptionList = [null];
+  static List<String> diagnosisCidList = [null];
 
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _diagnosisScreenKey = GlobalKey<FormState>();
+
   final problemIdController = TextEditingController();
   final problemDescriptionController = TextEditingController();
-  final diagnosisCidController = TextEditingController();
-  final diagnosisDescriptionController = TextEditingController();
-  final prescriptionMedicineController = TextEditingController();
-  final prescriptionDosageController = TextEditingController();
+  final prescriptionController = TextEditingController();
+  /*  final diagnosisCidController = TextEditingController();
+  final diagnosisDescriptionController = TextEditingController(); */
+  /* final prescriptionDosageController = TextEditingController();
   final prescriptionDosageFormController = TextEditingController();
   final prescriptionUsageOrientationController = TextEditingController();
-  final prescriptionUsageDurationController = TextEditingController();
+  final prescriptionUsageDurationController = TextEditingController(); */
 
   @override
   void initState() {
@@ -41,6 +43,14 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
     );
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    problemIdController.dispose();
+    problemDescriptionController.dispose();
+    prescriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,6 +67,8 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
         child: BlocListener<MedRecordBloc, MedRecordState>(
           listener: (context, state) {
             if (state is DiagnosisCreateOrUpdateSuccess) {
+              diagnosisDescriptionList = [null];
+              diagnosisCidList = [null];
               ScaffoldMessenger.of(context).showSnackBar(
                 messageSnackBar(
                   context,
@@ -102,17 +114,20 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                           ),
                                         ),
                                         _diagnosisFormField(
+                                          problemIdController,
+                                          'Id da Queixa:',
+                                          'Digite um Número para indicar problemas relacionados',
+                                          'Por Favor, digite algum número',
+                                          null,
+                                          keyboardType: TextInputType.number,
+                                        ),
+                                        _diagnosisFormField(
                                           problemDescriptionController,
                                           'Queixa:',
                                           'Descreva o problema relatado pelo paciente',
                                           'Por Favor, descreva o problema',
+                                          null,
                                         ),
-                                        _diagnosisFormField(
-                                            problemIdController,
-                                            'Id da Queixa:',
-                                            'Digite um Número para indicar problemas relacionados',
-                                            'Por Favor, digite algum número',
-                                            keyboardType: TextInputType.number),
                                       ],
                                     ),
                                   ),
@@ -131,18 +146,21 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                                 _medRecordStyle.formTextStyle,
                                           ),
                                         ),
-                                        _diagnosisFormField(
+                                        /* _diagnosisFormField(
                                           diagnosisDescriptionController,
-                                          'Descrição de Diagnóstico:',
+                                          'Descrição do Diagnóstico:',
                                           'Descreva o diagnóstico encontrado para o paciente',
                                           'Por Favor, descreva o diagnóstico',
+                                          null,
                                         ),
                                         _diagnosisFormField(
                                           diagnosisCidController,
                                           'CID:',
                                           'Digite o CID do Diagnóstico',
                                           'Por Favor, digite o CID',
-                                        ),
+                                          null,
+                                        ), */
+                                        ..._getDiagnosisFields(),
                                       ],
                                     ),
                                   ),
@@ -162,35 +180,42 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                           ),
                                         ),
                                         _diagnosisFormField(
-                                          prescriptionMedicineController,
-                                          'Remédio:',
-                                          'Digite o nome do Remédio',
-                                          'Por Favor, Digite o nome do Remédio',
+                                          prescriptionController,
+                                          'Prescrição:',
+                                          'Digite os detalhes da prescrição',
+                                          'Por Favor, Digite os detalhes da prescrição',
+                                          null,
+                                          keyboardType: TextInputType.multiline,
                                         ),
+                                        /* 
                                         _diagnosisFormField(
                                           prescriptionDosageController,
                                           'Dosagem do Remédio:',
                                           'Digite a dosagem do Remédio',
                                           'Por Favor, Digite a dosagem do Remédio',
+                                          null,
                                         ),
                                         _diagnosisFormField(
                                           prescriptionDosageFormController,
                                           'Via de Uso:',
                                           'Descreva a via de uso do remédio',
                                           'Por Favor, digite a via de uso do remédio',
+                                          null,
                                         ),
                                         _diagnosisFormField(
                                           prescriptionUsageDurationController,
                                           'Duração de uso do remédio:',
                                           'Digite a quantidade de dias de uso do remédio',
                                           'Por Favor, Digite a duração de uso do remédio',
+                                          null,
                                         ),
                                         _diagnosisFormField(
                                           prescriptionUsageOrientationController,
                                           'Orientação de uso do remédio:',
                                           'Digite a orientação de uso do remédio',
                                           'Por Favor, Digite a orientação de uso do remédio',
-                                        ),
+                                          null,
+                                        ), */
                                       ],
                                     ),
                                   ),
@@ -220,35 +245,12 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                               problemDescription:
                                                   problemDescriptionController
                                                       .text,
-                                              diagnosisCid:
-                                                  diagnosisCidController.text,
+                                              prescription:
+                                                  prescriptionController.text,
+                                              diagnosisCid: diagnosisCidList,
                                               diagnosisDescription:
-                                                  diagnosisDescriptionController
-                                                      .text,
-                                              prescriptionMedicine:
-                                                  prescriptionMedicineController
-                                                      .text,
-                                              prescriptionDosage:
-                                                  prescriptionDosageController
-                                                      .text,
-                                              prescriptionDosageForm:
-                                                  prescriptionDosageFormController
-                                                      .text,
-                                              prescriptionUsageOrientation:
-                                                  prescriptionUsageOrientationController
-                                                      .text,
-                                              prescriptionUsageDuration:
-                                                  prescriptionUsageDurationController
-                                                      .text,
+                                                  diagnosisDescriptionList,
                                             ),
-                                          );
-                                        }
-                                        if (state is MedRecordEventSuccess) {
-                                          messageSnackBar(
-                                            context,
-                                            'Diagnóstico Cadastrado com Sucesso',
-                                            Colors.green,
-                                            Colors.white,
                                           );
                                         }
                                       },
@@ -269,9 +271,58 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
       ),
     );
   }
+
+  List<Widget> _getDiagnosisFields() {
+    List<Widget> friendsTextFields = [];
+    for (int i = 0; i < diagnosisDescriptionList.length; i++) {
+      friendsTextFields.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Row(
+          children: [
+            Expanded(child: DiagnosisTextFormField(i)),
+            SizedBox(
+              width: 16,
+            ),
+            // we need add button at last friends row
+            _addRemoveButton(i == diagnosisDescriptionList.length - 1, i),
+          ],
+        ),
+      ));
+    }
+    return friendsTextFields;
+  }
+
+  Widget _addRemoveButton(bool add, int index) {
+    return InkWell(
+      onTap: () {
+        if (add) {
+          diagnosisDescriptionList.insert(0, null);
+          diagnosisCidList.insert(0, null);
+        } else {
+          diagnosisDescriptionList.removeAt(index);
+          diagnosisCidList.removeAt(index);
+        }
+
+        setState(() {});
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: (add) ? Colors.green : Colors.red,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(
+          (add) ? Icons.add : Icons.remove,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 }
 
-Widget _diagnosisFormField(controller, label, hint, errorText,
+Widget _diagnosisFormField(
+    controller, label, hint, errorText, onChangedFunction,
     {TextInputType keyboardType = TextInputType.name}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
@@ -286,13 +337,71 @@ Widget _diagnosisFormField(controller, label, hint, errorText,
         hintText: hint,
       ),
       minLines: 1,
-      maxLines: 8,
+      maxLines: 10,
       validator: (value) {
         if (value.isEmpty) {
           return errorText;
         }
         return null;
       },
+      onChanged: onChangedFunction,
     ),
   );
+}
+
+class DiagnosisTextFormField extends StatefulWidget {
+  final int index;
+  DiagnosisTextFormField(this.index);
+
+  @override
+  _DiagnosisTextFormFieldState createState() => _DiagnosisTextFormFieldState();
+}
+
+class _DiagnosisTextFormFieldState extends State<DiagnosisTextFormField> {
+  TextEditingController _diagnosisController;
+  TextEditingController _cidController;
+
+  @override
+  void initState() {
+    super.initState();
+    _diagnosisController = TextEditingController();
+    _cidController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _diagnosisController.dispose();
+    _cidController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _diagnosisController.text =
+          _CreateDiagnosisScreenState.diagnosisDescriptionList[widget.index] ??
+              '';
+      _cidController.text =
+          _CreateDiagnosisScreenState.diagnosisCidList[widget.index] ?? '';
+    });
+    return Column(
+      children: [
+        _diagnosisFormField(
+          _diagnosisController,
+          'Descrição do Diagnóstico:',
+          'Descreva o diagnóstico encontrado para o paciente',
+          'Por Favor, descreva o diagnóstico',
+          (v) => _CreateDiagnosisScreenState
+              .diagnosisDescriptionList[widget.index] = v,
+        ),
+        _diagnosisFormField(
+          _cidController,
+          'CID:',
+          'Digite o CID do Diagnóstico',
+          'Por Favor, digite o CID',
+          (v) => _CreateDiagnosisScreenState.diagnosisCidList[widget.index] = v,
+        ),
+      ],
+    );
+  }
 }

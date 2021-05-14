@@ -4,33 +4,15 @@ import 'package:tcc_projeto_app/main.dart';
 @reflector
 class PrescriptionModel {
   //static int _mDID;
-  String _medicine;
-  String _dosage;
-  String _dosageForm;
-  String _usageOrientation;
-  String _usageDuration;
+  String _prescription;
 
-  PrescriptionModel({
-    @required String medicine,
-    @required String dosage,
-    @required String dosageForm,
-    @required String usageOrientation,
-    @required String usageDuration,
-  }) {
-    this._medicine = medicine;
-    this._dosage = dosage;
-    this._dosageForm = dosageForm;
-    this._usageOrientation = usageOrientation;
-    this._usageDuration = usageDuration;
+  PrescriptionModel({@required String prescription}) {
+    this._prescription = prescription;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'medicine': _medicine,
-      'dosage': _dosage,
-      'dosageForm': _dosageForm,
-      'usage': _usageOrientation,
-      'duration': _usageDuration,
+      'prescription': _prescription,
     };
   }
 
@@ -38,17 +20,9 @@ class PrescriptionModel {
     if (map == null) return null;
 
     return PrescriptionModel(
-      medicine: map['medicine'],
-      dosage: map['dosage'],
-      dosageForm: map['dosageForm'],
-      usageOrientation: map['usage'],
-      usageDuration: map['duration'],
+      prescription: map['prescription'],
     );
   }
 
-  String get prescriptionMedicine => this._medicine;
-  String get prescriptionDosage => this._dosage;
-  String get prescriptionDosageForm => this._dosageForm;
-  String get prescriptionUsageOrientation => this._usageOrientation;
-  String get prescriptionUsageDuration => this._usageDuration;
+  String get prescription => this._prescription;
 }

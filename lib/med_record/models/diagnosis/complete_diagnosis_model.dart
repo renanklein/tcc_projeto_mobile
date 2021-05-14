@@ -9,7 +9,7 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class CompleteDiagnosisModel {
   ProblemModel _problemModel;
   DiagnosisModel _diagnosisModel;
-  PrescriptionModel _prescriptionModel;
+  String _prescriptionModel;
   DateTime _diagnosisDate;
   List<Map> _dynamicFields;
   int _id;
@@ -17,7 +17,7 @@ class CompleteDiagnosisModel {
   CompleteDiagnosisModel(
       {@required ProblemModel problem,
       @required DiagnosisModel diagnosis,
-      PrescriptionModel prescription,
+      String prescription,
       DateTime date,
       List<Map> dynamicFields,
       int id}) {
@@ -35,7 +35,7 @@ class CompleteDiagnosisModel {
     var diagnosis = {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
-      'prescription': _prescriptionModel.toMap(),
+      'prescription': _prescriptionModel,
       'id': this.id,
     };
 
@@ -118,25 +118,21 @@ class CompleteDiagnosisModel {
   List<Widget> toWidgetFields() {
     var fields = <Widget>[
       Text(
+        "Descrição do problema:${this?.problem?.problemDescription}",
+        style: TextStyle(fontSize: 14.0),
+      ),
+      Text(
         "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid}",
         style: TextStyle(fontSize: 14.0),
       ),
-      Text("Descrição do problema:${this?.problem?.problemDescription}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Medicamento:${this?.prescription?.prescriptionMedicine}",
-          style: TextStyle(fontSize: 14.0)),
       Text(
-          "Orientação de uso:${this?.prescription?.prescriptionUsageOrientation}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Duração de uso:${this?.prescription?.prescriptionUsageDuration}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Dosagem:${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 14.0)),
+        "Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription}",
+        style: TextStyle(fontSize: 14.0),
+      ),
       Text(
-          "Formulário de dosagem:${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 14.0))
+        "Prescrição:${this?.prescription}",
+        style: TextStyle(fontSize: 14.0),
+      ),
     ];
 
     if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
@@ -162,7 +158,7 @@ class CompleteDiagnosisModel {
       var completeDiagnosis = CompleteDiagnosisModel(
           problem: ProblemModel.fromMap(map['problem']),
           diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
-          prescription: PrescriptionModel.fromMap(map['prescription']),
+          prescription: map['prescription'],
           date: DateTime(
             year,
             mon,
@@ -185,7 +181,7 @@ class CompleteDiagnosisModel {
 
   ProblemModel get problem => this._problemModel;
   DiagnosisModel get diagnosis => this._diagnosisModel;
-  PrescriptionModel get prescription => this._prescriptionModel;
+  String get prescription => this._prescriptionModel;
   DateTime get diagnosisDate => this._diagnosisDate;
   List<Map> get dynamicFields => this._dynamicFields;
 

@@ -114,20 +114,16 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var hoje = dateFormat.format(now);
 
         var diagnosisModel = CompleteDiagnosisModel(
-            id: event.id,
-            dynamicFields: event.dynamicFields,
-            problem: ProblemModel(
-                description: event.problemDescription,
-                problemId: event.problemId),
-            diagnosis: DiagnosisModel(
-                description: event.diagnosisDescription,
-                cid: event.diagnosisCid),
-            prescription: PrescriptionModel(
-                medicine: event.prescriptionMedicine,
-                dosage: event.prescriptionDosage,
-                dosageForm: event.prescriptionDosageForm,
-                usageOrientation: event.prescriptionUsageOrientation,
-                usageDuration: event.prescriptionUsageDuration));
+          id: event.id,
+          dynamicFields: event.dynamicFields,
+          problem: ProblemModel(
+              description: event.problemDescription,
+              problemId: event.problemId),
+          diagnosis: DiagnosisModel(
+              descriptionList: event.diagnosisDescription,
+              cidList: event.diagnosisCid),
+          prescription: event.prescription,
+        );
 
         if (event.isUpdate) {
           await this.medRecordRepository.updatePacientDiagnosis(

@@ -5,52 +5,46 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final problemDescription;
   final diagnosisCid;
   final diagnosisDescription;
-  final prescriptionMedicine;
-  final prescriptionDosage;
+  final prescription;
+  /*  final prescriptionDosage;
   final prescriptionDosageForm;
   final prescriptionUsageOrientation;
-  final prescriptionUsageDuration;
+  final prescriptionUsageDuration; */
   final dynamicFields;
   final String diagnosisDate;
   final bool isUpdate;
   final int id;
 
-  DiagnosisCreateOrUpdateButtonPressed(
-      {@required this.problemId,
-      @required this.problemDescription,
-      @required this.diagnosisCid,
-      @required this.diagnosisDescription,
-      @required this.prescriptionMedicine,
-      @required this.prescriptionDosage,
-      @required this.prescriptionDosageForm,
-      @required this.prescriptionUsageOrientation,
-      @required this.prescriptionUsageDuration,
-      @required this.diagnosisDate,
-      @required this.isUpdate,
-      this.dynamicFields,
-      this.id});
+  DiagnosisCreateOrUpdateButtonPressed({
+    @required this.problemId,
+    @required this.problemDescription,
+    @required this.diagnosisCid,
+    @required this.diagnosisDescription,
+    @required this.prescription,
+    @required this.diagnosisDate,
+    @required this.isUpdate,
+    this.dynamicFields,
+    this.id,
+  });
 
   static DiagnosisCreateOrUpdateButtonPressed fromModel(
       bool isUpdate, CompleteDiagnosisModel diagnosisModel) {
     var formater = DateFormat('dd/MM/yyyy');
     var dayAsString = formater.format(diagnosisModel.diagnosisDate);
+
+    var _diagnosisCid;
+    var _diagnosisDescription;
+
     return DiagnosisCreateOrUpdateButtonPressed(
         diagnosisDate: dayAsString,
         isUpdate: isUpdate,
         id: diagnosisModel.id,
         problemId: diagnosisModel.problem.problemId,
         problemDescription: diagnosisModel.problem.problemDescription,
-        diagnosisCid: diagnosisModel.diagnosis.diagnosisCid,
-        diagnosisDescription: diagnosisModel.diagnosis.diagnosisDescription,
-        prescriptionDosage: diagnosisModel.prescription.prescriptionDosage,
-        prescriptionDosageForm:
-            diagnosisModel.prescription.prescriptionDosageForm,
-        prescriptionUsageOrientation:
-            diagnosisModel.prescription.prescriptionUsageOrientation,
-        prescriptionUsageDuration:
-            diagnosisModel.prescription.prescriptionUsageDuration,
+        diagnosisCid: _diagnosisCid,
+        diagnosisDescription: _diagnosisDescription,
         dynamicFields: diagnosisModel.dynamicFields,
-        prescriptionMedicine: diagnosisModel.prescription.prescriptionMedicine);
+        prescription: diagnosisModel.prescription);
   }
 
   @override

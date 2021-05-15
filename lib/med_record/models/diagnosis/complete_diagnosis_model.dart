@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
-import 'package:tcc_projeto_app/med_record/models/diagnosis/prescription_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -9,7 +8,7 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class CompleteDiagnosisModel {
   ProblemModel _problemModel;
   DiagnosisModel _diagnosisModel;
-  PrescriptionModel _prescriptionModel;
+  String _prescriptionModel;
   DateTime _diagnosisDate;
   List<Map> _dynamicFields;
   int _id;
@@ -17,7 +16,7 @@ class CompleteDiagnosisModel {
   CompleteDiagnosisModel(
       {@required ProblemModel problem,
       @required DiagnosisModel diagnosis,
-      PrescriptionModel prescription,
+      String prescription,
       DateTime date,
       List<Map> dynamicFields,
       int id}) {
@@ -35,7 +34,7 @@ class CompleteDiagnosisModel {
     var diagnosis = {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
-      'prescription': _prescriptionModel.toMap(),
+      'prescription': _prescriptionModel,
       'id': this.id,
     };
 
@@ -49,8 +48,10 @@ class CompleteDiagnosisModel {
       List<Widget> fields, String date) {
     var diagnosisCompleteMap = Map();
     var problemMap = Map();
-    var prescriptionMap = Map();
-    var diagnosisMap = Map();
+    var diagnosisMap = Map.from({
+      'id' : "",
+      'description': ""
+    });
 
     fields.forEach((field) {
       if (field is Field || field is Text) {
@@ -69,37 +70,22 @@ class CompleteDiagnosisModel {
         } else if (field is Text) {
           value = field.data.split(":")[1];
         }
+        var value2 = value;
         switch (placeholder) {
           case "Cid do diagnóstico":
-            diagnosisMap['id'] = value;
+            diagnosisMap['id'] += value2 + ";";
             break;
 
           case "Descrição do diagnóstico":
-            diagnosisMap['description'] = value;
+            diagnosisMap['description'] += value + ";";
             break;
 
           case "Descrição do problema":
             problemMap['description'] = value;
             break;
 
-          case "Medicamento":
-            prescriptionMap['medicine'] = value;
-            break;
-
-          case "Orientação de uso":
-            prescriptionMap['usage'] = value;
-            break;
-
-          case "Duração de uso":
-            prescriptionMap['duration'] = value;
-            break;
-
-          case "Dosagem":
-            prescriptionMap['dosage'] = value;
-            break;
-
-          case "Formulário de dosagem":
-            prescriptionMap['dosageForm'] = value;
+          case "Prescrição":
+            diagnosisCompleteMap["prescription"] = value;
             break;
 
           default:
@@ -110,7 +96,6 @@ class CompleteDiagnosisModel {
 
     diagnosisCompleteMap['problem'] = problemMap;
     diagnosisCompleteMap['diagnosis'] = diagnosisMap;
-    diagnosisCompleteMap['prescription'] = prescriptionMap;
 
     return CompleteDiagnosisModel.fromList([diagnosisCompleteMap], date).first;
   }
@@ -118,26 +103,26 @@ class CompleteDiagnosisModel {
   List<Widget> toWidgetFields() {
     var fields = <Widget>[
       Text(
-        "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid}",
+        "Descrição do problema:${this?.problem?.problemDescription}",
         style: TextStyle(fontSize: 14.0),
       ),
-      Text("Descrição do problema:${this?.problem?.problemDescription}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Medicamento:${this?.prescription?.prescriptionMedicine}",
-          style: TextStyle(fontSize: 14.0)),
       Text(
-          "Orientação de uso:${this?.prescription?.prescriptionUsageOrientation}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Duração de uso:${this?.prescription?.prescriptionUsageDuration}",
-          style: TextStyle(fontSize: 14.0)),
-      Text("Dosagem:${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 14.0)),
-      Text(
-          "Formulário de dosagem:${this?.prescription?.prescriptionDosageForm}",
-          style: TextStyle(fontSize: 14.0))
+        "Prescrição:${this?.prescription}",
+        style: TextStyle(fontSize: 14.0),
+      ),
     ];
+
+    for(int i = 0; i < this?.diagnosis?.diagnosisCid?.length; i++){
+      fields.add(Text(
+        "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid[i]}",
+        style: TextStyle(fontSize: 14.0),
+      ));
+      fields.add( Text(
+        "Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription[i]}",
+        style: TextStyle(fontSize: 14.0),
+      ));
+    }
+
 
     if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
       this.dynamicFields.forEach((field) {
@@ -162,7 +147,7 @@ class CompleteDiagnosisModel {
       var completeDiagnosis = CompleteDiagnosisModel(
           problem: ProblemModel.fromMap(map['problem']),
           diagnosis: DiagnosisModel.fromMap(map['diagnosis']),
-          prescription: PrescriptionModel.fromMap(map['prescription']),
+          prescription: map['prescription'],
           date: DateTime(
             year,
             mon,
@@ -185,7 +170,7 @@ class CompleteDiagnosisModel {
 
   ProblemModel get problem => this._problemModel;
   DiagnosisModel get diagnosis => this._diagnosisModel;
-  PrescriptionModel get prescription => this._prescriptionModel;
+  String get prescription => this._prescriptionModel;
   DateTime get diagnosisDate => this._diagnosisDate;
   List<Map> get dynamicFields => this._dynamicFields;
 

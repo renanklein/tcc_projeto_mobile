@@ -242,6 +242,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
       case 3:
         return Column(children: [
+          Text(
+            "Paciente : ${medRecordArguments.pacientModel.getNome}",
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),
           Flexible(
             child: ListDiagnosisScreen(
               pacient: medRecordArguments.pacientModel,

@@ -18,12 +18,10 @@ class DiagnosisModel {
     var _description = '';
     var _cid = '';
 
-    for (int i = 0; i < _descriptionList.length - 1; i++) {
+    for (int i = 0; i < _descriptionList.length; i++) {
       _description += _descriptionList[i] + ';';
       _cid += _cidList[i] + ';';
     }
-    _description += _descriptionList[_descriptionList.length - 1];
-    _cid += _cidList[_cidList.length - 1];
 
     return {
       'description': _description,
@@ -34,10 +32,15 @@ class DiagnosisModel {
   static DiagnosisModel fromMap(Map map) {
     if (map == null) return null;
 
-    return DiagnosisModel(
+    var diagnosisModel = DiagnosisModel(
       descriptionList: map['description'].split(';'),
       cidList: map['id'].split(';'),
     );
+
+    diagnosisModel.diagnosisCid.remove("");
+    diagnosisModel.diagnosisDescription.remove("");
+
+    return diagnosisModel;
   }
 
   List<String> get diagnosisDescription => this._descriptionList;

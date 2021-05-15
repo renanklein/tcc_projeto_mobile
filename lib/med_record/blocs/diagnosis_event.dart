@@ -6,10 +6,6 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final diagnosisCid;
   final diagnosisDescription;
   final prescription;
-  /*  final prescriptionDosage;
-  final prescriptionDosageForm;
-  final prescriptionUsageOrientation;
-  final prescriptionUsageDuration; */
   final dynamicFields;
   final String diagnosisDate;
   final bool isUpdate;
@@ -32,8 +28,6 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
     var formater = DateFormat('dd/MM/yyyy');
     var dayAsString = formater.format(diagnosisModel.diagnosisDate);
 
-    var _diagnosisCid;
-    var _diagnosisDescription;
 
     return DiagnosisCreateOrUpdateButtonPressed(
         diagnosisDate: dayAsString,
@@ -41,8 +35,8 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
         id: diagnosisModel.id,
         problemId: diagnosisModel.problem.problemId,
         problemDescription: diagnosisModel.problem.problemDescription,
-        diagnosisCid: _diagnosisCid,
-        diagnosisDescription: _diagnosisDescription,
+        diagnosisCid: diagnosisModel.diagnosis.diagnosisCid,
+        diagnosisDescription: diagnosisModel.diagnosis.diagnosisDescription,
         dynamicFields: diagnosisModel.dynamicFields,
         prescription: diagnosisModel.prescription);
   }

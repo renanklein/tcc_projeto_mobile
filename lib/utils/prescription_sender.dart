@@ -16,13 +16,20 @@ class PrescriptionSender {
     var pdf = pw.Document();
     var diagnosisDate = dateFormatter.format(diagnosis.getDate);
     pdf.addPage(pw.Page(build: (context) {
+      var diagnosisCidsAndDescriptions = [];
+      for (int i = 0; i < diagnosis?.diagnosis?.diagnosisCid?.length; i++) {
+        diagnosisCidsAndDescriptions.add(pw.Text(
+            "Cid do diagnóstico: ${diagnosis?.diagnosis?.diagnosisCid[i]}"));
+        diagnosisCidsAndDescriptions.add(pw.Text(
+            "Descrição do diagnóstico: ${diagnosis?.diagnosis?.diagnosisDescription[i]}"));
+      }
       return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Center(
-              child: pw.Text("Prescrição ${diagnosis.diagnosis.diagnosisCid}")),
           pw.Text("Paciente: ${pacient.getNome}"),
           pw.Text("Médico: ${user.name}"),
           pw.Text("Data de realização: $diagnosisDate"),
+          ...diagnosisCidsAndDescriptions,
           pw.Text("Prescrição: ${diagnosis.prescription}"),
         ],
       );

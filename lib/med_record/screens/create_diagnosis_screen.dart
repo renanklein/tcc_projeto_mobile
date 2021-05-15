@@ -26,12 +26,6 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   final problemIdController = TextEditingController();
   final problemDescriptionController = TextEditingController();
   final prescriptionController = TextEditingController();
-  /*  final diagnosisCidController = TextEditingController();
-  final diagnosisDescriptionController = TextEditingController(); */
-  /* final prescriptionDosageController = TextEditingController();
-  final prescriptionDosageFormController = TextEditingController();
-  final prescriptionUsageOrientationController = TextEditingController();
-  final prescriptionUsageDurationController = TextEditingController(); */
 
   @override
   void initState() {
@@ -146,20 +140,6 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                                 _medRecordStyle.formTextStyle,
                                           ),
                                         ),
-                                        /* _diagnosisFormField(
-                                          diagnosisDescriptionController,
-                                          'Descrição do Diagnóstico:',
-                                          'Descreva o diagnóstico encontrado para o paciente',
-                                          'Por Favor, descreva o diagnóstico',
-                                          null,
-                                        ),
-                                        _diagnosisFormField(
-                                          diagnosisCidController,
-                                          'CID:',
-                                          'Digite o CID do Diagnóstico',
-                                          'Por Favor, digite o CID',
-                                          null,
-                                        ), */
                                         ..._getDiagnosisFields(),
                                       ],
                                     ),
@@ -187,35 +167,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                           null,
                                           keyboardType: TextInputType.multiline,
                                         ),
-                                        /* 
-                                        _diagnosisFormField(
-                                          prescriptionDosageController,
-                                          'Dosagem do Remédio:',
-                                          'Digite a dosagem do Remédio',
-                                          'Por Favor, Digite a dosagem do Remédio',
-                                          null,
-                                        ),
-                                        _diagnosisFormField(
-                                          prescriptionDosageFormController,
-                                          'Via de Uso:',
-                                          'Descreva a via de uso do remédio',
-                                          'Por Favor, digite a via de uso do remédio',
-                                          null,
-                                        ),
-                                        _diagnosisFormField(
-                                          prescriptionUsageDurationController,
-                                          'Duração de uso do remédio:',
-                                          'Digite a quantidade de dias de uso do remédio',
-                                          'Por Favor, Digite a duração de uso do remédio',
-                                          null,
-                                        ),
-                                        _diagnosisFormField(
-                                          prescriptionUsageOrientationController,
-                                          'Orientação de uso do remédio:',
-                                          'Digite a orientação de uso do remédio',
-                                          'Por Favor, Digite a orientação de uso do remédio',
-                                          null,
-                                        ), */
+                                        
                                       ],
                                     ),
                                   ),

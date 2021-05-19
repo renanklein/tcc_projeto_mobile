@@ -175,8 +175,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             },
           ),
         ),
-      ),
-    );
+    ));
   }
 
   Widget _showMedRecord(index, context) {
@@ -244,9 +243,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return Column(children: [
           Text(
             "Paciente : ${medRecordArguments.pacientModel.getNome}",
-            style: TextStyle(
-              fontSize: 16.0
-            ),
+            style: TextStyle(fontSize: 16.0),
           ),
           Flexible(
             child: ListDiagnosisScreen(
@@ -263,7 +260,14 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(createDiagnosisRoute);
+                  Navigator.of(context)
+                      .pushNamed(createDiagnosisRoute)
+                      .then((value) => this._medRecordBloc.add(
+                            DiagnosisLoad(
+                              pacientCpf: this.medRecordArguments.pacientModel.getCpf,
+                              pacientSalt: this.medRecordArguments.pacientModel.getSalt,
+                            ),
+                          ));
                 }),
           ),
         ]);

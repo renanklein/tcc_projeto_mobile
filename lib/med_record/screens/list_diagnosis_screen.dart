@@ -34,8 +34,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     var injector = Injector.appInstance;
 
     this._medRecordRepository = injector.get<MedRecordRepository>();
-    this._medRecordBloc =
-        new MedRecordBloc(medRecordRepository: _medRecordRepository);
+    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
 
     _loadDiagnosis();
 
@@ -43,53 +42,45 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
-      child: BlocProvider<MedRecordBloc>(
-        create: (context) => this._medRecordBloc,
-        child: BlocListener<MedRecordBloc, MedRecordState>(
-          listener: (context, state) {
-            if (state is DiagnosisLoadEventSuccess) {}
+      child: BlocListener<MedRecordBloc, MedRecordState>(
+        listener: (context, state) {
+          if (state is DiagnosisLoadEventSuccess) {}
+        },
+        child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          cubit: this._medRecordBloc,
+          builder: (context, state) {
+            if (state is DiagnosisLoading) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            } else if (state is MedRecordLoadEventFail) {
+              return Center(
+                child: Text(
+                    'Não há informações de diagnostico cadastradas para esse paciente'),
+              );
+            } else {
+              return Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    children: [
+                      LayoutUtils.buildVerticalSpacing(10.0),
+                      (state is DiagnosisLoadEventSuccess)
+                          ? Column(children: [
+                              _listsHeaders("Listar Diagnósticos"),
+                              ...listDiagnosisScreen(
+                                  state.medRecordLoaded, context, pacient),
+                              _listsHeaders("Listar Pré-diagnósticos"),
+                              ...listPreDiagnosisScreen(
+                                  state.medRecordLoaded, pacient)
+                            ])
+                          : LayoutUtils.buildCircularProgressIndicator(
+                              context)
+                    ],
+                  ));
+            }
           },
-          child: BlocBuilder<MedRecordBloc, MedRecordState>(
-            cubit: this._medRecordBloc,
-            builder: (context, state) {
-              if (state is DiagnosisLoading) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              } else if (state is MedRecordLoadEventFail) {
-                return Center(
-                  child: Text(
-                      'Não há informações de diagnostico cadastradas para esse paciente'),
-                );
-              } else {
-                return Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      children: [
-                        LayoutUtils.buildVerticalSpacing(10.0),
-                        (state is DiagnosisLoadEventSuccess)
-                            ? Column(children: [
-                                _listsHeaders("Listar Diagnósticos"),
-                                ...listDiagnosisScreen(
-                                    state.medRecordLoaded, context, pacient),
-                                _listsHeaders("Listar Pré-diagnósticos"),
-                                ...listPreDiagnosisScreen(
-                                    state.medRecordLoaded, pacient)
-                              ])
-                            : LayoutUtils.buildCircularProgressIndicator(
-                                context)
-                      ],
-                    ));
-              }
-            },
-          ),
         ),
       ),
     );
@@ -172,7 +163,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   void _loadDiagnosis() {
-    _medRecordBloc.add(
+    this._medRecordBloc.add(
       DiagnosisLoad(
         pacientCpf: this.pacient.getCpf,
         pacientSalt: this.pacient.getSalt,

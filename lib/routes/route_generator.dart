@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
+import 'package:tcc_projeto_app/agenda/screens/confirm_events_screen.dart';
 import 'package:tcc_projeto_app/home/screen/dashboard.dart';
 import 'package:tcc_projeto_app/home/screen/home_screen.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
@@ -57,6 +58,13 @@ class RouteGenerator {
             userUid: uid,
           ),
         );
+        break;
+      case confirmEvent:
+        if (userModel.getAccess == "MEDIC") {
+          return MaterialPageRoute(builder: (_) => ConfirmEventsScreen());
+        } else {
+          return _notAllowedAccess();
+        }
         break;
       case createDiagnosisRoute:
         if (userModel.getAccess == "MEDIC") {

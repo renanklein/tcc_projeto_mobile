@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/utils.dart';
 
@@ -62,6 +63,25 @@ class AgendaRepository {
     }
 
     return <String>[];
+  }
+
+  Future<List> getEventsToBeConfirmed() async {
+    var date = DateTime.now();
+    var dateAsString = DateFormat("dd/MM/yyyy").format(date);
+
+    var eventsList = [];
+    var result = await firestore
+        .collection("agenda")
+        .doc(this._userId)
+        .collection("events")
+        .doc(dateAsString)
+        .get();
+
+    if (result.data() != null && result.data().containsKey("events")) {
+      eventsList = ConvertUtils.mapConfirmedEvents(result.data()["events"]);
+    }
+
+    return eventsList;
   }
 
   Future<QuerySnapshot> getOccupedTimes() async {

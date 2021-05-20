@@ -108,6 +108,18 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
+    } else if(event is AgendaEventsToBeConfirmed){
+      try{
+        yield AgendaEventsToBeConfirmedProcessing();
+
+        var events = await this.agendaRepository.getEventsToBeConfirmed();
+
+        yield AgendaEventsToBeConfirmedSuccess(eventsConfirmed: events);
+
+      }catch(error, stack_trace){
+        await this.crashlytics.recordError(error, stack_trace);
+        yield AgendaEventsToBeConfirmedFail();
+      }
     }
   }
 }

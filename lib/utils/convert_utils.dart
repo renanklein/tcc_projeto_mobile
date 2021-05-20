@@ -61,11 +61,14 @@ class ConvertUtils {
   }
 
   static List mapConfirmedEvents(List events){
-    return events.map((event){
-      if(event['status'] == "confirmed"){
-        return event;
+    var listOfEvents = [];
+    events.forEach((event){
+      if(event['status'] != "confirmed" || event["status"] != "canceled"){
+        listOfEvents.add(event);
       }
-    }).toList();
+    });
+
+    return listOfEvents;
   }
 
   static List<Map> toMapListOfEvents(List events) {

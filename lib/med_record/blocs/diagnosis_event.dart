@@ -28,7 +28,6 @@ class DiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
     var formater = DateFormat('dd/MM/yyyy');
     var dayAsString = formater.format(diagnosisModel.diagnosisDate);
 
-
     return DiagnosisCreateOrUpdateButtonPressed(
         diagnosisDate: dayAsString,
         isUpdate: isUpdate,

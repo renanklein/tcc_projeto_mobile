@@ -40,6 +40,26 @@ class MedRecordLoad extends MedRecordEvent {
   List<Object> get props => [];
 }
 
+class OverviewCreateOrUpdateButtonPressed extends MedRecordEvent {
+  String _pacientHash;
+  String _overview;
+
+  OverviewCreateOrUpdateButtonPressed({
+    @required String pacientCpf,
+    @required String pacientSalt,
+    @required String resumo,
+  }) {
+    this._pacientHash = SltPattern.retrivepacientHash(pacientCpf, pacientSalt);
+    this._overview = resumo;
+  }
+
+  String get getPacientHash => this._pacientHash;
+  String get overview => this._overview;
+
+  @override
+  List<Object> get props => [];
+}
+
 class MedRecordEditButtonPressed extends MedRecordEvent {
   MedRecordEditButtonPressed();
 

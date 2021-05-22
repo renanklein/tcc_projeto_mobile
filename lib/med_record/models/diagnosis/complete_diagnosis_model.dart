@@ -104,6 +104,7 @@ class CompleteDiagnosisModel {
     var fields = <Widget>[
       Text(
         "Descrição do problema:${this?.problem?.problemDescription}",
+        textAlign: TextAlign.justify,
         style: TextStyle(fontSize: 14.0),
       ),
       Text(
@@ -115,10 +116,12 @@ class CompleteDiagnosisModel {
     for(int i = 0; i < this?.diagnosis?.diagnosisCid?.length; i++){
       fields.add(Text(
         "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid[i]}",
+        textAlign: TextAlign.justify,
         style: TextStyle(fontSize: 14.0),
       ));
       fields.add( Text(
         "Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription[i]}",
+        textAlign: TextAlign.justify,
         style: TextStyle(fontSize: 14.0),
       ));
     }
@@ -128,6 +131,7 @@ class CompleteDiagnosisModel {
       this.dynamicFields.forEach((field) {
         if (field.keys.first != "id") {
           fields.add(Text("${field.keys.first}:${field.values.first}",
+          textAlign: TextAlign.justify,
               style: TextStyle(fontSize: 14.0)));
         }
       });

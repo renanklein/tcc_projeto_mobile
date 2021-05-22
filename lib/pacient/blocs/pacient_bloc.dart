@@ -38,23 +38,29 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       try {
         yield CreatePacientEventProcessing();
 
-        PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
+        var cpfList = await this.pacientRepository.getCPFList(event.cpf);
 
-        PacientModel _pacientModel = PacientModel(
-          userId: event.userId,
-          nome: event.nome,
-          email: event.email,
-          telefone: event.telefone,
-          identidade: event.identidade,
-          cpf: event.cpf,
-          dtNascimento: event.dtNascimento,
-          sexo: event.sexo,
-          salt: pacientHashModel.salt,
-        );
+        if (cpfList.isNotEmpty) {
+          yield CPFAlreadyExists();
+        } else {
+          PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
 
-        await this.pacientRepository.createPacient(pacient: _pacientModel);
+          PacientModel _pacientModel = PacientModel(
+            userId: event.userId,
+            nome: event.nome,
+            email: event.email,
+            telefone: event.telefone,
+            identidade: event.identidade,
+            cpf: event.cpf,
+            dtNascimento: event.dtNascimento,
+            sexo: event.sexo,
+            salt: pacientHashModel.salt,
+          );
 
-        yield CreatePacientEventSuccess(_pacientModel);
+          await this.pacientRepository.createPacient(pacient: _pacientModel);
+
+          yield CreatePacientEventSuccess(_pacientModel);
+        }
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield CreatePacientEventFail();

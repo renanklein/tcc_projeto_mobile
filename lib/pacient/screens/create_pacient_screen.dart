@@ -80,7 +80,15 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
         listener: (context, state) {
           if (state is AuthenticationUnauthenticated) {
             Navigator.pushReplacementNamed(context, '/');
-          } else if (state is CreatePacientEventSuccess) {
+          } else if(state is CPFAlreadyExists){
+            ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
+              context,
+              "O CPF informado já está cadastrado",
+              Colors.red,
+              Colors.white
+            ));
+          }
+          else if (state is CreatePacientEventSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
               context,
               "Paciente Cadastrado com Sucesso",

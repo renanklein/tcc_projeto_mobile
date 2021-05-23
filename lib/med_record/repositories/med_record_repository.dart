@@ -83,6 +83,23 @@ class MedRecordRepository {
     }
   }
 
+  Future setOverviewByHash(String pacientHash, String resumo) async {
+    try {
+      MedRecordModel medRecord;
+      var document = _medRecordCollectionReference.doc(pacientHash);
+
+      await document.set(
+        {
+          'overview': resumo,
+        },
+        SetOptions(merge: true),
+      );
+    } catch (e) {
+      e.toString();
+      return null;
+    }
+  }
+
   Future<MedRecordModel> getMedRecordByHash(String pacientHash) async {
     try {
       MedRecordModel medRecord;

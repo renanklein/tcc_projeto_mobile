@@ -136,23 +136,37 @@ class PreDiagnosisModel {
 
   List<Widget> toWidgetFields() {
     var fields = <Widget>[
-      Text("Peso: ${this?.peso?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("Peso: ${this?.peso?.toString()}",
+          textAlign: TextAlign.justify,
+          style: TextStyle(
+            fontSize: 17.0,
+          )),
       Text("Altura: ${this?.altura?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
-      Text("IMC: ${this?.imc?.toString()}", style: TextStyle(fontSize: 17.0)),
+      Text("IMC: ${this?.imc?.toString()}",
+      textAlign: TextAlign.justify, 
+      style: TextStyle(fontSize: 17.0)),
       Text("Temperatura: ${this?.temperatura?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("PA Sistolica: ${this?.pASistolica?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("Glicemia: ${this?.glicemia?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0)),
       Text("Observacao: ${this?.observacao?.toString()}",
+      textAlign: TextAlign.justify,
           style: TextStyle(fontSize: 17.0))
     ];
 

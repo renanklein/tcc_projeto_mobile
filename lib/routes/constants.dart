@@ -1,6 +1,7 @@
 //agenda
 const String calendarRoute = '/calendar';
 const String waitListRoute = '/waitlist';
+const String confirmEvent= '/confirm';
 
 //exams
 const String createExamRoute = '/exam';

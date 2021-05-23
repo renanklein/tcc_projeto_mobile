@@ -121,13 +121,13 @@ class _DashboardState extends State<Dashboard> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              waitListRoute,
+                              confirmEvent,
                               arguments: 'Dashboard',
                             );
                           },
                           child: _dashboardItem(
                             Icons.library_add,
-                            'Banco de Encaixe',
+                            'Confirmar consultas',
                             0xFF1A237E,
                           ),
                         ),

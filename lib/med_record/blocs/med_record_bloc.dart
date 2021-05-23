@@ -137,6 +137,18 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield MedRecordEventFailure();
       }
+    } else if (event is OverviewCreateOrUpdateButtonPressed) {
+      try {
+        yield MedRecordEventProcessing();
+
+        await this
+            .medRecordRepository
+            .setOverviewByHash(event.getPacientHash, event.overview);
+
+        yield OverviewCreateOrUpdateSuccess();
+      } catch (error, stack_trace) {
+        yield OverviewCreateOrUpdateFail();
+      }
     } else if (event is MedRecordLoad) {
       try {
         yield MedRecordLoading();

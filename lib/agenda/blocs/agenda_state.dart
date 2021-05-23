@@ -63,3 +63,22 @@ class AgendaAvailableTimeFail extends AgendaState {
   @override
   List<Object> get props => [];
 }
+
+class AgendaEventsToBeConfirmedProcessing extends AgendaState{
+  @override
+  List<Object> get props => [];
+}
+
+class AgendaEventsToBeConfirmedSuccess extends AgendaState{
+  final List eventsConfirmed;
+  AgendaEventsToBeConfirmedSuccess({@required this.eventsConfirmed});
+  @override
+  List<Object> get props => [];
+
+}
+
+class AgendaEventsToBeConfirmedFail extends AgendaState{
+  @override
+  List<Object> get props => [];
+
+}

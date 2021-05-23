@@ -184,4 +184,15 @@ class PacientRepository extends ChangeNotifier {
 
     return pacientsList;
   }
+
+  Future<List<PacientModel>> getCPFList(String cpf) async{
+    var cpfList = await this._pacientsCollectionReference.get().then((resp){
+      return resp.docs
+      .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+      .where((item) => item.getCpf == cpf)
+      .toList();
+    });
+
+    return cpfList;
+  }
 }

@@ -22,7 +22,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   static List<String> diagnosisCidList = [null];
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final _diagnosisScreenKey = GlobalKey<FormState>();
+  final _diagnosisScreenKey = new GlobalKey<FormState>();
 
   final problemIdController = TextEditingController();
   final problemDescriptionController = TextEditingController();

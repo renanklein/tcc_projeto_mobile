@@ -78,3 +78,9 @@ class AgendaEventConfirmButtomPressed extends AgendaEvent {
   @override
   List<Object> get props => [];
 }
+
+class AgendaEventsToBeConfirmed extends AgendaEvent{
+  @override
+  List<Object> get props => [];
+
+}

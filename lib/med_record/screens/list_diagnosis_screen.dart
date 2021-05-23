@@ -75,8 +75,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                               ...listPreDiagnosisScreen(
                                   state.medRecordLoaded, pacient)
                             ])
-                          : LayoutUtils.buildCircularProgressIndicator(
-                              context)
+                          : LayoutUtils.buildCircularProgressIndicator(context)
                     ],
                   ));
             }
@@ -113,8 +112,8 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     });
   }
 
-  List<Widget> listDiagnosisScreen(
-      MedRecordModel medRecordModel, BuildContext context, PacientModel pacient) {
+  List<Widget> listDiagnosisScreen(MedRecordModel medRecordModel,
+      BuildContext context, PacientModel pacient) {
     if (medRecordModel.getDiagnosisList == null) return null;
 
     var fields = DiagnosisTile.fromDiagnosis(
@@ -134,8 +133,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       ];
     }
 
-    return DiagnosisTile.fromDiagnosis(
-        medRecordModel.getDiagnosisList, context, refreshDiagnosis, pacient);
+    return fields;
   }
 
   List<Widget> listPreDiagnosisScreen(
@@ -164,10 +162,10 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
 
   void _loadDiagnosis() {
     this._medRecordBloc.add(
-      DiagnosisLoad(
-        pacientCpf: this.pacient.getCpf,
-        pacientSalt: this.pacient.getSalt,
-      ),
-    );
+          DiagnosisLoad(
+            pacientCpf: this.pacient.getCpf,
+            pacientSalt: this.pacient.getSalt,
+          ),
+        );
   }
 }

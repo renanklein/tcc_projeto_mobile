@@ -203,8 +203,13 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
             return Card(
-              child: ExpansionTile(
-                  title: Text(dateAsString), children: this.children),
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: ExpansionTile(
+                    title: Text(dateAsString), 
+                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: this.children),
+              ),
             );
           },
         ));

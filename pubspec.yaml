@@ -59,6 +59,7 @@ dependencies:
   cpfcnpj: ^1.0.3
   pdf: ^2.1.0
   flutter_email_sender: ^5.0.0
+  syncfusion_flutter_datepicker: ^19.1.63-beta
   
 
 dev_dependencies:

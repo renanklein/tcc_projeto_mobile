@@ -58,7 +58,27 @@ class _AppointmentTileState extends State<AppointmentTile> {
 
     return GestureDetector(
       onTap: () {
-        if (this._pacientBloc.state is PacientDetailWithPreDiagnosisSuccess) {
+        if(DateTime.now().isBefore(appointmentModel.appointmentDate)){
+          showDialog(
+            context: context,
+              builder: (context) {
+
+                return AlertDialog(
+                  title: Text('Agendamento no futuro'),
+                  content: Text(
+                      "Não é possível cadastrar o pré-diagnóstico pois o atendidimento não é para hoje"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Fechar"))
+                  ],
+                );
+              }
+          );
+        }
+        else if (this._pacientBloc.state is PacientDetailWithPreDiagnosisSuccess) {
           showDialog(
               context: context,
               builder: (context) {

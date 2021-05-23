@@ -15,6 +15,7 @@ class AppointmentTile extends StatefulWidget {
   final AppointmentModel appointmentModel;
   final String userUid;
   final Function loadAppointments;
+  bool hasPreDiagnosis = false;
 
   AppointmentTile(
       {@required this.appointmentModel,
@@ -58,27 +59,41 @@ class _AppointmentTileState extends State<AppointmentTile> {
 
     return GestureDetector(
       onTap: () {
-        if(DateTime.now().isBefore(appointmentModel.appointmentDate)){
+        if (DateTime.now().isBefore(appointmentModel.appointmentDate) &&
+            this._pacientBloc.state is PacientDetailLoadEventSuccess) {
           showDialog(
-            context: context,
+              context: context,
               builder: (context) {
-
                 return AlertDialog(
                   title: Text('Agendamento no futuro'),
                   content: Text(
-                      "Não é possível cadastrar o pré-diagnóstico pois o atendidimento não é para hoje"),
+                      "Esse atendimento não é para hoje. Deseja prosseguir ?"),
                   actions: <Widget>[
                     TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Fechar"))
+                        child: Text("Não")),
+                    TextButton(
+                        onPressed: () {
+                          var state = this._pacientBloc.state
+                              as PacientDetailLoadEventSuccess;
+                          Navigator.pushReplacementNamed(
+                            context,
+                            preDiagnosisRoute,
+                            arguments: RouteAppointmentArguments(
+                                pacientModel: state.pacientDetailLoaded,
+                                appointmentModel: this.appointmentModel),
+                          ).then((value) => this
+                              ._pacientBloc
+                              .add(PacientDetailLoad(this.appointmentModel)));
+                        },
+                        child: Text("Sim"))
                   ],
                 );
-              }
-          );
-        }
-        else if (this._pacientBloc.state is PacientDetailWithPreDiagnosisSuccess) {
+              });
+        } else if (this._pacientBloc.state
+            is PacientDetailWithPreDiagnosisSuccess) {
           showDialog(
               context: context,
               builder: (context) {
@@ -197,6 +212,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
               if (state is PacientDetailWithPreDiagnosisSuccess) {
                 setState(() {
                   this.color = Colors.yellow;
+                  this.widget.hasPreDiagnosis = true;
                 });
               }
             },

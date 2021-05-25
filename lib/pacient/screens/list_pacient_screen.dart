@@ -92,7 +92,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
-            cubit: this._pacientBloc,
+            bloc: this._pacientBloc,
             builder: (context, state) {
               return SafeArea(
                 child: Center(

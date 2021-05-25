@@ -131,7 +131,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MedRecordBloc, MedRecordState>(
-        cubit: this.medRecordBloc,
+        bloc: this.medRecordBloc,
         listener: (context, state) {
           if (state is DiagnosisCreateOrUpdateSuccess) {
             setState(() {
@@ -197,7 +197,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
-          cubit: this.medRecordBloc,
+          bloc: this.medRecordBloc,
           builder: (context, state) {
             if (state is MedRecordEventProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

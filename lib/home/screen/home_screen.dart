@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
           child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            cubit: this.authenticationBloc,
+            bloc: this.authenticationBloc,
             builder: (context, state) {
               return Container(
                 color: Theme.of(context).primaryColor,

@@ -63,7 +63,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: BlocListener<MedRecordBloc, MedRecordState>(
-          cubit: this._medRecordBloc,
+          bloc: this._medRecordBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
               Future.delayed(Duration(seconds: 2));
@@ -84,7 +84,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
-              cubit: this._medRecordBloc,
+              bloc: this._medRecordBloc,
               builder: (context, state) {
                 if (state is ExamProcessing) {
                   return Center(

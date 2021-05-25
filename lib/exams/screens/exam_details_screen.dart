@@ -59,7 +59,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
           centerTitle: true,
         ),
         body: BlocListener<MedRecordBloc, MedRecordState>(
-          cubit: this.medRecordBloc,
+          bloc: this.medRecordBloc,
           listener: (context, state) {
             if (state is DecryptExamSuccess) {
               this.examImage = Image.memory(state.decriptedBytes);
@@ -69,7 +69,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
-            cubit: this.medRecordBloc,
+            bloc: this.medRecordBloc,
             builder: (context, state) {
               if (state is ExamProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);

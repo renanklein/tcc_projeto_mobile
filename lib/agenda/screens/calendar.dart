@@ -80,7 +80,7 @@ class _UserCalendarState extends State<UserCalendar> {
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
-              cubit: this._agendaBloc,
+              bloc: this._agendaBloc,
               builder: (context, state) {
                 if (_isLoadingState(state)) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

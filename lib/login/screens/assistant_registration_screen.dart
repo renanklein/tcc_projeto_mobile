@@ -61,7 +61,7 @@ class _AssistantRegistrationScreenState
           }
         },
         child: BlocBuilder(
-          cubit: signupBloc,
+          bloc: signupBloc,
           builder: (context, state) {
             if (state is SignupProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

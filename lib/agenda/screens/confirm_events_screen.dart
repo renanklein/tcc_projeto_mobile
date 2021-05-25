@@ -32,14 +32,14 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
           centerTitle: true,
         ),
         body: BlocListener<AgendaBloc, AgendaState>(
-          cubit: this._agendaBloc,
+          bloc: this._agendaBloc,
           listener: (context, state) {
             if (state is AgendaEventsToBeConfirmedSuccess) {
               this._eventsConfirmed = state.eventsConfirmed;
             }
           },
           child: BlocBuilder<AgendaBloc, AgendaState>(
-            cubit: this._agendaBloc,
+            bloc: this._agendaBloc,
             builder: (context, state) {
               if (state is AgendaEventsToBeConfirmedProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);

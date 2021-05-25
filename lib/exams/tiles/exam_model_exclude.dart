@@ -49,7 +49,7 @@ class _ExamModelExcludeState extends State<ExamModelExclude> {
               }
             },
             child: BlocBuilder<ExamBloc, ExamState>(
-              cubit: this.examBloc,
+              bloc: this.examBloc,
               builder: (context, state) {
                 if (state is DeleteExamModelProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

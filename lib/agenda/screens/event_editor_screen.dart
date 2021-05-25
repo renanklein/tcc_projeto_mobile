@@ -57,7 +57,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this._pacientBloc = BlocProvider.of<PacientBloc>(context);
+    this._pacientBloc = context.read<PacientBloc>();
 
     this.agendaBloc = AgendaBloc(
         agendaRepository: Injector.appInstance.get<AgendaRepository>());
@@ -103,7 +103,9 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<PacientBloc, PacientState>(listener: (context, state) {
+          BlocListener<PacientBloc, PacientState>(
+            bloc: this._pacientBloc,
+            listener: (context, state) {
             if (state is GetPacientByNameSuccess) {
               var pacient = state.pacient;
               if (pacient != null) {
@@ -115,7 +117,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
             }
           }),
           BlocListener<AgendaBloc, AgendaState>(
-              cubit: this.agendaBloc,
+              bloc: this.agendaBloc,
               listener: (context, state) {
                 if (_verifySuccessState(state)) {
                   _onSuccessState();
@@ -143,7 +145,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
               })
         ],
         child: BlocBuilder<AgendaBloc, AgendaState>(
-          cubit: this.agendaBloc,
+          bloc: this.agendaBloc,
           builder: (context, state) {
             if (_isLoadingState(state)) {
               return LayoutUtils.buildCircularProgressIndicator(context);

@@ -37,13 +37,8 @@ class _UserDrawerState extends State<UserDrawer> {
     return Drawer(
       elevation: 16.0,
       child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        cubit: this.authenticationBloc,
+        bloc: this.authenticationBloc,
         builder: (context, state) {
-          /* return  FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return LayoutUtils.buildCircularProgressIndicator(context);
-                  } else { */
           return ListView(
             children: <Widget>[
               _createDrawerHeader(this.userModel, context),

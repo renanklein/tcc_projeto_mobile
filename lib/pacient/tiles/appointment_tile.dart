@@ -15,7 +15,7 @@ class AppointmentTile extends StatefulWidget {
   final AppointmentModel appointmentModel;
   final String userUid;
   final Function loadAppointments;
-  bool hasPreDiagnosis = false;
+  int sortPriority = 0;
 
   AppointmentTile(
       {@required this.appointmentModel,
@@ -207,17 +207,21 @@ class _AppointmentTileState extends State<AppointmentTile> {
             ),
           ),
           child: BlocListener<PacientBloc, PacientState>(
-            cubit: this._pacientBloc,
+            bloc: this._pacientBloc,
             listener: (context, state) {
               if (state is PacientDetailWithPreDiagnosisSuccess) {
                 setState(() {
                   this.color = Colors.yellow;
-                  this.widget.hasPreDiagnosis = true;
+                  this.widget.sortPriority = 2;
                 });
+              } else if (state is PacientDetailLoadEventSuccess){
+                this.widget.sortPriority = 1;
+              } else if (state is PacientDetailLoadEventFail){
+                this.widget.sortPriority = 0;
               }
             },
             child: BlocBuilder<PacientBloc, PacientState>(
-              cubit: this._pacientBloc,
+              bloc: this._pacientBloc,
               builder: (context, state) {
                 if (state is PacientDetailLoading) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

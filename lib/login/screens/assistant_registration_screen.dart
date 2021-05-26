@@ -38,10 +38,6 @@ class _AssistantRegistrationScreenState
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +57,7 @@ class _AssistantRegistrationScreenState
           }
         },
         child: BlocBuilder(
-          cubit: signupBloc,
+          bloc: signupBloc,
           builder: (context, state) {
             if (state is SignupProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

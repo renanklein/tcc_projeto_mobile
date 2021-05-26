@@ -86,8 +86,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             pADiastolica: event.pADiastolica,
             freqCardiaca: event.freqCardiaca,
             freqRepouso: event.freqRepouso,
-            temperatura: event.temperatura,
-            glicemia: event.glicemia,
+            temperatura: event?.temperatura,
+            glicemia: event?.glicemia,
             observacao: event.obs,
             appointmentEventDate: event.dtAppointmentEvent is DateTime
                 ? dateFormat.format(event.dtAppointmentEvent)

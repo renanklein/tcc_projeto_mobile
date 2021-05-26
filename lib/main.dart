@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: [const Locale('pt', 'BR')],
         onGenerateRoute: RouteGenerator.generateRoute,
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          cubit: this.authenticationBloc,
+          bloc: this.authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
               return LoginScreen();

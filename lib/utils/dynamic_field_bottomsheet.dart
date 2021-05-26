@@ -53,7 +53,7 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
           child: BlocListener<MedRecordBloc, MedRecordState>(
             listener: (context, state) {},
             child: BlocBuilder<MedRecordBloc, MedRecordState>(
-              cubit: this.medRecordBloc,
+              bloc: this.medRecordBloc,
               builder: (context, state) {
                 if (state is DynamicExamFieldProcessing) {
                   return LayoutUtils.buildCircularProgressIndicator(context);

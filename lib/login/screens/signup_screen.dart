@@ -62,7 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
           }
         },
         child: BlocBuilder(
-          cubit: signupBloc,
+          bloc: signupBloc,
           builder: (context, state) {
             if (state is SignupProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

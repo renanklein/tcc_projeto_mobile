@@ -39,7 +39,7 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {},
           child: BlocBuilder(
-            cubit: this._pacientBloc,
+            bloc: this._pacientBloc,
             builder: (context, state) {
               return SafeArea(
                 child: pacientDetail(this.getPacient, context),

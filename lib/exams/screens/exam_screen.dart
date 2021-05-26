@@ -35,7 +35,7 @@ class _ExamScreenState extends State<ExamScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MedRecordBloc, MedRecordState>(
-      cubit: medRecordBloc,
+      bloc: medRecordBloc,
       listener: (context, state) {
         if (state is ExamProcessingFail) {
         } else if (state is GetExamsSuccess) {
@@ -49,7 +49,7 @@ class _ExamScreenState extends State<ExamScreen> {
         }
       },
       child: BlocBuilder<MedRecordBloc, MedRecordState>(
-        cubit: medRecordBloc,
+        bloc: medRecordBloc,
         builder: (context, state) {
           if (state is ExamProcessing) {
             return LayoutUtils.buildCircularProgressIndicator(context);

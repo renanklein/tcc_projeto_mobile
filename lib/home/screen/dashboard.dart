@@ -31,15 +31,9 @@ class _DashboardState extends State<Dashboard> {
   }
 
   @override
-  void dispose() {
-    this._authenticationBloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
-      cubit: this._authenticationBloc,
+      bloc: this._authenticationBloc,
       listener: (context, state) {
         if (state is AuthenticationUnauthenticated) {
           return LoginScreen();
@@ -48,7 +42,7 @@ class _DashboardState extends State<Dashboard> {
         }
       },
       child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        cubit: this._authenticationBloc,
+        bloc: this._authenticationBloc,
         builder: (context, state) {
           if (state is AuthenticationProcessing) {
             return LayoutUtils.buildCircularProgressIndicator(context);

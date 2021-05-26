@@ -38,7 +38,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
         centerTitle: true,
       ),
       body: BlocListener<MedRecordBloc, MedRecordState>(
-        cubit: _bloc,
+        bloc: _bloc,
         listener: (context, state) {
           if (state is LoadExamModelSuccess) {
             state.models == null
@@ -48,7 +48,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
-          cubit: _bloc,
+          bloc: _bloc,
           builder: (context, state) {
             if (state is LoadExamModelProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

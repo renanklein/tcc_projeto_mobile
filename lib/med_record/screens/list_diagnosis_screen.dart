@@ -49,7 +49,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
           if (state is DiagnosisLoadEventSuccess) {}
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
-          cubit: this._medRecordBloc,
+          bloc: this._medRecordBloc,
           builder: (context, state) {
             if (state is DiagnosisLoading) {
               return LayoutUtils.buildCircularProgressIndicator(context);

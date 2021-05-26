@@ -70,7 +70,7 @@ class _AppointmentsWaitListScreenState
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
-            cubit: this._pacientBloc,
+            bloc: this._pacientBloc,
             builder: (context, state) {
               return SafeArea(
                 child: Center(
@@ -85,16 +85,11 @@ class _AppointmentsWaitListScreenState
                             searchBarController: this._searchBarController),
                         Expanded(
                           child: (_appointmentList != null)
-                              ? ListView.builder(
-                                  itemCount: _suggestionAppointments.isNotEmpty
-                                      ? _suggestionAppointments.length
-                                      : _appointmentList.length,
-                                  itemBuilder: (context, index) =>
-                                      _suggestionAppointments.isNotEmpty
-                                          ? _listAppointmentView(
-                                              _suggestionAppointments[index])
-                                          : _listAppointmentView(
-                                              _appointmentList[index]))
+                              ? ListView(
+                                children: [
+                                  ..._buildSortedAppointmentsViews()
+                                ],
+                              )
                               : LayoutUtils.buildCircularProgressIndicator(
                                   context),
                         )
@@ -114,22 +109,41 @@ class _AppointmentsWaitListScreenState
     _pacientBloc.add(AppointmentsLoad());
   }
 
-  Widget _listAppointmentView(AppointmentModel appointment) {
-    return Container(
+  AppointmentTile _listAppointmentView(AppointmentModel appointment) {
+    return AppointmentTile(
+              appointmentModel: appointment,
+              userUid: this.userUid,
+              loadAppointments: _loadAppointments,
+            );
+  }
+
+  List<Widget> _buildSortedAppointmentsViews() {
+    var listOfWidgets = <AppointmentTile>[];
+    var length = _suggestionAppointments.isNotEmpty
+        ? _suggestionAppointments.length
+        : _appointmentList.length;
+
+    for (int i = 0; i < length; i++) {
+      var widget =  _suggestionAppointments.isNotEmpty
+          ? _listAppointmentView(_suggestionAppointments[i])
+          : _listAppointmentView(_appointmentList[i]);
+
+      listOfWidgets.add(widget);
+    }
+
+    listOfWidgets.sort((a, b) => a.sortPriority.compareTo(b.sortPriority));
+    Future.delayed(Duration(seconds : 3));
+    return listOfWidgets.map((appointment) => Container(
       width: MediaQuery.of(context).size.width * 0.93,
       child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: AppointmentTile(
-              appointmentModel: appointment,
-              userUid: this.userUid,
-              loadAppointments: _loadAppointments,
-            ),
+            child: appointment
           ),
         ],
       ),
-    );
+    )).toList();
   }
 
   Widget messageSnackBar(

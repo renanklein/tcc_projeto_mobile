@@ -142,39 +142,39 @@ class PreDiagnosisModel {
             fontSize: 17.0,
           )),
       Text("Altura: ${this?.altura?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
       Text("IMC: ${this?.imc?.toString()}",
-      textAlign: TextAlign.justify, 
-      style: TextStyle(fontSize: 17.0)),
-      Text("Temperatura: ${this?.temperatura?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
+      this.temperatura != null
+          ? Text("Temperatura: ${this?.temperatura?.toString()}",
+              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
+          : Container(),
       Text("PA Sistolica: ${this?.pASistolica?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
       Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
-      Text("Glicemia: ${this?.glicemia?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
+      this.glicemia != null
+          ? Text("Glicemia: ${this?.glicemia?.toString()}",
+              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
+          : Container(),
       Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
       Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0)),
-      Text("Observacao: ${this?.observacao?.toString()}",
-      textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 17.0))
+          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
+      this.observacao.isNotEmpty
+          ? Text("Observacao: ${this?.observacao?.toString()}",
+              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
+          : Container()
     ];
 
     if (this._dynamicFields != null && this._dynamicFields.isNotEmpty) {
       this._dynamicFields.forEach((field) {
         if (field.keys.first != "appointmentEventDate" &&
             field.keys.first != "ultimaMestruacao" &&
-            field.keys.first != "dtProvavelParto") {
+            field.keys.first != "dtProvavelParto" &&
+            field.keys.first != "glicemia" &&
+            field.keys.first != "temperatura" &&
+            field.keys.first != "observacao") {
           fields.add(Text("${field.keys.first}:${field.values.first}",
               style: TextStyle(fontSize: 17.0)));
         }
@@ -190,6 +190,13 @@ class PreDiagnosisModel {
     int year = int.parse(date.split('/')[2]);
     int mon = int.parse(date.split('/')[1]);
     int day = int.parse(date.split('/')[0]);
+
+    var temp = map.containsKey('temperatura') && map['temperatura'] != null
+        ? map['temperatura']
+        : "";
+    var glicemia = map.containsKey('glicemia') && map['glicemia'] != null
+        ? map['glicemia']
+        : "";
 
     var prediagnosis = PreDiagnosisModel(
       peso: map['peso'] is int
@@ -213,12 +220,10 @@ class PreDiagnosisModel {
       freqRepouso: map['freqRepouso'] is int
           ? map.remove('freqRepouso')
           : int.parse(map.remove('freqRepouso')),
-      temperatura: map['temperatura'] is double
-          ? map.remove('temperatura')
-          : double.parse(map.remove('temperatura')),
-      glicemia: map['glicemia'] is int
-          ? map.remove('glicemia')
-          : int.parse(map.remove('glicemia')),
+      temperatura:
+          temp is double ? map.remove('temperatura') : double.tryParse(temp),
+      glicemia:
+          glicemia is int ? map.remove('glicemia') : int.tryParse(glicemia),
       observacao: map.remove('observacao'),
       appointmentEventDate: date,
       dtPreDiagnosis: new DateTime(

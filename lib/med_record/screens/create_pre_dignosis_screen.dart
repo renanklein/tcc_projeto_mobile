@@ -312,9 +312,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                 freqCardiacaController.text),
                                             freqRepouso: int.parse(
                                                 freqRepousoController.text),
-                                            temperatura: double.parse(
+                                            temperatura: double.tryParse(
                                                 temperaturaController.text),
-                                            glicemia: int.parse(
+                                            glicemia: int.tryParse(
                                                 glicemiaController.text),
                                             obs: obsController.text,
                                             dtUltimaMestruacao:

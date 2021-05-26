@@ -57,7 +57,7 @@ class _EventEditorScreenState extends State<EventEditorScreen> {
 
   @override
   void initState() {
-    this._pacientBloc = BlocProvider.of<PacientBloc>(context);
+    this._pacientBloc = context.read<PacientBloc>();
 
     this.agendaBloc = AgendaBloc(
         agendaRepository: Injector.appInstance.get<AgendaRepository>());

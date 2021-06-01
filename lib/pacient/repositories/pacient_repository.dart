@@ -103,7 +103,15 @@ class PacientRepository extends ChangeNotifier {
           ),
         );
 
-    return _appointmentsList;
+    
+    var appointments = <AppointmentModel>[];
+    await Future.wait(_appointmentsList.map((appointment) async{
+      var pacient = await getPacientByNameAndPhone(appointment);
+      appointment.pacientModel = pacient;
+      appointments.add(appointment);
+    }));
+
+    return appointments;
   }
 
   Future<PacientModel> getPacientByName(String name) async {

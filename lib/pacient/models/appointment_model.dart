@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 
 class AppointmentModel {
   String _nome;
@@ -6,6 +7,8 @@ class AppointmentModel {
   String _telefone;
   DateTime _dataAgendamento;
   String _horarioAgendamento;
+  PacientModel _pacientModel;
+  bool _hasPreDiagnosis = false;
 
   AppointmentModel({
     @required String nome,
@@ -13,12 +16,14 @@ class AppointmentModel {
     @required DateTime appointmentDate,
     @required String appointmentTime,
     String email,
+    PacientModel pacientModel
   }) {
     this._nome = nome.toUpperCase();
     this._email = email;
     this._telefone = telefone;
     this._dataAgendamento = appointmentDate;
     this._horarioAgendamento = appointmentTime;
+    this._pacientModel = pacientModel;
   }
 
   static AppointmentModel fromMap(Map<String, dynamic> map) {
@@ -46,4 +51,8 @@ class AppointmentModel {
   String get telefone => this._telefone;
   DateTime get appointmentDate => this._dataAgendamento;
   String get appointmentTime => this._horarioAgendamento;
+  PacientModel get pacientModel => this._pacientModel;
+  bool get hasPreDiagnosis => this._hasPreDiagnosis;
+  set pacientModel(PacientModel pacient) => this._pacientModel = pacient;
+  set hasPreDiagnosis(bool hasPreDiagnosis) => this._hasPreDiagnosis = true;
 }

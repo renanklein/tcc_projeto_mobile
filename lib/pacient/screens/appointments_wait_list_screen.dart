@@ -85,11 +85,53 @@ class _AppointmentsWaitListScreenState
                             searchBarController: this._searchBarController),
                         Expanded(
                           child: (_appointmentList != null)
-                              ? ListView(
-                                children: [
-                                  ..._buildSortedAppointmentsViews()
-                                ],
-                              )
+                              ? ReorderableListView.builder(
+                                  header: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 18.0),
+                                      child: Text(
+                                          "Presione os cards abaixo para reordelá-los",
+                                          style: TextStyle(
+                                              fontSize: 17.0,
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                    ),
+                                  ),
+                                  onReorder: _reorderAppoitments,
+                                  itemCount:
+                                      this._suggestionAppointments.length > 0
+                                          ? this._suggestionAppointments.length
+                                          : this._appointmentList.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      key: ValueKey<int>(index),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.93,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
+                                              child: ListTile(
+                                                title: AppointmentTile(
+                                                  loadAppointments:
+                                                      _loadAppointments,
+                                                  userUid: this.userUid,
+                                                  appointmentModel: this
+                                                              ._suggestionAppointments
+                                                              .length >
+                                                          0
+                                                      ? this._suggestionAppointments[
+                                                          index]
+                                                      : this._appointmentList[
+                                                          index],
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                )
                               : LayoutUtils.buildCircularProgressIndicator(
                                   context),
                         )
@@ -109,41 +151,19 @@ class _AppointmentsWaitListScreenState
     _pacientBloc.add(AppointmentsLoad());
   }
 
-  AppointmentTile _listAppointmentView(AppointmentModel appointment) {
-    return AppointmentTile(
-              appointmentModel: appointment,
-              userUid: this.userUid,
-              loadAppointments: _loadAppointments,
-            );
-  }
+  void _reorderAppoitments(int oldIndex, int newIndex) {
+    var listToReorder = this._suggestionAppointments.length > 0
+        ? this._suggestionAppointments
+        : this._appointmentList;
 
-  List<Widget> _buildSortedAppointmentsViews() {
-    var listOfWidgets = <AppointmentTile>[];
-    var length = _suggestionAppointments.isNotEmpty
-        ? _suggestionAppointments.length
-        : _appointmentList.length;
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
 
-    for (int i = 0; i < length; i++) {
-      var widget =  _suggestionAppointments.isNotEmpty
-          ? _listAppointmentView(_suggestionAppointments[i])
-          : _listAppointmentView(_appointmentList[i]);
-
-      listOfWidgets.add(widget);
-    }
-
-    listOfWidgets.sort((a, b) => a.sortPriority.compareTo(b.sortPriority));
-    Future.delayed(Duration(seconds : 3));
-    return listOfWidgets.map((appointment) => Container(
-      width: MediaQuery.of(context).size.width * 0.93,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: appointment
-          ),
-        ],
-      ),
-    )).toList();
+      var appointment = listToReorder.removeAt(oldIndex);
+      listToReorder.insert(newIndex, appointment);
+    });
   }
 
   Widget messageSnackBar(

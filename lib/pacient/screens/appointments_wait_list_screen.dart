@@ -86,7 +86,18 @@ class _AppointmentsWaitListScreenState
                         Expanded(
                           child: (_appointmentList != null)
                               ? ReorderableListView.builder(
-                                onReorder: _reorderAppoitments,
+                                  header: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 18.0),
+                                      child: Text(
+                                          "Presione os cards abaixo para reordelá-los",
+                                          style: TextStyle(
+                                              fontSize: 17.0,
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                    ),
+                                  ),
+                                  onReorder: _reorderAppoitments,
                                   itemCount:
                                       this._suggestionAppointments.length > 0
                                           ? this._suggestionAppointments.length
@@ -101,18 +112,20 @@ class _AppointmentsWaitListScreenState
                                           Padding(
                                               padding:
                                                   const EdgeInsets.all(6.0),
-                                              child: AppointmentTile(
-                                                loadAppointments:
-                                                    _loadAppointments,
-                                                userUid: this.userUid,
-                                                appointmentModel: this
-                                                            ._suggestionAppointments
-                                                            .length >
-                                                        0
-                                                    ? this._suggestionAppointments[
-                                                        index]
-                                                    : this._appointmentList[
-                                                        index],
+                                              child: ListTile(
+                                                title: AppointmentTile(
+                                                  loadAppointments:
+                                                      _loadAppointments,
+                                                  userUid: this.userUid,
+                                                  appointmentModel: this
+                                                              ._suggestionAppointments
+                                                              .length >
+                                                          0
+                                                      ? this._suggestionAppointments[
+                                                          index]
+                                                      : this._appointmentList[
+                                                          index],
+                                                ),
                                               )),
                                         ],
                                       ),
@@ -144,7 +157,7 @@ class _AppointmentsWaitListScreenState
         : this._appointmentList;
 
     setState(() {
-      if(newIndex > oldIndex){
+      if (newIndex > oldIndex) {
         newIndex -= 1;
       }
 

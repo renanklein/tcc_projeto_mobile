@@ -11,6 +11,7 @@ class PacientModel {
   String _vinculo = 'paciente';
   String _userId;
   String _salt;
+  bool _hasPreDiagnosis = false;
 
   PacientModel({
     @required String nome,
@@ -22,6 +23,7 @@ class PacientModel {
     @required String sexo,
     @required String userId,
     @required String salt,
+    bool hasPreDianosis
   }) {
     this._nome = nome.toUpperCase();
     this._email = email;
@@ -32,6 +34,7 @@ class PacientModel {
     this._sexo = sexo;
     this._userId = userId;
     this._salt = salt;
+    this._hasPreDiagnosis = hasPreDianosis;
   }
 
   Map<String, dynamic> toMap() {
@@ -79,5 +82,7 @@ class PacientModel {
 
   String get medicId => this._userId;
   String get getSalt => this._salt;
+  bool get hasPreDiagnosis => this._hasPreDiagnosis;
+  set hasPreDiagnosis(bool hasPreDiagnosis) => this._hasPreDiagnosis = hasPreDiagnosis;
   //set userUid(String uid) => this._userId = uid;
 }

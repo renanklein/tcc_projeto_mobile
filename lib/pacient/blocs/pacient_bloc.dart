@@ -83,7 +83,30 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
         _appointmentsList = await pacientRepository.getAppointments();
 
-        yield AppointmentLoadEventSuccess(_appointmentsList);
+        var processedAppointments = <AppointmentModel>[];
+
+        await Future.wait(_appointmentsList.map((appointment) async{
+          var medRecordRepo = Injector.appInstance.get<MedRecordRepository>();
+          var pacientHash = SltPattern.retrivepacientHash(
+              appointment.pacientModel.getCpf, appointment.pacientModel.getSalt);
+
+          var medRecord = await medRecordRepo.getMedRecordByHash(pacientHash);
+
+          var dateFormat = DateFormat("dd/MM/yyyy");
+
+          var appoimentDateAsString =
+              dateFormat.format(appointment.appointmentDate);
+
+          medRecord?.getPreDiagnosisList?.forEach((preDiagnosis) {
+            if (appoimentDateAsString == preDiagnosis.appointmentEventDate) {
+              appointment.hasPreDiagnosis = true;
+            }
+          });
+
+          processedAppointments.add(appointment);
+        }));
+
+        yield AppointmentLoadEventSuccess(processedAppointments);
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
       }
@@ -116,6 +139,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
           });
 
           if (hasPreDiagnosis) {
+            _pacientDetail.hasPreDiagnosis = true;
             yield PacientDetailWithPreDiagnosisSuccess(
                 pacientModel: _pacientDetail,
                 preDiagnosisDate: appoimentDateAsString);

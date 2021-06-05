@@ -75,12 +75,10 @@ class _CalendarEventListState extends State<CalendarEventList> {
           var date = DateTime(nowDate.year, nowDate.month, nowDate.day,
               nowDate.hour, nowDate.minute);
 
-          var currentDateTime = dateTimeToZone(zone: "ART", datetime: date);
-
           var eventDate = _convertFromString(this.selectedDay, time);
 
-          if (eventDate.isAfter(currentDateTime) ||
-              (eventDate.isBefore(currentDateTime) && event != null)) {
+          if (eventDate.isAfter(date) ||
+              (eventDate.isBefore(date) && event != null)) {
             Navigator.of(context)
                 .push(MaterialPageRoute(
                     builder: (context) => EventEditorScreen(

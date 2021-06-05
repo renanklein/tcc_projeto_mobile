@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
-import 'package:tcc_projeto_app/agenda/screens/calendar.dart';
 import 'package:tcc_projeto_app/home/drawer.dart';
 import 'package:tcc_projeto_app/home/tiles/home_card_tile.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
@@ -27,12 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    this.authenticationBloc.close();
-    super.dispose();
   }
 
   @override

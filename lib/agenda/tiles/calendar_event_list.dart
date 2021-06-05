@@ -5,7 +5,6 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:instant/instant.dart';
 
 class CalendarEventList extends StatefulWidget {
   final eventsList;

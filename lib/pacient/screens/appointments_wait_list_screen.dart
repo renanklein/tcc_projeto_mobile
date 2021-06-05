@@ -61,7 +61,8 @@ class _AppointmentsWaitListScreenState
         child: BlocListener<PacientBloc, PacientState>(
           listener: (context, state) {
             if (state is AppointmentLoadEventSuccess) {
-              _appointmentList = state.appointmentsLoaded;
+              this._appointmentList = state.appointmentsLoaded;
+              this._appointmentList = _sortAppointments();
             }
           },
           child: BlocBuilder<PacientBloc, PacientState>(
@@ -140,6 +141,22 @@ class _AppointmentsWaitListScreenState
         ),
       ),
     );
+  }
+
+  List<AppointmentModel> _sortAppointments() {
+    var appointments = this._suggestionAppointments.length > 0
+        ? this._suggestionAppointments
+        : this._appointmentList;
+
+    appointments.sort((a, b){
+      if(b.hasPreDiagnosis){
+        return -1;
+      }
+
+      return 1;
+    });
+
+    return appointments;
   }
 
   void _loadAppointments() {

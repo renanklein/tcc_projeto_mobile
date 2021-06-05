@@ -85,23 +85,26 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
 
         var processedAppointments = <AppointmentModel>[];
 
-        await Future.wait(_appointmentsList.map((appointment) async{
-          var medRecordRepo = Injector.appInstance.get<MedRecordRepository>();
-          var pacientHash = SltPattern.retrivepacientHash(
-              appointment.pacientModel.getCpf, appointment.pacientModel.getSalt);
+        await Future.wait(_appointmentsList.map((appointment) async {
+          if (appointment.pacientModel != null) {
+            var medRecordRepo = Injector.appInstance.get<MedRecordRepository>();
+            var pacientHash = SltPattern.retrivepacientHash(
+                appointment.pacientModel.getCpf,
+                appointment.pacientModel.getSalt);
 
-          var medRecord = await medRecordRepo.getMedRecordByHash(pacientHash);
+            var medRecord = await medRecordRepo.getMedRecordByHash(pacientHash);
 
-          var dateFormat = DateFormat("dd/MM/yyyy");
+            var dateFormat = DateFormat("dd/MM/yyyy");
 
-          var appoimentDateAsString =
-              dateFormat.format(appointment.appointmentDate);
+            var appoimentDateAsString =
+                dateFormat.format(appointment.appointmentDate);
 
-          medRecord?.getPreDiagnosisList?.forEach((preDiagnosis) {
-            if (appoimentDateAsString == preDiagnosis.appointmentEventDate) {
-              appointment.hasPreDiagnosis = true;
-            }
-          });
+            medRecord?.getPreDiagnosisList?.forEach((preDiagnosis) {
+              if (appoimentDateAsString == preDiagnosis.appointmentEventDate) {
+                appointment.hasPreDiagnosis = true;
+              }
+            });
+          }
 
           processedAppointments.add(appointment);
         }));

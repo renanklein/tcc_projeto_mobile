@@ -110,49 +110,6 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
       }
-    } else if (event is PacientDetailLoad) {
-      try {
-        yield PacientDetailLoading();
-
-        PacientModel _pacientDetail;
-
-        _pacientDetail = await pacientRepository
-            .getPacientByNameAndPhone(event._appointmentModel);
-
-        if (_pacientDetail != null) {
-          var medRecordRepo = Injector.appInstance.get<MedRecordRepository>();
-          var pacientHash = SltPattern.retrivepacientHash(
-              _pacientDetail.getCpf, _pacientDetail.getSalt);
-
-          var medRecord = await medRecordRepo.getMedRecordByHash(pacientHash);
-
-          var dateFormat = DateFormat("dd/MM/yyyy");
-
-          var hasPreDiagnosis = false;
-          var appoimentDateAsString =
-              dateFormat.format(event._appointmentModel.appointmentDate);
-
-          medRecord?.getPreDiagnosisList?.forEach((preDiagnosis) {
-            if (appoimentDateAsString == preDiagnosis.appointmentEventDate) {
-              hasPreDiagnosis = true;
-            }
-          });
-
-          if (hasPreDiagnosis) {
-            _pacientDetail.hasPreDiagnosis = true;
-            yield PacientDetailWithPreDiagnosisSuccess(
-                pacientModel: _pacientDetail,
-                preDiagnosisDate: appoimentDateAsString);
-          } else {
-            yield PacientDetailLoadEventSuccess(_pacientDetail);
-          }
-        } else {
-          yield PacientDetailLoadEventFail();
-        }
-      } on Exception catch (e) {
-        yield PacientDetailLoadEventFail();
-        e.toString();
-      }
     } else if (event is GetPacientByName) {
       try {
         yield PacientLoading();

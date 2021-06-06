@@ -27,11 +27,6 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       child: BlocProvider<PacientBloc>(

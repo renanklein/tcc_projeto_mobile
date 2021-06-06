@@ -313,7 +313,7 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
     var user = Injector.appInstance.get<UserModel>();
     var recipients = [user.email, this.pacient.getEmail];
     var body = "Segue me anexo a prescrição do diagnóstico";
-    await PrescriptionSender.sendEmail(recipients, body, prescriptionPdf);
+    await PrescriptionSender.sendEmail(recipients, body, prescriptionPdf, "Prescrição ${pacient.getNome} ${this.dateAsString}");
   }
 
   void refreshTile(List dynamicList, Field newField) {

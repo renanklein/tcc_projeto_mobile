@@ -113,7 +113,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                             problemIdController,
                                             'Id da Queixa:',
                                             'Digite um Número para indicar problemas relacionados',
-                                            'Por Favor, digite algum número',
+                                            null,
                                             null,
                                             keyboardType: TextInputType.number,
                                           ),
@@ -121,8 +121,13 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                             problemDescriptionController,
                                             'Queixa:',
                                             'Descreva o problema relatado pelo paciente',
-                                            'Por Favor, descreva o problema',
                                             null,
+                                            (value) {
+                                              if (value.isEmpty) {
+                                                return 'Por Favor, descreva o problema';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ],
                                       ),
@@ -165,8 +170,13 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                             prescriptionController,
                                             'Prescrição:',
                                             'Digite os detalhes da prescrição',
-                                            'Por Favor, Digite os detalhes da prescrição',
                                             null,
+                                            (value) {
+                                              if (value.isEmpty) {
+                                                return 'Por Favor, Digite os detalhes da prescrição';
+                                              }
+                                              return null;
+                                            },
                                             keyboardType:
                                                 TextInputType.multiline,
                                           ),
@@ -277,7 +287,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
 }
 
 Widget _diagnosisFormField(
-    controller, label, hint, errorText, onChangedFunction,
+    controller, label, hint, onChangedFunction, Function validator,
     {TextInputType keyboardType = TextInputType.name}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
@@ -293,12 +303,7 @@ Widget _diagnosisFormField(
       ),
       minLines: 1,
       maxLines: 10,
-      validator: (value) {
-        if (value.isEmpty) {
-          return errorText;
-        }
-        return null;
-      },
+      validator: validator,
       onChanged: onChangedFunction,
     ),
   );
@@ -345,16 +350,26 @@ class _DiagnosisTextFormFieldState extends State<DiagnosisTextFormField> {
           _diagnosisController,
           'Descrição do Diagnóstico:',
           'Descreva o diagnóstico encontrado para o paciente',
-          'Por Favor, descreva o diagnóstico',
           (v) => _CreateDiagnosisScreenState
               .diagnosisDescriptionList[widget.index] = v,
+          (value) {
+            if (value.isEmpty) {
+              return 'Por Favor, descreva o diagnóstico';
+            }
+            return null;
+          },
         ),
         _diagnosisFormField(
           _cidController,
           'CID:',
           'Digite o CID do Diagnóstico',
-          'Por Favor, digite o CID',
           (v) => _CreateDiagnosisScreenState.diagnosisCidList[widget.index] = v,
+          (value) {
+            if (value.isEmpty) {
+              return 'Por Favor, digite o CID';
+            }
+            return null;
+          },
         ),
       ],
     );

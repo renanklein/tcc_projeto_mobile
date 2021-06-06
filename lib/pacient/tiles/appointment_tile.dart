@@ -21,7 +21,7 @@ class AppointmentTile extends StatelessWidget {
 
 
   Widget build(BuildContext context) {
-    var pacientBloc = context.read<PacientBloc>();
+    var pacientBloc = BlocProvider.of<PacientBloc>(context);
     var color = this.appointmentModel.pacientModel != null && this.appointmentModel.hasPreDiagnosis ? 
        Colors.yellow : Color(0xFF84FFFF);
     var dateFormatter = DateFormat("dd/MM/yyyy");
@@ -68,8 +68,7 @@ class AppointmentTile extends StatelessWidget {
                                             appointmentModel:
                                                 this.appointmentModel),
                                       ).then((value) => pacientBloc.add(
-                                          PacientDetailLoad(
-                                              this.appointmentModel)));
+                                          AppointmentsLoad()));
                                     },
                                     child: Text("Sim"))
                               ],
@@ -132,8 +131,7 @@ class AppointmentTile extends StatelessWidget {
                                         appointmentModel:
                                             this.appointmentModel),
                                   ).then((value) => pacientBloc.add(
-                                      PacientDetailLoad(
-                                          this.appointmentModel)));
+                                     AppointmentsLoad()));
                                 },
                               ),
                             ],
@@ -167,8 +165,7 @@ class AppointmentTile extends StatelessWidget {
                                         appointmentModel:
                                             this.appointmentModel),
                                   ).then((value) => pacientBloc.add(
-                                      PacientDetailLoad(
-                                          this.appointmentModel)));
+                                     AppointmentsLoad()));
                                 },
                               ),
                             ],

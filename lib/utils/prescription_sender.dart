@@ -11,6 +11,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class PrescriptionSender {
   static final user = Injector.appInstance.get<UserModel>();
+
   static Future<File> prescriptionToPdf(
       CompleteDiagnosisModel diagnosis, PacientModel pacient) async {
     var pdf = pw.Document();
@@ -42,8 +43,9 @@ class PrescriptionSender {
   }
 
   static Future sendEmail(
-      List<String> recipients, String body, File attachment) async {
+      List<String> recipients, String body, File attachment, String subject) async {
     var email = Email(
+        subject: subject,
         body: body,
         recipients: recipients,
         attachmentPaths: [attachment.path],

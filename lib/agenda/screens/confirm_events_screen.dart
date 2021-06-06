@@ -44,19 +44,32 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
               if (state is AgendaEventsToBeConfirmedProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);
               }
-
-              return ListView(
-                children: [
-                  Center(
-                    child: Text(
-                        "Clique no card para editar ou confirmar a consulta",
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16.0)),
+              else if (this._eventsConfirmed.isEmpty){
+                return Center(
+                  child: Text(
+                    "Não há agendamentos para hoje",
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 17.0
+                    ),
                   ),
-                  LayoutUtils.buildVerticalSpacing(10.0),
-                  ..._buildEvents(this._eventsConfirmed)
-                ],
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ListView(
+                  children: [
+                    Center(
+                      child: Text(
+                          "Clique no card para editar ou confirmar a consulta",
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16.0)),
+                    ),
+                    LayoutUtils.buildVerticalSpacing(10.0),
+                    ..._buildEvents(this._eventsConfirmed)
+                  ],
+                ),
               );
             },
           ),
@@ -101,7 +114,8 @@ class EventToBeConfirmedTile extends StatelessWidget {
           selectedTime: this.eventTime,
           refreshAgenda: this.refreshList,
           event: this.event,
-        )));
+        )))
+        .then((value) => this.refreshList(false));
       },
       child: Container(
         width: double.infinity,

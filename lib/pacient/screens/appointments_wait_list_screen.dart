@@ -25,7 +25,7 @@ class _AppointmentsWaitListScreenState
     extends State<AppointmentsWaitListScreen> {
   PacientBloc _pacientBloc;
   PacientRepository _pacientRepository;
-  List<AppointmentModel> _appointmentList;
+  List<AppointmentModel> _appointmentList = <AppointmentModel>[];
   List<AppointmentModel> _suggestionAppointments = <AppointmentModel>[];
   TextEditingController _searchBarController = TextEditingController();
   String get userUid => this.widget.userUid;
@@ -68,6 +68,18 @@ class _AppointmentsWaitListScreenState
           child: BlocBuilder<PacientBloc, PacientState>(
             bloc: this._pacientBloc,
             builder: (context, state) {
+              if (state is AppointmentsLoading) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              } else if (this._appointmentList.length == 0 &&
+                  this._suggestionAppointments.length == 0) {
+                return Center(
+                  child: Text(
+                    "Não há agendamentos cadastrados",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 17.0),
+                  ),
+                );
+              }
               return SafeArea(
                 child: Center(
                   child: Container(
@@ -80,56 +92,47 @@ class _AppointmentsWaitListScreenState
                             onChange: onSearchChange,
                             searchBarController: this._searchBarController),
                         Expanded(
-                          child: (_appointmentList != null)
-                              ? ReorderableListView.builder(
-                                  header: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 18.0),
-                                      child: Text(
-                                          "Presione os cards abaixo para reordelá-los",
-                                          style: TextStyle(
-                                              fontSize: 17.0,
-                                              color: Theme.of(context)
-                                                  .primaryColor)),
-                                    ),
-                                  ),
-                                  onReorder: _reorderAppoitments,
-                                  itemCount:
-                                      this._suggestionAppointments.length > 0
-                                          ? this._suggestionAppointments.length
-                                          : this._appointmentList.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      key: ValueKey<int>(index),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.93,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                              padding:
-                                                  const EdgeInsets.all(6.0),
-                                              child: ListTile(
-                                                title: AppointmentTile(
-                                                  loadAppointments:
-                                                      _loadAppointments,
-                                                  userUid: this.userUid,
-                                                  appointmentModel: this
-                                                              ._suggestionAppointments
-                                                              .length >
-                                                          0
-                                                      ? this._suggestionAppointments[
-                                                          index]
-                                                      : this._appointmentList[
-                                                          index],
-                                                ),
-                                              )),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                )
-                              : LayoutUtils.buildCircularProgressIndicator(
-                                  context),
+                          child: ReorderableListView.builder(
+                            header: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: Text(
+                                    "Presione os cards abaixo para reordelá-los",
+                                    style: TextStyle(
+                                        fontSize: 17.0,
+                                        color: Theme.of(context).primaryColor)),
+                              ),
+                            ),
+                            onReorder: _reorderAppoitments,
+                            itemCount: this._suggestionAppointments.length > 0
+                                ? this._suggestionAppointments.length
+                                : this._appointmentList.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                key: ValueKey<int>(index),
+                                width: MediaQuery.of(context).size.width * 0.93,
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: ListTile(
+                                          title: AppointmentTile(
+                                            loadAppointments: _loadAppointments,
+                                            userUid: this.userUid,
+                                            appointmentModel: this
+                                                        ._suggestionAppointments
+                                                        .length >
+                                                    0
+                                                ? this._suggestionAppointments[
+                                                    index]
+                                                : this._appointmentList[index],
+                                          ),
+                                        )),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         )
                       ],
                     ),
@@ -148,8 +151,8 @@ class _AppointmentsWaitListScreenState
         ? this._suggestionAppointments
         : this._appointmentList;
 
-    appointments.sort((a, b){
-      if(b.hasPreDiagnosis){
+    appointments.sort((a, b) {
+      if (b.hasPreDiagnosis) {
         return -1;
       }
 

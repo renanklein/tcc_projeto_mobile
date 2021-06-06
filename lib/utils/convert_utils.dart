@@ -62,8 +62,11 @@ class ConvertUtils {
 
   static List mapConfirmedEvents(List events){
     var listOfEvents = [];
+    var now = DateTime.now();
     events.forEach((event){
-      if(event['status'] != "confirmed" || event["status"] != "canceled"){
+      var endTime = event['end'].toString().split(':');
+      var endDate = DateTime(now.year, now.month, now.day, int.tryParse(endTime[0]), int.tryParse(endTime[1]));
+      if((event['status'] != "confirmed" && event["status"] != "canceled") && (now.isBefore(endDate))){
         listOfEvents.add(event);
       }
     });

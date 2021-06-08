@@ -147,16 +147,36 @@ class _AppointmentsWaitListScreenState
   }
 
   List<AppointmentModel> _sortAppointments() {
+    var appointmentsWithPreDiagnosis = <AppointmentModel>[];
     var appointments = this._suggestionAppointments.length > 0
         ? this._suggestionAppointments
         : this._appointmentList;
 
-    appointments.sort((a, b) {
-      if (b.hasPreDiagnosis) {
+
+    appointments.forEach((element) {
+      if(element.hasPreDiagnosis){
+        appointmentsWithPreDiagnosis.add(element);
+      }
+    });
+
+    appointments.removeWhere((element) => element.hasPreDiagnosis);
+
+    appointments.sort((a,b){
+      if(a.appointmentDate.isBefore(b.appointmentDate)){
         return -1;
       }
-
       return 1;
+    });
+
+    appointmentsWithPreDiagnosis.sort((a,b){
+      if(a.appointmentDate.isBefore(b.appointmentDate)){
+        return -1;
+      }
+      return 1;
+    });
+
+    appointmentsWithPreDiagnosis.forEach((element) { 
+      appointments.add(element);
     });
 
     return appointments;

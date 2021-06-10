@@ -70,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              createPacientRoute,
+                              createOrEditPacient,
                               arguments: RouteAppointmentArguments(
                                   routePath: 'Dashboard'),
                             );

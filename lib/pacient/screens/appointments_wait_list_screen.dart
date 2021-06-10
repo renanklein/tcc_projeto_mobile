@@ -74,7 +74,7 @@ class _AppointmentsWaitListScreenState
                   this._suggestionAppointments.length == 0) {
                 return Center(
                   child: Text(
-                    "Não há agendamentos cadastrados",
+                    "Não há atendimentos cadastrados",
                     style: TextStyle(
                         color: Theme.of(context).primaryColor, fontSize: 17.0),
                   ),

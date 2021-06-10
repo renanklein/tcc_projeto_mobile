@@ -241,9 +241,12 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
       case 3:
         return Column(children: [
-          Text(
-            "Paciente : ${medRecordArguments.pacientModel.getNome}",
-            style: TextStyle(fontSize: 16.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Text(
+              "Paciente : ${medRecordArguments.pacientModel.getNome}",
+              style: TextStyle(fontSize: 16.0),
+            ),
           ),
           Flexible(
             child: ListDiagnosisScreen(

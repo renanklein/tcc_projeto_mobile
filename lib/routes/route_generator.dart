@@ -11,7 +11,7 @@ import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/create_pre_dignosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
-import 'package:tcc_projeto_app/pacient/screens/create_pacient_screen.dart';
+import 'package:tcc_projeto_app/pacient/screens/create_or_edit_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/list_pacient_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/appointments_wait_list_screen.dart';
@@ -87,13 +87,14 @@ class RouteGenerator {
         );
 
         break;
-      case createPacientRoute:
+      case createOrEditPacient:
         var arguments = settings.arguments as RouteAppointmentArguments;
 
         return MaterialPageRoute(
-            builder: (_) => CreatePacientScreen(
+            builder: (_) => CreateOrEditPacientScreen(
                   path: arguments?.routePath,
                   appointmentModel: arguments?.appointmentModel,
+                  pacientModel: arguments?.pacientModel,
                 ));
         break;
       case pacientDetailRoute:

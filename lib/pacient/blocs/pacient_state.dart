@@ -7,15 +7,15 @@ class PacientInicialState extends PacientState {
   List<Object> get props => [];
 }
 
-class CreatePacientEventProcessing extends PacientState {
+class CreateOrEditPacientEventProcessing extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }
 
-class CreatePacientEventSuccess extends PacientState {
+class CreateOrEditPacientEventSuccess extends PacientState {
   PacientModel _createdPacient;
 
-  CreatePacientEventSuccess(PacientModel pacientModel) {
+  CreateOrEditPacientEventSuccess(PacientModel pacientModel) {
     this._createdPacient = pacientModel;
   }
 

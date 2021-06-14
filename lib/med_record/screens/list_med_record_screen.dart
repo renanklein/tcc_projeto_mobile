@@ -80,102 +80,101 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      body: BlocProvider<MedRecordBloc>(
-        create: (context) => this._medRecordBloc,
-        child: BlocListener<MedRecordBloc, MedRecordState>(
-          listener: (context, state) {
-            if (state is AuthenticationUnauthenticated) {
-            } else if (state is MedRecordLoadEventSuccess) {}
-          },
-          child: BlocBuilder<MedRecordBloc, MedRecordState>(
-            builder: (context, state) {
-              if (state is CreateMedRecordEventProcessing) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              } else {
-                return SafeArea(
-                  child: Row(
-                    children: <Widget>[
-                      LayoutBuilder(
-                        builder: (context, constraint) {
-                          return SingleChildScrollView(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                  minHeight: constraint.maxHeight),
-                              child: IntrinsicHeight(
-                                child: NavigationRail(
-                                  selectedIndex: _selectedIndex,
-                                  onDestinationSelected: (int index) {
-                                    setState(() {
-                                      _selectedIndex = index;
-                                    });
-                                  },
-                                  labelType: NavigationRailLabelType.selected,
-                                  destinations: [
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.add_circle),
-                                      label: Text('Novo'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.portrait),
-                                      label: Text('Resumo'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.content_paste),
-                                      label: Text('Exames'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.question_answer),
-                                      label: Text('Diagnóstico'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.healing),
-                                      label: Text('Evolução'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.file_upload),
-                                      label: Text('Third'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.add_to_photos),
-                                      label: Text('Third'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.child_friendly),
-                                      label: Text('Ficha RN'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.apps),
-                                      label: Text('Third'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.close),
-                                      label: Text('Third'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.compare),
-                                      //selectedIcon: Icon(Icons.star),
-                                      label: Text('Third'),
-                                    ),
-                                  ],
-                                ),
+      body: BlocListener<MedRecordBloc, MedRecordState>(
+        bloc: this._medRecordBloc,
+        listener: (context, state) {
+          if (state is AuthenticationUnauthenticated) {
+          } else if (state is MedRecordLoadEventSuccess) {}
+        },
+        child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          bloc:this._medRecordBloc,
+          builder: (context, state) {
+            if (state is CreateMedRecordEventProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            } else {
+              return SafeArea(
+                child: Row(
+                  children: <Widget>[
+                    LayoutBuilder(
+                      builder: (context, constraint) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                minHeight: constraint.maxHeight),
+                            child: IntrinsicHeight(
+                              child: NavigationRail(
+                                selectedIndex: _selectedIndex,
+                                onDestinationSelected: (int index) {
+                                  setState(() {
+                                    _selectedIndex = index;
+                                  });
+                                },
+                                labelType: NavigationRailLabelType.selected,
+                                destinations: [
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.add_circle),
+                                    label: Text('Novo'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.portrait),
+                                    label: Text('Resumo'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.content_paste),
+                                    label: Text('Exames'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.question_answer),
+                                    label: Text('Diagnóstico'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.healing),
+                                    label: Text('Evolução'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.file_upload),
+                                    label: Text('Third'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.add_to_photos),
+                                    label: Text('Third'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.child_friendly),
+                                    label: Text('Ficha RN'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.apps),
+                                    label: Text('Third'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.close),
+                                    label: Text('Third'),
+                                  ),
+                                  NavigationRailDestination(
+                                    icon: Icon(Icons.compare),
+                                    //selectedIcon: Icon(Icons.star),
+                                    label: Text('Third'),
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      ),
-                      VerticalDivider(thickness: 1, width: 1),
-                      // This is the main content.
-                      Expanded(
-                        child: _showMedRecord(_selectedIndex, context),
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
-          ),
+                          ),
+                        );
+                      },
+                    ),
+                    VerticalDivider(thickness: 1, width: 1),
+                    // This is the main content.
+                    Expanded(
+                      child: _showMedRecord(_selectedIndex, context),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
         ),
-    ));
+      ));
   }
 
   Widget _showMedRecord(index, context) {

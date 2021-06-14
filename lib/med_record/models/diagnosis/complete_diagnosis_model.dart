@@ -11,6 +11,7 @@ class CompleteDiagnosisModel {
   String _prescriptionModel;
   DateTime _diagnosisDate;
   List<Map> _dynamicFields;
+  DateTime _createdAt;
   int _id;
 
   CompleteDiagnosisModel(
@@ -19,11 +20,13 @@ class CompleteDiagnosisModel {
       String prescription,
       DateTime date,
       List<Map> dynamicFields,
+      DateTime createdAt,
       int id}) {
     this._problemModel = problem;
     this._diagnosisModel = diagnosis;
     this._prescriptionModel = prescription;
     this._diagnosisDate = date;
+    this._createdAt = createdAt;
     dynamicFields == null
         ? this._dynamicFields = <Map>[]
         : this._dynamicFields = dynamicFields;
@@ -35,6 +38,7 @@ class CompleteDiagnosisModel {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
       'prescription': _prescriptionModel,
+      'createdAt' : this._createdAt.millisecondsSinceEpoch,
       'id': this.id,
     };
 
@@ -129,7 +133,7 @@ class CompleteDiagnosisModel {
 
     if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
       this.dynamicFields.forEach((field) {
-        if (field.keys.first != "id") {
+        if (field.keys.first != "id" && field.keys.first != "createdAt") {
           fields.add(Text("${field.keys.first}:${field.values.first}",
           textAlign: TextAlign.justify,
               style: TextStyle(fontSize: 14.0)));
@@ -157,6 +161,7 @@ class CompleteDiagnosisModel {
             mon,
             day,
           ),
+          createdAt: map.containsKey("createdAt") ? DateTime.fromMillisecondsSinceEpoch(map.remove("createdAt") ): null,
           id: map['id']);
 
       map.forEach((key, value) {
@@ -177,7 +182,9 @@ class CompleteDiagnosisModel {
   String get prescription => this._prescriptionModel;
   DateTime get diagnosisDate => this._diagnosisDate;
   List<Map> get dynamicFields => this._dynamicFields;
+  DateTime get createdAt => this._createdAt;
 
   int get id => this._id;
   set setId(int id) => this._id = id;
+  set createdAt(DateTime createdAt) => this._createdAt = createdAt;
 }

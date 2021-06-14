@@ -49,7 +49,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
   @override
   void initState() {
-    this._medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
+    this._medRecordBloc = context.read<MedRecordBloc>();
     var pacientHash =
         SltPattern.retrivepacientHash(pacient.getCpf, pacient.getSalt);
 
@@ -66,6 +66,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
       ),
       key: _scaffoldKey,
       body: BlocListener<MedRecordBloc, MedRecordState>(
+        bloc: this._medRecordBloc,
         listener: (context, state) {
           if (state is PreDiagnosisCreateOrUpdateSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +82,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          bloc: this._medRecordBloc,
           builder: (context, state) {
             if (state is MedRecordEventProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);

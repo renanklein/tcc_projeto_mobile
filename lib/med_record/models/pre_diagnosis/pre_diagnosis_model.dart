@@ -18,6 +18,7 @@ class PreDiagnosisModel {
   DateTime _dtProvavelParto;
   DateTime _dtPreDiagnosis;
   String _appointmentEventDate;
+  DateTime _createdAt;
   List<Map> _dynamicFields;
 
   PreDiagnosisModel(
@@ -35,6 +36,7 @@ class PreDiagnosisModel {
       DateTime dtUltimaMestruacao,
       DateTime dtProvavelParto,
       DateTime dtPreDiagnosis,
+      DateTime createdAt,
       List<Map> dynamicFields}) {
     this._peso = peso;
     this._altura = altura;
@@ -50,6 +52,7 @@ class PreDiagnosisModel {
     this._dtProvavelParto = dtProvavelParto;
     this._dtPreDiagnosis = dtPreDiagnosis;
     this._appointmentEventDate = appointmentEventDate;
+    this._createdAt = createdAt;
     dynamicFields == null
         ? this._dynamicFields = <Map>[]
         : this._dynamicFields = dynamicFields;
@@ -69,7 +72,8 @@ class PreDiagnosisModel {
       'observacao': this._observacao,
       'ultimaMestruacao': this._dtUltimaMestruacao,
       'dtProvavelParto': this._dtProvavelParto,
-      'appointmentEventDate': this._appointmentEventDate
+      'appointmentEventDate': this._appointmentEventDate,
+      'createdAt': this._createdAt.millisecondsSinceEpoch
     };
 
     this
@@ -199,39 +203,40 @@ class PreDiagnosisModel {
         : "";
 
     var prediagnosis = PreDiagnosisModel(
-      peso: map['peso'] is int
-          ? map.remove('peso')
-          : int.parse(map.remove('peso')),
-      altura: map['altura'] is int
-          ? map.remove('altura')
-          : int.parse(map.remove("altura")),
-      imc: map['imc'] is double
-          ? map.remove('imc')
-          : double.parse(map.remove('imc')),
-      paSistolica: map['paSistolica'] is int
-          ? map.remove('paSistolica')
-          : int.parse(map.remove('paSistolica')),
-      pADiastolica: map['pADiastolica'] is int
-          ? map.remove('pADiastolica')
-          : int.parse(map.remove('pADiastolica')),
-      freqCardiaca: map['freqCardiaca'] is int
-          ? map.remove('freqCardiaca')
-          : int.parse(map.remove('freqCardiaca')),
-      freqRepouso: map['freqRepouso'] is int
-          ? map.remove('freqRepouso')
-          : int.parse(map.remove('freqRepouso')),
-      temperatura:
-          temp is double ? map.remove('temperatura') : double.tryParse(temp),
-      glicemia:
-          glicemia is int ? map.remove('glicemia') : int.tryParse(glicemia),
-      observacao: map.remove('observacao'),
-      appointmentEventDate: date,
-      dtPreDiagnosis: new DateTime(
-        year,
-        mon,
-        day,
-      ),
-    );
+        peso: map['peso'] is int
+            ? map.remove('peso')
+            : int.parse(map.remove('peso')),
+        altura: map['altura'] is int
+            ? map.remove('altura')
+            : int.parse(map.remove("altura")),
+        imc: map['imc'] is double
+            ? map.remove('imc')
+            : double.parse(map.remove('imc')),
+        paSistolica: map['paSistolica'] is int
+            ? map.remove('paSistolica')
+            : int.parse(map.remove('paSistolica')),
+        pADiastolica: map['pADiastolica'] is int
+            ? map.remove('pADiastolica')
+            : int.parse(map.remove('pADiastolica')),
+        freqCardiaca: map['freqCardiaca'] is int
+            ? map.remove('freqCardiaca')
+            : int.parse(map.remove('freqCardiaca')),
+        freqRepouso: map['freqRepouso'] is int
+            ? map.remove('freqRepouso')
+            : int.parse(map.remove('freqRepouso')),
+        temperatura:
+            temp is double ? map.remove('temperatura') : double.tryParse(temp),
+        glicemia:
+            glicemia is int ? map.remove('glicemia') : int.tryParse(glicemia),
+        observacao: map.remove('observacao'),
+        appointmentEventDate: date,
+        dtPreDiagnosis: new DateTime(
+          year,
+          mon,
+          day,
+        ),
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(map.remove('createdAt')));
 
     map.entries.forEach((elem) {
       prediagnosis._dynamicFields.add({elem.key: elem.value});
@@ -255,4 +260,7 @@ class PreDiagnosisModel {
   DateTime get getPreDiagnosisDate => _dtPreDiagnosis;
   String get appointmentEventDate => _appointmentEventDate;
   List<Map> get dynamicFields => _dynamicFields;
+  DateTime get createdAt => this._createdAt;
+
+  set createdAt(DateTime createdAt) => this._createdAt = createdAt;
 }

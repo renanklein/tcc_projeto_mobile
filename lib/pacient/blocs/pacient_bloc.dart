@@ -34,13 +34,13 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
   Stream<PacientState> mapEventToState(
     PacientEvent event,
   ) async* {
-    if (event is PacientCreateButtonPressed) {
+    if (event is PacientCreateOrEditButtonPressed) {
       try {
-        yield CreatePacientEventProcessing();
+        yield CreateOrEditPacientEventProcessing();
 
         var cpfList = await this.pacientRepository.getCPFList(event.cpf);
 
-        if (cpfList.isNotEmpty) {
+        if (cpfList.isNotEmpty && !event.isUpdate) {
           yield CPFAlreadyExists();
         } else {
           PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
@@ -57,9 +57,13 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             salt: pacientHashModel.salt,
           );
 
-          await this.pacientRepository.createPacient(pacient: _pacientModel);
+          if(event.isUpdate){
+            await this.pacientRepository.updatePacient(pacient: _pacientModel);
+          } else{
+             await this.pacientRepository.createPacient(pacient: _pacientModel);
+          }
 
-          yield CreatePacientEventSuccess(_pacientModel);
+          yield CreateOrEditPacientEventSuccess(_pacientModel);
         }
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);

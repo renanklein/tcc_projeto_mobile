@@ -20,6 +20,6 @@ const String createDiagnosisRoute = '/createDiagnosis';
 
 //pacient
 const String pacientsRoute = '/pacients';
-const String createPacientRoute = '/createPacient';
+const String createOrEditPacient = '/createPacient';
 const String pacientDetailRoute = '/pacientDetail';
 const String appointmentsViewRoute = '/appointmentView';

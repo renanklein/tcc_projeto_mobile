@@ -2,7 +2,7 @@ part of 'pacient_bloc.dart';
 
 abstract class PacientEvent extends Equatable {}
 
-class PacientCreateButtonPressed extends PacientEvent {
+class PacientCreateOrEditButtonPressed extends PacientEvent {
   final userId;
   final nome;
   final email;
@@ -11,8 +11,9 @@ class PacientCreateButtonPressed extends PacientEvent {
   final cpf;
   final dtNascimento;
   final sexo;
+  final isUpdate;
 
-  PacientCreateButtonPressed({
+  PacientCreateOrEditButtonPressed({
     @required this.userId,
     @required this.nome,
     @required this.email,
@@ -21,6 +22,7 @@ class PacientCreateButtonPressed extends PacientEvent {
     @required this.cpf,
     @required this.dtNascimento,
     @required this.sexo,
+    @required this.isUpdate
   });
 
   @override

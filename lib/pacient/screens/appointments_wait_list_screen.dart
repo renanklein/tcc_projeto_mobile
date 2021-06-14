@@ -36,10 +36,7 @@ class _AppointmentsWaitListScreenState
   void initState() {
     var injector = Injector.appInstance;
 
-    this._pacientRepository = injector.get<PacientRepository>();
-    this._pacientRepository.userId = this.userUid;
-    this._pacientBloc =
-        new PacientBloc(pacientRepository: this._pacientRepository);
+    this._pacientBloc = context.read<PacientBloc>();
 
     _loadAppointments();
 
@@ -56,107 +53,125 @@ class _AppointmentsWaitListScreenState
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
-      body: BlocProvider<PacientBloc>(
-        create: (context) => this._pacientBloc,
-        child: BlocListener<PacientBloc, PacientState>(
-          listener: (context, state) {
-            if (state is AppointmentLoadEventSuccess) {
-              this._appointmentList = state.appointmentsLoaded;
-              this._appointmentList = _sortAppointments();
-            }
-          },
-          child: BlocBuilder<PacientBloc, PacientState>(
-            bloc: this._pacientBloc,
-            builder: (context, state) {
-              if (state is AppointmentsLoading) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              } else if (this._appointmentList.length == 0 &&
-                  this._suggestionAppointments.length == 0) {
-                return Center(
-                  child: Text(
-                    "Não há agendamentos cadastrados",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 17.0),
-                  ),
-                );
-              }
-              return SafeArea(
-                child: Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.98,
-                    child: Column(
-                      children: <Widget>[
-                        SearchBar(
-                            placeholder:
-                                "Digite o nome do paciente para pesquisar",
-                            onChange: onSearchChange,
-                            searchBarController: this._searchBarController),
-                        Expanded(
-                          child: ReorderableListView.builder(
-                            header: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 18.0),
-                                child: Text(
-                                    "Presione os cards abaixo para reordelá-los",
-                                    style: TextStyle(
-                                        fontSize: 17.0,
-                                        color: Theme.of(context).primaryColor)),
-                              ),
-                            ),
-                            onReorder: _reorderAppoitments,
-                            itemCount: this._suggestionAppointments.length > 0
-                                ? this._suggestionAppointments.length
-                                : this._appointmentList.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                key: ValueKey<int>(index),
-                                width: MediaQuery.of(context).size.width * 0.93,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: ListTile(
-                                          title: AppointmentTile(
-                                            loadAppointments: _loadAppointments,
-                                            userUid: this.userUid,
-                                            appointmentModel: this
-                                                        ._suggestionAppointments
-                                                        .length >
-                                                    0
-                                                ? this._suggestionAppointments[
-                                                    index]
-                                                : this._appointmentList[index],
-                                          ),
-                                        )),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+      body: BlocListener<PacientBloc, PacientState>(
+        bloc: this._pacientBloc,
+        listener: (context, state) {
+          if (state is AppointmentLoadEventSuccess) {
+            this._appointmentList = state.appointmentsLoaded;
+            this._appointmentList = _sortAppointments();
+          }
+        },
+        child: BlocBuilder<PacientBloc, PacientState>(
+          bloc: this._pacientBloc,
+          builder: (context, state) {
+            if (state is AppointmentsLoading) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            } else if (this._appointmentList.length == 0 &&
+                this._suggestionAppointments.length == 0) {
+              return Center(
+                child: Text(
+                  "Não há atendimentos cadastrados",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 17.0),
                 ),
               );
-            },
-          ),
+            }
+            return SafeArea(
+              child: Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Column(
+                    children: <Widget>[
+                      SearchBar(
+                          placeholder:
+                              "Digite o nome do paciente para pesquisar",
+                          onChange: onSearchChange,
+                          searchBarController: this._searchBarController),
+                      Expanded(
+                        child: ReorderableListView.builder(
+                          header: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Text(
+                                  "Presione os cards abaixo para reordelá-los",
+                                  style: TextStyle(
+                                      fontSize: 17.0,
+                                      color: Theme.of(context).primaryColor)),
+                            ),
+                          ),
+                          onReorder: _reorderAppoitments,
+                          itemCount: this._suggestionAppointments.length > 0
+                              ? this._suggestionAppointments.length
+                              : this._appointmentList.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              key: ValueKey<int>(index),
+                              width: MediaQuery.of(context).size.width * 0.93,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: ListTile(
+                                        title: AppointmentTile(
+                                          loadAppointments: _loadAppointments,
+                                          userUid: this.userUid,
+                                          appointmentModel: this
+                                                      ._suggestionAppointments
+                                                      .length >
+                                                  0
+                                              ? this._suggestionAppointments[
+                                                  index]
+                                              : this._appointmentList[index],
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
   List<AppointmentModel> _sortAppointments() {
+    var appointmentsWithPreDiagnosis = <AppointmentModel>[];
     var appointments = this._suggestionAppointments.length > 0
         ? this._suggestionAppointments
         : this._appointmentList;
 
-    appointments.sort((a, b) {
-      if (b.hasPreDiagnosis) {
+
+    appointments.forEach((element) {
+      if(element.hasPreDiagnosis){
+        appointmentsWithPreDiagnosis.add(element);
+      }
+    });
+
+    appointments.removeWhere((element) => element.hasPreDiagnosis);
+
+    appointments.sort((a,b){
+      if(a.appointmentDate.isBefore(b.appointmentDate)){
         return -1;
       }
-
       return 1;
+    });
+
+    appointmentsWithPreDiagnosis.sort((a,b){
+      if(a.appointmentDate.isBefore(b.appointmentDate)){
+        return -1;
+      }
+      return 1;
+    });
+
+    appointmentsWithPreDiagnosis.forEach((element) { 
+      appointments.add(element);
     });
 
     return appointments;

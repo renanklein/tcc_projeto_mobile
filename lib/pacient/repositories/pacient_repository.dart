@@ -36,6 +36,18 @@ class PacientRepository extends ChangeNotifier {
     }
   }
 
+  Future updatePacient({
+    @required PacientModel pacient
+  })async{
+    var doc = await this._pacientsCollectionReference
+          .where("cpf", isEqualTo: pacient.getCpf)
+          .get();
+
+    await this._pacientsCollectionReference.doc(doc.docs[0].id)
+              .update(pacient.toMap());
+          
+  }
+
   Future<PacientModel> getPacientByNameAndPhone(
       AppointmentModel appointmentModel) async {
     PacientModel pacientModel;

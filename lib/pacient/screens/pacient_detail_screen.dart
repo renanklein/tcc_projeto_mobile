@@ -29,18 +29,16 @@ class _PacientDetailScreenState extends State<PacientDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: BlocProvider<PacientBloc>(
-        create: (context) => this._pacientBloc,
-        child: BlocListener<PacientBloc, PacientState>(
-          listener: (context, state) {},
-          child: BlocBuilder(
-            bloc: this._pacientBloc,
-            builder: (context, state) {
-              return SafeArea(
-                child: pacientDetail(this.getPacient, context),
-              );
-            },
-          ),
+      child: BlocListener<PacientBloc, PacientState>(
+        bloc: this._pacientBloc,
+        listener: (context, state) {},
+        child: BlocBuilder(
+          bloc: this._pacientBloc,
+          builder: (context, state) {
+            return SafeArea(
+              child: pacientDetail(this.getPacient, context),
+            );
+          },
         ),
       ),
     );

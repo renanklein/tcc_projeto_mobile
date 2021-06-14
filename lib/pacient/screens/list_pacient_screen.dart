@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
+import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
@@ -33,9 +33,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
 
   @override
   void initState() {
-    this._pacientRepository = Injector.appInstance.get<PacientRepository>();
-    this._pacientRepository.userId = this.userUid;
-    this._pacientBloc = PacientBloc(pacientRepository: this._pacientRepository);
+    this._pacientBloc = context.read<PacientBloc>();
 
     this._pacientBloc.add(PacientLoad());
 
@@ -44,11 +42,6 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _searchBarController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,62 +63,60 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             Navigator.of(context)
-                .pushNamed(createPacientRoute)
+                .pushNamed(createOrEditPacient)
                 .then((value) => this._pacientBloc.add(PacientLoad()));
           },
         ),
       ),
-      body: BlocProvider<PacientBloc>(
-        create: (context) => this._pacientBloc,
-        child: BlocListener<PacientBloc, PacientState>(
-          listener: (context, state) {
-            if (state is PacientLoadEventSuccess) {
-              pacientsList = state.pacientsLoaded;
-            } else if (state is PacientLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(
-                    Theme.of(context).primaryColor,
-                  ),
+      body: BlocListener<PacientBloc, PacientState>(
+        bloc: this._pacientBloc,
+        listener: (context, state) {
+          if (state is PacientLoadEventSuccess) {
+            pacientsList = state.pacientsLoaded;
+          } else if (state is PacientLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(
+                  Theme.of(context).primaryColor,
                 ),
-              );
-            }
-          },
-          child: BlocBuilder<PacientBloc, PacientState>(
-            bloc: this._pacientBloc,
-            builder: (context, state) {
-              return SafeArea(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.98,
-                      child: Column(
-                        children: <Widget>[
-                          SearchBar(
-                              onChange: onSearchBarChange,
-                              placeholder: 'Digite um nome aqui para pesquisar',
-                              searchBarController: _searchBarController),
-                          Expanded(
-                            child: (pacientsList != null)
-                                ? _buildPacientView(
-                                    pacientsList, pacientsSorted)
-                                : Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).primaryColor,
-                                      ),
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<PacientBloc, PacientState>(
+          bloc: this._pacientBloc,
+          builder: (context, state) {
+            return SafeArea(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.98,
+                    child: Column(
+                      children: <Widget>[
+                        SearchBar(
+                            onChange: onSearchBarChange,
+                            placeholder: 'Digite um nome aqui para pesquisar',
+                            searchBarController: _searchBarController),
+                        Expanded(
+                          child: (pacientsList != null)
+                              ? _buildPacientView(
+                                  pacientsList, pacientsSorted)
+                              : Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).primaryColor,
                                     ),
                                   ),
-                          )
-                        ],
-                      ),
+                                ),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -186,6 +177,11 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
+              // onLongPress: () {
+              //   Navigator.of(context).pushNamed(createOrEditPacient,
+              //       arguments: RouteAppointmentArguments(
+              //           routePath: "Edit", pacientModel: pacient));
+              // },
               onTap: () {
                 Navigator.of(context).pushNamed(
                   medRecordRoute,

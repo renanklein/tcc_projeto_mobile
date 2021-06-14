@@ -45,6 +45,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   Widget build(BuildContext context) {
     return Container(
       child: BlocListener<MedRecordBloc, MedRecordState>(
+        bloc: this._medRecordBloc,
         listener: (context, state) {
           if (state is DiagnosisLoadEventSuccess) {}
         },
@@ -116,6 +117,28 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       BuildContext context, PacientModel pacient) {
     if (medRecordModel.getDiagnosisList == null) return null;
 
+    var createdToday = medRecordModel.getDiagnosisList.where((element) => element.createdAt.day == DateTime.now().day).toList();
+
+    medRecordModel.getDiagnosisList.removeWhere((element) => element.createdAt.day == DateTime.now().day);
+
+    createdToday.sort((a, b){
+      if(a.createdAt.isBefore(b.createdAt)){
+        return 1;
+      }
+
+      return -1;
+    });
+
+    medRecordModel.getDiagnosisList.sort((a, b) {
+      if (a.diagnosisDate.isBefore(b.diagnosisDate)) {
+        return -1;
+      }
+
+      return 1;
+    });
+
+    medRecordModel.getDiagnosisList.insertAll(0, createdToday);    
+
     var fields = DiagnosisTile.fromDiagnosis(
         medRecordModel.getDiagnosisList, context, refreshDiagnosis, pacient);
 
@@ -139,6 +162,28 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   List<Widget> listPreDiagnosisScreen(
       MedRecordModel medRecordModel, PacientModel pacientModel) {
     if (medRecordModel.getPreDiagnosisList == null) return null;
+
+    var createdToday = medRecordModel.getPreDiagnosisList.where((element) => element.createdAt.day == DateTime.now().day).toList();
+
+    medRecordModel.getPreDiagnosisList.removeWhere((element) => element.createdAt.day == DateTime.now().day);
+
+    createdToday.sort((a, b){
+      if(a.createdAt.isBefore(b.createdAt)){
+        return 1;
+      }
+
+      return -1;
+    });
+
+    medRecordModel.getPreDiagnosisList.sort((a, b) {
+      if (a.getPreDiagnosisDate.isBefore(b.getPreDiagnosisDate)) {
+        return -1;
+      }
+
+      return 1;
+    });
+
+    medRecordModel.getPreDiagnosisList.insertAll(0, createdToday);
 
     var fields = DiagnosisTile.fromPreDiagnosisList(
         medRecordModel.getPreDiagnosisList, refreshDiagnosis, pacientModel);

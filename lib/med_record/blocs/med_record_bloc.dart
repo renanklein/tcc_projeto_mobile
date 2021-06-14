@@ -93,6 +93,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
                 ? dateFormat.format(event.dtAppointmentEvent)
                 : event.dtAppointmentEvent,
             dynamicFields: event.dynamicFields,
+            createdAt: DateTime.now(),
             dtPreDiagnosis: event.dtPrediagnosis);
 
         await this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
@@ -129,6 +130,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
               completeDiagnosisModel: diagnosisModel,
               date: event.diagnosisDate);
         } else {
+          diagnosisModel.createdAt = now.toLocal();
           await this.medRecordRepository.createPacientDiagnosis(
               completeDiagnosisModel: diagnosisModel, date: hoje);
         }

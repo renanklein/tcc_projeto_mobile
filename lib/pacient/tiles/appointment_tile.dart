@@ -159,7 +159,7 @@ class AppointmentTile extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.pushReplacementNamed(
                                     context,
-                                    createPacientRoute,
+                                    createOrEditPacient,
                                     arguments: RouteAppointmentArguments(
                                         routePath: preDiagnosisRoute,
                                         appointmentModel:

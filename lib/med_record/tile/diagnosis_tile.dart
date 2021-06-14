@@ -117,10 +117,6 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
           ? Container()
           : _buildButton("Enviar prescrição por email", () async {
               await this._processPrescriptionEmail();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Prescrição enviada com sucesso!"),
-                backgroundColor: Colors.green,
-              ));
             }),
 
       LayoutUtils.buildVerticalSpacing(5.0),
@@ -160,10 +156,6 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                 LayoutUtils.buildVerticalSpacing(3.0),
                 _buildButton("Enviar prescrição por email", () async {
                   await this._processPrescriptionEmail();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Prescrição enviada com sucesso!"),
-                    backgroundColor: Colors.green,
-                  ));
                 }),
                 LayoutUtils.buildVerticalSpacing(5.0)
               ];
@@ -202,15 +194,10 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
             if (state is MedRecordEventProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.only(left: 10.0),
-                child: ExpansionTile(
-                    title: Text(dateAsString), 
-                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: this.children),
-              ),
-            );
+            return ExpansionTile(
+                title: Text(dateAsString,textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)), 
+                expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                children: this.children);
           },
         ));
   }

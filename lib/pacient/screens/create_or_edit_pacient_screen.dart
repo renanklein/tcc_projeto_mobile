@@ -12,28 +12,32 @@ import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/login/repositories/user_repository.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
-class CreatePacientScreen extends StatefulWidget {
+class CreateOrEditPacientScreen extends StatefulWidget {
   final AppointmentModel appointmentModel;
   final String path;
+  final PacientModel pacientModel;
 
-  CreatePacientScreen({this.path, this.appointmentModel});
+  CreateOrEditPacientScreen({this.path, this.appointmentModel, this.pacientModel});
 
   @override
-  _CreatePacientScreenState createState() => _CreatePacientScreenState();
+  _CreateOrEditPacientScreenState createState() => _CreateOrEditPacientScreenState();
 }
 
-class _CreatePacientScreenState extends State<CreatePacientScreen> {
+class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
   PacientBloc _pacientBloc;
   //PacientRepository _pacientRepository;
   UserModel _userModel;
 
   String get getPath => this.widget.path;
   AppointmentModel get appointmentModel => this.widget.appointmentModel;
+  PacientModel get pacient => this.widget.pacientModel;
 
   String sexoController = 'Masculino';
   String tipoDocumentoController = 'RG';
@@ -47,6 +51,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 
   final userRepository = Injector.appInstance.get<UserRepository>();
 
+
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final _createPacientFormKey = GlobalKey<FormState>();
@@ -59,10 +64,23 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
 
   @override
   void initState() {
-    this._pacientBloc = BlocProvider.of<PacientBloc>(context);
+    this._userModel = Injector.appInstance.get<UserModel>();
+    var pacientRepository = Injector.appInstance.get<PacientRepository>();
+    pacientRepository.userId = this._userModel.uid;
+    this._pacientBloc = PacientBloc(pacientRepository: pacientRepository);
+    this._pacientBloc = context.read<PacientBloc>();
     this.nomeController.text = this?.appointmentModel?.nome;
     this.telefoneController.text = this?.appointmentModel?.telefone;
-    this._userModel = Injector.appInstance.get<UserModel>();
+
+    if(this.pacient != null){
+      nomeController.text = this.pacient.getNome;
+      emailController.text = this.pacient.getEmail;
+      telefoneController.text = this.pacient.getTelefone;
+      identidadeController.text = this.pacient.getRg;
+      cpfController.text = this.pacient.getCpf;
+      dtNascController.text = this.pacient.getDtNascimento;
+    }
+
     super.initState();
   }
 
@@ -71,12 +89,13 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Cadastrar Paciente"),
+        title: Text(this.pacient != null ? "Editar paciente" : "Cadastrar Paciente"),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
       ),
       body: BlocListener<PacientBloc, PacientState>(
+        bloc: this._pacientBloc,
         listener: (context, state) {
           if (state is AuthenticationUnauthenticated) {
             Navigator.pushReplacementNamed(context, '/');
@@ -88,7 +107,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
               Colors.white
             ));
           }
-          else if (state is CreatePacientEventSuccess) {
+          else if (state is CreateOrEditPacientEventSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
               context,
               "Paciente Cadastrado com Sucesso",
@@ -131,8 +150,10 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
           }
         },
         child:
-            BlocBuilder<PacientBloc, PacientState>(builder: (context, state) {
-          if (state is CreatePacientEventProcessing) {
+            BlocBuilder<PacientBloc, PacientState>(
+              bloc: this._pacientBloc,
+              builder: (context, state) {
+          if (state is CreateOrEditPacientEventProcessing) {
             return LayoutUtils.buildCircularProgressIndicator(context);
           } else {
             return SafeArea(
@@ -154,12 +175,14 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 'Nome:',
                                 'Insira o nome do paciente',
                                 'Por Favor, insira o nome do paciente',
+                                false
                               ),
                               pacienteFormField(
                                 emailController,
                                 'E-mail:',
                                 'Insira o e-mail do paciente',
                                 'Por Favor, insira um e-mail válido',
+                                false
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(
@@ -235,6 +258,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 'Nº Doc:',
                                 'Insira o número do Documento do paciente',
                                 'Por Favor, insira um número válido',
+                                false
                               ),
 
                               pacienteFormField(
@@ -242,6 +266,7 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                 'CPF:',
                                 'Insira o CPF do paciente',
                                 'Por Favor, insira um CPF válido',
+                                this.pacient != null ? true : false
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(
@@ -303,8 +328,10 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                     if (_createPacientFormKey.currentState
                                             .validate() &&
                                         sexoController != '') {
+                                          var isUpdate = this.pacient != null ? 
+                                          true : false;
                                       this._pacientBloc.add(
-                                            PacientCreateButtonPressed(
+                                            PacientCreateOrEditButtonPressed(
                                               userId: (_userModel.getAccess ==
                                                       "ASSISTANT")
                                                   ? _userModel.getMedicId
@@ -320,11 +347,12 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
                                               dtNascimento:
                                                   dtNascController.text,
                                               sexo: sexoController,
+                                              isUpdate: isUpdate
                                             ),
                                           );
                                     }
                                   },
-                                  child: Text('Cadastrar Paciente'),
+                                  child: Text(this.pacient != null ? 'Editar Paciente' :'Cadastrar Paciente'),
                                 ),
                               ),
                             ],
@@ -343,12 +371,13 @@ class _CreatePacientScreenState extends State<CreatePacientScreen> {
   }
 }
 
-Widget pacienteFormField(controller, label, hint, errorText) {
+Widget pacienteFormField(controller, label, hint, errorText, readOnly) {
   var mask = MaskTextInputFormatter(
       mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
   return Padding(
     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: TextFormField(
+      readOnly: readOnly,
       inputFormatters: label == "CPF:" ? [mask] : null,
       controller: controller,
       decoration: InputDecoration(

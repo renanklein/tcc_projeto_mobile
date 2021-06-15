@@ -5,6 +5,7 @@ import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
+import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ConfirmEventsScreen extends StatefulWidget {
@@ -15,12 +16,12 @@ class ConfirmEventsScreen extends StatefulWidget {
 class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
   AgendaBloc _agendaBloc;
   List _eventsConfirmed = [];
+  TextEditingController _dateController = TextEditingController();
   @override
   void initState() {
     this._agendaBloc = BlocProvider.of<AgendaBloc>(context);
     var userModel = Injector.appInstance.get<UserModel>();
     this._agendaBloc.agendaRepository.userId = userModel.uid;
-    this._agendaBloc.add(AgendaEventsToBeConfirmed());
     super.initState();
   }
 
@@ -43,15 +44,12 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
             builder: (context, state) {
               if (state is AgendaEventsToBeConfirmedProcessing) {
                 return LayoutUtils.buildCircularProgressIndicator(context);
-              }
-              else if (this._eventsConfirmed.isEmpty){
+              } else if (this._eventsConfirmed.isEmpty) {
                 return Center(
                   child: Text(
                     "Não há agendamentos para hoje",
                     style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 17.0
-                    ),
+                        color: Theme.of(context).primaryColor, fontSize: 17.0),
                   ),
                 );
               }
@@ -59,15 +57,13 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
                 padding: const EdgeInsets.all(10.0),
                 child: ListView(
                   children: [
-                    Center(
-                      child: Text(
-                          "Clique no card para editar ou confirmar a consulta",
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 16.0)),
+                    DateTimeFormField(
+                      fieldPlaceholder: "Escolha o dia dos agendamentos",
+                      dateTimeController: _dateController,
+                      onSelectedDate: (){this._agendaBloc.add(AgendaEventsToBeConfirmed(eventDate: this._dateController.text));},
                     ),
                     LayoutUtils.buildVerticalSpacing(10.0),
-                    ..._buildEvents(this._eventsConfirmed)
+                    ..._buildEvents(this._eventsConfirmed, state)
                   ],
                 ),
               );
@@ -76,8 +72,16 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
         ));
   }
 
-  List<Widget> _buildEvents(List events) {
+  List<Widget> _buildEvents(List events, AgendaState state) {
     var widgets = <Widget>[];
+    if (state is! AgendaEventsToBeConfirmedSuccess) {
+      return widgets;
+    }
+    widgets.add(Center(
+      child: Text("Clique no card para editar ou confirmar a consulta",
+          style:
+              TextStyle(color: Theme.of(context).primaryColor, fontSize: 16.0)),
+    ));
     events.forEach((element) {
       widgets.add(EventToBeConfirmedTile(
           refreshList: refreshList,
@@ -90,9 +94,9 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
     return widgets;
   }
 
-  void refreshList(bool boolArg){
+  void refreshList(bool boolArg) {
     setState(() {
-      this._agendaBloc.add(AgendaEventsToBeConfirmed());
+      //this._agendaBloc.add(AgendaEventsToBeConfirmed());
     });
   }
 }
@@ -103,19 +107,24 @@ class EventToBeConfirmedTile extends StatelessWidget {
   final String eventTime;
   final String eventDescription;
   EventToBeConfirmedTile(
-      {@required this.eventTime, @required this.eventDescription, @required this.event, @required this.refreshList});
+      {@required this.eventTime,
+      @required this.eventDescription,
+      @required this.event,
+      @required this.refreshList});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventEditorScreen(
-          selectedDay: DateTime.now(),
-          isEdit: true,
-          selectedTime: this.eventTime,
-          refreshAgenda: this.refreshList,
-          event: this.event,
-        )))
-        .then((value) => this.refreshList(false));
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => EventEditorScreen(
+                      selectedDay: DateTime.now(),
+                      isEdit: true,
+                      selectedTime: this.eventTime,
+                      refreshAgenda: this.refreshList,
+                      event: this.event,
+                    )))
+            .then((value) => this.refreshList(false));
       },
       child: Container(
         width: double.infinity,

@@ -228,6 +228,21 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             isNumber: true,
                           ),
                           FunctionTextFormField(
+                            controller: temperaturaController,
+                            label: 'Temperatura',
+                            hint: 'Insira o valor da Temperatura do paciente',
+                            errorText: 'Por Favor, Insira a temperatura',
+                            onChangedFunction: (value) {},
+                            validatorFunction: (value) {
+                              if (isNumeric(temperaturaController.text)) {
+                                return null;
+                              }
+
+                              return "Por favor insira um valor numérico para temperatura";
+                            },
+                            isNumber: true,
+                          ),
+                          FunctionTextFormField(
                             controller: freqCardiacaController,
                             label: 'Freq. Cardíaca',
                             hint:
@@ -251,22 +266,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             errorText:
                                 'Por Favor, Insira um valor para a Freq. Repouso',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value) {
-                              if (isNumeric(freqRepousoController.text)) {
-                                return null;
-                              }
-
-                              return "Por favor insira um valor numérico para Freq. Repouso";
-                            },
-                            isNumber: true,
-                          ),
-                          FunctionTextFormField(
-                            controller: temperaturaController,
-                            label: 'Temperatura',
-                            hint: 'Insira o valor da Temperatura do paciente',
-                            errorText: 'Por Favor, Insira a temperatura',
-                            onChangedFunction: (value) {},
-                            validatorFunction: (value) {},
+                            validatorFunction: (value){},
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -312,7 +312,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                 pADiastolicaController.text),
                                             freqCardiaca: int.parse(
                                                 freqCardiacaController.text),
-                                            freqRepouso: int.parse(
+                                            freqRepouso: int.tryParse(
                                                 freqRepousoController.text),
                                             temperatura: double.tryParse(
                                                 temperaturaController.text),

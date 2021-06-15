@@ -46,7 +46,7 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
         pASistolica: preDiagnosis.pASistolica,
         pADiastolica: preDiagnosis.pADiastolica,
         freqCardiaca: preDiagnosis.freqCardiaca,
-        freqRepouso: preDiagnosis.freqRepouso,
+        freqRepouso: preDiagnosis?.freqRepouso,
         temperatura: preDiagnosis?.temperatura,
         glicemia: preDiagnosis?.glicemia,
         obs: preDiagnosis.observacao,

@@ -80,6 +80,10 @@ class AgendaEventConfirmButtomPressed extends AgendaEvent {
 }
 
 class AgendaEventsToBeConfirmed extends AgendaEvent{
+  final String eventDate;
+
+  AgendaEventsToBeConfirmed({@required this.eventDate});
+  
   @override
   List<Object> get props => [];
 

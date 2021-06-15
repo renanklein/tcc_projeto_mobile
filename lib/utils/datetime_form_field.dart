@@ -6,15 +6,17 @@ import 'package:flutter/widgets.dart';
 class DateTimeFormField extends StatelessWidget {
   final dateTimeController;
   final fieldPlaceholder;
+  final Function onSelectedDate;
 
   DateTimeFormField(
-      {@required this.dateTimeController, @required this.fieldPlaceholder});
+      {@required this.dateTimeController, @required this.fieldPlaceholder, this.onSelectedDate});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         DateTimeField(
+          onEditingComplete: this.onSelectedDate(),
           controller: dateTimeController,
           validator: (value) {
             if (value == null) {
@@ -28,7 +30,8 @@ class DateTimeFormField extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(32.0)),
               ),
-              hintText: fieldPlaceholder),
+              hintText: fieldPlaceholder,
+              floatingLabelBehavior:  FloatingLabelBehavior.auto),
           format: DateFormat('dd-MM-yyyy'),
           onShowPicker: (context, currentValue) {
             return showDatePicker(

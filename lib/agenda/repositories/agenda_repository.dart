@@ -65,19 +65,14 @@ class AgendaRepository {
     return <String>[];
   }
 
-  Future<List> getEventsToBeConfirmed() async {
-    var date = DateTime.now();
-    var dateAsString = DateFormat("yyyy-MM-dd").format(date);
-
+  Future<List> getEventsToBeConfirmed(String date) async {
     var eventsList = [];
     var result = await firestore
         .collection("agenda")
         .doc(this._userId)
         .collection("events")
-        .doc(dateAsString)
+        .doc(date)
         .get();
-
-    var test = result.data();
 
     if (result.data() != null && result.data().containsKey("events")) {
       eventsList = ConvertUtils.mapConfirmedEvents(result.data()["events"]);

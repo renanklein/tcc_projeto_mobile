@@ -163,12 +163,15 @@ class PreDiagnosisModel {
           : Container(),
       Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
           textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      this.observacao.isNotEmpty
-          ? Text("Observacao: ${this?.observacao?.toString()}",
+      this.freqRepouso != null
+          ? Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
               textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
-          : Container()
+          : Container(),
+      if (this.observacao != null && this.observacao.isNotEmpty)
+        Text("Observacao: ${this?.observacao?.toString()}",
+            textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
+      else
+        Container()
     ];
 
     if (this._dynamicFields != null && this._dynamicFields.isNotEmpty) {
@@ -178,7 +181,8 @@ class PreDiagnosisModel {
             field.keys.first != "dtProvavelParto" &&
             field.keys.first != "glicemia" &&
             field.keys.first != "temperatura" &&
-            field.keys.first != "observacao") {
+            field.keys.first != "observacao" &&
+            field.keys.first != "freqRepouso") {
           fields.add(Text("${field.keys.first}:${field.values.first}",
               style: TextStyle(fontSize: 17.0)));
         }
@@ -194,6 +198,11 @@ class PreDiagnosisModel {
     int year = int.parse(date.split('/')[2]);
     int mon = int.parse(date.split('/')[1]);
     int day = int.parse(date.split('/')[0]);
+
+    var freqRepouso =
+        map.containsKey("freqRepouso") && map["freqRepouso"] != null
+            ? map["freqRepouso"]
+            : "";
 
     var temp = map.containsKey('temperatura') && map['temperatura'] != null
         ? map['temperatura']
@@ -221,9 +230,9 @@ class PreDiagnosisModel {
         freqCardiaca: map['freqCardiaca'] is int
             ? map.remove('freqCardiaca')
             : int.parse(map.remove('freqCardiaca')),
-        freqRepouso: map['freqRepouso'] is int
-            ? map.remove('freqRepouso')
-            : int.parse(map.remove('freqRepouso')),
+        freqRepouso: freqRepouso is int
+            ? map.remove("freqRepouso")
+            : int.tryParse(freqRepouso),
         temperatura:
             temp is double ? map.remove('temperatura') : double.tryParse(temp),
         glicemia:
@@ -235,8 +244,9 @@ class PreDiagnosisModel {
           mon,
           day,
         ),
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(map.remove('createdAt')));
+        createdAt: map.containsKey("createdAt")
+            ? DateTime.fromMillisecondsSinceEpoch(map.remove('createdAt'))
+            : null);
 
     map.entries.forEach((elem) {
       prediagnosis._dynamicFields.add({elem.key: elem.value});

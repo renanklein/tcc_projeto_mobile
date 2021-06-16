@@ -44,7 +44,7 @@ class MedRecordRepository {
     var diagnosisList = await getCompleteDiagnosis(date: date);
     var updatedDiagnosisList = diagnosisList.map((diagnosis) {
       if (diagnosis['id'] == completeDiagnosisModel.id) {
-        completeDiagnosisModel.createdAt = diagnosis["createdAt"];
+        completeDiagnosisModel.createdAt = DateTime.fromMillisecondsSinceEpoch(diagnosis["createdAt"]);
         return completeDiagnosisModel.toMap();
       }
 
@@ -86,12 +86,11 @@ class MedRecordRepository {
 
   Future setOverviewByHash(String pacientHash, String resumo) async {
     try {
-      MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
 
       await document.set(
         {
-          'overview': resumo,
+          'medRecordOverview': resumo,
         },
         SetOptions(merge: true),
       );

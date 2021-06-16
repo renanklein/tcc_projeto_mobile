@@ -112,7 +112,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       try{
         yield AgendaEventsToBeConfirmedProcessing();
 
-        var events = await this.agendaRepository.getEventsToBeConfirmed();
+        var splited = event.eventDate.split("-");
+
+        var events = await this.agendaRepository.getEventsToBeConfirmed("${splited[2]}-${splited[1]}-${splited[0]}");
 
         yield AgendaEventsToBeConfirmedSuccess(eventsConfirmed: events);
 

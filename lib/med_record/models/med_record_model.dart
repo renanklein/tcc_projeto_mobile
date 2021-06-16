@@ -36,7 +36,7 @@ class MedRecordModel {
     List<PreDiagnosisModel> _preDiagnosisList = [];
 
     map.keys.forEach((k) {
-      if (k != 'created') {
+      if (k != 'created' && k != 'medRecordOverview') {
         if (map[k]['fulldiagnosis'] != null &&
             map[k]['fulldiagnosis'].isNotEmpty) {
           List<CompleteDiagnosisModel> diagnosisModels =

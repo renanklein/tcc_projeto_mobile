@@ -142,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                           },
                           child: _dashboardItem(
                             Icons.library_add,
-                            'Agendamentos Futuros',
+                            'Pré Diagnóstico',
                             0xFF1A237E,
                           ),
                         ),

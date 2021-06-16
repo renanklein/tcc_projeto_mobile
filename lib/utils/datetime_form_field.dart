@@ -16,7 +16,9 @@ class DateTimeFormField extends StatelessWidget {
     return Column(
       children: <Widget>[
         DateTimeField(
-          onEditingComplete: this.onSelectedDate(),
+          onChanged: (value){
+            this.onSelectedDate();
+          },
           controller: dateTimeController,
           validator: (value) {
             if (value == null) {

@@ -61,7 +61,7 @@ class RouteGenerator {
         break;
       case confirmEvent:
         if (userModel.getAccess == "MEDIC") {
-          return MaterialPageRoute(builder: (_) => ConfirmEventsScreen());
+          return MaterialPageRoute(builder: (_) => ConfirmEventsScreen(""));
         } else {
           return _notAllowedAccess();
         }

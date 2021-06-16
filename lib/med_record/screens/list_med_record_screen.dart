@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/tile/overview_tile.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_diagnosis_screen.dart';
 import 'package:tcc_projeto_app/pacient/screens/pacient_detail_screen.dart';
@@ -74,107 +75,107 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Prontuário Médico"),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        elevation: 0.0,
-      ),
-      body: BlocListener<MedRecordBloc, MedRecordState>(
-        bloc: this._medRecordBloc,
-        listener: (context, state) {
-          if (state is AuthenticationUnauthenticated) {
-          } else if (state is MedRecordLoadEventSuccess) {}
-        },
-        child: BlocBuilder<MedRecordBloc, MedRecordState>(
-          bloc:this._medRecordBloc,
-          builder: (context, state) {
-            if (state is CreateMedRecordEventProcessing) {
-              return LayoutUtils.buildCircularProgressIndicator(context);
-            } else {
-              return SafeArea(
-                child: Row(
-                  children: <Widget>[
-                    LayoutBuilder(
-                      builder: (context, constraint) {
-                        return SingleChildScrollView(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minHeight: constraint.maxHeight),
-                            child: IntrinsicHeight(
-                              child: NavigationRail(
-                                selectedIndex: _selectedIndex,
-                                onDestinationSelected: (int index) {
-                                  setState(() {
-                                    _selectedIndex = index;
-                                  });
-                                },
-                                labelType: NavigationRailLabelType.selected,
-                                destinations: [
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.add_circle),
-                                    label: Text('Novo'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.portrait),
-                                    label: Text('Resumo'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.content_paste),
-                                    label: Text('Exames'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.question_answer),
-                                    label: Text('Diagnóstico'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.healing),
-                                    label: Text('Evolução'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.file_upload),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.add_to_photos),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.child_friendly),
-                                    label: Text('Ficha RN'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.apps),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.close),
-                                    label: Text('Third'),
-                                  ),
-                                  NavigationRailDestination(
-                                    icon: Icon(Icons.compare),
-                                    //selectedIcon: Icon(Icons.star),
-                                    label: Text('Third'),
-                                  ),
-                                ],
+        appBar: AppBar(
+          title: Text("Prontuário Médico"),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0.0,
+        ),
+        body: BlocListener<MedRecordBloc, MedRecordState>(
+          bloc: this._medRecordBloc,
+          listener: (context, state) {
+            if (state is AuthenticationUnauthenticated) {
+            } else if (state is MedRecordLoadEventSuccess) {}
+          },
+          child: BlocBuilder<MedRecordBloc, MedRecordState>(
+            bloc: this._medRecordBloc,
+            builder: (context, state) {
+              if (state is CreateMedRecordEventProcessing) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              } else {
+                return SafeArea(
+                  child: Row(
+                    children: <Widget>[
+                      LayoutBuilder(
+                        builder: (context, constraint) {
+                          return SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minHeight: constraint.maxHeight),
+                              child: IntrinsicHeight(
+                                child: NavigationRail(
+                                  selectedIndex: _selectedIndex,
+                                  onDestinationSelected: (int index) {
+                                    setState(() {
+                                      _selectedIndex = index;
+                                    });
+                                  },
+                                  labelType: NavigationRailLabelType.selected,
+                                  destinations: [
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.add_circle),
+                                      label: Text('Novo'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.portrait),
+                                      label: Text('Resumo'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.content_paste),
+                                      label: Text('Exames'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.question_answer),
+                                      label: Text('Diagnóstico'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.healing),
+                                      label: Text('Evolução'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.file_upload),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.add_to_photos),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.child_friendly),
+                                      label: Text('Ficha RN'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.apps),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.close),
+                                      label: Text('Third'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.compare),
+                                      //selectedIcon: Icon(Icons.star),
+                                      label: Text('Third'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    VerticalDivider(thickness: 1, width: 1),
-                    // This is the main content.
-                    Expanded(
-                      child: _showMedRecord(_selectedIndex, context),
-                    ),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
-      ));
+                          );
+                        },
+                      ),
+                      VerticalDivider(thickness: 1, width: 1),
+                      // This is the main content.
+                      Expanded(
+                        child: _showMedRecord(_selectedIndex, context),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ));
   }
 
   Widget _showMedRecord(index, context) {
@@ -183,6 +184,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return ListView(
           shrinkWrap: true,
           children: [
+            OverviewTile(
+              pacientCpf: this.medRecordArguments.pacientModel.getCpf,
+              pacientSalt: this.medRecordArguments.pacientModel.getSalt,
+            ),
             PacientDetailScreen(
               pacient: medRecordArguments.pacientModel,
             ),
@@ -266,8 +271,10 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                       .pushNamed(createDiagnosisRoute)
                       .then((value) => this._medRecordBloc.add(
                             DiagnosisLoad(
-                              pacientCpf: this.medRecordArguments.pacientModel.getCpf,
-                              pacientSalt: this.medRecordArguments.pacientModel.getSalt,
+                              pacientCpf:
+                                  this.medRecordArguments.pacientModel.getCpf,
+                              pacientSalt:
+                                  this.medRecordArguments.pacientModel.getSalt,
                             ),
                           ));
                 }),

@@ -94,6 +94,14 @@ class MedRecordEventProcessing extends MedRecordState {
 }
 
 class OverviewCreateOrUpdateSuccess extends MedRecordState {
+  String _medOverview;
+
+  OverviewCreateOrUpdateSuccess({@required String overview}) {
+    this._medOverview = overview;
+  }
+
+  String get changedOverview => this._medOverview;
+
   @override
   List<Object> get props => [];
 }

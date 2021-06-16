@@ -147,7 +147,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             .medRecordRepository
             .setOverviewByHash(event.getPacientHash, event.overview);
 
-        yield OverviewCreateOrUpdateSuccess();
+        yield OverviewCreateOrUpdateSuccess(overview: event.overview);
       } catch (error, stack_trace) {
         yield OverviewCreateOrUpdateFail();
       }

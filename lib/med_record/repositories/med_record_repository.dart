@@ -86,12 +86,11 @@ class MedRecordRepository {
 
   Future setOverviewByHash(String pacientHash, String resumo) async {
     try {
-      MedRecordModel medRecord;
       var document = _medRecordCollectionReference.doc(pacientHash);
 
       await document.set(
         {
-          'overview': resumo,
+          'medRecordOverview': resumo,
         },
         SetOptions(merge: true),
       );

@@ -42,7 +42,6 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,8 +99,7 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                             searchBarController: _searchBarController),
                         Expanded(
                           child: (pacientsList != null)
-                              ? _buildPacientView(
-                                  pacientsList, pacientsSorted)
+                              ? _buildPacientView(pacientsList, pacientsSorted)
                               : Center(
                                   child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation(

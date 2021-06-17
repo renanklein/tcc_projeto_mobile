@@ -194,7 +194,9 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
             if (state is MedRecordEventProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
+
             return ExpansionTile(
+                childrenPadding: EdgeInsets.only(left: 17.0),
                 title: Text(dateAsString,textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)), 
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: this.children);

@@ -103,10 +103,9 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                                         _diagnosisFormField(
                                           problemIdController,
                                           'Titulo da Queixa:',
-                                          'Digite um Número para indicar problemas relacionados',
+                                          'Digite um titulo para a queixa',
                                           null,
                                           null,
-                                          keyboardType: TextInputType.number,
                                         ),
                                         _diagnosisFormField(
                                           problemDescriptionController,

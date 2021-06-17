@@ -31,10 +31,12 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
     var userModel = Injector.appInstance.get<UserModel>();
     this._agendaBloc.agendaRepository.userId = userModel.uid;
     if (this.eventsDate != null && this.eventsDate.isNotEmpty) {
-      this._dateController.text = this.eventsDate;
-      this
-          ._agendaBloc
-          .add(AgendaEventsToBeConfirmed(eventDate: this.eventsDate));
+      Future.delayed(Duration(milliseconds: 300), () {
+        this._dateController.text = this.eventsDate;
+        this
+            ._agendaBloc
+            .add(AgendaEventsToBeConfirmed(eventDate: this.eventsDate));
+      });
     }
     super.initState();
   }

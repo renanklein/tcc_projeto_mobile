@@ -51,7 +51,7 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Consultas do dia a confirmar"),
+          title: Text("Consultas a confirmar"),
           centerTitle: true,
         ),
         body: ListView(

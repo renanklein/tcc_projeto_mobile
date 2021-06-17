@@ -30,11 +30,19 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
         agendaRepository: Injector.appInstance.get<AgendaRepository>());
     var userModel = Injector.appInstance.get<UserModel>();
     this._agendaBloc.agendaRepository.userId = userModel.uid;
-    if(this.eventsDate != null && this.eventsDate.isNotEmpty){
+    if (this.eventsDate != null && this.eventsDate.isNotEmpty) {
       this._dateController.text = this.eventsDate;
-      this._agendaBloc.add(AgendaEventsToBeConfirmed(eventDate: this.eventsDate));
+      this
+          ._agendaBloc
+          .add(AgendaEventsToBeConfirmed(eventDate: this.eventsDate));
     }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    this._agendaBloc.close();
+    super.dispose();
   }
 
   @override
@@ -44,82 +52,112 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
           title: Text("Consultas do dia a confirmar"),
           centerTitle: true,
         ),
-        body: BlocListener<AgendaBloc, AgendaState>(
-          bloc: this._agendaBloc,
-          listener: (context, state) {
-            if (state is AgendaEventsToBeConfirmedSuccess) {
-              this._eventsConfirmed = state.eventsConfirmed;
-            }
-          },
-          child: BlocBuilder<AgendaBloc, AgendaState>(
-            bloc: this._agendaBloc,
-            builder: (context, state) {
-              if (state is AgendaEventsToBeConfirmedProcessing) {
-                return LayoutUtils.buildCircularProgressIndicator(context);
-              } else if (this._agendaBloc.state
-                      is AgendaEventsToBeConfirmedSuccess &&
-                  this._eventsConfirmed.isEmpty) {
-                return Center(
-                  child: Text(
-                    "Não há agendamentos para ${this._dateController.text}",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 17.0),
-                  ),
-                );
-              }
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ListView(
-                  children: [
-                    LayoutUtils.buildVerticalSpacing(10.0),
-                    ..._buildWidgets(this._eventsConfirmed, state)
-                  ],
-                ),
-              );
-            },
-          ),
+        body: ListView(
+          children: [
+            LayoutUtils.buildVerticalSpacing(10.0),
+            DateTimeFormField(
+              fieldPlaceholder: "Escolha o dia dos agendamentos",
+              dateTimeController: _dateController,
+              onSelectedDate: () {
+                if (this._dateController.text != null &&
+                    this._dateController.text.isNotEmpty) {
+                  var splitedDate = this._dateController.text.split("-");
+                  var selectedDate = DateTime(
+                      int.tryParse(splitedDate[2]),
+                      int.tryParse(splitedDate[1]),
+                      int.tryParse(splitedDate[0]));
+
+                  if (selectedDate.difference(DateTime.now()).inDays < 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text(
+                          "Data selecionada já passou",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        )));
+                  } else {
+                    this._agendaBloc.add(AgendaEventsToBeConfirmed(
+                        eventDate: this._dateController.text));
+                  }
+                }
+              },
+            ),
+            LayoutUtils.buildVerticalSpacing(10.0),
+            BlocListener<AgendaBloc, AgendaState>(
+              bloc: this._agendaBloc,
+              listener: (context, state) {
+                if (state is AgendaEventsToBeConfirmedSuccess) {
+                  this._eventsConfirmed = state.eventsConfirmed;
+                }
+              },
+              child: BlocBuilder<AgendaBloc, AgendaState>(
+                bloc: this._agendaBloc,
+                builder: (context, state) {
+                  if (state is AgendaEventsToBeConfirmedProcessing) {
+                    return LayoutUtils.buildCircularProgressIndicator(context);
+                  } else if (this._agendaBloc.state
+                          is AgendaEventsToBeConfirmedSuccess &&
+                      this._eventsConfirmed.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "Não há agendamentos para ${this._dateController.text}",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 17.0),
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        LayoutUtils.buildVerticalSpacing(10.0),
+                        ..._buildWidgets(this._eventsConfirmed, state)
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
         ));
   }
 
   List<Widget> _buildWidgets(List events, AgendaState state) {
     var widgets = <Widget>[];
-    if (state is! AgendaEventsToBeConfirmedSuccess) {
-      widgets.add(DateTimeFormField(
-        fieldPlaceholder: "Escolha o dia dos agendamentos",
-        dateTimeController: _dateController,
-        onSelectedDate: () {
-          this._agendaBloc.add(
-              AgendaEventsToBeConfirmed(eventDate: this._dateController.text));
-        },
+
+    if (state is AgendaEventsToBeConfirmedSuccess) {
+      var dateSplited = this._dateController.text.split("-");
+
+      widgets.add(Center(
+        child: Text("Clique no card para editar ou confirmar a consulta",
+            style: TextStyle(
+                color: Theme.of(context).primaryColor, fontSize: 16.0)),
       ));
-      return widgets;
+      widgets.add(LayoutUtils.buildVerticalSpacing(10));
+
+      events.forEach((element) {
+        widgets.add(EventToBeConfirmedTile(
+            refreshList: refreshList,
+            event: element,
+            eventDate: DateTime(int.tryParse(dateSplited[2]),
+                int.tryParse(dateSplited[1]), int.tryParse(dateSplited[0])),
+            eventTime: "${element['begin']} - ${element['end']}",
+            eventDescription: element["description"].toUpperCase()));
+        widgets.add(LayoutUtils.buildVerticalSpacing(10.0));
+      });
     }
-
-    var dateSplited = this._dateController.text.split("-");
-
-    widgets.add(Center(
-      child: Text("Clique no card para editar ou confirmar a consulta",
-          style:
-              TextStyle(color: Theme.of(context).primaryColor, fontSize: 16.0)),
-    ));
-
-    events.forEach((element) {
-      widgets.add(EventToBeConfirmedTile(
-          refreshList: refreshList,
-          event: element,
-          eventDate: DateTime(int.tryParse(dateSplited[2]),
-              int.tryParse(dateSplited[1]), int.tryParse(dateSplited[0])),
-          eventTime: "${element['begin']} - ${element['end']}",
-          eventDescription: element["description"].toUpperCase()));
-      widgets.add(LayoutUtils.buildVerticalSpacing(10.0));
-    });
 
     return widgets;
   }
 
   void refreshList(bool boolArg) {
     Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConfirmEventsScreen(this._dateController.text)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ConfirmEventsScreen(this._dateController.text)));
   }
 }
 

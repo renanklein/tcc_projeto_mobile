@@ -37,7 +37,6 @@ class _AppointmentsWaitListScreenState
     var injector = Injector.appInstance;
 
     this._pacientBloc = context.read<PacientBloc>();
-
     _loadAppointments();
 
     super.initState();

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
+import 'package:tcc_projeto_app/pacient/screens/appointments_wait_list_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
@@ -78,7 +81,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
               ),
             );
 
-            Navigator.of(context).pop();
+            var user = Injector.appInstance.get<UserModel>();
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AppointmentsWaitListScreen(userUid: user.uid,)));
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -119,14 +124,14 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             hint: 'Insira o peso do paciente',
                             errorText: 'Por Favor, Insira o peso do paciente',
                             onChangedFunction: (value) {
-                              if (int.parse(pesoController.text) > 0 &&
-                                  int.parse(alturaController.text) > 0) {
+                              if (int.tryParse(pesoController.text) > 0 &&
+                                  int.tryParse(alturaController.text) > 0) {
                                 setState(
                                   () {
-                                    imcController = int.parse(
+                                    imcController = int.tryParse(
                                             pesoController.text) /
-                                        ((int.parse(alturaController.text) *
-                                                int.parse(
+                                        ((int.tryParse(alturaController.text) *
+                                                int.tryParse(
                                                     alturaController.text)) /
                                             10000);
                                     showImc = Text(

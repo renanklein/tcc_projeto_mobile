@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 

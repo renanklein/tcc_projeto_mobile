@@ -27,7 +27,7 @@ class SltPattern {
 
     var key = utf8.encode(_ppr);
 
-    var hmacSha256 = new Hmac(sha256, key);
+    var hmacSha256 = Hmac(sha256, key);
 
     var digest = hmacSha256.convert(bytes);
 
@@ -42,7 +42,7 @@ class SltPattern {
 
     var key = utf8.encode(_ppr);
 
-    var hmacSha256 = new Hmac(sha256, key);
+    var hmacSha256 = Hmac(sha256, key);
 
     var digest = hmacSha256.convert(bytes);
 

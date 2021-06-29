@@ -71,8 +71,10 @@ class _OverviewTileState extends State<OverviewTile> {
             showForm = false;
           });
         } else if (state is MedRecordLoadEventSuccess) {
-          initialOverview = state.medRecordLoaded.medRecordOverview;
-          _overviewController.text = initialOverview;
+          if (state.medRecordLoaded?.medRecordOverview != null) {
+            initialOverview = state.medRecordLoaded.medRecordOverview;
+            _overviewController.text = initialOverview;
+          }
         }
       },
       child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -88,6 +90,24 @@ class _OverviewTileState extends State<OverviewTile> {
                   child: (showForm == false)
                       ? Column(
                           children: [
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.lightBlue[100],
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  'Resumo do Paciente',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Container(

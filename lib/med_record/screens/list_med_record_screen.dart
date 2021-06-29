@@ -269,14 +269,13 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 onPressed: () {
                   Navigator.of(context)
                       .pushNamed(createDiagnosisRoute)
-                      .then((value) => this._medRecordBloc.add(
-                            DiagnosisLoad(
-                              pacientCpf:
-                                  this.medRecordArguments.pacientModel.getCpf,
-                              pacientSalt:
-                                  this.medRecordArguments.pacientModel.getSalt,
-                            ),
-                          ));
+                      .then((value) {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(context).pushNamed(medRecordRoute, arguments: MedRecordArguments(
+                          index: "3",
+                          pacientModel: this.medRecordArguments.pacientModel
+                        ));
+                       });
                 }),
           ),
         ]);
@@ -295,6 +294,11 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         return 2;
         break;
       default:
+        var parsed = int.tryParse(index);
+        if(parsed != null){
+          return parsed;
+        }
+
         return 1;
         break;
     }

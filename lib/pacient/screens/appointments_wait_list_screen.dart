@@ -37,7 +37,6 @@ class _AppointmentsWaitListScreenState
     var injector = Injector.appInstance;
 
     this._pacientBloc = context.read<PacientBloc>();
-
     _loadAppointments();
 
     super.initState();
@@ -88,18 +87,7 @@ class _AppointmentsWaitListScreenState
                           onChange: onSearchChange,
                           searchBarController: this._searchBarController),
                       Expanded(
-                        child: ReorderableListView.builder(
-                          header: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 18.0),
-                              child: Text(
-                                  "Presione os cards abaixo para reordelá-los",
-                                  style: TextStyle(
-                                      fontSize: 17.0,
-                                      color: Theme.of(context).primaryColor)),
-                            ),
-                          ),
-                          onReorder: _reorderAppoitments,
+                        child: ListView.builder(
                           itemCount: this._suggestionAppointments.length > 0
                               ? this._suggestionAppointments.length
                               : this._appointmentList.length,

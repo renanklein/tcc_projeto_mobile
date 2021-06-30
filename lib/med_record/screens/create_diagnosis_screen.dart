@@ -77,7 +77,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                       },
                     ),
                     TextButton(
-                      child: Text("Inserir Pré-Diagnóstico"),
+                      child: Text("Criar exame"),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ExamFormScreen(
@@ -93,8 +93,6 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                 );
               },
             );
-
-            Navigator.of(context).pop();
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(

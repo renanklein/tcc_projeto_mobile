@@ -9,15 +9,19 @@ class DateTimeFormField extends StatelessWidget {
   final Function onSelectedDate;
 
   DateTimeFormField(
-      {@required this.dateTimeController, @required this.fieldPlaceholder, this.onSelectedDate});
+      {@required this.dateTimeController,
+      @required this.fieldPlaceholder,
+      this.onSelectedDate});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         DateTimeField(
-          onChanged: (value){
-            this.onSelectedDate();
+          onChanged: (value) {
+            if (this.onSelectedDate != null) {
+              this.onSelectedDate();
+            }
           },
           controller: dateTimeController,
           validator: (value) {
@@ -33,7 +37,7 @@ class DateTimeFormField extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(32.0)),
               ),
               hintText: fieldPlaceholder,
-              floatingLabelBehavior:  FloatingLabelBehavior.auto),
+              floatingLabelBehavior: FloatingLabelBehavior.auto),
           format: DateFormat('dd-MM-yyyy'),
           onShowPicker: (context, currentValue) {
             return showDatePicker(

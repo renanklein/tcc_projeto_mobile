@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_hash_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
@@ -23,9 +24,14 @@ part 'pacient_detail_state.dart';
 part 'pacient_detail_event.dart';
 
 class PacientBloc extends Bloc<PacientEvent, PacientState> {
-  PacientRepository pacientRepository;
+  final _userModel = Injector.appInstance.get<UserModel>();
 
-  PacientBloc({@required this.pacientRepository}) : super(null);
+  PacientRepository pacientRepository;
+  MedRecordRepository medRecordRepository;
+
+  PacientBloc(
+      {@required this.pacientRepository, @required this.medRecordRepository})
+      : super(null);
 
   //@override
   PacientState get initialState => PacientInicialState();
@@ -57,10 +63,10 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             salt: pacientHashModel.salt,
           );
 
-          if(event.isUpdate){
+          if (event.isUpdate) {
             await this.pacientRepository.updatePacient(pacient: _pacientModel);
-          } else{
-             await this.pacientRepository.createPacient(pacient: _pacientModel);
+          } else {
+            await this.pacientRepository.createPacient(pacient: _pacientModel);
           }
 
           yield CreateOrEditPacientEventSuccess(_pacientModel);
@@ -127,6 +133,26 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield GetPacientByNameFail();
+      }
+    } else if (event is ViewPacientOverviewButtonPressed) {
+      try {
+        yield OverviewLoading();
+        var _pacientHash = SltPattern.retrivepacientHash(
+          event.cpf,
+          event.salt,
+        );
+
+        if (_userModel.getAccess == "MEDIC" && _pacientHash != null) {
+          String overview =
+              await this.medRecordRepository.getOverviewByHash(_pacientHash);
+
+          yield ViewPacientOverviewSuccess(overview: overview);
+        }
+
+        yield ViewPacientOverviewFailWrongAccess();
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        yield ViewPacientOverviewFail();
       }
     }
   }

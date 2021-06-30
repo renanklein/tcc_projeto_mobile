@@ -13,18 +13,17 @@ class PacientModel {
   String _salt;
   bool _hasPreDiagnosis = false;
 
-  PacientModel({
-    @required String nome,
-    @required String email,
-    @required String telefone,
-    @required String identidade,
-    @required String cpf,
-    @required String dtNascimento,
-    @required String sexo,
-    @required String userId,
-    @required String salt,
-    bool hasPreDianosis
-  }) {
+  PacientModel(
+      {@required String nome,
+      @required String email,
+      @required String telefone,
+      @required String identidade,
+      @required String cpf,
+      @required String dtNascimento,
+      @required String sexo,
+      @required String userId,
+      @required String salt,
+      bool hasPreDianosis}) {
     this._nome = nome.toUpperCase();
     this._email = email;
     this._telefone = telefone;
@@ -83,6 +82,7 @@ class PacientModel {
   String get medicId => this._userId;
   String get getSalt => this._salt;
   bool get hasPreDiagnosis => this._hasPreDiagnosis;
-  set hasPreDiagnosis(bool hasPreDiagnosis) => this._hasPreDiagnosis = hasPreDiagnosis;
+  set hasPreDiagnosis(bool hasPreDiagnosis) =>
+      this._hasPreDiagnosis = hasPreDiagnosis;
   //set userUid(String uid) => this._userId = uid;
 }

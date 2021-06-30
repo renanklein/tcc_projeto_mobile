@@ -58,7 +58,9 @@ class _MyAppState extends State<MyApp> {
     registerDependencies();
     configureNotificationsType(context);
     this.authenticationBloc = Injector.appInstance.get<AuthenticationBloc>();
-    this.authenticationBloc.add(AppStarted(context: context));
+    this.authenticationBloc.add(
+          AppStarted(context: context),
+        );
     super.initState();
   }
 
@@ -82,22 +84,29 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         BlocProvider<AgendaBloc>(
-            create: (context) => AgendaBloc(
-                agendaRepository:
-                    Injector.appInstance.get<AgendaRepository>())),
+          create: (context) => AgendaBloc(
+            agendaRepository: Injector.appInstance.get<AgendaRepository>(),
+          ),
+        ),
         BlocProvider<ExamBloc>(
           create: (context) => ExamBloc(
-              examRepository: Injector.appInstance.get<ExamRepository>()),
+            examRepository: Injector.appInstance.get<ExamRepository>(),
+          ),
         ),
         BlocProvider<PacientBloc>(
-            create: (context) => PacientBloc(
-                pacientRepository:
-                    Injector.appInstance.get<PacientRepository>())),
+          create: (context) => PacientBloc(
+            pacientRepository: Injector.appInstance.get<PacientRepository>(),
+            medRecordRepository:
+                Injector.appInstance.get<MedRecordRepository>(),
+          ),
+        ),
         BlocProvider<MedRecordBloc>(
-            create: (context) => MedRecordBloc(
-                medRecordRepository:
-                    Injector.appInstance.get<MedRecordRepository>(),
-                examRepository: Injector.appInstance.get<ExamRepository>()))
+          create: (context) => MedRecordBloc(
+            medRecordRepository:
+                Injector.appInstance.get<MedRecordRepository>(),
+            examRepository: Injector.appInstance.get<ExamRepository>(),
+          ),
+        )
       ],
       child: MaterialApp(
         title: "Projeto tcc",
@@ -143,9 +152,11 @@ class _MyAppState extends State<MyApp> {
 
     injector.registerSingleton<AgendaRepository>(() => AgendaRepository());
 
-    injector.registerSingleton<AuthenticationBloc>(() => AuthenticationBloc(
-          userRepository: injector.get<UserRepository>(),
-        ));
+    injector.registerSingleton<AuthenticationBloc>(
+      () => AuthenticationBloc(
+        userRepository: injector.get<UserRepository>(),
+      ),
+    );
   }
 
   void configureNotificationsType(BuildContext context) async {

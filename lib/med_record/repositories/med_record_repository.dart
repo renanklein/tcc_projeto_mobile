@@ -44,7 +44,8 @@ class MedRecordRepository {
     var diagnosisList = await getCompleteDiagnosis(date: date);
     var updatedDiagnosisList = diagnosisList.map((diagnosis) {
       if (diagnosis['id'] == completeDiagnosisModel.id) {
-        completeDiagnosisModel.createdAt = DateTime.fromMillisecondsSinceEpoch(diagnosis["createdAt"]);
+        completeDiagnosisModel.createdAt =
+            DateTime.fromMillisecondsSinceEpoch(diagnosis["createdAt"]);
         return completeDiagnosisModel.toMap();
       }
 
@@ -97,6 +98,25 @@ class MedRecordRepository {
     } catch (e) {
       e.toString();
       return null;
+    }
+  }
+
+  Future<String> getOverviewByHash(String pacientHash) async {
+    try {
+      var document = _medRecordCollectionReference.doc(pacientHash);
+
+      String overview = '';
+
+      await document.get().then((snapshot) {
+        if (snapshot.data() != null &&
+            snapshot.data().containsKey('medRecordOverview')) {
+          overview = snapshot.data()['medRecordOverview'];
+        }
+      });
+      return overview;
+    } catch (e) {
+      e.toString();
+      return 'erro do BD';
     }
   }
 

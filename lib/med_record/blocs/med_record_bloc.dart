@@ -223,7 +223,9 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             encriptedFile,
             randomFileName.toString(),
             pacientHash,
-            initializationVector);
+            initializationVector,
+            diagnosisDate: event.diagnosisDate,
+            diagnosisId: event.diagnosisId);
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error, stack_trace) {

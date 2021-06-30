@@ -12,6 +12,7 @@ import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/dynamic_field_bottomsheet.dart';
@@ -21,8 +22,15 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 class ExamFormScreen extends StatefulWidget {
   List dynamicFieldsList = <Widget>[];
   final medRecordArguments;
+  final DateTime diagnosisDate;
+  final int diagnosisId;
+  final String screenContext;
 
-  ExamFormScreen({@required this.medRecordArguments});
+  ExamFormScreen(
+      {@required this.medRecordArguments,
+      this.diagnosisDate,
+      this.diagnosisId,
+      this.screenContext});
   @override
   _ExamFormScreenState createState() => _ExamFormScreenState();
 }
@@ -41,6 +49,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
 
   List<Widget> get dynamicFieldsList => this.widget.dynamicFieldsList;
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
+  DateTime get diagnosisDate => this.widget.diagnosisDate;
+  int get diagnosisId => this.widget.diagnosisId;
+  String get screenContext => this.widget.screenContext;
 
   @override
   void initState() {
@@ -66,6 +77,12 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           bloc: this._medRecordBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
+              if (this.screenContext == "createDiagnosis") {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MedRecordScreen(
+                        medRecordArguments: this.medRecordArguments)));
+              }
               Future.delayed(Duration(seconds: 2));
               Navigator.of(context).pop();
             } else if (state is DynamicExamFieldSuccess) {
@@ -319,7 +336,9 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 medRecordArguments: this.medRecordArguments,
                 examDetails: examDetails,
                 examFile: _examFile,
-                cardExamInfo: cardExamInfo));
+                cardExamInfo: cardExamInfo,
+                diagnosisDate: this.diagnosisDate,
+                diagnosisId: this.diagnosisId));
           }
         },
       ),

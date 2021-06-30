@@ -79,12 +79,16 @@ class SaveExam extends MedRecordEvent {
   final examDetails;
   final examFile;
   final medRecordArguments;
+  final diagnosisDate;
+  final diagnosisId;
 
   SaveExam(
       {@required this.cardExamInfo,
       @required this.examDetails,
       @required this.examFile,
-      @required this.medRecordArguments});
+      @required this.medRecordArguments,
+      this.diagnosisDate,
+      this.diagnosisId});
 
   CardExamInfo get getCardExamInfo => this.cardExamInfo;
   ExamDetails get getExamDetails => this.examDetails;

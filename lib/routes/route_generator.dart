@@ -67,8 +67,9 @@ class RouteGenerator {
         }
         break;
       case createDiagnosisRoute:
+        var pacientData = settings.arguments as PacientModel;
         if (userModel.getAccess == "MEDIC") {
-          return MaterialPageRoute(builder: (_) => CreateDiagnosisScreen());
+          return MaterialPageRoute(builder: (_) => CreateDiagnosisScreen(pacientModel: pacientData,));
         } else {
           return _notAllowedAccess();
         }

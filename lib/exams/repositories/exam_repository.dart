@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:tcc_projeto_app/main.dart';
 
 class ExamRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -115,7 +117,7 @@ class ExamRepository {
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName, String pacientHash, IV iv) async {
+      File encriptedFile, String fileName, String pacientHash, IV iv, {DateTime diagnosisDate, String diagnosisId}) async {
     var user = _getUser();
     var fileDownloadURL = encriptedFile == null
         ? ""
@@ -136,7 +138,9 @@ class ExamRepository {
       "examType": cardExamInfo.getExamType,
       "dynamicFields": examDetails.toMap(),
       "pacientHash": pacientHash,
-      "IV": iv.base64
+      "IV": iv.base64,
+      "diagnosisDate": diagnosisDate == null ? null : dateFormatter.format(diagnosisDate),
+      "diagnosisId": diagnosisId 
     });
 
     await this

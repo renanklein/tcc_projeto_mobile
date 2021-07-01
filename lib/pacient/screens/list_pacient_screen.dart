@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/pacient/blocs/pacient_bloc.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
-import 'package:tcc_projeto_app/pacient/route_appointment_arguments.dart';
 import 'package:tcc_projeto_app/pacient/tiles/pacient_tile.dart';
 import 'package:tcc_projeto_app/routes/constants.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
@@ -191,10 +190,12 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
               },
               child: PacientTile(
                 title: pacient.getNome,
-                textBody:
-                    'Febre Alta, nariz entupido, sem paladar, sem tato, dor no peito, perna inchado, dor nas costas, nervoso, muito chato, ligando, se sentindo perseguido, veio na ultima consulta em 19/09/2019, reclamando de tudo',
+                textBody: 'Clique para Exibir o Resumo do Paciente',
                 imgPath:
                     'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
+                cpf: pacient.getCpf,
+                salt: pacient.getSalt,
+                pacientBloc: _pacientBloc,
               ),
             ),
           ),

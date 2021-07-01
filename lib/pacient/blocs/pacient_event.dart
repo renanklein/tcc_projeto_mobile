@@ -13,17 +13,16 @@ class PacientCreateOrEditButtonPressed extends PacientEvent {
   final sexo;
   final isUpdate;
 
-  PacientCreateOrEditButtonPressed({
-    @required this.userId,
-    @required this.nome,
-    @required this.email,
-    @required this.telefone,
-    @required this.identidade,
-    @required this.cpf,
-    @required this.dtNascimento,
-    @required this.sexo,
-    @required this.isUpdate
-  });
+  PacientCreateOrEditButtonPressed(
+      {@required this.userId,
+      @required this.nome,
+      @required this.email,
+      @required this.telefone,
+      @required this.identidade,
+      @required this.cpf,
+      @required this.dtNascimento,
+      @required this.sexo,
+      @required this.isUpdate});
 
   @override
   List<Object> get props => throw UnimplementedError();
@@ -72,6 +71,15 @@ class GetPacientByName extends PacientEvent {
   final String name;
 
   GetPacientByName({@required this.name});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class ViewPacientOverviewButtonPressed extends PacientEvent {
+  String cpf, salt;
+
+  ViewPacientOverviewButtonPressed({this.cpf, this.salt});
 
   @override
   List<Object> get props => throw UnimplementedError();

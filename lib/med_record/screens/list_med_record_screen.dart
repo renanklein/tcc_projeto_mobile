@@ -268,7 +268,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 ),
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(createDiagnosisRoute)
+                      .pushNamed(createDiagnosisRoute, arguments: this.medRecordArguments.pacientModel)
                       .then((value) {
                         Navigator.of(context).popUntil((route) => route.isFirst);
                         Navigator.of(context).pushNamed(medRecordRoute, arguments: MedRecordArguments(

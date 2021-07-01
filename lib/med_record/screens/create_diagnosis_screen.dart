@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
-import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class CreateDiagnosisScreen extends StatefulWidget {
+  final PacientModel pacientModel;
+  CreateDiagnosisScreen({@required this.pacientModel});
   @override
   _CreateDiagnosisScreenState createState() => _CreateDiagnosisScreenState();
 }
@@ -18,6 +21,8 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
   MedRecordStyle _medRecordStyle = new MedRecordStyle();
+
+  PacientModel get pacient => this.widget.pacientModel;
 
   static List<String> diagnosisDescriptionList = [null];
   static List<String> diagnosisCidList = [null];
@@ -40,6 +45,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,174 +61,199 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
           if (state is DiagnosisCreateOrUpdateSuccess) {
             diagnosisDescriptionList = [null];
             diagnosisCidList = [null];
-            ScaffoldMessenger.of(context).showSnackBar(
-              messageSnackBar(
-                context,
-                "Diagnóstico Cadastrado com Sucesso",
-                Colors.green,
-                Colors.white,
-              ),
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Diagnóstico cadastrado com sucesso"),
+                  content: Text(
+                      "O diagnóstico foi cadastrado. Deseja criar um exame ?"),
+                  actions: <Widget>[
+                    // define os botões na base do dialogo
+                    TextButton(
+                      child: Text("Fechar"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text("Criar exame"),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ExamFormScreen(
+                                screenContext: "createDiagnosis",
+                                diagnosisDate: state.diagnosisModel.diagnosisDate,
+                                diagnosisId: state.diagnosisModel.id,
+                                medRecordArguments: MedRecordArguments(
+                                  pacientModel: this.pacient
+                                ))));
+                      },
+                    ),
+                  ],
+                );
+              },
             );
-
-            Navigator.of(context).pop();
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
-          bloc:  this._medRecordBloc,
+            bloc: this._medRecordBloc,
             builder: (context, state) {
-          if (state is MedRecordEventProcessing) {
-            return LayoutUtils.buildCircularProgressIndicator(context);
-          } else {
-            return SafeArea(
-              child: Form(
-                key: _diagnosisScreenKey,
-                child: Center(
-                  child: Container(
-                    //decoration: new BoxDecoration(color: Colors.black54),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.98,
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(children: <Widget>[
-                            Flexible(
-                              child: ListView(
-                                children: <Widget>[
-                                  Container(
-                                    margin: _medRecordStyle.containerMargin,
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              _medRecordStyle.formTextPadding,
-                                          child: Text(
-                                            'Relato da Queixa',
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                _medRecordStyle.formTextStyle,
-                                          ),
-                                        ),
-                                        _diagnosisFormField(
-                                          problemIdController,
-                                          'Titulo da Queixa:',
-                                          'Digite um titulo para a queixa',
-                                          null,
-                                          null,
-                                        ),
-                                        _diagnosisFormField(
-                                          problemDescriptionController,
-                                          'Queixa:',
-                                          'Descreva o problema relatado pelo paciente',
-                                          null,
-                                          (value) {
-                                            if (value.isEmpty) {
-                                              return 'Por Favor, descreva o problema';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  _medRecordStyle.breakLine(),
-                                  Container(
-                                    margin: _medRecordStyle.containerMargin,
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              _medRecordStyle.formTextPadding,
-                                          child: Text(
-                                            'Diagnóstico',
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                _medRecordStyle.formTextStyle,
-                                          ),
-                                        ),
-                                        ..._getDiagnosisFields(),
-                                      ],
-                                    ),
-                                  ),
-                                  _medRecordStyle.breakLine(),
-                                  Container(
-                                    margin: _medRecordStyle.containerMargin,
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              _medRecordStyle.formTextPadding,
-                                          child: Text(
-                                            'Prescrição',
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                _medRecordStyle.formTextStyle,
-                                          ),
-                                        ),
-                                        _diagnosisFormField(
-                                          prescriptionController,
-                                          'Prescrição:',
-                                          'Digite os detalhes da prescrição',
-                                          null,
-                                          (value) {
-                                            if (value.isEmpty) {
-                                              return 'Por Favor, Digite os detalhes da prescrição';
-                                            }
-                                            return null;
-                                          },
-                                          keyboardType:
-                                              TextInputType.multiline,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: MaterialButton(
-                                      color: Color(0xFF84FFFF),
-                                      height: 55.0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      ),
-                                      onPressed: () async {
-                                        if (_diagnosisScreenKey.currentState
-                                            .validate()) {
-                                          var diagnosisDate = DateTime.now();
-                                          var formatter =
-                                              DateFormat('dd/MM/yyyy');
-                                          var dateAsString =
-                                              formatter.format(diagnosisDate);
-                                          _medRecordBloc.add(
-                                            DiagnosisCreateOrUpdateButtonPressed(
-                                              diagnosisDate: dateAsString,
-                                              isUpdate: false,
-                                              problemId:
-                                                  problemIdController.text,
-                                              problemDescription:
-                                                  problemDescriptionController
-                                                      .text,
-                                              prescription:
-                                                  prescriptionController.text,
-                                              diagnosisCid: diagnosisCidList,
-                                              diagnosisDescription:
-                                                  diagnosisDescriptionList,
+              if (state is MedRecordEventProcessing) {
+                return LayoutUtils.buildCircularProgressIndicator(context);
+              } else {
+                return SafeArea(
+                  child: Form(
+                    key: _diagnosisScreenKey,
+                    child: Center(
+                      child: Container(
+                        //decoration: new BoxDecoration(color: Colors.black54),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.98,
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(children: <Widget>[
+                                Flexible(
+                                  child: ListView(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: _medRecordStyle.containerMargin,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: _medRecordStyle
+                                                  .formTextPadding,
+                                              child: Text(
+                                                'Relato da Queixa',
+                                                textAlign: TextAlign.center,
+                                                style: _medRecordStyle
+                                                    .formTextStyle,
+                                              ),
                                             ),
-                                          );
-                                        }
-                                      },
-                                      child: Text('Cadastrar Diagnóstico'),
-                                    ),
+                                            _diagnosisFormField(
+                                              problemIdController,
+                                              'Titulo da Queixa:',
+                                              'Digite um titulo para a queixa',
+                                              null,
+                                              null,
+                                            ),
+                                            _diagnosisFormField(
+                                              problemDescriptionController,
+                                              'Queixa:',
+                                              'Descreva o problema relatado pelo paciente',
+                                              null,
+                                              (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Por Favor, descreva o problema';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      _medRecordStyle.breakLine(),
+                                      Container(
+                                        margin: _medRecordStyle.containerMargin,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: _medRecordStyle
+                                                  .formTextPadding,
+                                              child: Text(
+                                                'Diagnóstico',
+                                                textAlign: TextAlign.center,
+                                                style: _medRecordStyle
+                                                    .formTextStyle,
+                                              ),
+                                            ),
+                                            ..._getDiagnosisFields(),
+                                          ],
+                                        ),
+                                      ),
+                                      _medRecordStyle.breakLine(),
+                                      Container(
+                                        margin: _medRecordStyle.containerMargin,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: _medRecordStyle
+                                                  .formTextPadding,
+                                              child: Text(
+                                                'Prescrição',
+                                                textAlign: TextAlign.center,
+                                                style: _medRecordStyle
+                                                    .formTextStyle,
+                                              ),
+                                            ),
+                                            _diagnosisFormField(
+                                              prescriptionController,
+                                              'Prescrição:',
+                                              'Digite os detalhes da prescrição',
+                                              null,
+                                              (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Por Favor, Digite os detalhes da prescrição';
+                                                }
+                                                return null;
+                                              },
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: MaterialButton(
+                                          color: Color(0xFF84FFFF),
+                                          height: 55.0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                          onPressed: () async {
+                                            if (_diagnosisScreenKey.currentState
+                                                .validate()) {
+                                              var diagnosisDate =
+                                                  DateTime.now();
+                                              var formatter =
+                                                  DateFormat('dd/MM/yyyy');
+                                              var dateAsString = formatter
+                                                  .format(diagnosisDate);
+                                              _medRecordBloc.add(
+                                                DiagnosisCreateOrUpdateButtonPressed(
+                                                  diagnosisDate: dateAsString,
+                                                  isUpdate: false,
+                                                  problemId:
+                                                      problemIdController.text,
+                                                  problemDescription:
+                                                      problemDescriptionController
+                                                          .text,
+                                                  prescription:
+                                                      prescriptionController
+                                                          .text,
+                                                  diagnosisCid:
+                                                      diagnosisCidList,
+                                                  diagnosisDescription:
+                                                      diagnosisDescriptionList,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Text('Cadastrar Diagnóstico'),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            )
-                          ])),
+                                )
+                              ])),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }
-        }),
+                );
+              }
+            }),
       ),
     );
   }
@@ -317,7 +348,6 @@ class _DiagnosisTextFormFieldState extends State<DiagnosisTextFormField> {
     _diagnosisController = TextEditingController();
     _cidController = TextEditingController();
   }
-
 
   @override
   Widget build(BuildContext context) {

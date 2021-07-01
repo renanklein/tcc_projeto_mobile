@@ -30,11 +30,12 @@ class CreatePacientEventFail extends PacientState {
   List<Object> get props => throw UnimplementedError();
 }
 
-class CPFAlreadyExists extends PacientState{
+class CPFAlreadyExists extends PacientState {
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }
+
 class EditPacientEventSuccess extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
@@ -84,6 +85,11 @@ class PacientEventProcessing extends PacientState {
   List<Object> get props => throw UnimplementedError();
 }
 
+class OverviewLoading extends PacientState {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
 class GetPacientByNameSuccess extends PacientState {
   final pacient;
 
@@ -94,6 +100,27 @@ class GetPacientByNameSuccess extends PacientState {
 }
 
 class GetPacientByNameFail extends PacientState {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class ViewPacientOverviewSuccess extends PacientState {
+  String overview;
+
+  ViewPacientOverviewSuccess({this.overview});
+
+  String get pacientOverview => this.overview;
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class ViewPacientOverviewFail extends PacientState {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class ViewPacientOverviewFailWrongAccess extends PacientState {
   @override
   List<Object> get props => throw UnimplementedError();
 }

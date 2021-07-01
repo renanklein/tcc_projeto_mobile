@@ -115,6 +115,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var diagnosisModel = CompleteDiagnosisModel(
           id: event.id,
+          date: event.isUpdate ? null : now,
           dynamicFields: event.dynamicFields,
           problem: ProblemModel(
               description: event.problemDescription,
@@ -225,7 +226,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             pacientHash,
             initializationVector,
             diagnosisDate: event.diagnosisDate,
-            diagnosisId: event.diagnosisId);
+            diagnosisId: event.diagnosisId.toString());
 
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error, stack_trace) {
@@ -302,6 +303,19 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield LoadExamModelFail(errorMessage: error.toString());
+      }
+    } else if (event is GetExamByDiagnosisDateAndId) {
+      try {
+
+        yield GetExamByDiagnosisDateAndIdProcessing();
+        var exam = await this.medRecordRepository.getExameByDiagnosisIdAndDate(
+            event.diagnosisDate, event.diagnosisId);
+
+        yield GetExamByDiagnosisDateAndIdSuccess(exam: exam);
+
+      } catch (error, stack_trace) {
+        await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+        yield GetExamByDiagnosisDateAndIdFail();
       }
     }
   }

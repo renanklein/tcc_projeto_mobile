@@ -74,6 +74,16 @@ class MedRecordDeleteButtonPressed extends MedRecordEvent {
   List<Object> get props => [];
 }
 
+class GetExamByDiagnosisDateAndId extends MedRecordEvent{
+  final DateTime diagnosisDate;
+  final int diagnosisId;
+
+  GetExamByDiagnosisDateAndId({@required this.diagnosisDate, @required this.diagnosisId});
+
+  @override
+  List<Object> get props =>[];
+}
+
 class SaveExam extends MedRecordEvent {
   final cardExamInfo;
   final examDetails;

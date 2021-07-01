@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/exams/models/exam_details.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
@@ -89,6 +91,11 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
   void initState() {
     var medRepository = Injector.appInstance.get<MedRecordRepository>();
     this.medRecordBloc = MedRecordBloc(medRecordRepository: medRepository);
+    if (!this.isPrediagnosis) {
+      this.medRecordBloc.add(GetExamByDiagnosisDateAndId(
+          diagnosisDate: this.completeDiagnosisModel.diagnosisDate,
+          diagnosisId: this.completeDiagnosisModel.id));
+    }
     var formatter = DateFormat('dd/MM/yyyy');
     this.dateAsString = formatter.format(this.date);
     this.children = [
@@ -118,7 +125,6 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
           : _buildButton("Enviar prescrição por email", () async {
               await this._processPrescriptionEmail();
             }),
-
       LayoutUtils.buildVerticalSpacing(5.0),
     ];
     super.initState();
@@ -186,18 +192,38 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                 )
               ];
             });
+          } else if (state is GetExamByDiagnosisDateAndIdSuccess) {
+            setState(() {
+              if (state.exam != null) {
+                this.children.add(LayoutUtils.buildVerticalSpacing(3.0));
+                var examDetails =
+                    ExamDetails.fromMap(state.exam["dynamicFields"]);
+
+                this.children.add(_buildButton("Acessar o exame", () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ExamDetailsScreen(
+                              examDetails: examDetails,
+                              fileDownloadURL: state.exam["fileDownloadURL"],
+                              iv: state.exam["IV"],
+                              examDate: state.exam["examDate"],
+                              examType: state.exam["examType"])));
+                    }));
+              }
+            });
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
           bloc: this.medRecordBloc,
           builder: (context, state) {
-            if (state is MedRecordEventProcessing) {
+            if (state is MedRecordEventProcessing || state is GetExamByDiagnosisDateAndIdProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
 
             return ExpansionTile(
                 childrenPadding: EdgeInsets.only(left: 17.0),
-                title: Text(dateAsString,textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)), 
+                title: Text(dateAsString,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(fontSize: 17.0)),
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: this.children);
           },
@@ -302,7 +328,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
     var user = Injector.appInstance.get<UserModel>();
     var recipients = [user.email, this.pacient.getEmail];
     var body = "Segue me anexo a prescrição do diagnóstico";
-    await PrescriptionSender.sendEmail(recipients, body, prescriptionPdf, "Prescrição ${pacient.getNome} ${this.dateAsString}");
+    await PrescriptionSender.sendEmail(recipients, body, prescriptionPdf,
+        "Prescrição ${pacient.getNome} ${this.dateAsString}");
   }
 
   void refreshTile(List dynamicList, Field newField) {

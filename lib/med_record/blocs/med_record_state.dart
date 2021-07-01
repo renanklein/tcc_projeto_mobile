@@ -7,6 +7,26 @@ class MedRecordInicialState extends MedRecordState {
   List<Object> get props => [];
 }
 
+class GetExamByDiagnosisDateAndIdProcessing extends MedRecordState{
+  @override
+  List<Object> get props => [];
+
+}
+
+class GetExamByDiagnosisDateAndIdSuccess extends MedRecordState{
+  @override
+  List<Object> get props => [];
+
+  final Map exam;
+  GetExamByDiagnosisDateAndIdSuccess({@required this.exam});
+}
+
+class GetExamByDiagnosisDateAndIdFail extends MedRecordState{
+  @override
+  List<Object> get props => [];
+
+}
+
 class CreateMedRecordEventProcessing extends MedRecordState {
   @override
   List<Object> get props => [];

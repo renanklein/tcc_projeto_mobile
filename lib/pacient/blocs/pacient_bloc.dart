@@ -29,8 +29,7 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
   PacientRepository pacientRepository;
   MedRecordRepository medRecordRepository;
 
-  PacientBloc(
-      {@required this.pacientRepository, @required this.medRecordRepository})
+  PacientBloc({@required this.pacientRepository, this.medRecordRepository})
       : super(null);
 
   //@override
@@ -147,9 +146,9 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
               await this.medRecordRepository.getOverviewByHash(_pacientHash);
 
           yield ViewPacientOverviewSuccess(overview: overview);
+        } else {
+          yield ViewPacientOverviewFailWrongAccess();
         }
-
-        yield ViewPacientOverviewFailWrongAccess();
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ViewPacientOverviewFail();

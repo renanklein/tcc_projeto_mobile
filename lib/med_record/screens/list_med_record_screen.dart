@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/med_record/tile/overview_tile.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_diagnosis_screen.dart';
@@ -202,10 +203,17 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
       case 2:
         return Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.fromLTRB(
+            10.0,
+            0.0,
+            10.0,
+            10.0,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              showPacientName(medRecordArguments),
+              MedRecordStyle().breakLine(),
               Flexible(
                   child: ExamScreen(
                 pacientHash: this._pacientHash,
@@ -244,41 +252,52 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 3:
-        return Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Text(
-              "Paciente : ${medRecordArguments.pacientModel.getNome}",
-              style: TextStyle(fontSize: 16.0),
-            ),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
+            10.0,
+            0.0,
+            10.0,
+            10.0,
           ),
-          Flexible(
-            child: ListDiagnosisScreen(
-              pacient: medRecordArguments.pacientModel,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: MaterialButton(
-                child: Text("Cadastrar diagnostico"),
-                color: Color(0xFF84FFFF),
-                height: 55.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+          child: Column(
+            children: [
+              showPacientName(medRecordArguments),
+              MedRecordStyle().breakLine(),
+              Flexible(
+                child: ListDiagnosisScreen(
+                  pacient: medRecordArguments.pacientModel,
                 ),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(createDiagnosisRoute, arguments: this.medRecordArguments.pacientModel)
-                      .then((value) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        Navigator.of(context).pushNamed(medRecordRoute, arguments: MedRecordArguments(
-                          index: "3",
-                          pacientModel: this.medRecordArguments.pacientModel
-                        ));
-                       });
-                }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  child: Text("Cadastrar diagnostico"),
+                  color: Color(0xFF84FFFF),
+                  height: 55.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(createDiagnosisRoute,
+                            arguments: this.medRecordArguments.pacientModel)
+                        .then(
+                      (value) {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                        Navigator.of(context).pushNamed(medRecordRoute,
+                            arguments: MedRecordArguments(
+                                index: "3",
+                                pacientModel:
+                                    this.medRecordArguments.pacientModel));
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ]);
+        );
 
         break;
 
@@ -295,7 +314,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
       default:
         var parsed = int.tryParse(index);
-        if(parsed != null){
+        if (parsed != null) {
           return parsed;
         }
 
@@ -308,4 +327,14 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     return (this.medRecordArguments.pacientModel.getCpf.isEmpty &&
         this.medRecordArguments.pacientModel.getSalt.isEmpty);
   }
+}
+
+showPacientName(MedRecordArguments args) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 15.0),
+    child: Text(
+      "Paciente : ${args.pacientModel.getNome}",
+      style: TextStyle(fontSize: 16.0),
+    ),
+  );
 }

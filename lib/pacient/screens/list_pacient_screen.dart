@@ -189,13 +189,13 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
                 );
               },
               child: PacientTile(
+                //key: UniqueKey(),
                 title: pacient.getNome,
                 textBody: 'Clique para Exibir o Resumo do Paciente',
                 imgPath:
                     'https://image.freepik.com/vetores-gratis/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg',
                 cpf: pacient.getCpf,
                 salt: pacient.getSalt,
-                pacientBloc: _pacientBloc,
               ),
             ),
           ),

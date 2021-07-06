@@ -32,3 +32,9 @@ class DeleteExamModelProcessing extends ExamState {}
 class DeleteExamModelSuccess extends ExamState {}
 
 class DeleteExamModelFail extends ExamState {}
+
+class ExamSolicitationProcessing extends ExamState{}
+
+class ExamSolicitationSuccess extends ExamState{}
+
+class ExamSolicitationFail extends ExamState{}

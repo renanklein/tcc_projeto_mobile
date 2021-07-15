@@ -29,6 +29,6 @@ class DeleteExamModel extends ExamEvent {
   DeleteExamModel({@required this.modelsToBeRemoved});
 }
 
-class CreateExamSolicatation extends ExamEvent{
+class CreateExamSolicitation extends ExamEvent{
   
 }

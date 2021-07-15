@@ -4,6 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_solicitation_form_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
@@ -218,34 +219,9 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                   child: ExamScreen(
                 pacientHash: this._pacientHash,
               )),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => ExamFormScreen(
-                                medRecordArguments: this.medRecordArguments,
-                              )))
-                      .then((value) => {
-                            this
-                                ._medRecordBloc
-                                .add(GetExams(pacientHash: this._pacientHash))
-                          });
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                  primary: Theme.of(context).primaryColor,
-                ),
-                child: Text(
-                  "Clique aqui para inserir um exame",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              _buildCreateSolicitationExamButton(),
+              LayoutUtils.buildVerticalSpacing(10.0),
+              _buildCreateExamButton()
             ],
           ),
         );
@@ -326,6 +302,60 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   bool _hasPacientHashArguments() {
     return (this.medRecordArguments.pacientModel.getCpf.isEmpty &&
         this.medRecordArguments.pacientModel.getSalt.isEmpty);
+  }
+
+  Widget _buildCreateSolicitationExamButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ExamSolicitationFormScreen()));
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
+      ),
+      child: Text(
+        "Solicitação de exame",
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCreateExamButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => ExamFormScreen(
+                      medRecordArguments: this.medRecordArguments,
+                    )))
+            .then((value) => {
+                  this
+                      ._medRecordBloc
+                      .add(GetExams(pacientHash: this._pacientHash))
+                });
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
+      ),
+      child: Text(
+        "Inserir exame",
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }
 

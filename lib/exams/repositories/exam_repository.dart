@@ -74,6 +74,9 @@ class ExamRepository {
         .set(models);
   }
 
+  Future saveExamSolicitation(String examModelType, String solicitationDate) async{
+  }
+
   Future saveModelExam(Map modelExam, String examType) async {
     var models = await getExamModels();
     if (models == null) {

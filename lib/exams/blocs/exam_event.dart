@@ -30,5 +30,8 @@ class DeleteExamModel extends ExamEvent {
 }
 
 class CreateExamSolicitation extends ExamEvent{
-  
+  final String solicitationDate;
+  final String solicitationExamType;
+
+  CreateExamSolicitation({@required this.solicitationDate, @required this.solicitationExamType});
 }

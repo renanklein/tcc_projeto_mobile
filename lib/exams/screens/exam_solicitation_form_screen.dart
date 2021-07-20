@@ -20,7 +20,7 @@ class _ExamSolicitationFormScreenState
   MedRecordBloc _medRecordBloc;
   List<String> _examModelsTypes = <String>[];
   DateTime _examSolicitationDate = DateTime.now();
-  TextEditingController _exanModelTypeController = TextEditingController();
+  TextEditingController _examModelTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
   String currentItem;
   @override
@@ -33,63 +33,78 @@ class _ExamSolicitationFormScreenState
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<MedRecordBloc, MedRecordState>(
-            bloc: this._medRecordBloc,
-            listener: (context, state) {
-              if (state is LoadExamModelSuccess) {
-                state.models['models'].forEach((model) {
-                  this._examModelsTypes.add(model["Tipo de Exame"]);
-                  this.currentItem = this._examModelsTypes.first;
-                });
-              }
-            }),
-        BlocListener<ExamBloc, ExamState>(
-            bloc: this._examBloc, listener: (context, state) {})
-      ],
-      child: BlocBuilder<MedRecordBloc, MedRecordState>(
-        builder: (context, state) {
-          if (state is LoadExamModelProcessing) {
-            return LayoutUtils.buildCircularProgressIndicator(context);
-          }
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Solicitação de exame"),
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<MedRecordBloc, MedRecordState>(
+              bloc: this._medRecordBloc,
+              listener: (context, state) {
+                if (state is LoadExamModelSuccess) {
+                  state.models['models'].forEach((model) {
+                    this._examModelsTypes.add(model["Tipo de Exame"]);
+                    this.currentItem = this._examModelsTypes.first;
+                  });
+                }
+              }),
+          BlocListener<ExamBloc, ExamState>(
+              bloc: this._examBloc, listener: (context, state) {})
+        ],
+        child: BlocBuilder<MedRecordBloc, MedRecordState>(
+          builder: (context, state) {
+            if (state is LoadExamModelProcessing) {
+              return LayoutUtils.buildCircularProgressIndicator(context);
+            }
 
-          return BlocBuilder<ExamBloc, ExamState>(
-            builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Expanded(
-                    child: Form(
-                  child: ListView(
-                    children: [
-                      _buildDropdownExamModelTypeButton(),
-                      DateTimeFormField(
-                          dateTimeController: _examDateController,
-                          fieldPlaceholder: "Data da solicitação"),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0)
+            return BlocBuilder<ExamBloc, ExamState>(
+              builder: (context, state) {
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Form(
+                    child: ListView(
+                      children: [
+                        Center(
+                            child: Text(
+                          "Selecione o modelo de exame",
+                          style: TextStyle(
+                            fontSize: 15.0
                           ),
-                          primary: Theme.of(context).primaryColor
-                        ),
-                          onPressed: () {
-                            this._examBloc.add(CreateExamSolicitation());
-                          },
-                          child: Text(
-                            "Criar Solicitação",
-                            style: TextStyle(
-                              fontSize: 17.0,
-                              color: Colors.white
-                            ),
-                          ))
-                    ],
+                        )),
+                        LayoutUtils.buildVerticalSpacing(5.0),
+                        _buildDropdownExamModelTypeButton(),
+                        LayoutUtils.buildVerticalSpacing(10.0),
+                        DateTimeFormField(
+                            dateTimeController: _examDateController,
+                            fieldPlaceholder: "Data da solicitação"),
+                        LayoutUtils.buildVerticalSpacing(10.0),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32.0)),
+                                primary: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              this._examBloc.add(CreateExamSolicitation(
+                                  solicitationDate:
+                                      this._examDateController.text,
+                                  solicitationExamType:
+                                      this._examModelTypeController.text));
+                            },
+                            child: Text(
+                              "Criar Solicitação",
+                              style: TextStyle(
+                                  fontSize: 17.0, color: Colors.white),
+                            ))
+                      ],
+                    ),
                   ),
-                )),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -103,7 +118,7 @@ class _ExamSolicitationFormScreenState
         }).toList(),
         onChanged: (newValue) {
           setState(() {
-            this._exanModelTypeController.text = newValue;
+            this._examModelTypeController.text = newValue;
             this.currentItem = newValue;
           });
         },

@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:intl/intl.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/main.dart';
 
 class ExamRepository {
@@ -75,6 +76,44 @@ class ExamRepository {
         .set(models);
   }
 
+  Future<List<ExamSolicitationModel>> getExamSolictations(String pacientHash) async {
+    try{
+      var examSolicitations = <ExamSolicitationModel>[];
+      var querySnapshot = await this._firestore.collection("examSolicitation")
+      .doc(_getUser().uid)
+      .collection(pacientHash)
+      .get();
+
+      querySnapshot.docs.map((snapshot) {
+        var data = snapshot.data();
+        if(data != null && data.isNotEmpty){
+          examSolicitations.add(ExamSolicitationModel.fromMap(data, snapshot.id));
+        }
+      });
+
+      return examSolicitations;
+
+    }catch(error, stackTrace){
+      await FirebaseCrashlytics.instance.recordError(error, stackTrace);
+      throw error;
+    }
+  }
+
+  Future saveExamSolicitation(
+      String examModelType, String solicitationDate, String pacientHash) async {
+    await this
+        ._firestore
+        .collection("examSolicitation")
+        .doc(_getUser().uid)
+        .collection(pacientHash)
+        .doc()
+        .set({
+      "status" : "solicitado",
+      "examModelType": examModelType,
+      "solicationDate": solicitationDate
+    });
+  }
+
   Future saveModelExam(Map modelExam, String examType) async {
     var models = await getExamModels();
     if (models == null) {
@@ -117,7 +156,8 @@ class ExamRepository {
   }
 
   Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName, String pacientHash, IV iv, {DateTime diagnosisDate, String diagnosisId}) async {
+      File encriptedFile, String fileName, String pacientHash, IV iv,
+      {DateTime diagnosisDate, String diagnosisId}) async {
     var user = _getUser();
     var fileDownloadURL = encriptedFile == null
         ? ""
@@ -139,8 +179,9 @@ class ExamRepository {
       "dynamicFields": examDetails.toMap(),
       "pacientHash": pacientHash,
       "IV": iv.base64,
-      "diagnosisDate": diagnosisDate == null ? null : dateFormatter.format(diagnosisDate),
-      "diagnosisId": diagnosisId 
+      "diagnosisDate":
+          diagnosisDate == null ? null : dateFormatter.format(diagnosisDate),
+      "diagnosisId": diagnosisId
     });
 
     await this

@@ -4,9 +4,11 @@ import 'package:injector/injector.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_solicitation_form_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/med_record/tile/overview_tile.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_diagnosis_screen.dart';
@@ -202,83 +204,76 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
       case 2:
         return Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.fromLTRB(
+            10.0,
+            0.0,
+            10.0,
+            10.0,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              showPacientName(medRecordArguments),
+              MedRecordStyle().breakLine(),
               Flexible(
                   child: ExamScreen(
                 pacientHash: this._pacientHash,
               )),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => ExamFormScreen(
-                                medRecordArguments: this.medRecordArguments,
-                              )))
-                      .then((value) => {
-                            this
-                                ._medRecordBloc
-                                .add(GetExams(pacientHash: this._pacientHash))
-                          });
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                  primary: Theme.of(context).primaryColor,
-                ),
-                child: Text(
-                  "Clique aqui para inserir um exame",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              _buildCreateSolicitationExamButton(),
+              LayoutUtils.buildVerticalSpacing(10.0),
+              _buildCreateExamButton()
             ],
           ),
         );
         break;
 
       case 3:
-        return Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Text(
-              "Paciente : ${medRecordArguments.pacientModel.getNome}",
-              style: TextStyle(fontSize: 16.0),
-            ),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
+            10.0,
+            0.0,
+            10.0,
+            10.0,
           ),
-          Flexible(
-            child: ListDiagnosisScreen(
-              pacient: medRecordArguments.pacientModel,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: MaterialButton(
-                child: Text("Cadastrar diagnostico"),
-                color: Color(0xFF84FFFF),
-                height: 55.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+          child: Column(
+            children: [
+              showPacientName(medRecordArguments),
+              MedRecordStyle().breakLine(),
+              Flexible(
+                child: ListDiagnosisScreen(
+                  pacient: medRecordArguments.pacientModel,
                 ),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(createDiagnosisRoute, arguments: this.medRecordArguments.pacientModel)
-                      .then((value) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        Navigator.of(context).pushNamed(medRecordRoute, arguments: MedRecordArguments(
-                          index: "3",
-                          pacientModel: this.medRecordArguments.pacientModel
-                        ));
-                       });
-                }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  child: Text("Cadastrar diagnostico"),
+                  color: Color(0xFF84FFFF),
+                  height: 55.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(createDiagnosisRoute,
+                            arguments: this.medRecordArguments.pacientModel)
+                        .then(
+                      (value) {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                        Navigator.of(context).pushNamed(medRecordRoute,
+                            arguments: MedRecordArguments(
+                                index: "3",
+                                pacientModel:
+                                    this.medRecordArguments.pacientModel));
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ]);
+        );
 
         break;
 
@@ -295,7 +290,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
       default:
         var parsed = int.tryParse(index);
-        if(parsed != null){
+        if (parsed != null) {
           return parsed;
         }
 
@@ -308,4 +303,75 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
     return (this.medRecordArguments.pacientModel.getCpf.isEmpty &&
         this.medRecordArguments.pacientModel.getSalt.isEmpty);
   }
+
+  Widget _buildCreateSolicitationExamButton() {
+    return ElevatedButton(
+      onPressed: () {
+        var pacientHash = SltPattern.retrivepacientHash(
+            this.medRecordArguments.pacientModel.getCpf,
+            this.medRecordArguments.pacientModel.getSalt);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ExamSolicitationFormScreen(
+                  pacientHash: pacientHash,
+                )));
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
+      ),
+      child: Text(
+        "Solicitação de exame",
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCreateExamButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => ExamFormScreen(
+                      medRecordArguments: this.medRecordArguments,
+                      examType: "",
+                      examSolicitationId: "",
+                    )))
+            .then((value) => {
+                  this
+                      ._medRecordBloc
+                      .add(GetExams(pacientHash: this._pacientHash))
+                });
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        primary: Theme.of(context).primaryColor,
+      ),
+      child: Text(
+        "Inserir exame",
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+showPacientName(MedRecordArguments args) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 15.0),
+    child: Text(
+      "Paciente : ${args.pacientModel.getNome}",
+      style: TextStyle(fontSize: 16.0),
+    ),
+  );
 }

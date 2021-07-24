@@ -28,3 +28,17 @@ class DeleteExamModel extends ExamEvent {
 
   DeleteExamModel({@required this.modelsToBeRemoved});
 }
+
+class CreateExamSolicitation extends ExamEvent{
+  final String solicitationDate;
+  final String solicitationExamType;
+  final String pacientHash;
+
+  CreateExamSolicitation({@required this.solicitationDate, @required this.solicitationExamType, @required this.pacientHash});
+}
+
+class GetExamSolicitations extends ExamEvent {
+  final String pacientHash;
+
+  GetExamSolicitations({@required this.pacientHash});
+}

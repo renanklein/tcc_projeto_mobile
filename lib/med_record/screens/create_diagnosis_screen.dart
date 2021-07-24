@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_solicitation_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class CreateDiagnosisScreen extends StatefulWidget {
   final PacientModel pacientModel;
@@ -67,7 +70,7 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                 return AlertDialog(
                   title: Text("Diagnóstico cadastrado com sucesso"),
                   content: Text(
-                      "O diagnóstico foi cadastrado. Deseja criar um exame ?"),
+                      "O diagnóstico foi cadastrado. Deseja criar uma solicitação de exame ?"),
                   actions: <Widget>[
                     // define os botões na base do dialogo
                     TextButton(
@@ -80,13 +83,10 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                       child: Text("Criar exame"),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ExamFormScreen(
-                                screenContext: "createDiagnosis",
-                                diagnosisDate: state.diagnosisModel.diagnosisDate,
-                                diagnosisId: state.diagnosisModel.id,
-                                medRecordArguments: MedRecordArguments(
-                                  pacientModel: this.pacient
-                                ))));
+                            builder: (context) => ExamSolicitationFormScreen(
+                                pacientHash: SltPattern.retrivepacientHash(
+                                    this.pacient.getCpf,
+                                    this.pacient.getSalt))));
                       },
                     ),
                   ],

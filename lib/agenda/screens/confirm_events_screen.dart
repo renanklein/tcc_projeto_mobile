@@ -57,34 +57,37 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
         body: ListView(
           children: [
             LayoutUtils.buildVerticalSpacing(10.0),
-            DateTimeFormField(
-              fieldPlaceholder: "Escolha o dia dos agendamentos",
-              dateTimeController: _dateController,
-              onSelectedDate: () {
-                if (this._dateController.text != null &&
-                    this._dateController.text.isNotEmpty) {
-                  var splitedDate = this._dateController.text.split("-");
-                  var selectedDate = DateTime(
-                      int.tryParse(splitedDate[2]),
-                      int.tryParse(splitedDate[1]),
-                      int.tryParse(splitedDate[0]));
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DateTimeFormField(
+                fieldPlaceholder: "Escolha o dia dos agendamentos",
+                dateTimeController: _dateController,
+                onSelectedDate: () {
+                  if (this._dateController.text != null &&
+                      this._dateController.text.isNotEmpty) {
+                    var splitedDate = this._dateController.text.split("-");
+                    var selectedDate = DateTime(
+                        int.tryParse(splitedDate[2]),
+                        int.tryParse(splitedDate[1]),
+                        int.tryParse(splitedDate[0]));
 
-                  if (selectedDate.difference(DateTime.now()).inDays < 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: Colors.red,
-                        content: Text(
-                          "Data selecionada já passou",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500),
-                        )));
-                  } else {
-                    this._agendaBloc.add(AgendaEventsToBeConfirmed(
-                        eventDate: this._dateController.text));
+                    if (selectedDate.difference(DateTime.now()).inDays < 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            "Data selecionada já passou",
+                            style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500),
+                          )));
+                    } else {
+                      this._agendaBloc.add(AgendaEventsToBeConfirmed(
+                          eventDate: this._dateController.text));
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
             LayoutUtils.buildVerticalSpacing(10.0),
             BlocListener<AgendaBloc, AgendaState>(

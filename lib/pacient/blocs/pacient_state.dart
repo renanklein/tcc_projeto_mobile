@@ -105,7 +105,7 @@ class GetPacientByNameFail extends PacientState {
 }
 
 class ViewPacientOverviewSuccess extends PacientState {
-  String overview;
+  final String overview;
 
   ViewPacientOverviewSuccess({this.overview});
 

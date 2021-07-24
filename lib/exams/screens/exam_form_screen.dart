@@ -25,12 +25,16 @@ class ExamFormScreen extends StatefulWidget {
   final DateTime diagnosisDate;
   final int diagnosisId;
   final String screenContext;
+  final String examType;
+  final String examSolicitationId;
 
   ExamFormScreen(
       {@required this.medRecordArguments,
       this.diagnosisDate,
       this.diagnosisId,
-      this.screenContext});
+      this.screenContext,
+      @required this.examType,
+      @required this.examSolicitationId});
   @override
   _ExamFormScreenState createState() => _ExamFormScreenState();
 }
@@ -52,6 +56,8 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   DateTime get diagnosisDate => this.widget.diagnosisDate;
   int get diagnosisId => this.widget.diagnosisId;
   String get screenContext => this.widget.screenContext;
+  String get examType => this.widget.examType;
+  String get examSolicitationId => this.widget.examSolicitationId;
 
   @override
   void initState() {
@@ -96,8 +102,13 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 this.examModelsTypes.add(map["Tipo de Exame"]);
                 this.modelExams.addAll({map["Tipo de Exame"]: map["fields"]});
               });
-              this._examTypeController.text = this.examModelsTypes.first;
-              this.currentDropdownItem = this.examModelsTypes.first;
+              if (this.examType != null && this.examType.isNotEmpty) {
+                this._examTypeController.text = this.examType;
+                this.currentDropdownItem = this.examType;
+              } else {
+                this._examTypeController.text = this.examModelsTypes.first;
+                this.currentDropdownItem = this.examModelsTypes.first;
+              }
             }
           },
           child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -333,6 +344,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                 ExamDetails(fieldsWidgetList: this.dynamicFieldsList);
 
             this._medRecordBloc.add(SaveExam(
+                examSolicitationId: this.examSolicitationId,
                 medRecordArguments: this.medRecordArguments,
                 examDetails: examDetails,
                 examFile: _examFile,

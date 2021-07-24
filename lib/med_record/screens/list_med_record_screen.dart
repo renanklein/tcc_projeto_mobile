@@ -307,8 +307,13 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   Widget _buildCreateSolicitationExamButton() {
     return ElevatedButton(
       onPressed: () {
+        var pacientHash = SltPattern.retrivepacientHash(
+            this.medRecordArguments.pacientModel.getCpf,
+            this.medRecordArguments.pacientModel.getSalt);
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ExamSolicitationFormScreen()));
+            builder: (context) => ExamSolicitationFormScreen(
+                  pacientHash: pacientHash,
+                )));
       },
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
@@ -334,6 +339,8 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             .push(MaterialPageRoute(
                 builder: (context) => ExamFormScreen(
                       medRecordArguments: this.medRecordArguments,
+                      examType: "",
+                      examSolicitationId: "",
                     )))
             .then((value) => {
                   this

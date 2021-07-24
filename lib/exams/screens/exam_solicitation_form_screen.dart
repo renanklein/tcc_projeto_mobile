@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamSolicitationFormScreen extends StatefulWidget {
-  const ExamSolicitationFormScreen({Key key}) : super(key: key);
+
+  final String pacientHash;
+
+  ExamSolicitationFormScreen({@required this.pacientHash});
 
   @override
   _ExamSolicitationFormScreenState createState() =>
@@ -23,6 +25,10 @@ class _ExamSolicitationFormScreenState
   TextEditingController _examModelTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
   String currentItem;
+
+  String get pacientHash => this.widget.pacientHash;
+
+
   @override
   void initState() {
     this._examBloc = context.read<ExamBloc>();
@@ -90,7 +96,8 @@ class _ExamSolicitationFormScreenState
                                   solicitationDate:
                                       this._examDateController.text,
                                   solicitationExamType:
-                                      this._examModelTypeController.text));
+                                      this._examModelTypeController.text,
+                                  pacientHash: this.pacientHash));
                             },
                             child: Text(
                               "Criar Solicitação",

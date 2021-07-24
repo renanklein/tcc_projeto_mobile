@@ -91,12 +91,14 @@ class SaveExam extends MedRecordEvent {
   final medRecordArguments;
   final diagnosisDate;
   final diagnosisId;
+  final String examSolicitationId;
 
   SaveExam(
       {@required this.cardExamInfo,
       @required this.examDetails,
       @required this.examFile,
       @required this.medRecordArguments,
+      @required this.examSolicitationId,
       this.diagnosisDate,
       this.diagnosisId});
 
@@ -104,6 +106,7 @@ class SaveExam extends MedRecordEvent {
   ExamDetails get getExamDetails => this.examDetails;
   File get getExamFile => this.examFile;
   MedRecordArguments get getMedRecordArguments => this.medRecordArguments;
+  String get getExamSolicitationId => this.examSolicitationId;
 
   @override
   List<Object> get props => [];

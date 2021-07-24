@@ -28,7 +28,7 @@ class _ExamScreenState extends State<ExamScreen> {
   @override
   void initState() {
     this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
-    _loadExamCards();
+    this.medRecordBloc.add(GetExams(pacientHash: this.pacientHash));
     super.initState();
   }
 
@@ -112,9 +112,5 @@ class _ExamScreenState extends State<ExamScreen> {
     return (this.cardExamInfos != null && this.cardExamInfos.isNotEmpty) &&
         (this.examDetailsList != null && this.examDetailsList.isNotEmpty) &&
         (this.fileDownloadURLs != null && this.fileDownloadURLs.isNotEmpty);
-  }
-
-  void _loadExamCards() {
-    this.medRecordBloc.add(GetExams(pacientHash: this.pacientHash));
   }
 }

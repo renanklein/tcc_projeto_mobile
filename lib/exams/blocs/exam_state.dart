@@ -38,3 +38,13 @@ class ExamSolicitationProcessing extends ExamState{}
 class ExamSolicitationSuccess extends ExamState{}
 
 class ExamSolicitationFail extends ExamState{}
+
+class GetExamSolicitationsProcessing extends ExamState{}
+
+class GetExamSolicitationsFail extends ExamState{}
+
+class GetExamSolicitationsSuccess extends ExamState{
+  final List<ExamSolicitationModel> solicitations;
+
+  GetExamSolicitationsSuccess({@required this.solicitations});
+}

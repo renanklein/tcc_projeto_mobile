@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_solicitation_detail_screen.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamSolicitationCard extends StatelessWidget{
+  final String pacientHash;
   final ExamSolicitationModel examSolicitationModel;
 
-  ExamSolicitationCard({@required this.examSolicitationModel});
+  ExamSolicitationCard({@required this.examSolicitationModel, @required this.pacientHash});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -39,13 +41,29 @@ class ExamSolicitationCard extends StatelessWidget{
               fontSize: 14.0
             ),
           ),
-          _buildExamSolicitationDetailsButton()
+          _buildExamSolicitationDetailsButton(context)
         ],
       )
     );
   }
 
-  Widget _buildExamSolicitationDetailsButton(){
-    return Container();
+  Widget _buildExamSolicitationDetailsButton(BuildContext context){
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0)),
+            primary: Theme.of(context).primaryColor),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ExamSolicitationDetailScreen(
+                pacientHash: this.pacientHash,
+                examSolicitationModel: this.examSolicitationModel,
+                examSolicitationId: this.examSolicitationModel.id,
+              )));
+        },
+        child: Text(
+          "Detalhes",
+          style: TextStyle(fontSize: 17.0, color: Colors.white),
+        ));
   }
 }

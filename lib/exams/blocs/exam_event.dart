@@ -42,3 +42,10 @@ class GetExamSolicitations extends ExamEvent {
 
   GetExamSolicitations({@required this.pacientHash});
 }
+
+class GetExamBySolicitationId extends ExamEvent {
+  final String examSolicitationId;
+  final String pacientHash;
+
+  GetExamBySolicitationId({@required this.examSolicitationId, @required this.pacientHash});
+}

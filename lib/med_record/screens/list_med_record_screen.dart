@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_solicitation_form_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_solicitation_screen.dart';
 import 'package:tcc_projeto_app/login/blocs/authentication_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
@@ -274,9 +275,25 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             ],
           ),
         );
-
         break;
 
+      case 4:
+        var pacientHash = SltPattern.retrivepacientHash(
+            this.medRecordArguments.pacientModel.getCpf,
+            this.medRecordArguments.pacientModel.getSalt);
+
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
+            10.0,
+            0.0,
+            10.0,
+            10.0,
+          ),
+          child: ExamSolicitationScreen(pacientHash: pacientHash),
+        );
+
+        break;
       default:
         return Text('selectedIndex: $index');
         break;

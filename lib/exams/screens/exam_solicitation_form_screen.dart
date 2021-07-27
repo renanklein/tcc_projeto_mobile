@@ -53,6 +53,7 @@ class _ExamSolicitationFormScreenState
                   state.models['models'].forEach((model) {
                     this._examModelsTypes.add(model["Tipo de Exame"]);
                     this.currentItem = this._examModelsTypes.first;
+                    this._examModelTypeController.text = this.currentItem;
                   });
                 }
               }),

@@ -218,16 +218,24 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             event.medRecordArguments.pacientModel.getCpf,
             event.medRecordArguments.pacientModel.getSalt);
 
-        await this.examRepository.saveExam(
+        List<Future> examJobs = <Future>[];
+
+        examJobs.add(this.examRepository.saveExam(
             event.getCardExamInfo,
             event.getExamDetails,
             encriptedFile,
             randomFileName.toString(),
             pacientHash,
             initializationVector,
+            event.examSolicitationId,
             diagnosisDate: event.diagnosisDate,
-            diagnosisId: event.diagnosisId.toString());
+            diagnosisId: event.diagnosisId.toString()));
 
+        if(event.examSolicitationId != null && event.examSolicitationId.isNotEmpty){
+          examJobs.add(this.examRepository.updateExamSolicitation(pacientHash, event.examSolicitationId));
+        }
+
+        await Future.wait(examJobs);
         yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);

@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
-import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 
 part 'exam_event.dart';
 part 'exam_state.dart';
@@ -80,6 +78,12 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ExamSolicitationFail();
       }
+    } else if(event is GetExamBySolicitationId){
+      yield GetExamBySolicitationIdProcessing();
+
+      var exam = await this.examRepository.getExamBySolicitationId(event.examSolicitationId, event.pacientHash);
+
+      yield GetExamBySolicitationIdSuccess(exam: exam);
     }
   }
 

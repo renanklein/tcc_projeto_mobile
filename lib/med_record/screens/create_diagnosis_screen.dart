@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
-import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_solicitation_form_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
-import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
@@ -80,13 +77,12 @@ class _CreateDiagnosisScreenState extends State<CreateDiagnosisScreen> {
                       },
                     ),
                     TextButton(
-                      child: Text("Criar exame"),
+                      child: Text("Criar solicitação"),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ExamSolicitationFormScreen(
-                                pacientHash: SltPattern.retrivepacientHash(
-                                    this.pacient.getCpf,
-                                    this.pacient.getSalt))));
+                                  pacient: this.pacient,
+                                )));
                       },
                     ),
                   ],

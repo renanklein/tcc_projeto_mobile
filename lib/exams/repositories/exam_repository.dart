@@ -76,24 +76,54 @@ class ExamRepository {
         .set(models);
   }
 
-  Future<List<ExamSolicitationModel>> getExamSolictations(String pacientHash) async {
-    try{
+  Future<List<ExamSolicitationModel>> getExamSolictations(
+      String pacientHash) async {
+    try {
       var examSolicitations = <ExamSolicitationModel>[];
-      var querySnapshot = await this._firestore.collection("examSolicitation")
-      .doc(_getUser().uid)
-      .collection(pacientHash)
-      .get();
+      var test;
+      var querySnapshot = await this
+          ._firestore
+          .collection("examSolicitation")
+          .doc(_getUser().uid)
+          .collection(pacientHash)
+          .get();
 
-      querySnapshot.docs.map((snapshot) {
+      querySnapshot.docs.forEach((snapshot) {
         var data = snapshot.data();
-        if(data != null && data.isNotEmpty){
-          examSolicitations.add(ExamSolicitationModel.fromMap(data, snapshot.id));
+        if (data != null && data.isNotEmpty) {
+          examSolicitations
+              .add(ExamSolicitationModel.fromMap(data, snapshot.id));
         }
       });
 
       return examSolicitations;
+    } catch (error, stackTrace) {
+      await FirebaseCrashlytics.instance.recordError(error, stackTrace);
+      throw error;
+    }
+  }
 
-    }catch(error, stackTrace){
+  Future<Map> getExamBySolicitationId(
+      String examSolicitationId, String pacientHash) async {
+    try {
+      var doc =
+          await this._firestore.collection("exams").doc(_getUser().uid).get();
+      var exams = [];
+      var solicitationExam;
+
+      if (doc.data() != null && doc.exists) {
+        exams = doc["exams"];
+      }
+
+      exams.forEach((exam) {
+        if (exam.containsKey("examSolicitationId") &&
+            exam["examSolicitationId"] == examSolicitationId) {
+          solicitationExam = exam;
+        }
+      });
+
+      return solicitationExam;
+    } catch (error, stackTrace) {
       await FirebaseCrashlytics.instance.recordError(error, stackTrace);
       throw error;
     }
@@ -108,9 +138,9 @@ class ExamRepository {
         .collection(pacientHash)
         .doc()
         .set({
-      "status" : "solicitado",
+      "status": "solicitado",
       "examModelType": examModelType,
-      "solicationDate": solicitationDate
+      "solicitationDate": solicitationDate
     });
   }
 
@@ -155,9 +185,29 @@ class ExamRepository {
         .set(response);
   }
 
-  Future saveExam(CardExamInfo cardExamInfo, ExamDetails examDetails,
-      File encriptedFile, String fileName, String pacientHash, IV iv,
-      {DateTime diagnosisDate, String diagnosisId}) async {
+  Future updateExamSolicitation(
+      String pacientHash, String examSolicitationId) async {
+    await this
+        ._firestore
+        .collection("examSolicitation")
+        .doc(_getUser().uid)
+        .collection(pacientHash)
+        .doc(examSolicitationId)
+        .update({
+          "status" : "realizado"
+        });
+  }
+
+  Future saveExam(
+      CardExamInfo cardExamInfo,
+      ExamDetails examDetails,
+      File encriptedFile,
+      String fileName,
+      String pacientHash,
+      IV iv,
+      String examSolicitationId,
+      {DateTime diagnosisDate,
+      String diagnosisId}) async {
     var user = _getUser();
     var fileDownloadURL = encriptedFile == null
         ? ""
@@ -173,6 +223,7 @@ class ExamRepository {
     }
 
     exams.add({
+      "examSolicitationId": examSolicitationId,
       "fileDownloadURL": fileDownloadURL,
       "examDate": cardExamInfo.getExamDate,
       "examType": cardExamInfo.getExamType,

@@ -48,3 +48,16 @@ class GetExamSolicitationsSuccess extends ExamState{
 
   GetExamSolicitationsSuccess({@required this.solicitations});
 }
+
+class GetExamBySolicitationIdProcessing extends ExamState{
+
+}
+
+class GetExamBySolicitationIdSuccess extends ExamState{
+  final Map exam;
+  GetExamBySolicitationIdSuccess({@required this.exam});
+}
+
+class GetExamBySolicitationIdFail extends ExamState{
+
+}

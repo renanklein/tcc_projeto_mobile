@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
+import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class ExamSolicitationFormScreen extends StatefulWidget {
+  final PacientModel pacient;
 
-  final String pacientHash;
-
-  ExamSolicitationFormScreen({@required this.pacientHash});
+  ExamSolicitationFormScreen({@required this.pacient});
 
   @override
   _ExamSolicitationFormScreenState createState() =>
@@ -26,8 +29,7 @@ class _ExamSolicitationFormScreenState
   TextEditingController _examDateController = TextEditingController();
   String currentItem;
 
-  String get pacientHash => this.widget.pacientHash;
-
+  PacientModel get pacient => this.widget.pacient;
 
   @override
   void initState() {
@@ -58,7 +60,18 @@ class _ExamSolicitationFormScreenState
                 }
               }),
           BlocListener<ExamBloc, ExamState>(
-              bloc: this._examBloc, listener: (context, state) {})
+              bloc: this._examBloc,
+              listener: (context, state) {
+                if (state is ExamSolicitationSuccess) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => MedRecordScreen(
+                          medRecordArguments: MedRecordArguments(
+                            pacientModel: this.pacient,
+                            index: "4"
+                          ))));
+                }
+              })
         ],
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
           builder: (context, state) {
@@ -76,9 +89,7 @@ class _ExamSolicitationFormScreenState
                         Center(
                             child: Text(
                           "Selecione o modelo de exame",
-                          style: TextStyle(
-                            fontSize: 15.0
-                          ),
+                          style: TextStyle(fontSize: 15.0),
                         )),
                         LayoutUtils.buildVerticalSpacing(5.0),
                         _buildDropdownExamModelTypeButton(),
@@ -93,12 +104,14 @@ class _ExamSolicitationFormScreenState
                                     borderRadius: BorderRadius.circular(32.0)),
                                 primary: Theme.of(context).primaryColor),
                             onPressed: () {
+                              var pacientHash = SltPattern.retrivepacientHash(
+                                  this.pacient.getCpf, this.pacient.getSalt);
                               this._examBloc.add(CreateExamSolicitation(
                                   solicitationDate:
                                       this._examDateController.text,
                                   solicitationExamType:
                                       this._examModelTypeController.text,
-                                  pacientHash: this.pacientHash));
+                                  pacientHash: pacientHash));
                             },
                             child: Text(
                               "Criar Solicitação",

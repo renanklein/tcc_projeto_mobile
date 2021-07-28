@@ -17,7 +17,7 @@ class ExamSolicitationModel {
     return {
       "id": examSolicitationModel.id,
       "status": examSolicitationModel.status,
-      "examTypeModel": examSolicitationModel.examTypeModel,
+      "examModelType": examSolicitationModel.examTypeModel,
       "solicitationDate": examSolicitationModel.solicitationDate
     };
   }
@@ -28,7 +28,7 @@ class ExamSolicitationModel {
     return ExamSolicitationModel(
         id: examSolicitationId,
         status: examSolicitation["status"],
-        examTypeModel: examSolicitation["examTypeModel"],
+        examTypeModel: examSolicitation["examModelType"],
         solicitationDate: examSolicitation["solicitationDate"]);
   }
 }

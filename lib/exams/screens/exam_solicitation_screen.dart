@@ -3,12 +3,14 @@ import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_solicitation_card.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class ExamSolicitationScreen extends StatefulWidget {
-  final String pacientHash;
+  final MedRecordArguments medRecordArguments;
 
-  ExamSolicitationScreen({@required this.pacientHash});
+  ExamSolicitationScreen({@required this.medRecordArguments});
   @override
   State<StatefulWidget> createState() => _ExamSolicitationScreenState();
 }
@@ -16,11 +18,12 @@ class ExamSolicitationScreen extends StatefulWidget {
 class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
   List<ExamSolicitationModel> solicitations = <ExamSolicitationModel>[];
   ExamBloc _examBloc;
-  String get pacientHash => this.widget.pacientHash;
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
   @override
   void initState() {
+    var pacientHash = SltPattern.retrivepacientHash(this.medRecordArguments.pacientModel.getCpf, this.medRecordArguments.pacientModel.getSalt);
     this._examBloc = context.read<ExamBloc>();
-    this._examBloc.add(GetExamSolicitations(pacientHash: this.pacientHash));
+    this._examBloc.add(GetExamSolicitations(pacientHash: pacientHash));
     super.initState();
   }
 
@@ -53,7 +56,7 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                   itemBuilder: (context, index) {
                     return ExamSolicitationCard(
                       examSolicitationModel: this.solicitations[index],
-                      pacientHash: this.pacientHash,
+                      medRecordArguments: this.medRecordArguments,
                     );
                   });
             }));

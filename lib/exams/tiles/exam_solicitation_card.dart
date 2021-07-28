@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_solicitation_detail_screen.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamSolicitationCard extends StatelessWidget{
-  final String pacientHash;
+  final MedRecordArguments medRecordArguments;
   final ExamSolicitationModel examSolicitationModel;
 
-  ExamSolicitationCard({@required this.examSolicitationModel, @required this.pacientHash});
+  ExamSolicitationCard({@required this.examSolicitationModel, @required this.medRecordArguments});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -56,7 +57,7 @@ class ExamSolicitationCard extends StatelessWidget{
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamSolicitationDetailScreen(
-                pacientHash: this.pacientHash,
+                medRecordArguments: this.medRecordArguments,
                 examSolicitationModel: this.examSolicitationModel,
                 examSolicitationId: this.examSolicitationModel.id,
               )));

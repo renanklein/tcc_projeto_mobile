@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamSolicitationDetailScreen extends StatefulWidget {
   final String examSolicitationId;
-  final String pacientHash;
+  final MedRecordArguments medRecordArguments;
   final ExamSolicitationModel examSolicitationModel;
   ExamSolicitationDetailScreen(
       {@required this.examSolicitationId,
-      @required this.pacientHash,
+      @required this.medRecordArguments,
       @required this.examSolicitationModel});
 
   @override
@@ -25,16 +29,18 @@ class _ExamSolicitationDetailScreenState
   ExamBloc _examBloc;
   Map exam;
   String get examSolicitationId => this.widget.examSolicitationId;
-  String get pacientHash => this.widget.pacientHash;
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
   ExamSolicitationModel get examSolicitationModel =>
       this.widget.examSolicitationModel;
 
   @override
   void initState() {
+    var pacientHash = SltPattern.retrivepacientHash(
+        this.medRecordArguments.pacientModel.getCpf,
+        this.medRecordArguments.pacientModel.getSalt);
     this._examBloc = context.read<ExamBloc>();
     this._examBloc.add(GetExamBySolicitationId(
-        examSolicitationId: this.examSolicitationId,
-        pacientHash: this.pacientHash));
+        examSolicitationId: this.examSolicitationId, pacientHash: pacientHash));
 
     super.initState();
   }
@@ -79,6 +85,9 @@ class _ExamSolicitationDetailScreenState
                 LayoutUtils.buildVerticalSpacing(10.0),
                 this.exam != null && this.exam.isNotEmpty
                     ? _buildExamDetailsButton()
+                    : Container(),
+                this.examSolicitationModel.status == "solicitado"
+                    ? _buildCreateExamButton()
                     : Container()
               ],
             );
@@ -86,6 +95,25 @@ class _ExamSolicitationDetailScreenState
         ),
       ),
     );
+  }
+
+  Widget _buildCreateExamButton() {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0)),
+            primary: Theme.of(context).primaryColor),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ExamFormScreen(
+                  medRecordArguments: this.medRecordArguments,
+                  examType: this.examSolicitationModel.examTypeModel,
+                  examSolicitationId: examSolicitationId)));
+        },
+        child: Text(
+          "Criar Exame",
+          style: TextStyle(fontSize: 17.0, color: Colors.white),
+        ));
   }
 
   Widget _buildExamDetailsButton() {
@@ -97,14 +125,14 @@ class _ExamSolicitationDetailScreenState
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
-                  examDetails: this.exam["dynamicFields"],
+                  examDetails: ExamDetails.fromMap(this.exam["dynamicFields"]),
                   fileDownloadURL: this.exam["fileDownloadURL"],
                   iv: this.exam["IV"],
                   examDate: this.exam["examDate"],
                   examType: this.exam["examType"])));
         },
         child: Text(
-          "Criar Solicitação",
+          "Detalhes do exame",
           style: TextStyle(fontSize: 17.0, color: Colors.white),
         ));
   }

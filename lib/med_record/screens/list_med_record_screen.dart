@@ -278,9 +278,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         break;
 
       case 4:
-        var pacientHash = SltPattern.retrivepacientHash(
-            this.medRecordArguments.pacientModel.getCpf,
-            this.medRecordArguments.pacientModel.getSalt);
+        
 
 
         return Padding(
@@ -290,7 +288,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             10.0,
             10.0,
           ),
-          child: ExamSolicitationScreen(pacientHash: pacientHash),
+          child: ExamSolicitationScreen(medRecordArguments: medRecordArguments,),
         );
 
         break;
@@ -324,12 +322,9 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
   Widget _buildCreateSolicitationExamButton() {
     return ElevatedButton(
       onPressed: () {
-        var pacientHash = SltPattern.retrivepacientHash(
-            this.medRecordArguments.pacientModel.getCpf,
-            this.medRecordArguments.pacientModel.getSalt);
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ExamSolicitationFormScreen(
-                  pacientHash: pacientHash,
+                  pacient: this.medRecordArguments.pacientModel,
                 )));
       },
       style: ElevatedButton.styleFrom(

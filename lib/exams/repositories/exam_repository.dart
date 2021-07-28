@@ -192,7 +192,7 @@ class ExamRepository {
         .collection("examSolicitation")
         .doc(_getUser().uid)
         .collection(pacientHash)
-        .doc()
+        .doc(examSolicitationId)
         .update({
           "status" : "realizado"
         });

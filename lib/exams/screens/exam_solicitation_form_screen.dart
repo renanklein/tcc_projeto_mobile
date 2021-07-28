@@ -64,7 +64,7 @@ class _ExamSolicitationFormScreenState
               listener: (context, state) {
                 if (state is ExamSolicitationSuccess) {
                   Navigator.of(context).popUntil((route) => route.isFirst);
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MedRecordScreen(
                           medRecordArguments: MedRecordArguments(
                             pacientModel: this.pacient,

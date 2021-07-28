@@ -63,33 +63,36 @@ class _ExamSolicitationDetailScreenState
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
 
-            return ListView(
-              children: [
-                Field(
-                    textController: TextEditingController(
-                        text: this.examSolicitationModel.examTypeModel),
-                    fieldPlaceholder: "Tipo de exame:",
-                    isReadOnly: true),
-                LayoutUtils.buildVerticalSpacing(10.0),
-                Field(
-                    textController: TextEditingController(
-                        text: this.examSolicitationModel.solicitationDate),
-                    fieldPlaceholder: "Data da solicitação:",
-                    isReadOnly: true),
-                LayoutUtils.buildVerticalSpacing(10.0),
-                Field(
-                    textController: TextEditingController(
-                        text: this.examSolicitationModel.status),
-                    fieldPlaceholder: "Status:",
-                    isReadOnly: true),
-                LayoutUtils.buildVerticalSpacing(10.0),
-                this.exam != null && this.exam.isNotEmpty
-                    ? _buildExamDetailsButton()
-                    : Container(),
-                this.examSolicitationModel.status == "solicitado"
-                    ? _buildCreateExamButton()
-                    : Container()
-              ],
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: [
+                  Field(
+                      textController: TextEditingController(
+                          text: this.examSolicitationModel.examTypeModel),
+                      fieldPlaceholder: "Tipo de exame:",
+                      isReadOnly: true),
+                  LayoutUtils.buildVerticalSpacing(10.0),
+                  Field(
+                      textController: TextEditingController(
+                          text: this.examSolicitationModel.solicitationDate),
+                      fieldPlaceholder: "Data da solicitação:",
+                      isReadOnly: true),
+                  LayoutUtils.buildVerticalSpacing(10.0),
+                  Field(
+                      textController: TextEditingController(
+                          text: this.examSolicitationModel.status),
+                      fieldPlaceholder: "Status:",
+                      isReadOnly: true),
+                  LayoutUtils.buildVerticalSpacing(10.0),
+                  this.exam != null && this.exam.isNotEmpty
+                      ? _buildExamDetailsButton()
+                      : Container(),
+                  this.examSolicitationModel.status == "solicitado"
+                      ? _buildCreateExamButton()
+                      : Container()
+                ],
+              ),
             );
           },
         ),

@@ -8,7 +8,6 @@ import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.da
 import 'package:tcc_projeto_app/med_record/style/med_record_style.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
-import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
 class CreateDiagnosisScreen extends StatefulWidget {
   final PacientModel pacientModel;

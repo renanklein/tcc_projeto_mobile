@@ -133,7 +133,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                                     ),
                                     NavigationRailDestination(
                                       icon: Icon(Icons.healing),
-                                      label: Text('Evolução'),
+                                      label: Text('Solicitações'),
                                     ),
                                     NavigationRailDestination(
                                       icon: Icon(Icons.file_upload),
@@ -283,9 +283,9 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(
+            15.0,
             10.0,
-            0.0,
-            10.0,
+            15.0,
             10.0,
           ),
           child: ExamSolicitationScreen(medRecordArguments: medRecordArguments,),

@@ -54,9 +54,12 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
               return ListView.builder(
                   itemCount: this.solicitations.length,
                   itemBuilder: (context, index) {
-                    return ExamSolicitationCard(
-                      examSolicitationModel: this.solicitations[index],
-                      medRecordArguments: this.medRecordArguments,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ExamSolicitationCard(
+                        examSolicitationModel: this.solicitations[index],
+                        medRecordArguments: this.medRecordArguments,
+                      ),
                     );
                   });
             }));

@@ -16,7 +16,7 @@ class ExamSolicitationCard extends StatelessWidget{
       elevation: 4.0,
       margin: EdgeInsets.symmetric(horizontal: 20.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(32.0)
+        borderRadius: BorderRadius.circular(15.0)
       ),
 
       child: Column(
@@ -24,6 +24,7 @@ class ExamSolicitationCard extends StatelessWidget{
           Text(
             this.examSolicitationModel.examTypeModel,
             style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 14.0,
             ),
           ),
@@ -31,6 +32,7 @@ class ExamSolicitationCard extends StatelessWidget{
           Text(
             this.examSolicitationModel.solicitationDate,
             style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 14.0
             ),
           ),
@@ -39,32 +41,38 @@ class ExamSolicitationCard extends StatelessWidget{
           Text(
             this.examSolicitationModel.status,
             style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 14.0
             ),
           ),
-          _buildExamSolicitationDetailsButton(context)
+          LayoutUtils.buildVerticalSpacing(10.0),
+          _buildExamSolicitationDetailsButton(context),
+          LayoutUtils.buildVerticalSpacing(8.0)
         ],
       )
     );
   }
 
   Widget _buildExamSolicitationDetailsButton(BuildContext context){
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0)),
-            primary: Theme.of(context).primaryColor),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ExamSolicitationDetailScreen(
-                medRecordArguments: this.medRecordArguments,
-                examSolicitationModel: this.examSolicitationModel,
-                examSolicitationId: this.examSolicitationModel.id,
-              )));
-        },
-        child: Text(
-          "Detalhes",
-          style: TextStyle(fontSize: 17.0, color: Colors.white),
-        ));
+    return SizedBox(
+      height: 30.0,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              primary: Theme.of(context).primaryColor),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ExamSolicitationDetailScreen(
+                  medRecordArguments: this.medRecordArguments,
+                  examSolicitationModel: this.examSolicitationModel,
+                  examSolicitationId: this.examSolicitationModel.id,
+                )));
+          },
+          child: Text(
+            "Detalhes",
+            style: TextStyle(fontSize: 17.0, color: Colors.white),
+          )),
+    );
   }
 }

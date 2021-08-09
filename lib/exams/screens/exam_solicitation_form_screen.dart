@@ -70,7 +70,7 @@ class _ExamSolicitationFormScreenState
                       builder: (context) => MedRecordScreen(
                           medRecordArguments: MedRecordArguments(
                             pacientModel: this.pacient,
-                            index: "4"
+                            index: "3"
                           ))));
                 }
               })

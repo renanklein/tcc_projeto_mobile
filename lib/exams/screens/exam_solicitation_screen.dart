@@ -21,7 +21,9 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
   @override
   void initState() {
-    var pacientHash = SltPattern.retrivepacientHash(this.medRecordArguments.pacientModel.getCpf, this.medRecordArguments.pacientModel.getSalt);
+    var pacientHash = SltPattern.retrivepacientHash(
+        this.medRecordArguments.pacientModel.getCpf,
+        this.medRecordArguments.pacientModel.getSalt);
     this._examBloc = context.read<ExamBloc>();
     this._examBloc.add(GetExamSolicitations(pacientHash: pacientHash));
     super.initState();
@@ -51,17 +53,35 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                 );
               }
 
-              return ListView.builder(
-                  itemCount: this.solicitations.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ExamSolicitationCard(
-                        examSolicitationModel: this.solicitations[index],
-                        medRecordArguments: this.medRecordArguments,
-                      ),
-                    );
-                  });
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView(
+                  children: [
+                    Text("Clique nos card para exibir os detalhes da solicitação",
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 15.0
+                    ),),
+                    LayoutUtils.buildVerticalSpacing(15.0),
+                    ..._buildExamSolicitationCards()
+                  ],
+                ),
+              );
             }));
+  }
+
+  List<Widget> _buildExamSolicitationCards() {
+    var solicitationCards = <Widget>[];
+
+    this.solicitations.forEach((element) {
+      solicitationCards.add(ExamSolicitationCard(
+        medRecordArguments: this.medRecordArguments,
+        examSolicitationModel: element
+      ));
+      solicitationCards.add(LayoutUtils.buildVerticalSpacing(20.0));
+    });
+
+
+    return solicitationCards;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class ExamCard extends StatelessWidget {
   final cardExamInfo;
@@ -23,54 +24,9 @@ class ExamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        color: Colors.white,
-        elevation: 4.0,
-        margin: EdgeInsets.symmetric(horizontal: 20.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Container(
-          height: 124,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(
-                getCardExamInfo.examType,
-                style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey),
-              ),
-              Text(
-                getCardExamInfo.examDate,
-                style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey),
-              ),
-              _buildDecriptFileButton(context)
-            ],
-          ),
-        ));
-  }
-
-  Widget _buildDecriptFileButton(BuildContext context) {
-    return SizedBox(
-      height: 30.0,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
-          ),
-          primary: Theme.of(context).primaryColor,
-        ),
-        child: Text(
-          "Exibir Exame",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        onPressed: () async {
-          this.medRecordBloc.add(
+    return GestureDetector(
+      onTap: (){
+         this.medRecordBloc.add(
               DecryptExam(fileDownloadURL: this.fileDownloadURL, iv: this.iv));
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamDetailsScreen(
@@ -80,8 +36,34 @@ class ExamCard extends StatelessWidget {
                     fileDownloadURL: this.fileDownloadURL,
                     iv: this.iv,
                   )));
-        },
-      ),
+      },
+      child: Card(
+          color: Colors.white,
+          elevation: 4.0,
+          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Column(
+            children: <Widget>[
+              LayoutUtils.buildVerticalSpacing(20.0),
+              Text(
+                getCardExamInfo.examType,
+                style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.grey),
+              ),
+              LayoutUtils.buildVerticalSpacing(10.0),
+              Text(
+                getCardExamInfo.examDate,
+                style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.grey),
+              ),
+              LayoutUtils.buildVerticalSpacing(20.0)
+            ],
+          )),
     );
   }
 }

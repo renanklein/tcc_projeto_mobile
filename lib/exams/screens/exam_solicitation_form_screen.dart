@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
@@ -35,6 +36,7 @@ class _ExamSolicitationFormScreenState
   void initState() {
     this._examBloc = context.read<ExamBloc>();
     this._medRecordBloc = context.read<MedRecordBloc>();
+    this._examDateController.text = dateFormatter.format(this._examSolicitationDate);
     this._medRecordBloc.add(LoadExamModels());
     super.initState();
   }
@@ -68,7 +70,7 @@ class _ExamSolicitationFormScreenState
                       builder: (context) => MedRecordScreen(
                           medRecordArguments: MedRecordArguments(
                             pacientModel: this.pacient,
-                            index: "4"
+                            index: "3"
                           ))));
                 }
               })

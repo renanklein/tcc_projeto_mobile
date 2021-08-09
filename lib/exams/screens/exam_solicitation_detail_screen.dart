@@ -101,6 +101,8 @@ class _ExamSolicitationDetailScreenState
   }
 
   Widget _buildCreateExamButton() {
+    var buttonText = this.examSolicitationModel.status == "solicitado" ? "Cadastrar resultado exame" : "Clique para verificar detalhes";
+    
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -114,7 +116,7 @@ class _ExamSolicitationDetailScreenState
                   examSolicitationId: examSolicitationId)));
         },
         child: Text(
-          "Criar Exame",
+          buttonText,
           style: TextStyle(fontSize: 17.0, color: Colors.white),
         ));
   }

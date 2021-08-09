@@ -129,11 +129,11 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                                     ),
                                     NavigationRailDestination(
                                       icon: Icon(Icons.question_answer),
-                                      label: Text('Diagnóstico'),
+                                      label: Text('Solicitações'),
                                     ),
                                     NavigationRailDestination(
                                       icon: Icon(Icons.healing),
-                                      label: Text('Solicitações'),
+                                      label: Text('Diagnóstico'),
                                     ),
                                     NavigationRailDestination(
                                       icon: Icon(Icons.file_upload),
@@ -231,6 +231,20 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
       case 3:
         return Padding(
           padding: const EdgeInsets.fromLTRB(
+            15.0,
+            10.0,
+            15.0,
+            10.0,
+          ),
+          child: ExamSolicitationScreen(
+            medRecordArguments: medRecordArguments,
+          ),
+        );
+
+        break;
+      case 4:
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
             10.0,
             0.0,
             10.0,
@@ -264,7 +278,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                             .popUntil((route) => route.isFirst);
                         Navigator.of(context).pushNamed(medRecordRoute,
                             arguments: MedRecordArguments(
-                                index: "3",
+                                index: "4",
                                 pacientModel:
                                     this.medRecordArguments.pacientModel));
                       },
@@ -275,22 +289,6 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
             ],
           ),
         );
-        break;
-
-      case 4:
-        
-
-
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(
-            15.0,
-            10.0,
-            15.0,
-            10.0,
-          ),
-          child: ExamSolicitationScreen(medRecordArguments: medRecordArguments,),
-        );
-
         break;
       default:
         return Text('selectedIndex: $index');

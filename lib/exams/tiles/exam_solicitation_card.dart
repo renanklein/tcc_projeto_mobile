@@ -4,74 +4,53 @@ import 'package:tcc_projeto_app/exams/screens/exam_solicitation_detail_screen.da
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
-class ExamSolicitationCard extends StatelessWidget{
+class ExamSolicitationCard extends StatelessWidget {
   final MedRecordArguments medRecordArguments;
   final ExamSolicitationModel examSolicitationModel;
 
-  ExamSolicitationCard({@required this.examSolicitationModel, @required this.medRecordArguments});
+  ExamSolicitationCard(
+      {@required this.examSolicitationModel,
+      @required this.medRecordArguments});
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 4.0,
-      margin: EdgeInsets.symmetric(horizontal: 20.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0)
-      ),
-
-      child: Column(
-        children: [
-          Text(
-            this.examSolicitationModel.examTypeModel,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 14.0,
-            ),
-          ),
-          LayoutUtils.buildVerticalSpacing(8.0),
-          Text(
-            this.examSolicitationModel.solicitationDate,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 14.0
-            ),
-          ),
-
-          LayoutUtils.buildVerticalSpacing(8.0),
-          Text(
-            this.examSolicitationModel.status,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 14.0
-            ),
-          ),
-          LayoutUtils.buildVerticalSpacing(10.0),
-          _buildExamSolicitationDetailsButton(context),
-          LayoutUtils.buildVerticalSpacing(8.0)
-        ],
-      )
-    );
-  }
-
-  Widget _buildExamSolicitationDetailsButton(BuildContext context){
-    return SizedBox(
-      height: 30.0,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0)),
-              primary: Theme.of(context).primaryColor),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ExamSolicitationDetailScreen(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ExamSolicitationDetailScreen(
                   medRecordArguments: this.medRecordArguments,
                   examSolicitationModel: this.examSolicitationModel,
                   examSolicitationId: this.examSolicitationModel.id,
                 )));
-          },
-          child: Text(
-            "Detalhes",
-            style: TextStyle(fontSize: 17.0, color: Colors.white),
+      },
+      child: Card(
+          color: Colors.white,
+          elevation: 4.0,
+          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Column(
+            children: [
+              Text(
+                this.examSolicitationModel.examTypeModel,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 14.0,
+                ),
+              ),
+              LayoutUtils.buildVerticalSpacing(8.0),
+              Text(
+                this.examSolicitationModel.solicitationDate,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 14.0),
+              ),
+              LayoutUtils.buildVerticalSpacing(8.0),
+              Text(
+                this.examSolicitationModel.status,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 14.0),
+              ),
+              LayoutUtils.buildVerticalSpacing(8.0)
+            ],
           )),
     );
   }

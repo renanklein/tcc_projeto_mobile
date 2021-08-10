@@ -6,11 +6,13 @@ import 'package:flutter/widgets.dart';
 class DateTimeFormField extends StatelessWidget {
   final dateTimeController;
   final fieldPlaceholder;
+  final solicitationDate;
   final Function onSelectedDate;
 
   DateTimeFormField(
       {@required this.dateTimeController,
       @required this.fieldPlaceholder,
+      this.solicitationDate,
       this.onSelectedDate});
 
   @override
@@ -38,11 +40,11 @@ class DateTimeFormField extends StatelessWidget {
               ),
               hintText: fieldPlaceholder,
               floatingLabelBehavior: FloatingLabelBehavior.auto),
-          format: DateFormat('dd-MM-yyyy'),
+          format: DateFormat('dd/MM/yyyy'),
           onShowPicker: (context, currentValue) {
             return showDatePicker(
               context: context,
-              firstDate: DateTime(1900),
+              firstDate: this.solicitationDate ?? DateTime(1900),
               lastDate: DateTime(2050),
               locale: Locale('pt', 'BR'),
               initialDate: DateTime.now(),

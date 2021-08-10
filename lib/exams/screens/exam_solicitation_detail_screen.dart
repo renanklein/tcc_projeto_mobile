@@ -7,6 +7,7 @@ import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
@@ -111,6 +112,7 @@ class _ExamSolicitationDetailScreenState
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamFormScreen(
+                  solicitationDate: ConvertUtils.dateTimeFromString(this.examSolicitationModel.solicitationDate),
                   medRecordArguments: this.medRecordArguments,
                   examType: this.examSolicitationModel.examTypeModel,
                   examSolicitationId: examSolicitationId)));

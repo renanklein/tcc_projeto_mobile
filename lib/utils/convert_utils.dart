@@ -37,6 +37,13 @@ class ConvertUtils {
     return "${time.hour}:${time.minute}";
   }
 
+  static DateTime dateTimeFromString(String date) {
+    var splitted = date.contains("/") ? date.split("/") : date.split("-");
+
+    return DateTime(int.tryParse(splitted[2]), int.tryParse(splitted[1]),
+        int.tryParse(splitted[0]));
+  }
+
   static String dayFromDateTime(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);
   }
@@ -60,10 +67,10 @@ class ConvertUtils {
     return eventsParsed;
   }
 
-  static List mapConfirmedEvents(List events){
+  static List mapConfirmedEvents(List events) {
     var listOfEvents = [];
-    events.forEach((event){
-      if(event['status'] != "confirmed" && event["status"] != "canceled"){
+    events.forEach((event) {
+      if (event['status'] != "confirmed" && event["status"] != "canceled") {
         listOfEvents.add(event);
       }
     });

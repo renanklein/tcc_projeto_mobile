@@ -27,6 +27,7 @@ class ExamFormScreen extends StatefulWidget {
   final String screenContext;
   final String examType;
   final String examSolicitationId;
+  final DateTime solicitationDate;
 
   ExamFormScreen(
       {@required this.medRecordArguments,
@@ -34,7 +35,8 @@ class ExamFormScreen extends StatefulWidget {
       this.diagnosisId,
       this.screenContext,
       @required this.examType,
-      @required this.examSolicitationId});
+      @required this.examSolicitationId,
+      this.solicitationDate});
   @override
   _ExamFormScreenState createState() => _ExamFormScreenState();
 }
@@ -58,6 +60,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   String get screenContext => this.widget.screenContext;
   String get examType => this.widget.examType;
   String get examSolicitationId => this.widget.examSolicitationId;
+  DateTime get solicitationDate => this.widget.solicitationDate;
 
   @override
   void initState() {
@@ -83,14 +86,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           bloc: this._medRecordBloc,
           listener: (context, state) {
             if (state is ExamProcessingSuccess) {
-              if (this.screenContext == "createDiagnosis") {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MedRecordScreen(
-                        medRecordArguments: this.medRecordArguments)));
-              }
-              Future.delayed(Duration(seconds: 2));
-              Navigator.of(context).pop();
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MedRecordScreen(
+                      medRecordArguments: this.medRecordArguments)));
             } else if (state is DynamicExamFieldSuccess) {
               setState(() {
                 this.dynamicFieldsList.add(state.dynamicFieldWidget);
@@ -141,6 +140,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           ),
           LayoutUtils.buildVerticalSpacing(10.0),
           DateTimeFormField(
+            solicitationDate: this.solicitationDate,
             fieldPlaceholder: "Data de Realização",
             dateTimeController: this._examDateController,
           ),

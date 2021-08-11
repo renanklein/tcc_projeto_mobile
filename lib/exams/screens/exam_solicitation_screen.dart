@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_solicitation_card.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
@@ -57,11 +58,12 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: ListView(
                   children: [
-                    Text("Clique nos card para exibir os detalhes da solicitação",
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 15.0
-                    ),),
+                    Text(
+                      "Clique no cartão para exibir os detalhes da solicitação",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 15.0),
+                    ),
                     LayoutUtils.buildVerticalSpacing(15.0),
                     ..._buildExamSolicitationCards()
                   ],
@@ -70,17 +72,29 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
             }));
   }
 
+  void _sortSolicitationsByDate(){
+    this.solicitations.sort((a,b){
+      var dateA = ConvertUtils.dateTimeFromString(a.solicitationDate);
+      var dateB = ConvertUtils.dateTimeFromString(b.solicitationDate);
+
+      if(dateA.isAfter(dateB)){
+        return -1;
+      }
+
+      return 1;
+    });
+  }
+
   List<Widget> _buildExamSolicitationCards() {
+    this._sortSolicitationsByDate();
     var solicitationCards = <Widget>[];
 
     this.solicitations.forEach((element) {
       solicitationCards.add(ExamSolicitationCard(
-        medRecordArguments: this.medRecordArguments,
-        examSolicitationModel: element
-      ));
+          medRecordArguments: this.medRecordArguments,
+          examSolicitationModel: element));
       solicitationCards.add(LayoutUtils.buildVerticalSpacing(20.0));
     });
-
 
     return solicitationCards;
   }

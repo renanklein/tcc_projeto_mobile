@@ -58,11 +58,12 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: ListView(
                   children: [
-                    Text("Clique nos card para exibir os detalhes da solicitação",
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 15.0
-                    ),),
+                    Text(
+                      "Clique no cartão para exibir os detalhes da solicitação",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 15.0),
+                    ),
                     LayoutUtils.buildVerticalSpacing(15.0),
                     ..._buildExamSolicitationCards()
                   ],
@@ -90,12 +91,10 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
 
     this.solicitations.forEach((element) {
       solicitationCards.add(ExamSolicitationCard(
-        medRecordArguments: this.medRecordArguments,
-        examSolicitationModel: element
-      ));
+          medRecordArguments: this.medRecordArguments,
+          examSolicitationModel: element));
       solicitationCards.add(LayoutUtils.buildVerticalSpacing(20.0));
     });
-
 
     return solicitationCards;
   }

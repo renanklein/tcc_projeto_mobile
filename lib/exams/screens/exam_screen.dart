@@ -82,13 +82,10 @@ class _ExamScreenState extends State<ExamScreen> {
       _sortExams();
       List<Widget> examCards = [];
       examCards.add(Text(
-        "Clique nos cards para exibir os detalhes do exame",
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontSize: 15.0
-        ),
+        "Clique no cartão para exibir os detalhes do exame",
+        style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15.0),
       ));
-      
+
       for (int i = 0; i < this.cardExamInfos.length; i++) {
         examCards.add(
           ExamCard(

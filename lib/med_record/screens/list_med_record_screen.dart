@@ -332,7 +332,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         primary: Theme.of(context).primaryColor,
       ),
       child: Text(
-        "Solicitação de exame",
+        "Criar Solicitação de exame",
         style: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,

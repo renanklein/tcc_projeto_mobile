@@ -102,8 +102,10 @@ class _ExamSolicitationDetailScreenState
   }
 
   Widget _buildCreateExamButton() {
-    var buttonText = this.examSolicitationModel.status == "solicitado" ? "Cadastrar resultado exame" : "Clique para verificar detalhes";
-    
+    var buttonText = this.examSolicitationModel.status == "solicitado"
+        ? "Cadastrar resultado do exame"
+        : "Clique para verificar detalhes";
+
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -112,7 +114,8 @@ class _ExamSolicitationDetailScreenState
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ExamFormScreen(
-                  solicitationDate: ConvertUtils.dateTimeFromString(this.examSolicitationModel.solicitationDate),
+                  solicitationDate: ConvertUtils.dateTimeFromString(
+                      this.examSolicitationModel.solicitationDate),
                   medRecordArguments: this.medRecordArguments,
                   examType: this.examSolicitationModel.examTypeModel,
                   examSolicitationId: examSolicitationId)));

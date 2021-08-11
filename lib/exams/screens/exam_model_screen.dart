@@ -55,7 +55,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
             }
             return ListView(padding: EdgeInsets.all(10.0), children: [
               Center(
-                child: Text("Toque nos cards que deseja excluir",
+                child: Text("Toque nos cartões que deseja excluir",
                     style: TextStyle(
                         color: Theme.of(context).primaryColor, fontSize: 16.0)),
               ),

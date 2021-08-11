@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_solicitation_card.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 
@@ -70,7 +71,21 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
             }));
   }
 
+  void _sortSolicitationsByDate(){
+    this.solicitations.sort((a,b){
+      var dateA = ConvertUtils.dateTimeFromString(a.solicitationDate);
+      var dateB = ConvertUtils.dateTimeFromString(b.solicitationDate);
+
+      if(dateA.isAfter(dateB)){
+        return -1;
+      }
+
+      return 1;
+    });
+  }
+
   List<Widget> _buildExamSolicitationCards() {
+    this._sortSolicitationsByDate();
     var solicitationCards = <Widget>[];
 
     this.solicitations.forEach((element) {

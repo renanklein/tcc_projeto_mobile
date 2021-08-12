@@ -101,6 +101,7 @@ class _ExamModelCardState extends State<ExamModelCard> {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ExamModelForm(
                       isEdit: true,
+                      fromExamSolicitation: false,
                       examModelType: this.widget.modelTitle,
                       examModelFields: this.widget.modelFields,
                       refreshExamModels: this.widget.refreshModels,

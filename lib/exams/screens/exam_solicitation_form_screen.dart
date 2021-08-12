@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
@@ -9,6 +10,7 @@ import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
+import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamSolicitationFormScreen extends StatefulWidget {
   final PacientModel pacient;
@@ -36,7 +38,8 @@ class _ExamSolicitationFormScreenState
   void initState() {
     this._examBloc = context.read<ExamBloc>();
     this._medRecordBloc = context.read<MedRecordBloc>();
-    this._examDateController.text = dateFormatter.format(this._examSolicitationDate);
+    this._examDateController.text =
+        dateFormatter.format(this._examSolicitationDate);
     this._medRecordBloc.add(LoadExamModels());
     super.initState();
   }
@@ -53,25 +56,48 @@ class _ExamSolicitationFormScreenState
           BlocListener<MedRecordBloc, MedRecordState>(
               bloc: this._medRecordBloc,
               listener: (context, state) {
-                if (state is LoadExamModelSuccess) {
-                  state.models['models'].forEach((model) {
-                    this._examModelsTypes.add(model["Tipo de Exame"]);
-                    this.currentItem = this._examModelsTypes.first;
-                    this._examModelTypeController.text = this.currentItem;
-                  });
-                }
+               
               }),
           BlocListener<ExamBloc, ExamState>(
               bloc: this._examBloc,
               listener: (context, state) {
                 if (state is ExamSolicitationSuccess) {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MedRecordScreen(
-                          medRecordArguments: MedRecordArguments(
-                            pacientModel: this.pacient,
-                            index: "3"
-                          ))));
+                  if (state.examModelExists) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Modelo de exame'),
+                            content: Text(
+                                "Não há modelo de exame cadastrado com o nome informado, deseja cria um modelo ?"),
+                            actions: <Widget>[
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("Não")),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExamModelForm(
+                                      isEdit: false,
+                                      fromExamSolicitation: true,
+                                      refreshExamModels: (){},
+                                      examModelType: this._examModelTypeController.text,
+                                      medRecordArguments: MedRecordArguments(
+                                pacientModel: this.pacient, index: "3"),
+                                    )));
+                                  },
+                                  child: Text("Sim"))
+                            ],
+                          );
+                        });
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MedRecordScreen(
+                            medRecordArguments: MedRecordArguments(
+                                pacientModel: this.pacient, index: "3"))));
+                  }
                 }
               })
         ],
@@ -88,13 +114,10 @@ class _ExamSolicitationFormScreenState
                   child: Form(
                     child: ListView(
                       children: [
-                        Center(
-                            child: Text(
-                          "Selecione o modelo de exame",
-                          style: TextStyle(fontSize: 15.0),
-                        )),
-                        LayoutUtils.buildVerticalSpacing(5.0),
-                        _buildDropdownExamModelTypeButton(),
+                        Field(
+                            textController: this._examModelTypeController,
+                            fieldPlaceholder: "Nome do exame",
+                            isReadOnly: false),
                         LayoutUtils.buildVerticalSpacing(10.0),
                         DateTimeFormField(
                             dateTimeController: _examDateController,
@@ -128,24 +151,6 @@ class _ExamSolicitationFormScreenState
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildDropdownExamModelTypeButton() {
-    return Container(
-      alignment: Alignment.center,
-      child: DropdownButton<String>(
-        items: this._examModelsTypes.map((el) {
-          return DropdownMenuItem(value: el, child: Text(el));
-        }).toList(),
-        onChanged: (newValue) {
-          setState(() {
-            this._examModelTypeController.text = newValue;
-            this.currentItem = newValue;
-          });
-        },
-        value: this.currentItem,
       ),
     );
   }

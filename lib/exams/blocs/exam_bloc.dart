@@ -61,8 +61,14 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
     }else if(event is CreateExamSolicitation){
       try{
         yield ExamSolicitationProcessing();
-        await this.examRepository.saveExamSolicitation(event.solicitationExamType, event.solicitationDate, event.pacientHash);
-        yield ExamSolicitationSuccess();
+
+        var examModelsJobs = <Future>[];
+        examModelsJobs.add(this.examRepository.saveExamSolicitation(event.solicitationExamType, event.solicitationDate, event.pacientHash));
+        examModelsJobs.add(this.examRepository.existsExamModel(event.solicitationExamType));
+
+        var results = await Future.wait(examModelsJobs);
+
+        yield ExamSolicitationSuccess(examModelExists: results.last);
       }catch(err, stack_trace){
         await FirebaseCrashlytics.instance.recordError(err, stack_trace);
         yield ExamSolicitationFail();

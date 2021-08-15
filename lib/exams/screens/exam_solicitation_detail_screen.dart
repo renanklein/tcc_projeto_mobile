@@ -6,6 +6,7 @@ import 'package:tcc_projeto_app/exams/models/exam_details.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_details_screen.dart';
 import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -55,12 +56,55 @@ class _ExamSolicitationDetailScreenState
         listener: (context, state) {
           if (state is GetExamBySolicitationIdSuccess) {
             this.exam = state.exam;
+          } else if (state is ExistsExamModelSuccess) {
+            if (state.existsExamModel) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ExamFormScreen(
+                      solicitationDate: ConvertUtils.dateTimeFromString(
+                          this.examSolicitationModel.solicitationDate),
+                      medRecordArguments: this.medRecordArguments,
+                      examType: this.examSolicitationModel.examTypeModel,
+                      examSolicitationId: examSolicitationId)));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Modelo de exame'),
+                      content: Text(
+                          "Não há modelo de exame cadastrado com o nome informado, deseja cria um modelo ?"),
+                      actions: <Widget>[
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Não")),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ExamModelForm(
+                                        isEdit: false,
+                                        fromExamSolicitation: true,
+                                        refreshExamModels: () {},
+                                        examModelType:
+                                            this.examSolicitationModel.examTypeModel,
+                                        examSolicitationDate: ConvertUtils.dateTimeFromString(this.examSolicitationModel.solicitationDate),
+                                        examSolicitationId: this.examSolicitationModel.id,
+                                        medRecordArguments: this.medRecordArguments
+                                      )));
+                            },
+                            child: Text("Sim"))
+                      ],
+                    );
+                  });
+            }
           }
         },
         child: BlocBuilder<ExamBloc, ExamState>(
           bloc: this._examBloc,
           builder: (context, state) {
-            if (state is GetExamBySolicitationIdProcessing) {
+            if (state is GetExamBySolicitationIdProcessing ||
+                state is ExistsExamModelProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
 
@@ -112,13 +156,8 @@ class _ExamSolicitationDetailScreenState
                 borderRadius: BorderRadius.circular(32.0)),
             primary: Theme.of(context).primaryColor),
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ExamFormScreen(
-                  solicitationDate: ConvertUtils.dateTimeFromString(
-                      this.examSolicitationModel.solicitationDate),
-                  medRecordArguments: this.medRecordArguments,
-                  examType: this.examSolicitationModel.examTypeModel,
-                  examSolicitationId: examSolicitationId)));
+          this._examBloc.add(ExistsExamModel(
+              examType: this.examSolicitationModel.examTypeModel));
         },
         child: Text(
           buttonText,

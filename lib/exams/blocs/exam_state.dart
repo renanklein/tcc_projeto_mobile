@@ -65,3 +65,17 @@ class GetExamBySolicitationIdSuccess extends ExamState{
 class GetExamBySolicitationIdFail extends ExamState{
 
 }
+
+class ExistsExamModelProcessing extends ExamState{
+
+}
+
+class ExistsExamModelFail extends ExamState{
+
+}
+
+class ExistsExamModelSuccess extends ExamState{
+  final bool existsExamModel;
+
+  ExistsExamModelSuccess({@required this.existsExamModel});
+}

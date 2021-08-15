@@ -49,3 +49,10 @@ class GetExamBySolicitationId extends ExamEvent {
 
   GetExamBySolicitationId({@required this.examSolicitationId, @required this.pacientHash});
 }
+
+class ExistsExamModel extends ExamEvent{
+  final String examType;
+
+  ExistsExamModel({@required this.examType});
+  
+}

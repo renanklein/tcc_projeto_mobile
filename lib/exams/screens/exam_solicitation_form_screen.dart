@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_model_form.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/med_record/screens/list_med_record_screen.dart';
@@ -63,34 +62,7 @@ class _ExamSolicitationFormScreenState
               listener: (context, state) {
                 if (state is ExamSolicitationSuccess) {
                   if (state.examModelExists) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('Modelo de exame'),
-                            content: Text(
-                                "Não há modelo de exame cadastrado com o nome informado, deseja cria um modelo ?"),
-                            actions: <Widget>[
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Não")),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExamModelForm(
-                                      isEdit: false,
-                                      fromExamSolicitation: true,
-                                      refreshExamModels: (){},
-                                      examModelType: this._examModelTypeController.text,
-                                      medRecordArguments: MedRecordArguments(
-                                pacientModel: this.pacient, index: "3"),
-                                    )));
-                                  },
-                                  child: Text("Sim"))
-                            ],
-                          );
-                        });
+                    
                   } else {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     Navigator.of(context).push(MaterialPageRoute(

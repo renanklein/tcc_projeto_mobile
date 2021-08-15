@@ -79,7 +79,6 @@ class _ExamScreenState extends State<ExamScreen> {
 
   List<Widget> _buildScreenBody() {
     if (_existsExamInfo()) {
-      _sortExams();
       List<Widget> examCards = [];
       examCards.add(Text(
         "Clique no cartão para exibir os detalhes do exame",

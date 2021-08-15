@@ -123,6 +123,7 @@ class _ExamModelsScreenState extends State<ExamModelsScreen> {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ExamModelForm(
                       isEdit: false,
+                      fromExamSolicitation: false,
                       refreshExamModels: refreshModels,
                     )));
           },

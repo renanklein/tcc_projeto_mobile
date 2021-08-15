@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc_projeto_app/exams/blocs/exam_bloc.dart';
+import 'package:tcc_projeto_app/exams/screens/exam_form_screen.dart';
 import 'package:tcc_projeto_app/exams/tiles/exam_details_field.dart';
+import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class ExamModelForm extends StatefulWidget {
   List dynamicFields = [];
   final bool isEdit;
+  final bool fromExamSolicitation;
+  final MedRecordArguments medRecordArguments;
   final refreshExamModels;
   String examModelType;
+  String examSolicitationId;
+  DateTime examSolicitationDate;
   List examModelFields;
 
   ExamModelForm(
       {@required this.isEdit,
+      @required this.fromExamSolicitation,
+      this.medRecordArguments,
       this.examModelType,
       this.examModelFields,
+      this.examSolicitationId,
+      this.examSolicitationDate,
       @required this.refreshExamModels});
 
   @override
@@ -23,8 +33,12 @@ class ExamModelForm extends StatefulWidget {
 }
 
 class _ExamModelFormState extends State<ExamModelForm> {
+  bool get fromExamSolicitation => this.widget.fromExamSolicitation;
   bool get isEdit => this.widget.isEdit;
+  MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;
   String get examModelType => this.widget.examModelType;
+  String get examSolicitationId => this.widget.examSolicitationId;
+  DateTime get examSolicitationDate => this.widget.examSolicitationDate;
   List get examModelFields => this.widget.examModelFields;
   Function get refreshExamModels => this.widget.refreshExamModels;
 
@@ -49,6 +63,8 @@ class _ExamModelFormState extends State<ExamModelForm> {
       this.examModelFields.forEach((field) {
         this._examModelFieldsNamesController.text += "$field;";
       });
+    } else if (this.fromExamSolicitation) {
+      this._examTypeController.text = this.examModelType;
     }
 
     super.initState();
@@ -68,10 +84,19 @@ class _ExamModelFormState extends State<ExamModelForm> {
         listener: (context, state) {
           if (state is CreateExamModelSuccess ||
               state is UpdateExamModelSuccess) {
-            Future.delayed(Duration(seconds: 2));
-            onSuccess();
-            Navigator.of(context).pop();
-            this.refreshExamModels();
+            if (this.fromExamSolicitation) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ExamFormScreen(
+                      solicitationDate: this.examSolicitationDate,
+                      medRecordArguments: this.medRecordArguments,
+                      examType: this._examTypeController.text,
+                      examSolicitationId: this.examSolicitationId)));
+            } else {
+              Future.delayed(Duration(seconds: 2));
+              onSuccess();
+              Navigator.of(context).pop();
+              this.refreshExamModels();
+            }
           } else if (state is CreateExamModelFail ||
               state is UpdateExamModelFail) {
             onFail(state);

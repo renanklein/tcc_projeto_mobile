@@ -57,6 +57,28 @@ class ExamRepository {
     return data;
   }
 
+  Future<bool> existsExamModel(String examModelType) async{
+    Map data = Map();
+    bool examModelExists = false;
+
+    await this.
+    _firestore
+    .collection("modelExam")
+    .doc(_getUser().uid)
+    .get()
+    .then((res) => data = res.data());
+
+    List examModels = data["models"];
+
+    var elements = examModels.where((element) => element["Tipo de Exame"] == examModelType);
+
+    if(elements.length > 0){
+      examModelExists = true;
+    }
+
+    return examModelExists;
+  }
+
   Future updateExamModels(String examModelType, List examModelFields,
       String oldExamModelType) async {
     Map models = await getExamModels();
@@ -129,19 +151,29 @@ class ExamRepository {
     }
   }
 
-  Future saveExamSolicitation(
+  Future<ExamSolicitationModel> saveExamSolicitation(
       String examModelType, String solicitationDate, String pacientHash) async {
-    await this
+    var docRef = this
         ._firestore
         .collection("examSolicitation")
         .doc(_getUser().uid)
         .collection(pacientHash)
-        .doc()
-        .set({
+        .doc();
+
+    var solicitationId = docRef.id;
+
+    await docRef.set({
       "status": "solicitado",
       "examModelType": examModelType,
       "solicitationDate": solicitationDate
     });
+
+    return ExamSolicitationModel(
+      examTypeModel: examModelType,
+      solicitationDate: solicitationDate,
+      status:  "solicitado",
+      id: solicitationId
+    );
   }
 
   Future saveModelExam(Map modelExam, String examType) async {
@@ -193,9 +225,7 @@ class ExamRepository {
         .doc(_getUser().uid)
         .collection(pacientHash)
         .doc(examSolicitationId)
-        .update({
-          "status" : "realizado"
-        });
+        .update({"status": "realizado"});
   }
 
   Future saveExam(

@@ -83,7 +83,9 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
 
       return 1;
     });
+
   }
+
 
   List<Widget> _buildExamSolicitationCards() {
     this._sortSolicitationsByDate();

@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/main.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class ExamRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -70,7 +71,7 @@ class ExamRepository {
 
     List examModels = data["models"];
 
-    var elements = examModels.where((element) => element["Tipo de Exame"] == examModelType);
+    var elements = examModels.where((element) => element["Tipo de Exame"].toLowerCase() == examModelType.toLowerCase());
 
     if(elements.length > 0){
       examModelExists = true;
@@ -287,6 +288,18 @@ class ExamRepository {
           ? exams = examsSnapshot
           : _addPacientsExams(exams, examsSnapshot, pacientHash);
     }
+
+    exams.sort((a,b){
+       var dateA = ConvertUtils.dateTimeFromString(a["examDate"]);
+      var dateB = ConvertUtils.dateTimeFromString(b["examDate"]);
+
+      if(dateA.isAfter(dateB)){
+        return -1;
+      }
+
+
+      return 1;
+    });
     exams.forEach((exam) {
       displayableExams.add(
           CardExamInfo(examDate: exam["examDate"], examType: exam["examType"]));

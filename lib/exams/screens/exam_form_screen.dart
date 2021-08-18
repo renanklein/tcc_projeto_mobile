@@ -89,7 +89,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MedRecordScreen(
-                      medRecordArguments: this.medRecordArguments)));
+                      medRecordArguments: MedRecordArguments(
+                        pacientModel: this.medRecordArguments.pacientModel,
+                        index: "2"
+                      ))));
             } else if (state is DynamicExamFieldSuccess) {
               setState(() {
                 this.dynamicFieldsList.add(state.dynamicFieldWidget);
@@ -97,13 +100,17 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
             } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             } else if (state is LoadExamModelSuccess) {
+              var firstType = "";
               state.models["models"].forEach((map) {
+                if(map["Tipo de Exame"].toLowerCase() == this.examType.toLowerCase()){
+                  firstType = map["Tipo de Exame"];
+                }
                 this.examModelsTypes.add(map["Tipo de Exame"]);
                 this.modelExams.addAll({map["Tipo de Exame"]: map["fields"]});
               });
               if (this.examType != null && this.examType.isNotEmpty) {
-                this._examTypeController.text = this.examType;
-                this.currentDropdownItem = this.examType;
+                this._examTypeController.text = firstType;
+                this.currentDropdownItem = firstType;
               } else {
                 this._examTypeController.text = this.examModelsTypes.first;
                 this.currentDropdownItem = this.examModelsTypes.first;

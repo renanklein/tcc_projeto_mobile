@@ -119,35 +119,4 @@ class _ExamScreenState extends State<ExamScreen> {
         (this.examDetailsList != null && this.examDetailsList.isNotEmpty) &&
         (this.fileDownloadURLs != null && this.fileDownloadURLs.isNotEmpty);
   }
-
-  void _sortExams(){
-    var oldCardExamInfos = List.generate(this.cardExamInfos.length, (index) => this.cardExamInfos[index]);
-    this.cardExamInfos.sort((a,b){
-      var dateA = ConvertUtils.dateTimeFromString(a.examDate);
-      var dateB = ConvertUtils.dateTimeFromString(b.examDate);
-
-      if(dateA.isAfter(dateB)){
-        return -1;
-      }
-
-
-      return 1;
-    });
-
-    this.cardExamInfos.forEach((element) { 
-      var newIndex = this.cardExamInfos.indexOf(element);
-      var oldIndex = oldCardExamInfos.indexOf(element);
-
-      _sortExamInfoLists(newIndex, oldIndex, this.fileDownloadURLs);
-      _sortExamInfoLists(newIndex, oldIndex, this.examDetailsList);
-    });
-  }
-
-  void _sortExamInfoLists(int newIndex, int oldIndex, List list){
-
-    var itemA = list[newIndex];
-    list[newIndex] = list[oldIndex];
-    list[oldIndex] = itemA;
-
-  }
 }

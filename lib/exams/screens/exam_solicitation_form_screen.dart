@@ -53,23 +53,16 @@ class _ExamSolicitationFormScreenState
       body: MultiBlocListener(
         listeners: [
           BlocListener<MedRecordBloc, MedRecordState>(
-              bloc: this._medRecordBloc,
-              listener: (context, state) {
-               
-              }),
+              bloc: this._medRecordBloc, listener: (context, state) {}),
           BlocListener<ExamBloc, ExamState>(
               bloc: this._examBloc,
               listener: (context, state) {
                 if (state is ExamSolicitationSuccess) {
-                  if (state.examModelExists) {
-                    
-                  } else {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MedRecordScreen(
                             medRecordArguments: MedRecordArguments(
                                 pacientModel: this.pacient, index: "3"))));
-                  }
                 }
               })
         ],

@@ -34,7 +34,6 @@ class MedRecordScreen extends StatefulWidget {
 class _MedRecordScreenState extends State<MedRecordScreen> {
   MedRecordBloc _medRecordBloc;
   MedRecordRepository _medRecordRepository;
-
   String _pacientHash;
 
   MedRecordArguments get medRecordArguments => this.widget.medRecordArguments;

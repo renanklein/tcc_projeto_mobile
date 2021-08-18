@@ -36,9 +36,6 @@ class DeleteExamModelFail extends ExamState {}
 class ExamSolicitationProcessing extends ExamState{}
 
 class ExamSolicitationSuccess extends ExamState{
-  final bool examModelExists;
-
-  ExamSolicitationSuccess({@required this.examModelExists});
 }
 
 class ExamSolicitationFail extends ExamState{}

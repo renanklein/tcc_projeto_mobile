@@ -65,7 +65,7 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
                 onSelectedDate: () {
                   if (this._dateController.text != null &&
                       this._dateController.text.isNotEmpty) {
-                    var splitedDate = this._dateController.text.split("-");
+                    var splitedDate = this._dateController.text.contains("-") ? this._dateController.text.split("-") : this._dateController.text.split("/");
                     var selectedDate = DateTime(
                         int.tryParse(splitedDate[2]),
                         int.tryParse(splitedDate[1]),
@@ -135,7 +135,7 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
     var widgets = <Widget>[];
 
     if (state is AgendaEventsToBeConfirmedSuccess) {
-      var dateSplited = this._dateController.text.split("-");
+      var dateSplited = this._dateController.text.contains("-") ? this._dateController.text.split("-") : this._dateController.text.split("/");
 
       widgets.add(Center(
         child: Text("Clique no card para editar ou confirmar a consulta",

@@ -144,6 +144,7 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
       ));
       widgets.add(LayoutUtils.buildVerticalSpacing(10));
 
+      _sortEvents(events);
       events.forEach((element) {
         widgets.add(EventToBeConfirmedTile(
             refreshList: refreshList,
@@ -157,6 +158,24 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
     }
 
     return widgets;
+  }
+
+  void _sortEvents(List events){
+    events.sort((a,b) {
+
+      var now = DateTime.now();
+      var startTimeDateA = DateTime(now.year, now.month, now.day, int.tryParse(a['begin'].split(':')[0]), int.tryParse(a['begin'].split(':')[1]));
+      var endTimeDateA = DateTime(now.year, now.month, now.day, int.tryParse(a['end'].split(':')[0]), int.tryParse(a['end'].split(':')[1]));
+
+      var startTimeDateB = DateTime(now.year, now.month, now.day, int.tryParse(b['begin'].split(':')[0]), int.tryParse(b['begin'].split(':')[1]));
+      var endTimeDateB = DateTime(now.year, now.month, now.day, int.tryParse(b['end'].split(':')[0]), int.tryParse(b['end'].split(':')[1]));
+
+      if(startTimeDateA.isBefore(startTimeDateB) && endTimeDateA.isBefore(endTimeDateB)){
+        return -1;
+      }
+
+      return 1;
+    });
   }
 
   void refreshList(bool boolArg) {

@@ -49,6 +49,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   //apenas para mulheres DUM e DPP
   final dtUltimaMestruacaoController = TextEditingController();
   final dtProvavelPartoController = TextEditingController();
+  String imc = "";
+  String weight = "";
+  String height = "";
 
   @override
   void initState() {
@@ -83,7 +86,10 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
 
             var user = Injector.appInstance.get<UserModel>();
             Navigator.of(context).popUntil((route) => route.isFirst);
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AppointmentsWaitListScreen(userUid: user.uid,)));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AppointmentsWaitListScreen(
+                      userUid: user.uid,
+                    )));
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -120,37 +126,13 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                           ),
                           FunctionTextFormField(
                             controller: pesoController,
-                            label: 'Peso',
+                            label: 'Peso em kg',
                             hint: 'Insira o peso do paciente',
                             errorText: 'Por Favor, Insira o peso do paciente',
                             onChangedFunction: (value) {
-                              if (int.tryParse(pesoController.text) > 0 &&
-                                  int.tryParse(alturaController.text) > 0) {
-                                setState(
-                                  () {
-                                    imcController = int.tryParse(
-                                            pesoController.text) /
-                                        ((int.tryParse(alturaController.text) *
-                                                int.tryParse(
-                                                    alturaController.text)) /
-                                            10000);
-                                    showImc = Text(
-                                      'IMC: ' +
-                                          imcController.toStringAsFixed(1),
-                                      style: TextStyle(fontSize: 22),
-                                    );
-                                  },
-                                );
-                              }
+                              this.onChangedIMCFields();
                             },
-                            validatorFunction: (value) {
-                              if (isNumeric(pesoController.text) &&
-                                  isNumeric(alturaController.text)) {
-                                return null;
-                              }
-
-                              return "Por favor insira valores numéricos para Peso e altura";
-                            },
+                            validatorFunction: (value) {},
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -159,30 +141,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             hint: 'Insira a altura do paciente em cm',
                             errorText: 'Por Favor, Insira a altura do paciente',
                             onChangedFunction: (value) {
-                              if (int.parse(pesoController.text) > 0 &&
-                                  int.parse(alturaController.text) > 0) {
-                                setState(() {
-                                  imcController =
-                                      int.parse(pesoController.text) /
-                                          ((int.parse(alturaController.text) *
-                                                  int.parse(
-                                                      alturaController.text)) /
-                                              10000);
-                                  showImc = Text(
-                                    'IMC: ' + imcController.toStringAsFixed(1),
-                                    style: TextStyle(fontSize: 22),
-                                  );
-                                });
-                              }
+                              this.onChangedIMCFields();
                             },
-                            validatorFunction: (value) {
-                              if (isNumeric(pesoController.text) &&
-                                  isNumeric(alturaController.text)) {
-                                return null;
-                              }
-
-                              return "Por favor insira um valor numérico para altura";
-                            },
+                            validatorFunction: (value) {},
                             isNumber: true,
                           ),
                           Padding(
@@ -271,7 +232,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                             errorText:
                                 'Por Favor, Insira um valor para a Freq. Repouso',
                             onChangedFunction: (value) {},
-                            validatorFunction: (value){},
+                            validatorFunction: (value) {},
                             isNumber: true,
                           ),
                           FunctionTextFormField(
@@ -306,11 +267,9 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                   this._medRecordBloc.add(
                                         PreDiagnosisCreateOrUpdateButtonPressed(
                                             isUpdate: false,
-                                            peso:
-                                                int.parse(pesoController.text),
-                                            altura: int.parse(
-                                                alturaController.text),
-                                            imc: double.parse('28.5'),
+                                            peso: double.parse(this.weight),
+                                            altura: double.parse(this.height),
+                                            imc: this.imcController,
                                             pASistolica: int.parse(
                                                 pASistolicaController.text),
                                             pADiastolica: int.parse(
@@ -383,5 +342,30 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
       );
     } else
       return Row();
+  }
+
+  void onChangedIMCFields() {
+    this.weight = pesoController.text.contains(",")
+        ? pesoController.text.split(',').join('.')
+        : pesoController.text;
+    this.height = alturaController.text.contains(",")
+        ? alturaController.text.split(',').join('.')
+        : alturaController.text;
+
+    if (double.tryParse(weight) != null &&
+        (double.tryParse(height) != null && double.tryParse(height) > 0)) {
+      setState(
+        () {
+          var parsedWeight = double.tryParse(weight);
+          var parsedHeight = double.tryParse(height) / 100;
+
+          imcController = parsedWeight / (parsedHeight * parsedHeight);
+          showImc = Text(
+            'IMC: ' + imcController.toStringAsFixed(1),
+            style: TextStyle(fontSize: 22),
+          );
+        },
+      );
+    }
   }
 }

@@ -1,8 +1,8 @@
 part of 'med_record_bloc.dart';
 
 class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
-  final int peso;
-  final int altura;
+  final double peso;
+  final double altura;
   final double imc;
   final int pASistolica;
   final int pADiastolica;

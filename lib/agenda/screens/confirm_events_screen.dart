@@ -62,7 +62,7 @@ class _ConfirmEventsScreenState extends State<ConfirmEventsScreen> {
               child: DateTimeFormField(
                 fieldPlaceholder: "Escolha o dia dos agendamentos",
                 dateTimeController: _dateController,
-                onSelectedDate: () {
+                onSelectedDate: (date) {
                   if (this._dateController.text != null &&
                       this._dateController.text.isNotEmpty) {
                     var splitedDate = this._dateController.text.contains("-") ? this._dateController.text.split("-") : this._dateController.text.split("/");

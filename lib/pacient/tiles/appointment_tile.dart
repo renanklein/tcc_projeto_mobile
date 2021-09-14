@@ -48,6 +48,8 @@ class AppointmentTile extends StatelessWidget {
                         child: Text("Não")),
                     TextButton(
                         onPressed: () {
+                          var today = DateTime.now();
+                          this.appointmentModel.appointmentDate = DateTime(today.year, today.month, today.day);
                           Navigator.pushReplacementNamed(
                             context,
                             preDiagnosisRoute,

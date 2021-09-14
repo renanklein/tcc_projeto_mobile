@@ -36,16 +36,16 @@ class PacientRepository extends ChangeNotifier {
     }
   }
 
-  Future updatePacient({
-    @required PacientModel pacient
-  })async{
-    var doc = await this._pacientsCollectionReference
-          .where("cpf", isEqualTo: pacient.getCpf)
-          .get();
+  Future updatePacient({@required PacientModel pacient}) async {
+    var doc = await this
+        ._pacientsCollectionReference
+        .where("cpf", isEqualTo: pacient.getCpf)
+        .get();
 
-    await this._pacientsCollectionReference.doc(doc.docs[0].id)
-              .update(pacient.toMap());
-          
+    await this
+        ._pacientsCollectionReference
+        .doc(doc.docs[0].id)
+        .update(pacient.toMap());
   }
 
   Future<PacientModel> getPacientByNameAndPhone(
@@ -69,6 +69,24 @@ class PacientRepository extends ChangeNotifier {
     } on Exception catch (e) {
       e.toString();
       return null;
+    }
+  }
+
+  Future updateAppointmentDate(
+      AppointmentModel appointment, DateTime newDate) async {
+    var snapshot = await _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc("${appointment.appointmentDate.year}-${appointment.appointmentDate.month}-${appointment.appointmentDate.day}")
+        .get();
+
+    var data = snapshot.data();
+
+    for(var event in data['events']){
+      if(event['begin'] == appointment.appointmentTime.split('-')[0] && event['end'] == appointment.appointmentTime.split('-')[1]){
+        data['events'].remove(event);
+        //TODO: Obter a lista do novo dia e encaixar o evento
+      }
     }
   }
 
@@ -115,9 +133,8 @@ class PacientRepository extends ChangeNotifier {
           ),
         );
 
-    
     var appointments = <AppointmentModel>[];
-    await Future.wait(_appointmentsList.map((appointment) async{
+    await Future.wait(_appointmentsList.map((appointment) async {
       var pacient = await getPacientByNameAndPhone(appointment);
       appointment.pacientModel = pacient;
       appointments.add(appointment);
@@ -205,12 +222,12 @@ class PacientRepository extends ChangeNotifier {
     return pacientsList;
   }
 
-  Future<List<PacientModel>> getCPFList(String cpf) async{
-    var cpfList = await this._pacientsCollectionReference.get().then((resp){
+  Future<List<PacientModel>> getCPFList(String cpf) async {
+    var cpfList = await this._pacientsCollectionReference.get().then((resp) {
       return resp.docs
-      .map((snapshot) => PacientModel.fromMap(snapshot.data()))
-      .where((item) => item.getCpf == cpf)
-      .toList();
+          .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+          .where((item) => item.getCpf == cpf)
+          .toList();
     });
 
     return cpfList;

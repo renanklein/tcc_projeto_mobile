@@ -55,4 +55,5 @@ class AppointmentModel {
   bool get hasPreDiagnosis => this._hasPreDiagnosis;
   set pacientModel(PacientModel pacient) => this._pacientModel = pacient;
   set hasPreDiagnosis(bool hasPreDiagnosis) => this._hasPreDiagnosis = true;
+  set appointmentDate(DateTime date) => this._dataAgendamento = date; 
 }

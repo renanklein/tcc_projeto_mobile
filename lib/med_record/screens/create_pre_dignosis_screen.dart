@@ -282,6 +282,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                                                 temperaturaController.text),
                                             glicemia: int.tryParse(
                                                 glicemiaController.text),
+                                            appointment: this.appointmentModel,
                                             obs: obsController.text,
                                             dtUltimaMestruacao:
                                                 dtUltimaMestruacaoController

@@ -73,21 +73,43 @@ class PacientRepository extends ChangeNotifier {
   }
 
   Future updateAppointmentDate(
-      AppointmentModel appointment, DateTime newDate) async {
-    var snapshot = await _agendaCollectionReference
+      AppointmentModel appointment, DateTime newDate, String newTime) async {
+    var oldDateSnapshot = _agendaCollectionReference
         .doc(this._userId)
         .collection('events')
         .doc("${appointment.appointmentDate.year}-${appointment.appointmentDate.month}-${appointment.appointmentDate.day}")
         .get();
 
-    var data = snapshot.data();
+    var newDateSnapshot = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc("${newDate.year}-${newDate.month}-${newDate.day}")
+        .get();
 
-    for(var event in data['events']){
+    var resolvedFutures = await Future.wait(<Future>[oldDateSnapshot, newDateSnapshot]);
+
+    var appointmentEvent = Map();
+
+    var oldDateEventsData = resolvedFutures[0].docs[0].data();
+
+    for(var event in oldDateEventsData['events']){
       if(event['begin'] == appointment.appointmentTime.split('-')[0] && event['end'] == appointment.appointmentTime.split('-')[1]){
-        data['events'].remove(event);
-        //TODO: Obter a lista do novo dia e encaixar o evento
+        oldDateEventsData['events'].remove(event);
+        appointmentEvent = event;
       }
     }
+
+    appointmentEvent['begin'] = newTime.split('-')[0];
+    appointmentEvent['end'] = newTime.split('-')[1];
+
+    var newDateEventsData = resolvedFutures[1].docs[0].data();
+    newDateEventsData['events'].add(appointmentEvent);
+
+    await _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc("${newDate.year}-${newDate.month}-${newDate.day}")
+        .set(newDateEventsData);
   }
 
   Future<List<AppointmentModel>> getAppointments() async {

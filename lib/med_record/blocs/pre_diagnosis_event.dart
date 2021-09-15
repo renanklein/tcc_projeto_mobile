@@ -17,6 +17,7 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
   final dtPrediagnosis;
   final bool isUpdate;
   final dynamicFields;
+  final AppointmentModel appointment;
 
   PreDiagnosisCreateOrUpdateButtonPressed(
       {@required this.peso,
@@ -29,6 +30,7 @@ class PreDiagnosisCreateOrUpdateButtonPressed extends MedRecordEvent {
       @required this.temperatura,
       @required this.glicemia,
       @required this.isUpdate,
+      this.appointment,
       this.obs,
       this.dtUltimaMestruacao,
       this.dtProvavelParto,

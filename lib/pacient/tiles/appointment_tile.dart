@@ -12,11 +12,13 @@ class AppointmentTile extends StatelessWidget {
   final AppointmentModel appointmentModel;
   final String userUid;
   final Function loadAppointments;
+  final List<AppointmentModel> appointments;
 
   AppointmentTile(
       {@required this.appointmentModel,
       @required this.userUid,
-      @required this.loadAppointments});
+      @required this.loadAppointments,
+      @required this.appointments});
 
   Widget build(BuildContext context) {
     var pacientBloc = BlocProvider.of<PacientBloc>(context);
@@ -48,17 +50,66 @@ class AppointmentTile extends StatelessWidget {
                         child: Text("Não")),
                     TextButton(
                         onPressed: () {
-                          var today = DateTime.now();
-                          this.appointmentModel.appointmentDate = DateTime(today.year, today.month, today.day);
-                          Navigator.pushReplacementNamed(
-                            context,
-                            preDiagnosisRoute,
-                            arguments: RouteAppointmentArguments(
-                                pacientModel:
-                                    this.appointmentModel.pacientModel,
-                                appointmentModel: this.appointmentModel),
-                          ).then(
-                              (value) => pacientBloc.add(AppointmentsLoad()));
+                          var now = DateTime.now();
+                          var hasEvent = false;
+
+                          for (var appointment in this.appointments) {
+                            var timeSplited =
+                                appointment.appointmentTime.split('-');
+
+                            var beginTime = timeSplited[0];
+                            var endTime = timeSplited[1];
+
+                            var begin = DateTime(
+                                now.year,
+                                now.month,
+                                now.day,
+                                int.parse(beginTime.split(':')[0]),
+                                int.parse(beginTime.split(':')[1]));
+
+                            var end = DateTime(
+                                now.year,
+                                now.month,
+                                now.day,
+                                int.parse(endTime.split(':')[0]),
+                                int.parse(endTime.split(':')[1]));
+
+                            if (now.isAfter(begin) && now.isBefore(end)) {
+                              hasEvent = true;
+                            }
+                          }
+
+                          if (hasEvent) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(
+                                "Não é possível realizar o atendimento: Já exite um agendamento para agora",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                            ));
+                          } else {
+                            this.appointmentModel.changedDate = now;
+                            var actualMinutes = now.minute;
+
+                            actualMinutes - 30 >= 0
+                                ? this.appointmentModel.changedTime =
+                                    "${now.hour}:30 - ${now.hour + 1}:00"
+                                : this.appointmentModel.changedTime =
+                                    "${now.hour}:00 - ${now.hour}:30";
+
+                            Navigator.pushReplacementNamed(
+                              context,
+                              preDiagnosisRoute,
+                              arguments: RouteAppointmentArguments(
+                                  pacientModel:
+                                      this.appointmentModel.pacientModel,
+                                  appointmentModel: this.appointmentModel),
+                            ).then(
+                                (value) => pacientBloc.add(AppointmentsLoad()));
+                          }
                         },
                         child: Text("Sim"))
                   ],

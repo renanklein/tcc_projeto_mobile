@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class PacientRepository extends ChangeNotifier {
   final CollectionReference _pacientsCollectionReference =
@@ -77,39 +78,52 @@ class PacientRepository extends ChangeNotifier {
     var oldDateSnapshot = _agendaCollectionReference
         .doc(this._userId)
         .collection('events')
-        .doc("${appointment.appointmentDate.year}-${appointment.appointmentDate.month}-${appointment.appointmentDate.day}")
+        .doc(ConvertUtils.dayFromDateTime(appointment.appointmentDate))
         .get();
 
     var newDateSnapshot = _agendaCollectionReference
         .doc(this._userId)
         .collection('events')
-        .doc("${newDate.year}-${newDate.month}-${newDate.day}")
+        .doc(ConvertUtils.dayFromDateTime(newDate))
         .get();
 
     var resolvedFutures = await Future.wait(<Future>[oldDateSnapshot, newDateSnapshot]);
 
     var appointmentEvent = Map();
 
-    var oldDateEventsData = resolvedFutures[0].docs[0].data();
+    DocumentSnapshot oldDateDocument = resolvedFutures[0];
+    DocumentSnapshot newDateDocument = resolvedFutures[1];
+
+    var oldDateEventsData = oldDateDocument.data();
+    var newDateEventsData = newDateDocument.data();
 
     for(var event in oldDateEventsData['events']){
-      if(event['begin'] == appointment.appointmentTime.split('-')[0] && event['end'] == appointment.appointmentTime.split('-')[1]){
-        oldDateEventsData['events'].remove(event);
+      if(appointment.appointmentTime == "${event['begin']} - ${event['end']}"){
         appointmentEvent = event;
       }
     }
 
-    appointmentEvent['begin'] = newTime.split('-')[0];
-    appointmentEvent['end'] = newTime.split('-')[1];
+    oldDateEventsData['events'].remove(appointmentEvent);
 
-    var newDateEventsData = resolvedFutures[1].docs[0].data();
+    appointmentEvent['begin'] = newTime.replaceAll(' ', '').split('-')[0];
+    appointmentEvent['end'] = newTime.replaceAll(' ', '').split('-')[1];
+
     newDateEventsData['events'].add(appointmentEvent);
 
-    await _agendaCollectionReference
+    var saveOldDateEvents = _agendaCollectionReference
         .doc(this._userId)
         .collection('events')
-        .doc("${newDate.year}-${newDate.month}-${newDate.day}")
+        .doc(ConvertUtils.dayFromDateTime(appointment.appointmentDate))
+        .set(oldDateEventsData);
+
+    var saveNewDateEvents = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc(ConvertUtils.dayFromDateTime(newDate))
         .set(newDateEventsData);
+
+      
+      await Future.wait(<Future>[saveNewDateEvents, saveOldDateEvents]);
   }
 
   Future<List<AppointmentModel>> getAppointments() async {

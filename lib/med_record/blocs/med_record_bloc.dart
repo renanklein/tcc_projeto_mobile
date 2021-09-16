@@ -93,6 +93,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
               event.appointment.changedTime));
         }
 
+        var eventDate = event.appointment.changedDate != null ? event.appointment.changedDate : event.appointment.appointmentDate;
+
         var preDiagnosis = PreDiagnosisModel(
             peso: event.peso,
             altura: event.altura,
@@ -105,7 +107,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             glicemia: event?.glicemia,
             observacao: event.obs,
             appointmentEventDate: event.dtAppointmentEvent is DateTime
-                ? dateFormat.format(event.dtAppointmentEvent)
+                ? dateFormat.format(eventDate)
                 : event.dtAppointmentEvent,
             dynamicFields: event.dynamicFields,
             createdAt: DateTime.now(),

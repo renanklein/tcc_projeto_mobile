@@ -57,102 +57,93 @@ class _DashboardState extends State<Dashboard> {
             drawer: UserDrawer(
               userModel: this._userModel,
             ),
-            body: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+            body: Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Wrap(
+                runSpacing: 15.0,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              createOrEditPacient,
-                              arguments: RouteAppointmentArguments(
-                                  routePath: 'Dashboard'),
-                            );
-                          },
-                          child: _dashboardItem(
-                            Icons.library_add,
-                            'Cadastrar Paciente',
-                            0xFF1A237E,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            createOrEditPacient,
+                            arguments: RouteAppointmentArguments(
+                                routePath: 'Dashboard'),
+                          );
+                        },
+                        child: _dashboardItem(
+                          Icons.library_add,
+                          'Cadastrar Paciente',
+                          0xFF1A237E,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              pacientsRoute,
-                              arguments: this._userModel.uid,
-                            );
-                          },
-                          child: _dashboardItem(
-                              Icons.archive, 'Listar Pacientes', 0xFF1A237E),
-                        ),
-                      ],
-                    ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            pacientsRoute,
+                            arguments: this._userModel.uid,
+                          );
+                        },
+                        child: _dashboardItem(
+                            Icons.archive, 'Listar Pacientes', 0xFF1A237E),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              calendarRoute,
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _dashboardItem(
-                            Icons.event,
-                            'Agenda',
-                            0xFF1A237E,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            calendarRoute,
+                            arguments: 'Dashboard',
+                          );
+                        },
+                        child: _dashboardItem(
+                          Icons.event,
+                          'Agenda',
+                          0xFF1A237E,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              confirmEvent,
-                              arguments: 'Dashboard',
-                            );
-                          },
-                          child: _dashboardItem(
-                            Icons.library_add,
-                            'Confirmar consultas',
-                            0xFF1A237E,
-                          ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            confirmEvent,
+                            arguments: 'Dashboard',
+                          );
+                        },
+                        child: _dashboardItem(
+                          Icons.library_add,
+                          'Confirmar consultas',
+                          0xFF1A237E,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              appointmentsViewRoute,
-                              arguments: this._userModel.uid,
-                            );
-                          },
-                          child: _dashboardItem(
-                            Icons.library_add,
-                            'Pré Diagnóstico',
-                            0xFF1A237E,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            appointmentsViewRoute,
+                            arguments: this._userModel.uid,
+                          );
+                        },
+                        child: _dashboardItem(
+                          Icons.library_add,
+                          'Pré Diagnóstico',
+                          0xFF1A237E,
                         ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: _dashboardItem(
-                              Icons.archive, 'Desativado', 0xFF1A237E),
-                        ),
-                      ],
-                    ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: _dashboardItem(
+                            Icons.archive, 'Desativado', 0xFF1A237E),
+                      ),
+                    ],
                   ),
                 ],
               ),

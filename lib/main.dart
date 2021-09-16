@@ -105,6 +105,7 @@ class _MyAppState extends State<MyApp> {
             medRecordRepository:
                 Injector.appInstance.get<MedRecordRepository>(),
             examRepository: Injector.appInstance.get<ExamRepository>(),
+            pacientRepository: Injector.appInstance.get<PacientRepository>()
           ),
         )
       ],

@@ -4,8 +4,8 @@ import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 @reflector
 class PreDiagnosisModel {
-  int _peso;
-  int _altura;
+  double _peso;
+  double _altura;
   double _imc;
   int _pASistolica;
   int _pADiastolica;
@@ -22,8 +22,8 @@ class PreDiagnosisModel {
   List<Map> _dynamicFields;
 
   PreDiagnosisModel(
-      {@required int peso,
-      @required int altura,
+      {@required double peso,
+      @required double altura,
       @required double imc,
       @required int paSistolica,
       @required int pADiastolica,
@@ -211,13 +211,16 @@ class PreDiagnosisModel {
         ? map['glicemia']
         : "";
 
+    if(map['peso'] is int) map['peso'] = map['peso'].toDouble();
+    if(map['altura'] is int) map['altura'] = map['altura'].toDouble();
+
     var prediagnosis = PreDiagnosisModel(
-        peso: map['peso'] is int
+        peso: map['peso'] is double
             ? map.remove('peso')
-            : int.parse(map.remove('peso')),
-        altura: map['altura'] is int
+            : double.parse(map.remove('peso')),
+        altura: map['altura'] is double
             ? map.remove('altura')
-            : int.parse(map.remove("altura")),
+            : double.parse(map.remove("altura")),
         imc: map['imc'] is double
             ? map.remove('imc')
             : double.parse(map.remove('imc')),
@@ -255,8 +258,8 @@ class PreDiagnosisModel {
     return prediagnosis;
   }
 
-  int get peso => _peso;
-  int get altura => _altura;
+  double get peso => _peso;
+  double get altura => _altura;
   double get imc => _imc;
   int get pASistolica => _pASistolica;
   int get pADiastolica => _pADiastolica;

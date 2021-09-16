@@ -7,6 +7,8 @@ class AppointmentModel {
   String _telefone;
   DateTime _dataAgendamento;
   String _horarioAgendamento;
+  DateTime _changedDate;
+  String _changedTime;
   PacientModel _pacientModel;
   bool _hasPreDiagnosis = false;
 
@@ -53,6 +55,12 @@ class AppointmentModel {
   String get appointmentTime => this._horarioAgendamento;
   PacientModel get pacientModel => this._pacientModel;
   bool get hasPreDiagnosis => this._hasPreDiagnosis;
+  DateTime get changedDate => this._changedDate;
+  String get changedTime => this._changedTime;
   set pacientModel(PacientModel pacient) => this._pacientModel = pacient;
   set hasPreDiagnosis(bool hasPreDiagnosis) => this._hasPreDiagnosis = true;
+  set changedDate(DateTime changedDate) => this._changedDate = changedDate;
+  set changedTime(String changedTime) => this._changedTime = changedTime;
+  set appointmentDate(DateTime date) => this._dataAgendamento = date; 
+  set appointmentTime(String time) => this._horarioAgendamento = time;
 }

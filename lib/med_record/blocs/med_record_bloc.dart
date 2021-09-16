@@ -17,6 +17,7 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/med_record/models/med_record_model.dart';
 import 'package:tcc_projeto_app/med_record/models/pre_diagnosis/pre_diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
+import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
@@ -40,6 +41,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   MedRecordBloc({
     @required this.medRecordRepository,
     this.examRepository,
+    this.pacientRepository
   }) : super(null);
 
   MedRecordState get initialState => MedRecordInicialState();
@@ -78,6 +80,21 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       try {
         yield MedRecordEventProcessing();
         var dateFormat = DateFormat("dd/MM/yyyy");
+
+        var futures = <Future>[];
+
+        if (event.appointment != null &&
+            event.appointment.changedDate != null &&
+            event.appointment.changedTime != null) {
+
+          futures.add(this.pacientRepository.updateAppointmentDate(
+              event.appointment,
+              event.appointment.changedDate,
+              event.appointment.changedTime));
+        }
+
+        var eventDate = event.appointment.changedDate != null ? event.appointment.changedDate : event.appointment.appointmentDate;
+
         var preDiagnosis = PreDiagnosisModel(
             peso: event.peso,
             altura: event.altura,
@@ -90,16 +107,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             glicemia: event?.glicemia,
             observacao: event.obs,
             appointmentEventDate: event.dtAppointmentEvent is DateTime
-                ? dateFormat.format(event.dtAppointmentEvent)
+                ? dateFormat.format(eventDate)
                 : event.dtAppointmentEvent,
             dynamicFields: event.dynamicFields,
             createdAt: DateTime.now(),
             dtPreDiagnosis: event.dtPrediagnosis);
 
-        await this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
+        futures.add(this.medRecordRepository.createOrUpdatePacientPreDiagnosis(
             preDiagnosisModel: preDiagnosis,
-            date: preDiagnosis.appointmentEventDate);
+            date: preDiagnosis.appointmentEventDate));
 
+        await Future.wait(futures);
         yield PreDiagnosisCreateOrUpdateSuccess(
             preDiagnosisModel: preDiagnosis);
       } catch (error) {
@@ -231,8 +249,11 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             diagnosisDate: event.diagnosisDate,
             diagnosisId: event.diagnosisId.toString()));
 
-        if(event.examSolicitationId != null && event.examSolicitationId.isNotEmpty){
-          examJobs.add(this.examRepository.updateExamSolicitation(pacientHash, event.examSolicitationId));
+        if (event.examSolicitationId != null &&
+            event.examSolicitationId.isNotEmpty) {
+          examJobs.add(this
+              .examRepository
+              .updateExamSolicitation(pacientHash, event.examSolicitationId));
         }
 
         await Future.wait(examJobs);
@@ -314,13 +335,11 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     } else if (event is GetExamByDiagnosisDateAndId) {
       try {
-
         yield GetExamByDiagnosisDateAndIdProcessing();
         var exam = await this.medRecordRepository.getExameByDiagnosisIdAndDate(
             event.diagnosisDate, event.diagnosisId);
 
         yield GetExamByDiagnosisDateAndIdSuccess(exam: exam);
-
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield GetExamByDiagnosisDateAndIdFail();

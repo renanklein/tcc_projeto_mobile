@@ -11,27 +11,25 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 15.0, 8.0, 4.0),
-      child: Container(
-        child: TextFormField(
-          controller: this.searchBarController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            ),
-            hintText: this.placeholder,
+    return Container(
+      child: TextFormField(
+        controller: this.searchBarController,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
-          onChanged: (value) {
-            this.onChange(value);
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return '';
-            }
-            return null;
-          },
+          hintText: this.placeholder,
         ),
+        onChanged: (value) {
+          this.onChange(value);
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return '';
+          }
+          return null;
+        },
       ),
     );
   }

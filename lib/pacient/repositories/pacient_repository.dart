@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 
 class PacientRepository extends ChangeNotifier {
   final CollectionReference _pacientsCollectionReference =
@@ -36,16 +37,16 @@ class PacientRepository extends ChangeNotifier {
     }
   }
 
-  Future updatePacient({
-    @required PacientModel pacient
-  })async{
-    var doc = await this._pacientsCollectionReference
-          .where("cpf", isEqualTo: pacient.getCpf)
-          .get();
+  Future updatePacient({@required PacientModel pacient}) async {
+    var doc = await this
+        ._pacientsCollectionReference
+        .where("cpf", isEqualTo: pacient.getCpf)
+        .get();
 
-    await this._pacientsCollectionReference.doc(doc.docs[0].id)
-              .update(pacient.toMap());
-          
+    await this
+        ._pacientsCollectionReference
+        .doc(doc.docs[0].id)
+        .update(pacient.toMap());
   }
 
   Future<PacientModel> getPacientByNameAndPhone(
@@ -70,6 +71,59 @@ class PacientRepository extends ChangeNotifier {
       e.toString();
       return null;
     }
+  }
+
+  Future updateAppointmentDate(
+      AppointmentModel appointment, DateTime newDate, String newTime) async {
+    var oldDateSnapshot = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc(ConvertUtils.dayFromDateTime(appointment.appointmentDate))
+        .get();
+
+    var newDateSnapshot = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc(ConvertUtils.dayFromDateTime(newDate))
+        .get();
+
+    var resolvedFutures = await Future.wait(<Future>[oldDateSnapshot, newDateSnapshot]);
+
+    var appointmentEvent = Map();
+
+    DocumentSnapshot oldDateDocument = resolvedFutures[0];
+    DocumentSnapshot newDateDocument = resolvedFutures[1];
+
+    var oldDateEventsData = oldDateDocument.data();
+    var newDateEventsData = newDateDocument.data();
+
+    for(var event in oldDateEventsData['events']){
+      if(appointment.appointmentTime == "${event['begin']} - ${event['end']}"){
+        appointmentEvent = event;
+      }
+    }
+
+    oldDateEventsData['events'].remove(appointmentEvent);
+
+    appointmentEvent['begin'] = newTime.replaceAll(' ', '').split('-')[0];
+    appointmentEvent['end'] = newTime.replaceAll(' ', '').split('-')[1];
+
+    newDateEventsData['events'].add(appointmentEvent);
+
+    var saveOldDateEvents = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc(ConvertUtils.dayFromDateTime(appointment.appointmentDate))
+        .set(oldDateEventsData);
+
+    var saveNewDateEvents = _agendaCollectionReference
+        .doc(this._userId)
+        .collection('events')
+        .doc(ConvertUtils.dayFromDateTime(newDate))
+        .set(newDateEventsData);
+
+      
+      await Future.wait(<Future>[saveNewDateEvents, saveOldDateEvents]);
   }
 
   Future<List<AppointmentModel>> getAppointments() async {
@@ -115,9 +169,8 @@ class PacientRepository extends ChangeNotifier {
           ),
         );
 
-    
     var appointments = <AppointmentModel>[];
-    await Future.wait(_appointmentsList.map((appointment) async{
+    await Future.wait(_appointmentsList.map((appointment) async {
       var pacient = await getPacientByNameAndPhone(appointment);
       appointment.pacientModel = pacient;
       appointments.add(appointment);
@@ -205,12 +258,12 @@ class PacientRepository extends ChangeNotifier {
     return pacientsList;
   }
 
-  Future<List<PacientModel>> getCPFList(String cpf) async{
-    var cpfList = await this._pacientsCollectionReference.get().then((resp){
+  Future<List<PacientModel>> getCPFList(String cpf) async {
+    var cpfList = await this._pacientsCollectionReference.get().then((resp) {
       return resp.docs
-      .map((snapshot) => PacientModel.fromMap(snapshot.data()))
-      .where((item) => item.getCpf == cpf)
-      .toList();
+          .map((snapshot) => PacientModel.fromMap(snapshot.data()))
+          .where((item) => item.getCpf == cpf)
+          .toList();
     });
 
     return cpfList;

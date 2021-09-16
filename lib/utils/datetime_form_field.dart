@@ -22,7 +22,7 @@ class DateTimeFormField extends StatelessWidget {
         DateTimeField(
           onChanged: (value) {
             if (this.onSelectedDate != null) {
-              this.onSelectedDate();
+              this.onSelectedDate(value);
             }
           },
           controller: dateTimeController,
@@ -36,7 +36,7 @@ class DateTimeFormField extends StatelessWidget {
           decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
               ),
               hintText: fieldPlaceholder,
               floatingLabelBehavior: FloatingLabelBehavior.auto),
@@ -44,8 +44,8 @@ class DateTimeFormField extends StatelessWidget {
           onShowPicker: (context, currentValue) {
             return showDatePicker(
               context: context,
-              firstDate: this.solicitationDate ?? DateTime(1900),
-              lastDate: DateTime(2050),
+              firstDate: DateTime(1900),
+              lastDate: this.solicitationDate != null ? this._getLastDate() : DateTime(2050),
               locale: Locale('pt', 'BR'),
               initialDate: DateTime.now(),
             );
@@ -53,5 +53,13 @@ class DateTimeFormField extends StatelessWidget {
         ),
       ],
     );
+  }
+
+   DateTime _getLastDate(){
+    if(DateTime.now().isAfter(this.solicitationDate)){
+      return DateTime.now();
+    }
+
+    return this.solicitationDate;
   }
 }

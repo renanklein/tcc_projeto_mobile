@@ -101,6 +101,7 @@ class _AppointmentsWaitListScreenState
                                       padding: const EdgeInsets.all(6.0),
                                       child: ListTile(
                                         title: AppointmentTile(
+                                          appointments: this._appointmentList,
                                           loadAppointments: _loadAppointments,
                                           userUid: this.userUid,
                                           appointmentModel: this

@@ -87,7 +87,8 @@ class PacientRepository extends ChangeNotifier {
         .doc(ConvertUtils.dayFromDateTime(newDate))
         .get();
 
-    var resolvedFutures = await Future.wait(<Future>[oldDateSnapshot, newDateSnapshot]);
+    var resolvedFutures =
+        await Future.wait(<Future>[oldDateSnapshot, newDateSnapshot]);
 
     var appointmentEvent = Map();
 
@@ -97,8 +98,9 @@ class PacientRepository extends ChangeNotifier {
     var oldDateEventsData = oldDateDocument.data();
     var newDateEventsData = newDateDocument.data();
 
-    for(var event in oldDateEventsData['events']){
-      if(appointment.appointmentTime == "${event['begin']} - ${event['end']}"){
+    for (var event in oldDateEventsData['events']) {
+      if (appointment.appointmentTime ==
+          "${event['begin']} - ${event['end']}") {
         appointmentEvent = event;
       }
     }
@@ -108,7 +110,13 @@ class PacientRepository extends ChangeNotifier {
     appointmentEvent['begin'] = newTime.replaceAll(' ', '').split('-')[0];
     appointmentEvent['end'] = newTime.replaceAll(' ', '').split('-')[1];
 
-    newDateEventsData['events'].add(appointmentEvent);
+    if (newDateEventsData != null) {
+      newDateEventsData['events'].add(appointmentEvent);
+    } else {
+      newDateEventsData = {
+        "events": [appointmentEvent]
+      };
+    }
 
     var saveOldDateEvents = _agendaCollectionReference
         .doc(this._userId)
@@ -122,8 +130,7 @@ class PacientRepository extends ChangeNotifier {
         .doc(ConvertUtils.dayFromDateTime(newDate))
         .set(newDateEventsData);
 
-      
-      await Future.wait(<Future>[saveNewDateEvents, saveOldDateEvents]);
+    await Future.wait(<Future>[saveNewDateEvents, saveOldDateEvents]);
   }
 
   Future<List<AppointmentModel>> getAppointments() async {

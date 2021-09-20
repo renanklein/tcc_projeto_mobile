@@ -4,7 +4,8 @@ class GoogleAuthApi{
   static final _googleSignIn = GoogleSignIn(scopes: ['https://mail.google.com']);
 
   static Future<GoogleSignInAccount> signIn() async{
-    if(await _googleSignIn.isSignedIn()){
+    var isSignedIn = _googleSignIn.currentUser != null;
+    if(isSignedIn){
       return _googleSignIn.currentUser;
     }
 

@@ -45,8 +45,8 @@ class PrescriptionSender {
                 pw.Text("Data de realização: $diagnosisDate",
                     textAlign: pw.TextAlign.left),
                 ...diagnosisCidsAndDescriptions,
-                pw.SizedBox(height: 40),
-                pw.Text("Prescrição: ${diagnosis.prescription}", textAlign: pw.TextAlign.center)
+                pw.SizedBox(height: 40), 
+                pw.Text("Prescrição: ${diagnosis.prescription}")
               ],
             ),
           ]);
@@ -74,7 +74,7 @@ class PrescriptionSender {
       ..recipients = recipients;
 
     try {
-      await send(message, smtpServer);
+     await send(message, smtpServer);
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.green,

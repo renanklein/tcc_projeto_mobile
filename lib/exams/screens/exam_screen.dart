@@ -190,6 +190,23 @@ class _ExamScreenState extends State<ExamScreen> {
     });
   }
 
+  void sortExams(List<Widget> examWidgets){
+    examWidgets.sort((a,b){
+      if(a is ExamCard && b is ExamCard){
+        var dateA = ConvertUtils.dateTimeFromString(a.getCardExamInfo.examDate);
+        var dateB = ConvertUtils.dateTimeFromString(b.getCardExamInfo.examDate);
+
+        if(dateA.isAfter(dateB)){
+          return 1;
+        }
+
+        return -1;
+      }
+
+      return -1;
+    });
+  }
+
   void onSearchBarChange(String examType) {
     setState(() {
       this.examSorted.clear();

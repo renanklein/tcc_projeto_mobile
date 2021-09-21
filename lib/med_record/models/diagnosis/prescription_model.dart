@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
 
-@reflector
+
 class PrescriptionModel {
   //static int _mDID;
   String _prescription;

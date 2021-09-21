@@ -74,8 +74,8 @@ class _PacientTileState extends State<PacientTile> {
                   padding: const EdgeInsets.fromLTRB(6.0, 3.0, 4.0, 4.0),
                   child: Container(
                     constraints: BoxConstraints.expand(
-                      width: 90,
-                      height: 90,
+                      width: 70,
+                      height: 70,
                     ),
                     decoration: BoxDecoration(
                         color: Colors.grey, shape: BoxShape.circle),

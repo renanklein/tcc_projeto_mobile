@@ -55,10 +55,10 @@ dependencies:
   encrypt: ^4.1.0
   instant: ^0.4.1
   mask_text_input_formatter: ^1.2.1
-  reflectable: ^2.2.9
   cpfcnpj: ^1.0.3
   pdf: ^2.1.0
-  flutter_email_sender: ^5.0.0
+  mailer: ^5.0.2
+  google_sign_in: ^5.0.4
   syncfusion_flutter_datepicker: ^19.1.63-beta
   
 

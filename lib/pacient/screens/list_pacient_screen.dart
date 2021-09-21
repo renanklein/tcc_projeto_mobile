@@ -174,11 +174,6 @@ class _ListPacientScreenState extends State<ListPacientScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
-              // onLongPress: () {
-              //   Navigator.of(context).pushNamed(createOrEditPacient,
-              //       arguments: RouteAppointmentArguments(
-              //           routePath: "Edit", pacientModel: pacient));
-              // },
               onTap: () {
                 Navigator.of(context).pushNamed(
                   medRecordRoute,

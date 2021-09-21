@@ -22,10 +22,8 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/route_generator.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:reflectable/reflectable.dart';
 import 'package:flutter/foundation.dart' as flutter_foundation;
 
-const reflector = Reflector();
 const emailSender = "ecoescamboMailer@gmail.com";
 const emailSenderPassword = "TrabalhoLPW";
 final dateFormatter = DateFormat("dd/MM/yyyy");
@@ -174,8 +172,4 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
   }
-}
-
-class Reflector extends Reflectable {
-  const Reflector() : super();
 }

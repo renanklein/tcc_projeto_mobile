@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
-@reflector
+
 class PreDiagnosisModel {
   double _peso;
   double _altura;

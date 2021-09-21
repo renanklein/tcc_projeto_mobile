@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
-@reflector
+
 class CompleteDiagnosisModel {
   ProblemModel _problemModel;
   DiagnosisModel _diagnosisModel;

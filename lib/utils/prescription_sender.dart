@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:tcc_projeto_app/login/models/user_model.dart';
@@ -8,8 +12,7 @@ import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/med_record/models/diagnosis/complete_diagnosis_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/api/google_auth_api.dart';
 
 class PrescriptionSender {
   static final user = Injector.appInstance.get<UserModel>();
@@ -32,7 +35,7 @@ class PrescriptionSender {
                 "Descrição do diagnóstico: ${diagnosis?.diagnosis?.diagnosisDescription[i]}",
                 textAlign: pw.TextAlign.left));
           }
-          return pw.Flex(direction: pw.Axis.vertical, children: [
+          return pw.Flex(direction: pw.Axis.horizontal, children: [
             pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -42,12 +45,10 @@ class PrescriptionSender {
                 pw.Text("Data de realização: $diagnosisDate",
                     textAlign: pw.TextAlign.left),
                 ...diagnosisCidsAndDescriptions,
+                pw.SizedBox(height: 40), 
+                pw.Text("Prescrição: ${diagnosis.prescription}")
               ],
             ),
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.center,
-                crossAxisAlignment: pw.CrossAxisAlignment.end,
-                children: [pw.Text("Prescrição: ${diagnosis.prescription}")])
           ]);
         }));
     var tempDir = await getTemporaryDirectory();
@@ -58,14 +59,33 @@ class PrescriptionSender {
   }
 
   static Future sendEmail(List<String> recipients, String body, File attachment,
-      String subject) async {
-    var email = Email(
-        subject: subject,
-        body: body,
-        recipients: recipients,
-        attachmentPaths: [attachment.path],
-        isHTML: false);
+      String subject, BuildContext context) async {
+    final user = await GoogleAuthApi.signIn();
+    if (user == null) return;
+    var senderEmail = user.email;
+    final auth = await user.authentication;
+    var token = auth.accessToken;
+    final smtpServer = gmailSaslXoauth2(senderEmail, token);
+    final message = Message()
+      ..from = Address(emailSender, "Prescrição")
+      ..attachments = <Attachment>[FileAttachment(attachment)]
+      ..subject = subject
+      ..text = body
+      ..recipients = recipients;
 
-    await FlutterEmailSender.send(email);
+    try {
+     await send(message, smtpServer);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.green,
+        content: Text(
+          "Email enviado com sucesso",
+          style: TextStyle(
+              fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+        ),
+      ));
+    } catch (error, stack_trace) {
+      await FirebaseCrashlytics.instance.recordError(error, stack_trace);
+    }
   }
 }

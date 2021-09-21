@@ -374,13 +374,15 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
 }
 
 Widget pacienteFormField(controller, label, hint, errorText, readOnly) {
-  var mask = MaskTextInputFormatter(
+  var cpfMask = MaskTextInputFormatter(
       mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
+
+  var emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   return Padding(
     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: TextFormField(
       readOnly: readOnly,
-      inputFormatters: label == "CPF:" ? [mask] : null,
+      inputFormatters: label == "CPF:" ? [cpfMask] : null,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -393,6 +395,8 @@ Widget pacienteFormField(controller, label, hint, errorText, readOnly) {
         if (value.isEmpty) {
           return errorText;
         } else if (label == "CPF:" && !CPF.isValid(controller.text)) {
+          return errorText;
+        } else if(label == "E-mail:" && !emailRegex.hasMatch(controller.text)){
           return errorText;
         }
         return null;

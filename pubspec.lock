@@ -475,14 +475,14 @@ packages:
       name: logging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "0.11.4"
   mailer:
     dependency: "direct main"
     description:
       name: mailer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.2"
+    version: "3.3.0"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -510,7 +510,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "0.9.7"
   mockito:
     dependency: "direct dev"
     description:

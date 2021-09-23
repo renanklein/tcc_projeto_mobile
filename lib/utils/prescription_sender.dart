@@ -86,6 +86,6 @@ class PrescriptionSender {
       ));
     } catch (error, stack_trace) {
       await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-    }
+    } 
   }
 }

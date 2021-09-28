@@ -27,6 +27,7 @@ class _ExamScreenState extends State<ExamScreen> {
   List ivs;
   Uint8List decriptedBytes = Uint8List(0);
   DateTime previousDateSelected;
+  String previousType = '';
   List<Widget> previousExamSorted = <Widget>[];
   List<Widget> examCards = <Widget>[];
   List<Widget> examSorted = <Widget>[];
@@ -103,8 +104,9 @@ class _ExamScreenState extends State<ExamScreen> {
   List<Widget> _buildScreenBody() {
     if (this.examSorted.length > 0) {
       return this.examSorted;
+    } else if(this.examSorted.length == 0 && this.previousExamSorted.length > 0){
+      return this.previousExamSorted;
     }
-
     return examCards;
   }
 
@@ -155,6 +157,7 @@ class _ExamScreenState extends State<ExamScreen> {
 
   void onSearchExamDateChange(DateTime examDate) {
     setState(() {
+      this.previousDateSelected = examDate;
       if (examDate != null) {
         var filterPool =
             this.examSorted.length > 0 ? this.examSorted : this.examCards;
@@ -175,28 +178,29 @@ class _ExamScreenState extends State<ExamScreen> {
           return false;
         }).toList();
 
-        if (this.previousDateSelected == null) {
-          this.previousDateSelected = examDate;
-        }
-
-        if (this.previousExamSorted == null && this.examSorted.length > 0) {
-          this.previousExamSorted = this.examSorted;
-        }
-
         this.examSorted = filteredExams;
-      } else if (this.previousDateSelected != null) {
+
+        if (this.previousExamSorted.length == 0 && this.examSorted.length > 0) {
+          this.previousExamSorted = List.from(this.examSorted);
+        }
+      } else if (this.previousDateSelected == null &&
+          this.previousType.length > 0) {
+        this.examSorted = List.from(this.previousExamSorted);
+      } else if (this.previousDateSelected == null &&
+          this.previousType.length == 0) {
         this.examSorted.clear();
+        this.previousExamSorted.clear();
       }
     });
   }
 
-  void sortExams(List<Widget> examWidgets){
-    examWidgets.sort((a,b){
-      if(a is ExamCard && b is ExamCard){
+  void sortExams(List<Widget> examWidgets) {
+    examWidgets.sort((a, b) {
+      if (a is ExamCard && b is ExamCard) {
         var dateA = ConvertUtils.dateTimeFromString(a.getCardExamInfo.examDate);
         var dateB = ConvertUtils.dateTimeFromString(b.getCardExamInfo.examDate);
 
-        if(dateA.isAfter(dateB)){
+        if (dateA.isAfter(dateB)) {
           return 1;
         }
 
@@ -208,8 +212,8 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void onSearchBarChange(String examType) {
+    this.previousType = examType;
     setState(() {
-      this.examSorted.clear();
       if (examType.length > 0) {
         var type = examType;
 
@@ -224,9 +228,6 @@ class _ExamScreenState extends State<ExamScreen> {
 
         if (filteredExams.length > 0) {
           this.examSorted = filteredExams;
-          if (this.previousExamSorted == null) {
-            this.previousExamSorted = this.examSorted;
-          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
             context,
@@ -234,9 +235,19 @@ class _ExamScreenState extends State<ExamScreen> {
             Colors.red,
             Colors.white,
           ));
+          this.examSorted.clear();
           this.searchBarController.text = '';
         }
-      } else {
+        if (this.previousExamSorted.length == 0 && this.examSorted.length > 0) {
+          this.previousExamSorted = List.from(this.examSorted);
+        }
+      } else if (this.previousDateSelected != null &&
+          this.previousType.length == 0) {
+        this.examSorted = List.from(this.previousExamSorted);
+      } else if (this.previousDateSelected == null &&
+          this.previousType.length == 0) {
+        this.examSorted.clear();
+        this.previousExamSorted.clear();
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       }
     });

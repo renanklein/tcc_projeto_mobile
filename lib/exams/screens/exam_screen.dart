@@ -26,11 +26,9 @@ class _ExamScreenState extends State<ExamScreen> {
   List fileDownloadURLs;
   List ivs;
   Uint8List decriptedBytes = Uint8List(0);
-  DateTime previousDateSelected;
-  String previousType = '';
-  List<Widget> previousExamSorted = <Widget>[];
   List<Widget> examCards = <Widget>[];
-  List<Widget> examSorted = <Widget>[];
+  List<Widget> examDateFilter = <Widget>[];
+  List<Widget> examTypeFilter = <Widget>[];
   TextEditingController searchBarController = TextEditingController();
   TextEditingController searchExamDateController = TextEditingController();
 
@@ -102,10 +100,14 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   List<Widget> _buildScreenBody() {
-    if (this.examSorted.length > 0) {
-      return this.examSorted;
-    } else if(this.examSorted.length == 0 && this.previousExamSorted.length > 0){
-      return this.previousExamSorted;
+    if (this.examDateFilter.length > 0 && this.examTypeFilter.length > 0) {
+      return this.mergeFilterResults();
+    } else if (this.examDateFilter.length > 0 &&
+        this.examTypeFilter.length == 0) {
+      return this.examTypeFilter;
+    } else if (this.examDateFilter.length == 0 &&
+        this.examTypeFilter.length > 0) {
+      return this.examTypeFilter;
     }
     return examCards;
   }
@@ -157,11 +159,8 @@ class _ExamScreenState extends State<ExamScreen> {
 
   void onSearchExamDateChange(DateTime examDate) {
     setState(() {
-      this.previousDateSelected = examDate;
       if (examDate != null) {
-        var filterPool =
-            this.examSorted.length > 0 ? this.examSorted : this.examCards;
-        var filteredExams = filterPool.where((element) {
+        this.examDateFilter = this.examCards.where((element) {
           if (element is ExamCard) {
             var convertedDate = ConvertUtils.dateTimeFromString(
                 element.cardExamInfo.getExamDate);
@@ -177,19 +176,8 @@ class _ExamScreenState extends State<ExamScreen> {
 
           return false;
         }).toList();
-
-        this.examSorted = filteredExams;
-
-        if (this.previousExamSorted.length == 0 && this.examSorted.length > 0) {
-          this.previousExamSorted = List.from(this.examSorted);
-        }
-      } else if (this.previousDateSelected == null &&
-          this.previousType.length > 0) {
-        this.examSorted = List.from(this.previousExamSorted);
-      } else if (this.previousDateSelected == null &&
-          this.previousType.length == 0) {
-        this.examSorted.clear();
-        this.previousExamSorted.clear();
+      } else{
+        this.examDateFilter = <Widget>[];
       }
     });
   }
@@ -212,44 +200,25 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void onSearchBarChange(String examType) {
-    this.previousType = examType;
     setState(() {
-      if (examType.length > 0) {
-        var type = examType;
-
-        var filteredExams = this
-            .examCards
-            .where((element) =>
-                element is ExamCard &&
-                element.getCardExamInfo.getExamType
-                    .toLowerCase()
-                    .contains(type.toLowerCase()))
-            .toList();
-
-        if (filteredExams.length > 0) {
-          this.examSorted = filteredExams;
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(messageSnackBar(
-            context,
-            "Exame não encontrado",
-            Colors.red,
-            Colors.white,
-          ));
-          this.examSorted.clear();
-          this.searchBarController.text = '';
-        }
-        if (this.previousExamSorted.length == 0 && this.examSorted.length > 0) {
-          this.previousExamSorted = List.from(this.examSorted);
-        }
-      } else if (this.previousDateSelected != null &&
-          this.previousType.length == 0) {
-        this.examSorted = List.from(this.previousExamSorted);
-      } else if (this.previousDateSelected == null &&
-          this.previousType.length == 0) {
-        this.examSorted.clear();
-        this.previousExamSorted.clear();
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      }
+      this.examTypeFilter = this
+          .examCards
+          .where((element) =>
+              element is ExamCard &&
+              element.getCardExamInfo.getExamType
+                  .toLowerCase()
+                  .contains(examType.toLowerCase()))
+          .toList();
     });
+  }
+
+  List<Widget> mergeFilterResults() {
+    return this.examTypeFilter.where((element) {
+      if (element is ExamCard && this.examDateFilter.contains(element)) {
+        return true;
+      }
+
+      return false;
+    }).toList();
   }
 }

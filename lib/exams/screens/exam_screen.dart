@@ -100,13 +100,13 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   List<Widget> _buildScreenBody() {
-    if (this.examDateFilter.length > 0 && this.examTypeFilter.length > 0) {
+    if (this.searchBarController.text.length > 0 && this.searchExamDateController.text.length > 0) {
       return this.mergeFilterResults();
-    } else if (this.examDateFilter.length > 0 &&
-        this.examTypeFilter.length == 0) {
-      return this.examTypeFilter;
-    } else if (this.examDateFilter.length == 0 &&
-        this.examTypeFilter.length > 0) {
+    } else if (this.searchExamDateController.text.length > 0 &&
+        this.searchBarController.text.length == 0) {
+      return this.examDateFilter;
+    } else if (this.searchExamDateController.text.length == 0 &&
+        this.searchBarController.text.length > 0) {
       return this.examTypeFilter;
     }
     return examCards;

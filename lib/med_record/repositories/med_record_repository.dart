@@ -56,7 +56,7 @@ class MedRecordRepository {
         .collection("exams")
         .doc(user.uid)
         .get();
-    if (snapshot.exists) {
+    if (snapshot.data() != null && snapshot.data().containsKey('exams')) {
       exams = snapshot.data()["exams"];
     }
 

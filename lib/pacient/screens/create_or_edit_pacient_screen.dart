@@ -160,7 +160,6 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                     key: _createPacientFormKey,
                     child: Center(
                       child: Container(
-                        //decoration: new BoxDecoration(color: Colors.black54),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.98,
                           child: Padding(
@@ -221,23 +220,12 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                                         children: [
                                           Text('Tipo de Documento'),
                                           DropdownButton<String>(
-                                            hint: Text(
-                                                'Selecione o tipo de documento apresentado'),
                                             items: tipoDocumentoList.map(
                                                 (String dropDownStringItem) {
                                               return DropdownMenuItem<String>(
                                                   value: dropDownStringItem,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(
-                                                      8.0,
-                                                      0.0,
-                                                      0.0,
-                                                      0.0,
-                                                    ),
-                                                    child: Text(
-                                                      dropDownStringItem,
-                                                    ),
+                                                  child: Text(
+                                                    dropDownStringItem,
                                                   ));
                                             }).toList(),
                                             onChanged: (newValue) {

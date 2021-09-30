@@ -134,7 +134,7 @@ class ExamRepository {
       var exams = [];
       var solicitationExam;
 
-      if (doc.data() != null && doc.exists) {
+      if (doc.data() != null && doc.data().containsKey('exams')) {
         exams = doc["exams"];
       }
 
@@ -249,7 +249,7 @@ class ExamRepository {
     var snapshot =
         await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (snapshot.data != null && snapshot.exists) {
+    if (snapshot.data() != null && snapshot.data().containsKey('exams')) {
       exams = snapshot.data()["exams"];
     }
 
@@ -282,7 +282,7 @@ class ExamRepository {
     var dbSnapshot =
         await this._firestore.collection("exams").doc(user.uid).get();
 
-    if (dbSnapshot.exists) {
+    if (dbSnapshot.data() != null && dbSnapshot.data().containsKey('exams')) {
       var examsSnapshot = dbSnapshot.data()["exams"];
       pacientHash == null
           ? exams = examsSnapshot

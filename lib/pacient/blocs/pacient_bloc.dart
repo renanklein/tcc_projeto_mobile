@@ -115,7 +115,9 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             });
           }
 
-          processedAppointments.add(appointment);
+          if(!appointment.hasPreDiagnosis){
+              processedAppointments.add(appointment);
+          }
         }));
 
         yield AppointmentLoadEventSuccess(processedAppointments);

@@ -22,10 +22,7 @@ class AppointmentTile extends StatelessWidget {
 
   Widget build(BuildContext context) {
     var pacientBloc = BlocProvider.of<PacientBloc>(context);
-    var color = this.appointmentModel.pacientModel != null &&
-            this.appointmentModel.hasPreDiagnosis
-        ? Colors.yellow
-        : Color(0xFF84FFFF);
+    var color = Color(0xFF84FFFF);
     var dateFormatter = DateFormat("dd/MM/yyyy");
     var dateTimeAgendamento =
         "${dateFormatter.format(this.appointmentModel.appointmentDate)}  ${this.appointmentModel.appointmentTime}";
@@ -112,38 +109,6 @@ class AppointmentTile extends StatelessWidget {
                           }
                         },
                         child: Text("Sim"))
-                  ],
-                );
-              });
-        } else if (this.appointmentModel.pacientModel != null &&
-            this.appointmentModel.hasPreDiagnosis) {
-          var dateAsString =
-              dateFormatter.format(this.appointmentModel.appointmentDate);
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text('Paciente com pré diagnóstico'),
-                  content: Text(
-                      "O paciente já possui pré-diagnóstico para o dia $dateAsString"),
-                  actions: <Widget>[
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("Fechar")),
-                    TextButton(
-                      child: Text("Ir para o Prontuário"),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          medRecordRoute,
-                          arguments: MedRecordArguments(
-                              index: '4',
-                              pacientModel: this.appointmentModel.pacientModel),
-                        );
-                      },
-                    ),
                   ],
                 );
               });

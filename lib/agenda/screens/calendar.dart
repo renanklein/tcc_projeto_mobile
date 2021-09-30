@@ -104,7 +104,7 @@ class _UserCalendarState extends State<UserCalendar> {
                 this._beforeSearchEvents =
                     Map<DateTime, List<dynamic>>.from(this._events);
                 this._events = state.eventsFiltered;
-
+                this._selectedDayDescriptions = _retrieveListOfEvents();
                 this.isSearching = true;
               }
             },
@@ -208,8 +208,10 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   void filterPacientEvents(String searchContent) {
-    this._agendaBloc.add(
-        AgendaEventsFilter(searchString: searchContent, events: this._events));
+    setState(() {
+      this._agendaBloc.add(AgendaEventsFilter(
+          searchString: searchContent, events: this._events));
+    });
   }
 
   List _retrieveListOfEvents() {
@@ -232,7 +234,10 @@ class _UserCalendarState extends State<UserCalendar> {
 
     if (_selectedDayDescriptions.isEmpty) {
       eventWidgets.add(Center(
-        child: Text("Não há agendamentos para este dia"),
+        child: Text(
+          "Não há agendamentos para este dia",
+          style: TextStyle(color: Colors.white, fontSize: 15.7),
+        ),
       ));
     } else {
       var eventsParsed =

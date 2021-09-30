@@ -108,20 +108,33 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         await this.crashlytics.recordError(error, stack_trace);
         yield EventProcessingFail();
       }
-    } else if(event is AgendaEventsToBeConfirmed){
-      try{
+    } else if (event is AgendaEventsToBeConfirmed) {
+      try {
         yield AgendaEventsToBeConfirmedProcessing();
 
-        var splited = event.eventDate.contains("-") ? event.eventDate.split("-") : event.eventDate.split("/");
+        var splited = event.eventDate.contains("-")
+            ? event.eventDate.split("-")
+            : event.eventDate.split("/");
 
-        var events = await this.agendaRepository.getEventsToBeConfirmed("${splited[2]}-${splited[1]}-${splited[0]}");
+        var events = await this.agendaRepository.getEventsToBeConfirmed(
+            "${splited[2]}-${splited[1]}-${splited[0]}");
 
         yield AgendaEventsToBeConfirmedSuccess(eventsConfirmed: events);
-
-      }catch(error, stack_trace){
+      } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
         yield AgendaEventsToBeConfirmedFail();
       }
+    } else if (event is AgendaEventsFilter) {
+      yield AgendaLoading();
+
+      var eventsFiltered = event.events.map((key, value) {
+        var dayEvents = value
+            .where((listValue) => listValue.split(";")[1].contains(event.searchString))
+            .toList();
+        return MapEntry(key, dayEvents);
+      });
+
+      yield AgendaEventsFilterSuccess(eventsFiltered: eventsFiltered);
     }
   }
 }

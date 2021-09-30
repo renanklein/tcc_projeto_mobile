@@ -88,3 +88,13 @@ class AgendaEventsToBeConfirmed extends AgendaEvent{
   List<Object> get props => [];
 
 }
+
+class AgendaEventsFilter extends AgendaEvent{
+  final String searchString;
+  final Map<DateTime, List<dynamic>> events;
+
+  AgendaEventsFilter({@required this.searchString, @required this.events});
+  @override
+  List<Object> get props => [];
+
+}

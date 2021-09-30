@@ -7,7 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
+import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
+import 'package:tcc_projeto_app/agenda/screens/search_bottomsheet.dart';
 import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 
 class UserCalendar extends StatefulWidget {
@@ -23,7 +26,9 @@ class _UserCalendarState extends State<UserCalendar> {
   AgendaRepository _agendaRepository;
   AgendaBloc _agendaBloc;
   Map<DateTime, List<dynamic>> _events;
+  Map<DateTime, List<dynamic>> _beforeSearchEvents;
   List _selectedDayDescriptions;
+  bool isSearching = false;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   CalendarController _controller;
   DateTime _selectedDay;
@@ -59,6 +64,24 @@ class _UserCalendarState extends State<UserCalendar> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Agendamentos"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  if (!this.isSearching) {
+                    this._scaffoldKey.currentState.showBottomSheet((context) {
+                      return SearchBottomSheet(
+                          filterFunction: this.filterPacientEvents);
+                    });
+                  } else {
+                    setState(() {
+                      this.isSearching = false;
+                      _dispatchAgendaLoadEvent();
+                    });
+                  }
+                },
+                icon: Icon(
+                    this.isSearching ? Icons.cancel_outlined : Icons.search))
+          ],
           elevation: 0.0,
         ),
         backgroundColor: Theme.of(context).primaryColor,
@@ -77,6 +100,12 @@ class _UserCalendarState extends State<UserCalendar> {
                 this._selectedDayDescriptions = _retrieveListOfEvents();
               } else if (state is AgendaLoadFail) {
                 _buildFailSnackBar();
+              } else if (state is AgendaEventsFilterSuccess) {
+                this._beforeSearchEvents =
+                    Map<DateTime, List<dynamic>>.from(this._events);
+                this._events = state.eventsFiltered;
+                this._selectedDayDescriptions = _retrieveListOfEvents();
+                this.isSearching = true;
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
@@ -109,8 +138,14 @@ class _UserCalendarState extends State<UserCalendar> {
                         ];
                       }),
                     ),
-                    CalendarUtils.buildEventList(this._selectedDayDescriptions,
-                        this._selectedDay, this.refresh)
+                    if (this.isSearching)
+                      ...this._buildFilteredEventsDisplay(
+                          _selectedDayDescriptions, this._selectedDay)
+                    else
+                      CalendarUtils.buildEventList(
+                          this._selectedDayDescriptions,
+                          this._selectedDay,
+                          this.refresh)
                   ],
                 );
               },
@@ -172,6 +207,13 @@ class _UserCalendarState extends State<UserCalendar> {
     });
   }
 
+  void filterPacientEvents(String searchContent) {
+    setState(() {
+      this._agendaBloc.add(AgendaEventsFilter(
+          searchString: searchContent, events: this._events));
+    });
+  }
+
   List _retrieveListOfEvents() {
     String eventDay = DateFormat("yyyy-MM-dd").format(this._selectedDay);
     List eventsAsList = [];
@@ -184,5 +226,42 @@ class _UserCalendarState extends State<UserCalendar> {
     });
 
     return eventsAsList;
+  }
+
+  List<Widget> _buildFilteredEventsDisplay(
+      List _selectedDayDescriptions, DateTime selectedDay) {
+    var eventWidgets = <Widget>[];
+
+    if (_selectedDayDescriptions.isEmpty) {
+      eventWidgets.add(Center(
+        child: Text(
+          "Não há agendamentos para este dia",
+          style: TextStyle(color: Colors.white, fontSize: 15.7),
+        ),
+      ));
+    } else {
+      var eventsParsed =
+          ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
+      eventsParsed.forEach((element) {
+        eventWidgets.add(GestureDetector(
+          child: Text(
+            "${element['begin']} - ${element['end']}  ${element['description']}",
+            style: TextStyle(color: Colors.white, fontSize: 15.7),
+          ),
+          onTap: () {
+            var eventDate = selectedDay;
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => EventEditorScreen(
+                    event: element,
+                    selectedTime: "${element['begin']} - ${element['end']}",
+                    isEdit: true,
+                    selectedDay: eventDate,
+                    refreshAgenda: refresh)));
+          },
+        ));
+      });
+    }
+
+    return eventWidgets;
   }
 }

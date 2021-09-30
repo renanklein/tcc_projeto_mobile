@@ -82,3 +82,14 @@ class AgendaEventsToBeConfirmedFail extends AgendaState{
   List<Object> get props => [];
 
 }
+
+class AgendaEventsFilterSuccess extends AgendaState{
+
+  final Map<DateTime, List<dynamic>> eventsFiltered;
+
+  AgendaEventsFilterSuccess({@required this.eventsFiltered});
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+
+}

@@ -135,7 +135,8 @@ class _UserCalendarState extends State<UserCalendar> {
                       builders: CalendarBuilders(
                           markersBuilder: (context, date, events, _) {
                         return <Widget>[
-                          CalendarUtils.buildEventMarker(date, events, this.isSearching,context)
+                          CalendarUtils.buildEventMarker(
+                              date, events, this.isSearching, context)
                         ];
                       }),
                     ),
@@ -236,7 +237,7 @@ class _UserCalendarState extends State<UserCalendar> {
     if (_selectedDayDescriptions.isEmpty) {
       eventWidgets.add(Center(
         child: Text(
-          "Não há agendamentos para este dia",
+          "Não há agendamentos para este paciente neste dia",
           style: TextStyle(color: Colors.white, fontSize: 15.7),
         ),
       ));
@@ -245,7 +246,7 @@ class _UserCalendarState extends State<UserCalendar> {
           ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
 
       eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
-      
+
       eventsParsed.forEach((element) {
         eventWidgets.add(GestureDetector(
           child: Text(

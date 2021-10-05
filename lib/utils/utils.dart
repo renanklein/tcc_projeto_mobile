@@ -62,6 +62,22 @@ class Utils {
     };
   }
 
+  static int sortCalendarEvents(dynamic a, dynamic b){
+     var now = DateTime.now();
+      var startTimeDateA = DateTime(now.year, now.month, now.day, int.tryParse(a['begin'].split(':')[0]), int.tryParse(a['begin'].split(':')[1]));
+      var endTimeDateA = DateTime(now.year, now.month, now.day, int.tryParse(a['end'].split(':')[0]), int.tryParse(a['end'].split(':')[1]));
+
+      var startTimeDateB = DateTime(now.year, now.month, now.day, int.tryParse(b['begin'].split(':')[0]), int.tryParse(b['begin'].split(':')[1]));
+      var endTimeDateB = DateTime(now.year, now.month, now.day, int.tryParse(b['end'].split(':')[0]), int.tryParse(b['end'].split(':')[1]));
+
+      if(startTimeDateA.isBefore(startTimeDateB) && endTimeDateA.isBefore(endTimeDateB)){
+        return -1;
+      }
+
+      return 1;
+
+  }
+
   static Map buildUpdateEvent(Map eventParameters) {
     var filteredDate = ConvertUtils.removeTime(eventParameters["eventDay"]);
     var dayEvent = eventParameters["events"][filteredDate];

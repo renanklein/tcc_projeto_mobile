@@ -12,6 +12,7 @@ import 'package:tcc_projeto_app/agenda/screens/search_bottomsheet.dart';
 import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
+import 'package:tcc_projeto_app/utils/utils.dart';
 
 class UserCalendar extends StatefulWidget {
   final uid;
@@ -71,7 +72,7 @@ class _UserCalendarState extends State<UserCalendar> {
                     this._scaffoldKey.currentState.showBottomSheet((context) {
                       return SearchBottomSheet(
                           filterFunction: this.filterPacientEvents);
-                    });
+                    }, backgroundColor: Colors.transparent);
                   } else {
                     setState(() {
                       this.isSearching = false;
@@ -134,7 +135,7 @@ class _UserCalendarState extends State<UserCalendar> {
                       builders: CalendarBuilders(
                           markersBuilder: (context, date, events, _) {
                         return <Widget>[
-                          CalendarUtils.buildEventMarker(date, events, context)
+                          CalendarUtils.buildEventMarker(date, events, this.isSearching,context)
                         ];
                       }),
                     ),
@@ -242,6 +243,9 @@ class _UserCalendarState extends State<UserCalendar> {
     } else {
       var eventsParsed =
           ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
+
+      eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
+      
       eventsParsed.forEach((element) {
         eventWidgets.add(GestureDetector(
           child: Text(

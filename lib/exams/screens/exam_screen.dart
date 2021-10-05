@@ -7,7 +7,6 @@ import 'package:tcc_projeto_app/exams/tiles/exam_card.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
-import 'package:tcc_projeto_app/utils/dialog_utils/dialog_widgets.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/search_bar.dart';
 

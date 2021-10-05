@@ -29,7 +29,7 @@ class CalendarUtils {
 // Cor transparente, unica forma de obscurecer os marcadores, lib coloca
 // marcadores por default
   static Widget buildEventMarker(
-      DateTime eventDate, List events, BuildContext context) {
+      DateTime eventDate, List events, bool isSearching, BuildContext context) {
     var agendaRepository = Injector.appInstance.get<AgendaRepository>();
     var dateAsString = DateFormat('yyyy-MM-dd').format(eventDate);
     return FutureBuilder(

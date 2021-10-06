@@ -21,6 +21,17 @@ class SearchBottomSheet extends StatelessWidget {
       ),
       child: ListView(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+            child: Text(
+              'Digite um nome abaixo para pesquisar',
+              style: TextStyle(
+                fontSize: 17.5,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
           Field(
             textController: this.pacientSearchController,
             fieldPlaceholder: "Nome do paciente",
@@ -32,7 +43,7 @@ class SearchBottomSheet extends StatelessWidget {
             child: Center(
               child: RichText(
                 text: TextSpan(
-                  style: TextStyle(color: Colors.blue, fontSize: 16.0),
+                  style: TextStyle(color: Colors.blue, fontSize: 18.0),
                   text: "Pesquisar",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {

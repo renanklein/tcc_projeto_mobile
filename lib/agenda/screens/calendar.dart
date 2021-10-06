@@ -9,6 +9,7 @@ import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
 import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/screens/search_bottomsheet.dart';
+import 'package:tcc_projeto_app/agenda/tiles/schedule_card.dart';
 import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
@@ -30,6 +31,7 @@ class _UserCalendarState extends State<UserCalendar> {
   Map<DateTime, List<dynamic>> _beforeSearchEvents;
   List _selectedDayDescriptions;
   bool isSearching = false;
+  bool isBottomsheetContext = false;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   CalendarController _controller;
   DateTime _selectedDay;
@@ -68,20 +70,31 @@ class _UserCalendarState extends State<UserCalendar> {
           actions: [
             IconButton(
                 onPressed: () {
-                  if (!this.isSearching) {
+                  if (!this.isSearching && !this.isBottomsheetContext) {
+                    setState(() {
+                      this.isBottomsheetContext = true;
+                    });
+
                     this._scaffoldKey.currentState.showBottomSheet((context) {
                       return SearchBottomSheet(
                           filterFunction: this.filterPacientEvents);
                     }, backgroundColor: Colors.transparent);
+                  } else if (this.isBottomsheetContext && !this.isSearching) {
+                    setState(() {
+                      this.isBottomsheetContext = false;
+                      Navigator.of(context).pop();
+                    });
                   } else {
                     setState(() {
                       this.isSearching = false;
+                      this.isBottomsheetContext = false;
                       _dispatchAgendaLoadEvent();
                     });
                   }
                 },
-                icon: Icon(
-                    this.isSearching ? Icons.cancel_outlined : Icons.search))
+                icon: Icon(this.isSearching || this.isBottomsheetContext
+                    ? Icons.cancel_outlined
+                    : Icons.search))
           ],
           elevation: 0.0,
         ),
@@ -105,8 +118,28 @@ class _UserCalendarState extends State<UserCalendar> {
                 this._beforeSearchEvents =
                     Map<DateTime, List<dynamic>>.from(this._events);
                 this._events = state.eventsFiltered;
-                this._selectedDayDescriptions = _retrieveListOfEvents();
-                this.isSearching = true;
+                this._events.removeWhere((key, value) => value.isEmpty);
+                
+                if (this._events.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                      "Não há agendamentos para esse paciente",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
+                    ),
+                  ));
+
+                  setState(() {
+                    this.isSearching = false;
+                    this.isBottomsheetContext = false;
+                    _dispatchAgendaLoadEvent();
+                  });
+                } else {
+                  this.isSearching = true;
+                }
               }
             },
             child: BlocBuilder<AgendaBloc, AgendaState>(
@@ -116,38 +149,37 @@ class _UserCalendarState extends State<UserCalendar> {
                   return LayoutUtils.buildCircularProgressIndicator(context);
                 }
                 return ListView(
-                  children: <Widget>[
-                    TableCalendar(
-                      locale: "pt_BR",
-                      initialSelectedDay: this._selectedDay,
-                      onDaySelected: (date, events, _) {
-                        setState(() {
-                          this._selectedDay = date;
-                          this._selectedDayDescriptions =
-                              _retrieveListOfEvents();
-                        });
-                      },
-                      events: this._events,
-                      calendarController: _controller,
-                      startingDayOfWeek: StartingDayOfWeek.monday,
-                      calendarStyle: _buildCalendarStyle(),
-                      headerStyle: _buildHeaderStyle(),
-                      builders: CalendarBuilders(
-                          markersBuilder: (context, date, events, _) {
-                        return <Widget>[
-                          CalendarUtils.buildEventMarker(date, events, this.isSearching,context)
-                        ];
-                      }),
-                    ),
-                    if (this.isSearching)
-                      ...this._buildFilteredEventsDisplay(
-                          _selectedDayDescriptions, this._selectedDay)
-                    else
-                      CalendarUtils.buildEventList(
-                          this._selectedDayDescriptions,
-                          this._selectedDay,
-                          this.refresh)
-                  ],
+                  children: this.isSearching
+                      ? this._buildFilteredEventsBody()
+                      : <Widget>[
+                          TableCalendar(
+                            locale: "pt_BR",
+                            initialSelectedDay: this._selectedDay,
+                            onDaySelected: (date, events, _) {
+                              setState(() {
+                                this._selectedDay = date;
+                                this._selectedDayDescriptions =
+                                    _retrieveListOfEvents();
+                              });
+                            },
+                            events: this._events,
+                            calendarController: _controller,
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            calendarStyle: _buildCalendarStyle(),
+                            headerStyle: _buildHeaderStyle(),
+                            builders: CalendarBuilders(
+                                markersBuilder: (context, date, events, _) {
+                              return <Widget>[
+                                CalendarUtils.buildEventMarker(
+                                    date, events, this.isSearching, context)
+                              ];
+                            }),
+                          ),
+                          CalendarUtils.buildEventList(
+                              this._selectedDayDescriptions,
+                              this._selectedDay,
+                              this.refresh)
+                        ],
                 );
               },
             ),
@@ -209,10 +241,8 @@ class _UserCalendarState extends State<UserCalendar> {
   }
 
   void filterPacientEvents(String searchContent) {
-    setState(() {
-      this._agendaBloc.add(AgendaEventsFilter(
-          searchString: searchContent, events: this._events));
-    });
+    this._agendaBloc.add(
+        AgendaEventsFilter(searchString: searchContent, events: this._events));
   }
 
   List _retrieveListOfEvents() {
@@ -229,43 +259,21 @@ class _UserCalendarState extends State<UserCalendar> {
     return eventsAsList;
   }
 
-  List<Widget> _buildFilteredEventsDisplay(
-      List _selectedDayDescriptions, DateTime selectedDay) {
-    var eventWidgets = <Widget>[];
+  List<Widget> _buildFilteredEventsBody() {
+    List<Widget> schedulesCards = <Widget>[];
 
-    if (_selectedDayDescriptions.isEmpty) {
-      eventWidgets.add(Center(
-        child: Text(
-          "Não há agendamentos para este dia",
-          style: TextStyle(color: Colors.white, fontSize: 15.7),
-        ),
-      ));
-    } else {
-      var eventsParsed =
-          ConvertUtils.toMapListOfEvents(_selectedDayDescriptions);
+    this._events.forEach((day, schedules) {
+      var eventsParsed = ConvertUtils.toMapListOfEvents(schedules);
 
       eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
-      
-      eventsParsed.forEach((element) {
-        eventWidgets.add(GestureDetector(
-          child: Text(
-            "${element['begin']} - ${element['end']}  ${element['description']}",
-            style: TextStyle(color: Colors.white, fontSize: 15.7),
-          ),
-          onTap: () {
-            var eventDate = selectedDay;
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => EventEditorScreen(
-                    event: element,
-                    selectedTime: "${element['begin']} - ${element['end']}",
-                    isEdit: true,
-                    selectedDay: eventDate,
-                    refreshAgenda: refresh)));
-          },
-        ));
-      });
-    }
 
-    return eventWidgets;
+      eventsParsed.forEach((schedule) {
+        var scheduleCard = ScheduleCard(
+            schedule: schedule, scheduleDate: day, refresh: refresh);
+        schedulesCards.add(scheduleCard);
+        schedulesCards.add(LayoutUtils.buildVerticalSpacing(10.0));
+      });
+    });
+    return schedulesCards;
   }
 }

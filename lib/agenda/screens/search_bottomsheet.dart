@@ -37,6 +37,7 @@ class SearchBottomSheet extends StatelessWidget {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       this.filterFunction(this.pacientSearchController.text);
+
                       Navigator.of(context).pop();
                     },
                 ),

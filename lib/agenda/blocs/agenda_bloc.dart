@@ -129,7 +129,11 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       var eventsFiltered = event.events.map((key, value) {
         var dayEvents = value
-            .where((listValue) => listValue.split(";")[1].contains(event.searchString))
+            .where(
+              (listValue) => listValue.split(";")[1].toLowerCase().contains(
+                    event.searchString.toLowerCase(),
+                  ),
+            )
             .toList();
         return MapEntry(key, dayEvents);
       });

@@ -36,7 +36,7 @@ class ScheduleCard extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
             child: Column(
               children: <Widget>[
-                LayoutUtils.buildVerticalSpacing(20.0),
+                LayoutUtils.buildVerticalSpacing(5.0),
                 Text(
                   dateFormatter.format(this.scheduleDate),
                   style: TextStyle(
@@ -60,6 +60,7 @@ class ScheduleCard extends StatelessWidget {
                       fontWeight: FontWeight.w300,
                       color: Colors.grey),
                 ),
+                LayoutUtils.buildVerticalSpacing(5.0)
               ],
             )),
       ),

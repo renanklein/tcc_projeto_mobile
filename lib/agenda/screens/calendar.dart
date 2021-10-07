@@ -11,6 +11,7 @@ import 'package:tcc_projeto_app/agenda/screens/event_editor_screen.dart';
 import 'package:tcc_projeto_app/agenda/screens/search_bottomsheet.dart';
 import 'package:tcc_projeto_app/agenda/tiles/schedule_card.dart';
 import 'package:tcc_projeto_app/agenda/utils/calendar_utils.dart';
+import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/utils.dart';
@@ -34,6 +35,7 @@ class _UserCalendarState extends State<UserCalendar> {
   bool isBottomsheetContext = false;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   CalendarController _controller;
+  TextEditingController searchDateController = TextEditingController();
   DateTime _selectedDay;
 
   String get uid => this.widget.uid;
@@ -74,10 +76,15 @@ class _UserCalendarState extends State<UserCalendar> {
                     setState(() {
                       this.isBottomsheetContext = true;
                     });
+                    if(this.searchDateController.text.isNotEmpty){
+                      this.searchDateController.text = "";
+                    }
 
                     this._scaffoldKey.currentState.showBottomSheet((context) {
                       return SearchBottomSheet(
-                          filterFunction: this.filterPacientEvents);
+                        filterFunction: this.filterPacientEvents,
+                        dateSearchController: this.searchDateController,
+                      );
                     }, backgroundColor: Colors.transparent);
                   } else if (this.isBottomsheetContext && !this.isSearching) {
                     setState(() {
@@ -119,8 +126,9 @@ class _UserCalendarState extends State<UserCalendar> {
                     Map<DateTime, List<dynamic>>.from(this._events);
                 this._events = state.eventsFiltered;
                 this._events.removeWhere((key, value) => value.isEmpty);
-                
-                if (this._events.isEmpty) {
+                var cards = this._buildFilteredEventsBody();
+
+                if (cards.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
                     content: Text(
@@ -261,19 +269,37 @@ class _UserCalendarState extends State<UserCalendar> {
 
   List<Widget> _buildFilteredEventsBody() {
     List<Widget> schedulesCards = <Widget>[];
+    if (this.searchDateController.text.isNotEmpty) {
+      var dateTime =
+          ConvertUtils.dateTimeFromString(this.searchDateController.text);
+      if (this._events.containsKey(dateTime)) {
+        var schedules = this._events[dateTime];
 
-    this._events.forEach((day, schedules) {
-      var eventsParsed = ConvertUtils.toMapListOfEvents(schedules);
+        var eventsParsed = ConvertUtils.toMapListOfEvents(schedules);
 
-      eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
+        eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
 
-      eventsParsed.forEach((schedule) {
-        var scheduleCard = ScheduleCard(
-            schedule: schedule, scheduleDate: day, refresh: refresh);
-        schedulesCards.add(scheduleCard);
-        schedulesCards.add(LayoutUtils.buildVerticalSpacing(10.0));
+        eventsParsed.forEach((schedule) {
+          var scheduleCard = ScheduleCard(
+              schedule: schedule, scheduleDate: dateTime, refresh: refresh);
+          schedulesCards.add(scheduleCard);
+          schedulesCards.add(LayoutUtils.buildVerticalSpacing(10.0));
+        });
+      }
+    } else {
+      this._events.forEach((day, schedules) {
+        var eventsParsed = ConvertUtils.toMapListOfEvents(schedules);
+
+        eventsParsed.sort((a, b) => Utils.sortCalendarEvents(a, b));
+
+        eventsParsed.forEach((schedule) {
+          var scheduleCard = ScheduleCard(
+              schedule: schedule, scheduleDate: day, refresh: refresh);
+          schedulesCards.add(scheduleCard);
+          schedulesCards.add(LayoutUtils.buildVerticalSpacing(10.0));
+        });
       });
-    });
+    }
     return schedulesCards;
   }
 }

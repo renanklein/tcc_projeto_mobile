@@ -1,13 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_projeto_app/utils/datetime_form_field.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
 class SearchBottomSheet extends StatelessWidget {
   final TextEditingController pacientSearchController = TextEditingController();
+  final TextEditingController dateSearchController;
   final Function filterFunction;
 
-  SearchBottomSheet({@required this.filterFunction});
+  SearchBottomSheet({@required this.filterFunction, @required this.dateSearchController});
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +23,15 @@ class SearchBottomSheet extends StatelessWidget {
       ),
       child: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-            child: Text(
-              'Digite um nome abaixo para pesquisar',
-              style: TextStyle(
-                fontSize: 17.5,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
           Field(
             textController: this.pacientSearchController,
             fieldPlaceholder: "Nome do paciente",
             isReadOnly: false,
+          ),
+          LayoutUtils.buildVerticalSpacing(10.0),
+          DateTimeFormField(
+            dateTimeController: this.dateSearchController,
+            fieldPlaceholder: "Data dos agendamentos",
           ),
           LayoutUtils.buildVerticalSpacing(10.0),
           Padding(

@@ -46,7 +46,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
   TextEditingController _examTypeController = TextEditingController();
   TextEditingController _examDateController = TextEditingController();
   String currentDropdownItem;
-  Map<String, List> modelExams = Map<String, List>();
+  Map<String, Map> modelExams = Map<String, Map>();
   List<Widget> examModelsFields = <Widget>[];
   List<String> examModelsTypes = <String>[];
   File _examFile;
@@ -147,7 +147,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
           ),
           LayoutUtils.buildVerticalSpacing(10.0),
           DateTimeFormField(
-            solicitationDate: this.solicitationDate,
+            solicitationDate: this.solicitationDate ?? DateTime.now(),
             fieldPlaceholder: "Data de Realização",
             dateTimeController: this._examDateController,
           ),
@@ -234,14 +234,16 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
     return dropdownWidgets;
   }
 
-  List<Widget> _buildModelExamFields(List fields) {
+  List<Widget> _buildModelExamFields(Map fields) {
     var dropDownFields = <Widget>[];
     this.examModelsFields = <Widget>[];
     if (fields != null) {
-      fields.forEach((type) {
+      fields.forEach((fieldType, defaultValue) {
         var examDetailsField = Field(
-            fieldPlaceholder: type,
-            textController: TextEditingController(),
+            fieldPlaceholder: fieldType,
+            textController: TextEditingController(
+              text: defaultValue
+            ),
             isReadOnly: false);
         this.examModelsFields.add(examDetailsField);
         var row = Row(
@@ -252,7 +254,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                     color: Theme.of(context).primaryColor),
                 onPressed: () {
                   setState(() {
-                    fields.remove(type);
+                    fields.remove(fieldType);
                   });
                 })
           ],

@@ -179,7 +179,7 @@ class ExamRepository {
 
   Future saveModelExam(Map modelExam, String examType) async {
     var models = await getExamModels();
-    if (models == null) {
+    if (models.isEmpty) {
       models = {
         "models": <Map>[modelExam]
       };

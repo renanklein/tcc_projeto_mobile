@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tcc_projeto_app/exams/models/exam_solicitation_model.dart';
 import 'package:tcc_projeto_app/exams/repositories/exam_repository.dart';
-import 'package:tcc_projeto_app/exams/screens/exam_screen.dart';
 
 part 'exam_event.dart';
 part 'exam_state.dart';
@@ -25,7 +24,7 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
 
         var modelMap = Map<String, dynamic>();
         modelMap.addAll(event.examTypeMap);
-        modelMap.addAll({"fields": event.listOfFields});
+        modelMap.addAll({"fields": event.mapOfFields});
 
         await this
             .examRepository
@@ -41,7 +40,7 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
         yield UpdateExamModelProcessing();
 
         await this.examRepository.updateExamModels(
-            event.examModelType, event.fields, event.oldExamModelType);
+            event.examModelType, event.mapOfFields, event.oldExamModelType);
 
         yield UpdateExamModelSuccess();
       } catch (err, stack_trace) {

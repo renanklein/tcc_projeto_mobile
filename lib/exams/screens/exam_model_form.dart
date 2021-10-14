@@ -16,7 +16,7 @@ class ExamModelForm extends StatefulWidget {
   String examModelType;
   String examSolicitationId;
   DateTime examSolicitationDate;
-  List examModelFields;
+  Map examModelFields;
 
   ExamModelForm(
       {@required this.isEdit,
@@ -39,7 +39,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
   String get examModelType => this.widget.examModelType;
   String get examSolicitationId => this.widget.examSolicitationId;
   DateTime get examSolicitationDate => this.widget.examSolicitationDate;
-  List get examModelFields => this.widget.examModelFields;
+  Map get examModelFields => this.widget.examModelFields;
   Function get refreshExamModels => this.widget.refreshExamModels;
 
   String examTypePlaceholder = "Tipo de Exame";
@@ -60,8 +60,12 @@ class _ExamModelFormState extends State<ExamModelForm> {
     if (this.isEdit) {
       this._examTypeController.text = this.examModelType;
       this.oldExamModelType = this.examModelType;
-      this.examModelFields.forEach((field) {
-        this._examModelFieldsNamesController.text += "$field;";
+      this.examModelFields.forEach((field, defaultValue) {
+        if(defaultValue.isEmpty){
+          this._examModelFieldsNamesController.text += "$field;";
+        }else{
+          this._examModelFieldsNamesController.text += "$field-$defaultValue;";
+        }
       });
     } else if (this.fromExamSolicitation) {
       this._examTypeController.text = this.examModelType;
@@ -152,19 +156,30 @@ class _ExamModelFormState extends State<ExamModelForm> {
         maxLines: 8,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
-          hintText: "Insira os nomes do campos separados por ;",
+          hintText:
+              "Insira os campos e seus respectivos valores padrão seperados por -. Separe o par campo-valor por ;",
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
       )
     ];
   }
 
-  List<String> _buildListOfFields() {
+  Map<String, String> _buildMapOfFields() {
     var fields = this._examModelFieldsNamesController.text.split(";");
-
     fields.removeWhere((element) => element == "");
-    return fields;
+
+    var fieldsMap = fields.map((field) {
+      if (field.contains("-")) {
+        return MapEntry(field.split("-")[0], field.split("-")[1]);
+      }
+
+      return MapEntry(field, "");
+    });
+
+    return Map.fromIterable(fieldsMap,
+        key: (fieldEntry) => fieldEntry.key,
+        value: (fieldEntry) => fieldEntry.value);
   }
 
   void onSuccess() {
@@ -225,13 +240,13 @@ class _ExamModelFormState extends State<ExamModelForm> {
         if (this._formKey.currentState.validate()) {
           if (this.isEdit) {
             this._examBloc.add(UpdateExamModel(
-                fields: _buildListOfFields(),
+                mapOfFields: _buildMapOfFields(),
                 oldExamModelType: this.oldExamModelType,
                 examModelType: this._examTypeController.text));
           } else {
             this._examBloc.add(CreateExamModel(examTypeMap: {
                   this.examTypePlaceholder: this._examTypeController.text
-                }, listOfFields: _buildListOfFields()));
+                }, mapOfFields: _buildMapOfFields()));
           }
         }
       },

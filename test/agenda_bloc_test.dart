@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tcc_projeto_app/agenda/blocs/agenda_bloc.dart';
@@ -5,11 +6,17 @@ import 'package:tcc_projeto_app/agenda/repositories/agenda_repository.dart';
 
 class MockAgendaRepository extends Mock implements AgendaRepository {}
 
+class MockCrashlytics extends Mock implements FirebaseCrashlytics {}
+
 void main() {
+
   MockAgendaRepository fakeAgendaRepository;
+  MockCrashlytics fakeInstance;
   AgendaBloc agendaBloc;
 
   setUp(() {
+    fakeInstance = MockCrashlytics();
+    when(FirebaseCrashlytics.instance).thenReturn(fakeInstance);
     fakeAgendaRepository = MockAgendaRepository();
     agendaBloc = AgendaBloc(agendaRepository: fakeAgendaRepository);
   });
@@ -54,7 +61,7 @@ void main() {
       when(fakeAgendaRepository.getEvents())
           .thenAnswer((_) => Future.value(Map()));
 
-      expectLater(agendaBloc, emitsInOrder(expectedStates))
+      expectLater(agendaBloc.stream, emitsInOrder(expectedStates))
           .then((_) => verify(fakeAgendaRepository.getEvents()).called(1));
 
       agendaBloc.add(AgendaLoad());

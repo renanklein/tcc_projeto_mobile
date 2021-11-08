@@ -54,7 +54,7 @@ void main() {
       when(userRepository.signUp(email: "", pass: ""))
           .thenAnswer((_) => Future.value(fakeAuthResult));
       when(userRepository.sendUserData(name: "", email: "", uid: ""));
-      expectLater(signupBloc, emitsInOrder(expectedStates));
+      expectLater(signupBloc.stream, emitsInOrder(expectedStates));
 
       signupBloc.add(SignupButtonPressed(
         email: "",

@@ -64,7 +64,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
         if(defaultValue.isEmpty){
           this._examModelFieldsNamesController.text += "$field;";
         }else{
-          this._examModelFieldsNamesController.text += "$field-$defaultValue;";
+          this._examModelFieldsNamesController.text += "$field#$defaultValue;";
         }
       });
     } else if (this.fromExamSolicitation) {
@@ -157,7 +157,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           hintText:
-              "Insira os campos e seus respectivos valores padrão seperados por -. Separe o par campo-valor por ;",
+              "Insira os campos e seus respectivos valores padrão seperados por #. Separe o par campo-valor por ;",
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
@@ -170,8 +170,8 @@ class _ExamModelFormState extends State<ExamModelForm> {
     fields.removeWhere((element) => element == "");
 
     var fieldsMap = fields.map((field) {
-      if (field.contains("-")) {
-        return MapEntry(field.split("-")[0], field.split("-")[1]);
+      if (field.contains("#")) {
+        return MapEntry(field.split("#")[0], field.split("#")[1]);
       }
 
       return MapEntry(field, "");

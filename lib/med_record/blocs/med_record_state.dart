@@ -189,6 +189,13 @@ class DecryptExamSuccess extends MedRecordState {
   List<Object> get props => [];
 }
 
+class ExamAlreadyExists extends MedRecordState{
+  @override
+  
+  List<Object> get props => [];
+
+}
+
 class ExamProcessingFail extends MedRecordState {
   @override
   List<Object> get props => [];

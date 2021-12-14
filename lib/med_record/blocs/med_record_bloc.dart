@@ -38,11 +38,11 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   ExamRepository examRepository;
   PacientRepository pacientRepository;
 
-  MedRecordBloc({
-    @required this.medRecordRepository,
-    this.examRepository,
-    this.pacientRepository
-  }) : super(null);
+  MedRecordBloc(
+      {@required this.medRecordRepository,
+      this.examRepository,
+      this.pacientRepository})
+      : super(null);
 
   MedRecordState get initialState => MedRecordInicialState();
 
@@ -86,14 +86,15 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         if (event.appointment != null &&
             event.appointment.changedDate != null &&
             event.appointment.changedTime != null) {
-
           futures.add(this.pacientRepository.updateAppointmentDate(
               event.appointment,
               event.appointment.changedDate,
               event.appointment.changedTime));
         }
 
-        var eventDate = event.appointment.changedDate != null ? event.appointment.changedDate : event.appointment.appointmentDate;
+        var eventDate = event.appointment.changedDate != null
+            ? event.appointment.changedDate
+            : event.appointment.appointmentDate;
 
         var preDiagnosis = PreDiagnosisModel(
             peso: event.peso,
@@ -236,28 +237,40 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             event.medRecordArguments.pacientModel.getCpf,
             event.medRecordArguments.pacientModel.getSalt);
 
-        List<Future> examJobs = <Future>[];
+        var exams = await this.examRepository.getExam(pacientHash);
 
-        examJobs.add(this.examRepository.saveExam(
-            event.getCardExamInfo,
-            event.getExamDetails,
-            encriptedFile,
-            randomFileName.toString(),
-            pacientHash,
-            initializationVector,
-            event.examSolicitationId,
-            diagnosisDate: event.diagnosisDate,
-            diagnosisId: event.diagnosisId.toString()));
+        var existsEqualExam = exams.where((element) {
+          return element is CardExamInfo &&
+              (element.getExamDate == event.cardExamInfo.getExamDate &&
+                  element.getExamType == event.cardExamInfo.getExamType);
+        }).toList();
 
-        if (event.examSolicitationId != null &&
-            event.examSolicitationId.isNotEmpty) {
-          examJobs.add(this
-              .examRepository
-              .updateExamSolicitation(pacientHash, event.examSolicitationId));
+        if (existsEqualExam != null && existsEqualExam.isNotEmpty) {
+          yield ExamAlreadyExists();
+        } else {
+          List<Future> examJobs = <Future>[];
+
+          examJobs.add(this.examRepository.saveExam(
+              event.getCardExamInfo,
+              event.getExamDetails,
+              encriptedFile,
+              randomFileName.toString(),
+              pacientHash,
+              initializationVector,
+              event.examSolicitationId,
+              diagnosisDate: event.diagnosisDate,
+              diagnosisId: event.diagnosisId.toString()));
+
+          if (event.examSolicitationId != null &&
+              event.examSolicitationId.isNotEmpty) {
+            examJobs.add(this
+                .examRepository
+                .updateExamSolicitation(pacientHash, event.examSolicitationId));
+          }
+
+          await Future.wait(examJobs);
+          yield ExamProcessingSuccess(encriptedFile: encriptedFile);
         }
-
-        await Future.wait(examJobs);
-        yield ExamProcessingSuccess(encriptedFile: encriptedFile);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         yield ExamProcessingFail();

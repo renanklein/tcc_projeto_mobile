@@ -97,7 +97,10 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
               setState(() {
                 this.dynamicFieldsList.add(state.dynamicFieldWidget);
               });
-            } else if (state is ExamProcessingFail) {
+            } else if(state is ExamAlreadyExists){
+              onFail("Já existe um exame com o mesmo tipo e data");
+            }
+             else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             } else if (state is LoadExamModelSuccess) {
               var firstType = "";

@@ -80,7 +80,7 @@ class ExamRepository {
     return examModelExists;
   }
 
-  Future updateExamModels(String examModelType, List examModelFields,
+  Future updateExamModels(String examModelType, Map examModelFields,
       String oldExamModelType) async {
     Map models = await getExamModels();
     List modelMaps = models['models'];

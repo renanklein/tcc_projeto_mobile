@@ -50,17 +50,18 @@ class AgendaRepository {
   }
 
   Future<List<String>> getOccupedDayTimes(String day) async {
-    var query = await firestore
-        .collection("agenda")
-        .doc(this._userId)
-        .collection("events")
-        .doc(day)
-        .get();
+    if (day.isEmpty) {
+      var query = await firestore
+          .collection("agenda")
+          .doc(this._userId)
+          .collection("events")
+          .doc(day)
+          .get();
 
-    if (query.data() != null && query.data().containsKey("events")) {
-      return ConvertUtils.getOccupedHours(query.data()["events"]);
+      if (query.data() != null && query.data().containsKey("events")) {
+        return ConvertUtils.getOccupedHours(query.data()["events"]);
+      }
     }
-
     return <String>[];
   }
 

@@ -27,7 +27,6 @@ import 'package:flutter/foundation.dart' as flutter_foundation;
 const emailSender = "ecoescamboMailer@gmail.com";
 const emailSenderPassword = "TrabalhoLPW";
 final dateFormatter = DateFormat("dd/MM/yyyy");
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -38,6 +37,7 @@ Future onBackgroundMessage(RemoteMessage message) async {
 }
 
 void main() async {
+  Intl.defaultLocale = 'pt_BR';
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

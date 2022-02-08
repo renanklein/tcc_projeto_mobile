@@ -132,7 +132,7 @@ class _UserCalendarState extends State<UserCalendar> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
                     content: Text(
-                      "Não há agendamentos para esse paciente",
+                      "Não há agendamentos cadastrados",
                       style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w500,

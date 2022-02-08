@@ -23,7 +23,7 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart';
 
 part 'med_record_event.dart';
@@ -219,8 +219,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
           var keyUrl = await this.examRepository.getCryptoKeyDownload();
 
-          var keyResponse = await http.get(Uri.parse(keyUrl));
-          var base64Key = keyResponse.body;
+          var keyResponse = await Dio().get(keyUrl);
+          var base64Key = keyResponse.data;
           var encoded = SltPattern.encryptImageBytes(
               examBytes, initializationVector, base64Key);
 
@@ -307,13 +307,13 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         var fileDownloadURL = event.fileDownloadURL;
 
-        var response = await http.get(Uri.tryParse(fileDownloadURL));
-        var bytes = response.body;
+        var response = await Dio().get(fileDownloadURL);
+        var bytes = response.data;
 
         var keyUrl = await this.examRepository.getCryptoKeyDownload();
 
-        var keyResponse = await http.get(Uri.parse(keyUrl));
-        var base64Key = keyResponse.body;
+        var keyResponse = await Dio().get(keyUrl);
+        var base64Key = keyResponse.data;
 
         var decriptedBytes =
             SltPattern.decryptImageBytes(bytes, event.iv, base64Key);

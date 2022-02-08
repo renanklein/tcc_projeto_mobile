@@ -58,6 +58,7 @@ dependencies:
   pdf: ^2.1.0
   mailer: ^3.3.0
   google_sign_in: ^4.5.9
+  dio: ^4.0.4
   syncfusion_flutter_datepicker: ^19.1.63-beta
   
 

@@ -54,7 +54,7 @@ class _CalendarEventListState extends State<CalendarEventList> {
     this.eventsList.forEach((el) {
       String eventTime = "${el["begin"]} - ${el["end"]}";
       if (time == eventTime) {
-        event = el;
+        event = Map.from(el);
 
         event["status"] == "confirmed"
             ? tableCellCollor = Colors.green[300]

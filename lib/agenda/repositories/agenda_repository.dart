@@ -50,7 +50,7 @@ class AgendaRepository {
   }
 
   Future<List<String>> getOccupedDayTimes(String day) async {
-    if (day.isEmpty) {
+    if (day.isNotEmpty) {
       var query = await firestore
           .collection("agenda")
           .doc(this._userId)

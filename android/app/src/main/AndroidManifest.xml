@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="internalOnly"
     package="br.tcc.app">
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".Application"
         android:label="tcc_projeto_app"

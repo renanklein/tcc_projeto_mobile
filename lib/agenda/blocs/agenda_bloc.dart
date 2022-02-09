@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +12,10 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   AgendaRepository agendaRepository;
   FirebaseCrashlytics crashlytics = FirebaseCrashlytics.instance;
 
-  AgendaBloc({@required this.agendaRepository}) : super(null);
-
-  AgendaState get initialState => AgendaInitial();
-
-  @override
-  Stream<AgendaState> mapEventToState(
-    AgendaEvent event,
-  ) async* {
-    if (event is AgendaCreateButtonPressed) {
+  AgendaBloc({@required this.agendaRepository}) : super(null){
+    on<AgendaCreateButtonPressed>((event, emit) async{
       try {
-        yield EventProcessing();
+        emit(EventProcessing());
 
         var eventHourRange = <String>[];
         eventHourRange.add(event.eventStart);
@@ -32,25 +24,30 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         await this.agendaRepository.addEvent(
             event.eventName, event.eventDay, event.eventPhone, eventHourRange);
 
-        yield EventProcessingSuccess();
+
+        emit(EventProcessingSuccess());
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield EventProcessingFail();
+        emit(EventProcessingFail());
       }
-    } else if (event is AgendaLoad) {
+    });
+
+    on<AgendaLoad>((event, emit) async{
       try {
-        yield AgendaLoading();
+        emit(AgendaLoading());
 
         var events = await this.agendaRepository.getEvents();
 
-        yield AgendaLoadSuccess(eventsLoaded: events);
+        emit(AgendaLoadSuccess(eventsLoaded: events));
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield AgendaLoadFail();
+        emit(AgendaLoadFail());
       }
-    } else if (event is AgendaEditButtonPressed) {
+    });
+
+    on<AgendaEditButtonPressed>((event, emit) async{
       try {
-        yield EventProcessing();
+        emit(EventProcessing());
 
         var updatedEvent = {
           "id": event.eventId,
@@ -64,53 +61,61 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
             .agendaRepository
             .updateEvent(event.eventDay, updatedEvent, event.eventStatus);
 
-        yield EventProcessingSuccess();
+        emit(EventProcessingSuccess());
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield EventProcessingFail();
+        emit(EventProcessingFail());
       }
-    } else if (event is AgendaDeleteButtonPressed) {
-      try {
-        yield EventProcessing();
+    });
+
+    on<AgendaDeleteButtonPressed>((event, emit) async{
+       try {
+        emit(EventProcessing());
 
         await this
             .agendaRepository
             .removeEvent(event.eventDay, event.eventId, event.reason);
 
-        yield EventProcessingSuccess();
+        emit(EventProcessingSuccess());
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield EventProcessingFail();
+        emit(EventProcessingFail());
       }
-    } else if (event is AgendaEventAvailableTimeLoad) {
-      try {
-        yield AgendaAvailableTimeLoading();
+    });
+
+    on<AgendaEventAvailableTimeLoad>((event, emit) async{
+       try {
+        emit(AgendaAvailableTimeLoading());
 
         var day = ConvertUtils.dayFromDateTime(event.day);
 
         var occupedHours = await agendaRepository.getOccupedDayTimes(day);
 
-        yield AgendaAvailableTimeSuccess(occupedHours);
+        emit(AgendaAvailableTimeSuccess(occupedHours));
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield AgendaAvailableTimeFail();
+        emit(AgendaAvailableTimeFail());
       }
-    } else if (event is AgendaEventConfirmButtomPressed) {
-      try {
-        yield EventProcessing();
+    });
+
+    on<AgendaEventConfirmButtomPressed>((event, emit) async{
+       try {
+        emit(EventProcessing());
 
         this
             .agendaRepository
             .updateEvent(event.eventDay, event.event, "confirmed");
 
-        yield EventProcessingSuccess();
+        emit(EventProcessingSuccess());
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield EventProcessingFail();
+        emit(EventProcessingFail());
       }
-    } else if (event is AgendaEventsToBeConfirmed) {
-      try {
-        yield AgendaEventsToBeConfirmedProcessing();
+    });
+
+    on<AgendaEventsToBeConfirmed>((event, emit)async{
+       try {
+        emit(AgendaEventsToBeConfirmedProcessing());
 
         var splited = event.eventDate.contains("-")
             ? event.eventDate.split("-")
@@ -119,13 +124,16 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         var events = await this.agendaRepository.getEventsToBeConfirmed(
             "${splited[2]}-${splited[1]}-${splited[0]}");
 
-        yield AgendaEventsToBeConfirmedSuccess(eventsConfirmed: events);
+
+        emit(AgendaEventsToBeConfirmedSuccess(eventsConfirmed: events));
       } catch (error, stack_trace) {
         await this.crashlytics.recordError(error, stack_trace);
-        yield AgendaEventsToBeConfirmedFail();
+        emit(AgendaEventsToBeConfirmedFail());
       }
-    } else if (event is AgendaEventsFilter) {
-      yield AgendaLoading();
+    });
+
+    on<AgendaEventsFilter>((event, emit){
+      emit(AgendaLoading());
 
       var eventsFiltered = event.events.map((key, value) {
         var dayEvents = value
@@ -138,7 +146,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         return MapEntry(key, dayEvents);
       });
 
-      yield AgendaEventsFilterSuccess(eventsFiltered: eventsFiltered);
-    }
+      emit(AgendaEventsFilterSuccess(eventsFiltered: eventsFiltered));
+    });
   }
+
+  AgendaState get initialState => AgendaInitial();
 }

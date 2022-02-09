@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tcc_projeto_app/exams/models/card_exam_info.dart';
 import 'package:tcc_projeto_app/exams/models/exam_details.dart';
@@ -23,7 +24,8 @@ import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
 import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'package:encrypt/encrypt.dart';
 
 part 'med_record_event.dart';
@@ -42,43 +44,40 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       {@required this.medRecordRepository,
       this.examRepository,
       this.pacientRepository})
-      : super(null);
-
-  MedRecordState get initialState => MedRecordInicialState();
-
-  @override
-  Stream<MedRecordState> mapEventToState(
-    MedRecordEvent event,
-  ) async* {
-    if (event is MedRecordCreateButtonPressed) {
+      : super(null) {
+    on<MedRecordCreateButtonPressed>((event, emit) async {
       try {
-        yield CreateMedRecordEventProcessing();
+        emit(CreateMedRecordEventProcessing());
 
         await medRecordRepository.updateMedRecord(
             pacientHash: event._pacientHash,
             medRecordModel: MedRecordModel(pacientHash: '22'));
 
-        yield CreateMedRecordEventSuccess();
+        emit(CreateMedRecordEventSuccess());
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield CreateMedRecordEventFail();
+        emit(CreateMedRecordEventFail());
       }
-    } else if (event is MedRecordPacientDetailButtonPressed) {
+    });
+
+    on<MedRecordPacientDetailButtonPressed>((event, emit) async{
       try {
-        yield MedRecordPacientDetailLoading();
+        emit(MedRecordPacientDetailLoading());
 
         PacientModel _pacientModel;
 
         _pacientModel =
             await pacientRepository.getPacientByCpf(event._pacientCpf);
-
-        yield MedRecordPacientDetailLoadEventSuccess(pacient: _pacientModel);
+        
+        emit(MedRecordPacientDetailLoadEventSuccess(pacient: _pacientModel));
       } catch (error) {
-        yield MedRecordPacientDetailLoadEventFailure();
+        emit(MedRecordPacientDetailLoadEventFailure());
       }
-    } else if (event is PreDiagnosisCreateOrUpdateButtonPressed) {
+    });
+
+    on<PreDiagnosisCreateOrUpdateButtonPressed>((event, emit) async{
       try {
-        yield MedRecordEventProcessing();
+        emit(MedRecordEventProcessing());
         var dateFormat = DateFormat("dd/MM/yyyy");
 
         var futures = <Future>[];
@@ -119,14 +118,16 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             date: preDiagnosis.appointmentEventDate));
 
         await Future.wait(futures);
-        yield PreDiagnosisCreateOrUpdateSuccess(
-            preDiagnosisModel: preDiagnosis);
+        emit(PreDiagnosisCreateOrUpdateSuccess(
+            preDiagnosisModel: preDiagnosis));
       } catch (error) {
-        yield MedRecordEventFailure();
+        emit(MedRecordEventFailure());
       }
-    } else if (event is DiagnosisCreateOrUpdateButtonPressed) {
+    });
+
+    on<DiagnosisCreateOrUpdateButtonPressed>((event, emit) async {
       try {
-        yield MedRecordEventProcessing();
+        emit(MedRecordEventProcessing());
 
         var now = new DateTime.now();
         var dateFormat = DateFormat("dd/MM/yyyy");
@@ -154,39 +155,45 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
           await this.medRecordRepository.createPacientDiagnosis(
               completeDiagnosisModel: diagnosisModel, date: hoje);
         }
-        yield DiagnosisCreateOrUpdateSuccess(diagnosisModel: diagnosisModel);
+        emit(DiagnosisCreateOrUpdateSuccess(diagnosisModel: diagnosisModel));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield MedRecordEventFailure();
+        emit(MedRecordEventFailure());
       }
-    } else if (event is OverviewCreateOrUpdateButtonPressed) {
-      try {
-        yield MedRecordEventProcessing();
+    });
+
+    on<OverviewCreateOrUpdateButtonPressed>((event, emit) async{
+       try {
+        emit(MedRecordEventProcessing());
 
         await this
             .medRecordRepository
             .setOverviewByHash(event.getPacientHash, event.overview);
 
-        yield OverviewCreateOrUpdateSuccess(overview: event.overview);
+        emit(OverviewCreateOrUpdateSuccess(overview: event.overview));
       } catch (error, stack_trace) {
-        yield OverviewCreateOrUpdateFail();
+        emit(OverviewCreateOrUpdateFail());
       }
-    } else if (event is MedRecordLoad) {
+    });
+
+    on<MedRecordLoad>((event, emit) async{
       try {
-        yield MedRecordLoading();
+        emit(MedRecordLoading());
 
         MedRecordModel medRecord = await this
             .medRecordRepository
             .getMedRecordByHash(event.getPacientHash);
 
-        yield MedRecordLoadEventSuccess(medRecord: medRecord);
+        emit(MedRecordLoadEventSuccess(medRecord: medRecord));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield MedRecordLoadEventFail();
+        emit(MedRecordLoadEventFail());
       }
-    } else if (event is DiagnosisLoad) {
+    });
+
+    on<DiagnosisLoad>((event, emit) async{
       try {
-        yield DiagnosisLoading();
+        emit(DiagnosisLoading());
 
         MedRecordModel medRecord = await this
             .medRecordRepository
@@ -194,33 +201,45 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         if (medRecord?.getDiagnosisList == null &&
             medRecord?.getPreDiagnosisList == null) {
-          yield MedRecordLoadEventFail();
+          emit(MedRecordLoadEventFail());
         } else {
-          yield DiagnosisLoadEventSuccess(medRecordModel: medRecord);
+          emit(DiagnosisLoadEventSuccess(medRecordModel: medRecord));
         }
       } catch (error) {
-        yield MedRecordLoadEventFail();
+        emit(MedRecordLoadEventFail());
       }
-    } else if (event is MedRecordEditButtonPressed) {
-      try {} catch (error) {}
-    } else if (event is MedRecordDeleteButtonPressed) {
-      try {} catch (error) {}
-    }
-    if (event is SaveExam) {
+    });
+
+    on<MedRecordEditButtonPressed>((event, emit) => null);
+    on<MedRecordDeleteButtonPressed>((event, emit) => null);
+
+    on<SaveExam>((event, emit) async{
       try {
-        yield ExamProcessing();
+        emit(ExamProcessing());
         var encriptedFile;
         var randomFileName;
+        var keyUrl;
+
+        var mutex = Mutex();
+        HttpClient client = new HttpClient()
+          ..badCertificateCallback =
+              ((X509Certificate cert, String host, int port) => true);
+        var ioClient = IOClient(client);
         // For Encrypt/Decrypt purposes
         var initializationVector = IV.fromSecureRandom(16);
 
         if (event.getExamFile != null) {
           var examBytes = await event.getExamFile.readAsBytes();
 
-          var keyUrl = await this.examRepository.getCryptoKeyDownload();
+          await mutex.acquire();
+          try {
+            keyUrl = await this.examRepository.getCryptoKeyDownload();
+          } finally {
+            mutex.release();
+          }
 
-          var keyResponse = await Dio().get(keyUrl);
-          var base64Key = keyResponse.data;
+          var keyResponse = await ioClient.get(Uri.parse(keyUrl));
+          var base64Key = keyResponse.body;
           var encoded = SltPattern.encryptImageBytes(
               examBytes, initializationVector, base64Key);
 
@@ -246,7 +265,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         }).toList();
 
         if (existsEqualExam != null && existsEqualExam.isNotEmpty) {
-          yield ExamAlreadyExists();
+          emit(ExamAlreadyExists());
         } else {
           List<Future> examJobs = <Future>[];
 
@@ -269,15 +288,17 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
           }
 
           await Future.wait(examJobs);
-          yield ExamProcessingSuccess(encriptedFile: encriptedFile);
+          emit(ExamProcessingSuccess(encriptedFile: encriptedFile));
         }
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ExamProcessingFail();
+        emit(ExamProcessingFail());
       }
-    } else if (event is GetExams) {
+    });
+
+    on<GetExams>((event, emit) async{
       try {
-        yield ExamProcessing();
+        emit(ExamProcessing());
 
         var examInfoList = await this.examRepository.getExam(event.pacientHash);
 
@@ -292,71 +313,96 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
           examFileDownloadURLs.add(examInfoList[i + 2]);
           ivs.add(examInfoList[i + 3]);
         }
-        yield GetExamsSuccess(
+        emit(GetExamsSuccess(
             cardExamInfos: examCards,
             examDetailsList: examDetails,
             fileDownloadURLs: examFileDownloadURLs,
-            ivs: ivs);
+            ivs: ivs));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ExamProcessingFail();
+        emit(ExamProcessingFail());
       }
-    } else if (event is DecryptExam) {
+    });
+
+    on<DecryptExam>((event, emit) async{
       try {
-        yield ExamProcessing();
+        emit(ExamProcessing());
+
+        var mutex = Mutex();
+        var keyUrl;
 
         var fileDownloadURL = event.fileDownloadURL;
+        HttpClient client = new HttpClient()
+          ..badCertificateCallback =
+              ((X509Certificate cert, String host, int port) => true);
+        var ioClient = IOClient(client);
 
-        var response = await Dio().get(fileDownloadURL);
-        var bytes = response.data;
+        var response = await ioClient.get(Uri.parse(fileDownloadURL));
+        var bytes = response.body;
 
-        var keyUrl = await this.examRepository.getCryptoKeyDownload();
+        await mutex.acquire();
 
-        var keyResponse = await Dio().get(keyUrl);
-        var base64Key = keyResponse.data;
+        try {
+          keyUrl = await this.examRepository.getCryptoKeyDownload();
+        } finally {
+          mutex.release();
+        }
+
+        var keyResponse = await ioClient.get(Uri.parse(keyUrl));
+        var base64Key = keyResponse.body;
 
         var decriptedBytes =
             SltPattern.decryptImageBytes(bytes, event.iv, base64Key);
 
-        yield DecryptExamSuccess(decriptedBytes: decriptedBytes);
+        emit(DecryptExamSuccess(decriptedBytes: decriptedBytes));
+
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ExamProcessingFail();
+        emit(ExamProcessingFail());
       }
-    } else if (event is DinamicExamField) {
-      try {
-        yield DynamicExamFieldProcessing();
+    });
+
+    on<DinamicExamField>((event, emit) async{
+       try {
+        emit(DynamicExamFieldProcessing());
 
         var fieldWidget = ReadonlyTextField(
             placeholder: event.fieldName, value: event.fieldValue);
 
-        yield DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget);
+        emit(DynamicExamFieldSuccess(dynamicFieldWidget: fieldWidget));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield DynamicExamFieldFail();
+        emit(DynamicExamFieldFail());
       }
-    } else if (event is LoadExamModels) {
+    });
+
+    on<LoadExamModels>((event, emit) async{
       try {
-        yield LoadExamModelProcessing();
+        emit(LoadExamModelProcessing());
 
         var result = await this.examRepository.getExamModels();
 
-        yield LoadExamModelSuccess(models: result);
+        emit(LoadExamModelSuccess(models: result));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield LoadExamModelFail(errorMessage: error.toString());
+        emit(LoadExamModelFail(errorMessage: error.toString()));
       }
-    } else if (event is GetExamByDiagnosisDateAndId) {
+    });
+
+    on<GetExamByDiagnosisDateAndId>((event, emit) async{
       try {
-        yield GetExamByDiagnosisDateAndIdProcessing();
+        emit(GetExamByDiagnosisDateAndIdProcessing());
         var exam = await this.medRecordRepository.getExameByDiagnosisIdAndDate(
             event.diagnosisDate, event.diagnosisId);
+        
+        emit(GetExamByDiagnosisDateAndIdSuccess(exam: exam));
 
-        yield GetExamByDiagnosisDateAndIdSuccess(exam: exam);
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield GetExamByDiagnosisDateAndIdFail();
+        emit(GetExamByDiagnosisDateAndIdFail());
       }
-    }
+    });
   }
+
+  MedRecordState get initialState => MedRecordInicialState();
 }

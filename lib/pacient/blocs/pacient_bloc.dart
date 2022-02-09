@@ -30,23 +30,15 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
   MedRecordRepository medRecordRepository;
 
   PacientBloc({@required this.pacientRepository, this.medRecordRepository})
-      : super(null);
-
-  //@override
-  PacientState get initialState => PacientInicialState();
-
-  @override
-  Stream<PacientState> mapEventToState(
-    PacientEvent event,
-  ) async* {
-    if (event is PacientCreateOrEditButtonPressed) {
+      : super(null) {
+    on<PacientCreateOrEditButtonPressed>((event, emit) async {
       try {
-        yield CreateOrEditPacientEventProcessing();
+        emit(CreateOrEditPacientEventProcessing());
 
         var cpfList = await this.pacientRepository.getCPFList(event.cpf);
 
         if (cpfList.isNotEmpty && !event.isUpdate) {
-          yield CPFAlreadyExists();
+          emit(CPFAlreadyExists());
         } else {
           PacientHashModel pacientHashModel = SltPattern.pacientHash(event.cpf);
 
@@ -68,25 +60,29 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             await this.pacientRepository.createPacient(pacient: _pacientModel);
           }
 
-          yield CreateOrEditPacientEventSuccess(_pacientModel);
+          emit(CreateOrEditPacientEventSuccess(_pacientModel));
         }
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield CreatePacientEventFail();
+        emit(CreatePacientEventFail());
       }
-    } else if (event is PacientLoad) {
-      try {
-        yield PacientLoading();
+    });
+
+    on<PacientLoad>((event, emit) async{
+       try {
+        emit(PacientLoading());
 
         var pacientList = await this.pacientRepository.getPacients();
-        yield PacientLoadEventSuccess(pacientList);
+        emit(PacientLoadEventSuccess(pacientList));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield PacientLoadEventFail();
+        emit(PacientLoadEventFail());
       }
-    } else if (event is AppointmentsLoad) {
+    });
+
+    on<AppointmentsLoad>((event, emit) async {
       try {
-        yield AppointmentsLoading();
+        emit(AppointmentsLoading());
 
         List<AppointmentModel> _appointmentsList;
 
@@ -115,29 +111,33 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
             });
           }
 
-          if(!appointment.hasPreDiagnosis){
-              processedAppointments.add(appointment);
+          if (!appointment.hasPreDiagnosis) {
+            processedAppointments.add(appointment);
           }
         }));
 
-        yield AppointmentLoadEventSuccess(processedAppointments);
+        emit(AppointmentLoadEventSuccess(processedAppointments));
       } on Exception catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
       }
-    } else if (event is GetPacientByName) {
+    });
+
+    on<GetPacientByName>((event, emit) async{
       try {
-        yield PacientLoading();
+        emit(PacientLoading());
 
         var pacient = await this.pacientRepository.getPacientByName(event.name);
 
-        yield GetPacientByNameSuccess(pacient: pacient);
+        emit(GetPacientByNameSuccess(pacient: pacient));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield GetPacientByNameFail();
+        emit(GetPacientByNameFail());
       }
-    } else if (event is ViewPacientOverviewButtonPressed) {
-      try {
-        yield OverviewLoading();
+    });
+
+    on<ViewPacientOverviewButtonPressed>((event, emit) async{
+       try {
+        emit(OverviewLoading());
         var _pacientHash = SltPattern.retrivepacientHash(
           event.cpf,
           event.salt,
@@ -147,14 +147,17 @@ class PacientBloc extends Bloc<PacientEvent, PacientState> {
           String overview =
               await this.medRecordRepository.getOverviewByHash(_pacientHash);
 
-          yield ViewPacientOverviewSuccess(overview: overview);
+          emit(ViewPacientOverviewSuccess(overview: overview));
         } else {
-          yield ViewPacientOverviewFailWrongAccess();
+          emit(ViewPacientOverviewFailWrongAccess());
         }
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ViewPacientOverviewFail();
+        emit(ViewPacientOverviewFail());
       }
-    }
+    });
   }
+
+  //@override
+  PacientState get initialState => PacientInicialState();
 }

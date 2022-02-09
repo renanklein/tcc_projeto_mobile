@@ -12,15 +12,10 @@ part 'exam_state.dart';
 class ExamBloc extends Bloc<ExamEvent, ExamState> {
   ExamRepository examRepository;
 
-  ExamBloc({@required this.examRepository}) : super(null);
-
-  @override
-  Stream<ExamState> mapEventToState(
-    ExamEvent event,
-  ) async* {
-    if (event is CreateExamModel) {
+  ExamBloc({@required this.examRepository}) : super(null){
+    on<CreateExamModel>((event, emit) async{
       try {
-        yield CreateExamModelProcessing();
+        emit(CreateExamModelProcessing());
 
         var modelMap = Map<String, dynamic>();
         modelMap.addAll(event.examTypeMap);
@@ -30,78 +25,92 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
             .examRepository
             .saveModelExam(modelMap, event.examTypeMap["Tipo de Exame"]);
 
-        yield CreateExamModelSuccess();
+        emit(CreateExamModelSuccess());
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield CreateExamModelFail(errorMessage: error.toString());
+        emit(CreateExamModelFail(errorMessage: error.toString()));
       }
-    } else if (event is UpdateExamModel) {
+    });
+
+    on<UpdateExamModel>((event, emit) async{
       try {
-        yield UpdateExamModelProcessing();
+        emit(UpdateExamModelProcessing());
 
         await this.examRepository.updateExamModels(
             event.examModelType, event.mapOfFields, event.oldExamModelType);
 
-        yield UpdateExamModelSuccess();
+        emit(UpdateExamModelSuccess());
       } catch (err, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(err, stack_trace);
-        yield UpdateExamModelFail(errorMessage: err.toString());
+        emit(UpdateExamModelFail(errorMessage: err.toString()));
       }
-    } else if (event is DeleteExamModel) {
-      try {
-        yield DeleteExamModelProcessing();
+    });
+
+    on<DeleteExamModel>((event, emit) async{
+       try {
+        emit(DeleteExamModelProcessing());
 
         await this.examRepository.deleteExamModels(event.modelsToBeRemoved);
 
-        yield DeleteExamModelSuccess();
+
+        emit(DeleteExamModelSuccess());
+
       } catch (err, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(err, stack_trace);
-        yield DeleteExamModelFail();
+        emit(DeleteExamModelFail());
       }
-    } else if (event is CreateExamSolicitation) {
+    });
+
+    on<CreateExamSolicitation>((event, emit) async{
       try {
-        yield ExamSolicitationProcessing();
+        emit(ExamSolicitationProcessing());
+
         this.examRepository.saveExamSolicitation(event.solicitationExamType,
             event.solicitationDate, event.pacientHash);
-        yield ExamSolicitationSuccess();
+        emit(ExamSolicitationSuccess());
       } catch (err, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(err, stack_trace);
-        yield ExamSolicitationFail();
+        emit(ExamSolicitationFail());
       }
-    } else if (event is GetExamSolicitations) {
-      try {
-        yield GetExamSolicitationsProcessing();
+    });
+
+    on<GetExamSolicitations>((event, emit) async{
+       try {
+        emit(GetExamSolicitationsProcessing());
 
         var solicitations =
             await this.examRepository.getExamSolictations(event.pacientHash);
 
-        yield GetExamSolicitationsSuccess(solicitations: solicitations);
+        emit(GetExamSolicitationsSuccess(solicitations: solicitations));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ExamSolicitationFail();
+        emit(ExamSolicitationFail());
       }
-    } else if (event is GetExamBySolicitationId) {
-      yield GetExamBySolicitationIdProcessing();
+    });
+
+    on<GetExamBySolicitationId>((event, emit) async{
+      emit(GetExamBySolicitationIdProcessing());
 
       var exam = await this
           .examRepository
           .getExamBySolicitationId(event.examSolicitationId, event.pacientHash);
 
-      yield GetExamBySolicitationIdSuccess(exam: exam);
-    } else if (event is ExistsExamModel) {
-      try {
-        yield ExistsExamModelProcessing();
+      emit(GetExamBySolicitationIdSuccess(exam: exam));
+    });
+
+    on<ExistsExamModel>((event, emit) async{
+       try {
+        emit(ExistsExamModelProcessing());
 
         var existsExamModel =
             await this.examRepository.existsExamModel(event.examType);
 
-        yield ExistsExamModelSuccess(existsExamModel: existsExamModel);
+        emit(ExistsExamModelSuccess(existsExamModel: existsExamModel));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield ExistsExamModelFail();
+        emit(ExistsExamModelFail());
       }
-    }
+    });
   }
-
   ExamState get initialState => ExamInitial();
 }

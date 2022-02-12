@@ -60,7 +60,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<MedRecordPacientDetailButtonPressed>((event, emit) async{
+    on<MedRecordPacientDetailButtonPressed>((event, emit) async {
       try {
         emit(MedRecordPacientDetailLoading());
 
@@ -68,14 +68,14 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
 
         _pacientModel =
             await pacientRepository.getPacientByCpf(event._pacientCpf);
-        
+
         emit(MedRecordPacientDetailLoadEventSuccess(pacient: _pacientModel));
       } catch (error) {
         emit(MedRecordPacientDetailLoadEventFailure());
       }
     });
 
-    on<PreDiagnosisCreateOrUpdateButtonPressed>((event, emit) async{
+    on<PreDiagnosisCreateOrUpdateButtonPressed>((event, emit) async {
       try {
         emit(MedRecordEventProcessing());
         var dateFormat = DateFormat("dd/MM/yyyy");
@@ -118,8 +118,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             date: preDiagnosis.appointmentEventDate));
 
         await Future.wait(futures);
-        emit(PreDiagnosisCreateOrUpdateSuccess(
-            preDiagnosisModel: preDiagnosis));
+        emit(
+            PreDiagnosisCreateOrUpdateSuccess(preDiagnosisModel: preDiagnosis));
       } catch (error) {
         emit(MedRecordEventFailure());
       }
@@ -162,8 +162,8 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<OverviewCreateOrUpdateButtonPressed>((event, emit) async{
-       try {
+    on<OverviewCreateOrUpdateButtonPressed>((event, emit) async {
+      try {
         emit(MedRecordEventProcessing());
 
         await this
@@ -176,7 +176,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<MedRecordLoad>((event, emit) async{
+    on<MedRecordLoad>((event, emit) async {
       try {
         emit(MedRecordLoading());
 
@@ -191,7 +191,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<DiagnosisLoad>((event, emit) async{
+    on<DiagnosisLoad>((event, emit) async {
       try {
         emit(DiagnosisLoading());
 
@@ -213,7 +213,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
     on<MedRecordEditButtonPressed>((event, emit) => null);
     on<MedRecordDeleteButtonPressed>((event, emit) => null);
 
-    on<SaveExam>((event, emit) async{
+    on<SaveExam>((event, emit) async {
       try {
         emit(ExamProcessing());
         var encriptedFile;
@@ -296,7 +296,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<GetExams>((event, emit) async{
+    on<GetExams>((event, emit) async {
       try {
         emit(ExamProcessing());
 
@@ -324,7 +324,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<DecryptExam>((event, emit) async{
+    on<DecryptExam>((event, emit) async {
       try {
         emit(ExamProcessing());
 
@@ -355,15 +355,14 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
             SltPattern.decryptImageBytes(bytes, event.iv, base64Key);
 
         emit(DecryptExamSuccess(decriptedBytes: decriptedBytes));
-
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         emit(ExamProcessingFail());
       }
     });
 
-    on<DinamicExamField>((event, emit) async{
-       try {
+    on<DinamicExamField>((event, emit) async {
+      try {
         emit(DynamicExamFieldProcessing());
 
         var fieldWidget = ReadonlyTextField(
@@ -376,7 +375,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<LoadExamModels>((event, emit) async{
+    on<LoadExamModels>((event, emit) async {
       try {
         emit(LoadExamModelProcessing());
 
@@ -389,14 +388,13 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
       }
     });
 
-    on<GetExamByDiagnosisDateAndId>((event, emit) async{
+    on<GetExamByDiagnosisDateAndId>((event, emit) async {
       try {
         emit(GetExamByDiagnosisDateAndIdProcessing());
         var exam = await this.medRecordRepository.getExameByDiagnosisIdAndDate(
             event.diagnosisDate, event.diagnosisId);
-        
-        emit(GetExamByDiagnosisDateAndIdSuccess(exam: exam));
 
+        emit(GetExamByDiagnosisDateAndIdSuccess(exam: exam));
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
         emit(GetExamByDiagnosisDateAndIdFail());

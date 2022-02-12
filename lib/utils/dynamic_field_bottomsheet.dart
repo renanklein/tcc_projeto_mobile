@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injector/injector.dart';
 import 'package:tcc_projeto_app/med_record/blocs/med_record_bloc.dart';
+import 'package:tcc_projeto_app/med_record/repositories/med_record_repository.dart';
 import 'package:tcc_projeto_app/utils/layout_utils.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
@@ -34,7 +36,7 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
 
   @override
   void initState() {
-    this.medRecordBloc = BlocProvider.of<MedRecordBloc>(context);
+    this.medRecordBloc = MedRecordBloc(medRecordRepository: Injector.appInstance.get<MedRecordRepository>());
     super.initState();
   }
 

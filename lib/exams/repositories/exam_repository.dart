@@ -42,8 +42,9 @@ class ExamRepository {
 
   Future<String> getCryptoKeyDownload() async {
     var storageRef = this._storage.ref().child('credentials.txt');
+    var downloadUrl = await storageRef.getDownloadURL();
 
-    return await storageRef.getDownloadURL();
+    return downloadUrl;
   }
 
   Future<dynamic> getExamModels() async {

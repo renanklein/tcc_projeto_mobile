@@ -19,15 +19,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({@required this.userRepository, @required this.authenticationBloc})
       : assert(userRepository != null && authenticationBloc != null),
-        super(null);
-
-  @override
-  Stream<LoginState> mapEventToState(
-    LoginEvent event,
-  ) async* {
-    if (event is LoginButtonPressed) {
+        super(null) {
+    on<LoginButtonPressed>((event, emit) async {
       try {
-        yield LoginProcessing();
+        emit(LoginProcessing());
         var credentials = await this
             .userRepository
             .signIn(email: event.email, pass: event.password);
@@ -39,14 +34,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
         await UserDataUtils.setUserData(this.userRepository.getUser().uid);
 
-        yield LoginSucceded();
+        emit(LoginSucceded());
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield LoginFailure();
+        emit(LoginFailure());
       }
-    } else if (event is LoginResetPasswordButtonPressed) {
+    });
+
+    on<LoginResetPasswordButtonPressed>((event, emit) async {
       await this.userRepository.resetPassword(email: event.email);
-      yield LoginPasswordReset();
-    }
+      emit(LoginPasswordReset());
+    });
   }
 }

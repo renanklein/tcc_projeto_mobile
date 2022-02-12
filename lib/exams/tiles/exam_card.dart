@@ -50,16 +50,14 @@ class ExamCard extends StatelessWidget {
                 getCardExamInfo.examType,
                 style: TextStyle(
                     fontSize: 14.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
               ),
               LayoutUtils.buildVerticalSpacing(10.0),
               Text(
                 getCardExamInfo.examDate,
                 style: TextStyle(
                     fontSize: 14.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
               ),
               LayoutUtils.buildVerticalSpacing(20.0)
             ],

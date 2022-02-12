@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -16,24 +14,17 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   AuthenticationBloc authenticationBloc;
 
   SignupBloc({@required this.userRepository, @required this.authenticationBloc})
-      : super(null);
-
-  @override
-  SignupState get initialState => SignupInitial();
-
-  @override
-  Stream<SignupState> mapEventToState(
-    SignupEvent event,
-  ) async* {
-    if (event is SignupButtonPressed) {
+      : super(null) {
+    on<SignupButtonPressed>((event, emit) async {
       try {
-        yield SignupProcessing();
+        emit(SignupProcessing());
 
         final userId = this.userRepository.getUser()?.uid;
 
         final signupResult = await this
             .userRepository
             .signUp(email: event.email, pass: event.password);
+
         await this.userRepository.sendUserData(
               name: event.name,
               email: event.email,
@@ -53,11 +44,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           UserDataUtils.setUserData(signupResult.user.uid);
         }
 
-        yield SignupSigned();
+        emit(SignupSigned());
       } catch (error, stack_trace) {
         await FirebaseCrashlytics.instance.recordError(error, stack_trace);
-        yield SignupFailed();
+        emit(SignupFailed());
       }
-    }
+    });
   }
 }

@@ -18,19 +18,12 @@ class AuthenticationBloc
   UserRepository userRepository;
   String token;
 
-  AuthenticationBloc({@required this.userRepository}) : super(null);
-
-  AuthenticationState get initialState => AuthenticationUninitialized();
-
-  @override
-  Stream<AuthenticationState> mapEventToState(
-    AuthenticationEvent event,
-  ) async* {
-    if (event is AppStarted) {
-      yield AuthenticationProcessing();
+  AuthenticationBloc({@required this.userRepository}) : super(null){
+    on<AppStarted>((event, emit) async{
+       emit(AuthenticationProcessing());
       final user = this.userRepository.getUser();
       if (user == null) {
-        yield AuthenticationUnauthenticated();
+        emit(AuthenticationUnauthenticated());
       } else {
         var token = await user.getIdTokenResult();
         if (token.expirationTime.isBefore(DateTime.now())) {
@@ -38,19 +31,27 @@ class AuthenticationBloc
         }
         await UserDataUtils.setUserData(this.userRepository.getUser().uid);
         await this.userRepository.setupFcmNotification(user);
-        yield AuthenticationAuthenticated();
+        emit(AuthenticationAuthenticated());
       }
-    } else if (event is LoggedIn) {
-      yield AuthenticationProcessing();
+    });
+
+    on<LoggedIn>((event, emit) async {
+      emit(AuthenticationProcessing());
       final user = this.userRepository.getUser();
       await UserDataUtils.setUserData(this.userRepository.getUser().uid);
       await this.userRepository.setupFcmNotification(user);
-      yield AuthenticationAuthenticated();
-    } else if (event is LoggedOut) {
-      yield AuthenticationProcessing();
+      emit(AuthenticationAuthenticated());
+    });
+
+    on<LoggedOut>((event, emit) async{
+      emit(AuthenticationProcessing());
+
       Injector.appInstance.removeByKey<UserModel>();
       await this.userRepository.logOut();
-      yield AuthenticationUnauthenticated();
-    }
+
+      emit(AuthenticationUnauthenticated());
+    });
   }
+
+  AuthenticationState get initialState => AuthenticationUninitialized();
 }

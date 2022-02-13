@@ -134,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
                         },
                         child: _dashboardItem(
                           Icons.library_add,
-                          'Atendimentos futuros',
+                          'Atendimento futuro',
                           0xFF1A237E,
                         ),
                       ),

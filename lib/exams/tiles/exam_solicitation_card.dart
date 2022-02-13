@@ -15,39 +15,54 @@ class ExamSolicitationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
+        Navigator.of(context).push(
+          MaterialPageRoute(
             builder: (context) => ExamSolicitationDetailScreen(
-                  medRecordArguments: this.medRecordArguments,
-                  examSolicitationModel: this.examSolicitationModel,
-                  examSolicitationId: this.examSolicitationModel.id,
-                )));
+              medRecordArguments: this.medRecordArguments,
+              examSolicitationModel: this.examSolicitationModel,
+              examSolicitationId: this.examSolicitationModel.id,
+            ),
+          ),
+        );
       },
       child: Card(
           color: Colors.white,
           elevation: 4.0,
-          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          margin: EdgeInsets.symmetric(
+            horizontal: 20.0,
+          ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Column(
             children: [
-              Text(
-                this.examSolicitationModel.examTypeModel,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 14.0,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+                child: Text(
+                  this.examSolicitationModel.examTypeModel,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               LayoutUtils.buildVerticalSpacing(8.0),
               Text(
                 this.examSolicitationModel.solicitationDate,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 14.0),
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               LayoutUtils.buildVerticalSpacing(8.0),
               Text(
                 this.examSolicitationModel.status,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 14.0),
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               LayoutUtils.buildVerticalSpacing(8.0)
             ],

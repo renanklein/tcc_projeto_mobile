@@ -25,17 +25,17 @@ class ExamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-         this.medRecordBloc.add(
-              DecryptExam(fileDownloadURL: this.fileDownloadURL, iv: this.iv));
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ExamDetailsScreen(
-                    examDate: getCardExamInfo.examDate,
-                    examType: getCardExamInfo.examType,
-                    examDetails: this.examDetails,
-                    fileDownloadURL: this.fileDownloadURL,
-                    iv: this.iv,
-                  )));
+      onTap: () {
+        this.medRecordBloc.add(
+            DecryptExam(fileDownloadURL: this.fileDownloadURL, iv: this.iv));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ExamDetailsScreen(
+                  examDate: getCardExamInfo.examDate,
+                  examType: getCardExamInfo.examType,
+                  examDetails: this.examDetails,
+                  fileDownloadURL: this.fileDownloadURL,
+                  iv: this.iv,
+                )));
       },
       child: Card(
           color: Colors.white,
@@ -49,6 +49,7 @@ class ExamCard extends StatelessWidget {
               Text(
                 getCardExamInfo.examType,
                 style: TextStyle(
+                    fontWeight: FontWeight.w600,
                     fontSize: 14.0,
                     color: Theme.of(context).primaryColor),
               ),
@@ -56,8 +57,10 @@ class ExamCard extends StatelessWidget {
               Text(
                 getCardExamInfo.examDate,
                 style: TextStyle(
-                    fontSize: 14.0,
-                    color: Theme.of(context).primaryColor),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               LayoutUtils.buildVerticalSpacing(20.0)
             ],

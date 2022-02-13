@@ -90,22 +90,21 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MedRecordScreen(
                       medRecordArguments: MedRecordArguments(
-                        pacientModel: this.medRecordArguments.pacientModel,
-                        index: "2"
-                      ))));
+                          pacientModel: this.medRecordArguments.pacientModel,
+                          index: "2"))));
             } else if (state is DynamicExamFieldSuccess) {
               setState(() {
                 this.dynamicFieldsList.add(state.dynamicFieldWidget);
               });
-            } else if(state is ExamAlreadyExists){
+            } else if (state is ExamAlreadyExists) {
               onFail("Já existe um exame com o mesmo tipo e data");
-            }
-             else if (state is ExamProcessingFail) {
+            } else if (state is ExamProcessingFail) {
               onFail("Ocorreu um erro ao tentar salvar o exame");
             } else if (state is LoadExamModelSuccess) {
               var firstType = "";
               state.models["models"].forEach((map) {
-                if(map["Tipo de Exame"].toLowerCase() == this.examType.toLowerCase()){
+                if (map["Tipo de Exame"].toLowerCase() ==
+                    this.examType.toLowerCase()) {
                   firstType = map["Tipo de Exame"];
                 }
                 this.examModelsTypes.add(map["Tipo de Exame"]);
@@ -170,6 +169,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                   );
             },
             style: ElevatedButton.styleFrom(
+              minimumSize: Size(255.0, 45.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(32.0),
               ),
@@ -183,18 +183,20 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
                   color: Colors.white),
             ),
           ),
+          LayoutUtils.buildVerticalSpacing(10.0),
           ElevatedButton(
             onPressed: () async {
               _setExamFile();
             },
             style: ElevatedButton.styleFrom(
+              minimumSize: Size(255.0, 45.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(32.0),
               ),
               primary: Theme.of(context).primaryColor,
             ),
             child: Text(
-              "Escolha imagem",
+              "Escolher imagem para upload",
               style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -244,9 +246,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
       fields.forEach((fieldType, defaultValue) {
         var examDetailsField = Field(
             fieldPlaceholder: fieldType,
-            textController: TextEditingController(
-              text: defaultValue
-            ),
+            textController: TextEditingController(text: defaultValue),
             isReadOnly: false);
         this.examModelsFields.add(examDetailsField);
         var row = Row(
@@ -334,6 +334,7 @@ class _ExamFormScreenState extends State<ExamFormScreen> {
       height: 44.0,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          minimumSize: Size(255.0, 45.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
           ),

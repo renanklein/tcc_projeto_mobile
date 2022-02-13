@@ -3,7 +3,6 @@ import 'package:tcc_projeto_app/med_record/models/diagnosis/diagnosis_model.dart
 import 'package:tcc_projeto_app/med_record/models/diagnosis/problem_model.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
-
 class CompleteDiagnosisModel {
   ProblemModel _problemModel;
   DiagnosisModel _diagnosisModel;
@@ -37,7 +36,7 @@ class CompleteDiagnosisModel {
       'problem': _problemModel.toMap(),
       'diagnosis': _diagnosisModel.toMap(),
       'prescription': _prescriptionModel,
-      'createdAt' : this._createdAt.millisecondsSinceEpoch,
+      'createdAt': this._createdAt.millisecondsSinceEpoch,
       'id': this.id,
     };
 
@@ -51,10 +50,7 @@ class CompleteDiagnosisModel {
       List<Widget> fields, String date) {
     var diagnosisCompleteMap = Map();
     var problemMap = Map();
-    var diagnosisMap = Map.from({
-      'id' : "",
-      'description': ""
-    });
+    var diagnosisMap = Map.from({'id': "", 'description': ""});
 
     fields.forEach((field) {
       if (field is Field || field is Text) {
@@ -108,34 +104,37 @@ class CompleteDiagnosisModel {
       Text(
         "Descrição do problema:${this?.problem?.problemDescription}",
         textAlign: TextAlign.justify,
-        style: TextStyle(fontSize: 14.0),
+        style: TextStyle(
+          fontSize: 14.0,
+        ),
       ),
       Text(
         "Prescrição:${this?.prescription}",
-        style: TextStyle(fontSize: 14.0),
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 14.0,
+        ),
       ),
     ];
 
-    for(int i = 0; i < this?.diagnosis?.diagnosisCid?.length; i++){
+    for (int i = 0; i < this?.diagnosis?.diagnosisCid?.length; i++) {
       fields.add(Text(
         "Cid do diagnóstico: ${this?.diagnosis?.diagnosisCid[i]}",
         textAlign: TextAlign.justify,
         style: TextStyle(fontSize: 14.0),
       ));
-      fields.add( Text(
+      fields.add(Text(
         "Descrição do diagnóstico:${this?.diagnosis?.diagnosisDescription[i]}",
         textAlign: TextAlign.justify,
         style: TextStyle(fontSize: 14.0),
       ));
     }
 
-
     if (this.dynamicFields != null && this.dynamicFields.isNotEmpty) {
       this.dynamicFields.forEach((field) {
         if (field.keys.first != "id" && field.keys.first != "createdAt") {
           fields.add(Text("${field.keys.first}:${field.values.first}",
-          textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 14.0)));
+              textAlign: TextAlign.justify, style: TextStyle(fontSize: 14.0)));
         }
       });
     }
@@ -160,7 +159,9 @@ class CompleteDiagnosisModel {
             mon,
             day,
           ),
-          createdAt: map.containsKey("createdAt") ? DateTime.fromMillisecondsSinceEpoch(map.remove("createdAt") ): null,
+          createdAt: map.containsKey("createdAt")
+              ? DateTime.fromMillisecondsSinceEpoch(map.remove("createdAt"))
+              : null,
           id: map['id']);
 
       map.forEach((key, value) {

@@ -74,10 +74,13 @@ class _ExamScreenState extends State<ExamScreen> {
                     searchBarController: this.searchBarController,
                   ),
                   LayoutUtils.buildVerticalSpacing(10.0),
-                  DateTimeFormField(
-                    fieldPlaceholder: "Digite a data do exame para pesquisar",
-                    dateTimeController: this.searchExamDateController,
-                    onSelectedDate: onSearchExamDateChange,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                    child: DateTimeFormField(
+                      fieldPlaceholder: "Digite a data do exame para pesquisar",
+                      dateTimeController: this.searchExamDateController,
+                      onSelectedDate: onSearchExamDateChange,
+                    ),
                   ),
                   ...this._buildScreenBody()
                 ],
@@ -99,7 +102,8 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   List<Widget> _buildScreenBody() {
-    if (this.searchBarController.text.length > 0 && this.searchExamDateController.text.length > 0) {
+    if (this.searchBarController.text.length > 0 &&
+        this.searchExamDateController.text.length > 0) {
       return this.mergeFilterResults();
     } else if (this.searchExamDateController.text.length > 0 &&
         this.searchBarController.text.length == 0) {
@@ -116,7 +120,11 @@ class _ExamScreenState extends State<ExamScreen> {
       List<Widget> examCards = [];
       examCards.add(Text(
         "Clique no cartão para exibir os detalhes do exame",
-        style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15.0),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontSize: 15.0,
+        ),
       ));
 
       examCards.add(LayoutUtils.buildVerticalSpacing(15.0));
@@ -141,9 +149,10 @@ class _ExamScreenState extends State<ExamScreen> {
           child: Text(
             "Nenhum exame foi encontrado",
             style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w300,
-                color: Theme.of(context).primaryColor),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
       )
@@ -175,7 +184,7 @@ class _ExamScreenState extends State<ExamScreen> {
 
           return false;
         }).toList();
-      } else{
+      } else {
         this.examDateFilter = <Widget>[];
       }
     });

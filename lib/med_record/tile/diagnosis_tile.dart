@@ -25,20 +25,22 @@ class DiagnosisTile extends StatefulWidget {
   final Function refresh;
   final PacientModel pacient;
 
-  DiagnosisTile(
-      {@required this.date,
-      @required this.fields,
-      @required this.isPrediagnosis,
-      @required this.diagnosisModel,
-      @required this.preDiagnosisModel,
-      @required this.refresh,
-      @required this.pacient});
+  DiagnosisTile({
+    @required this.date,
+    @required this.fields,
+    @required this.isPrediagnosis,
+    @required this.diagnosisModel,
+    @required this.preDiagnosisModel,
+    @required this.refresh,
+    @required this.pacient,
+  });
 
   static List<DiagnosisTile> fromDiagnosis(
-      List<CompleteDiagnosisModel> diagnosisList,
-      BuildContext context,
-      Function refreshDiagnosis,
-      PacientModel pacient) {
+    List<CompleteDiagnosisModel> diagnosisList,
+    BuildContext context,
+    Function refreshDiagnosis,
+    PacientModel pacient,
+  ) {
     return diagnosisList.map((diagnosis) {
       return DiagnosisTile(
         isPrediagnosis: false,

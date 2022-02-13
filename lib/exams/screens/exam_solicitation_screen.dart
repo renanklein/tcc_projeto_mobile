@@ -47,9 +47,13 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
               } else if (this.solicitations.isEmpty) {
                 return Center(
                   child: Text(
-                    "Não solicitações cadastradas",
+                    "Não há solicitações cadastradas",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 17.0),
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }
@@ -60,9 +64,11 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                   children: [
                     Text(
                       "Clique no cartão para exibir os detalhes da solicitação",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 15.0),
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15.0,
+                      ),
                     ),
                     LayoutUtils.buildVerticalSpacing(15.0),
                     ..._buildExamSolicitationCards()

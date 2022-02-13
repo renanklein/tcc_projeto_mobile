@@ -55,18 +55,20 @@ class DiagnosisTile extends StatefulWidget {
   }
 
   static List<DiagnosisTile> fromPreDiagnosisList(
-      List<PreDiagnosisModel> prediagnosisList,
-      Function refreshPreDiagnosis,
-      PacientModel pacient) {
+    List<PreDiagnosisModel> prediagnosisList,
+    Function refreshPreDiagnosis,
+    PacientModel pacient,
+  ) {
     return prediagnosisList.map((preDiagnosis) {
       return DiagnosisTile(
-          isPrediagnosis: true,
-          refresh: refreshPreDiagnosis,
-          preDiagnosisModel: preDiagnosis,
-          pacient: pacient,
-          diagnosisModel: null,
-          date: preDiagnosis.getPreDiagnosisDate,
-          fields: preDiagnosis.toWidgetFields());
+        isPrediagnosis: true,
+        refresh: refreshPreDiagnosis,
+        preDiagnosisModel: preDiagnosis,
+        pacient: pacient,
+        diagnosisModel: null,
+        date: preDiagnosis.getPreDiagnosisDate,
+        fields: preDiagnosis.toWidgetFields(),
+      );
     }).toList();
   }
 
@@ -106,11 +108,13 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Scaffold.of(context).showBottomSheet((context) =>
-                    DynamicFieldBottomSheet(
-                        popBottomsheet: true,
-                        dynamicFieldsList: this.children,
-                        refreshForm: refreshTile));
+                Scaffold.of(context).showBottomSheet(
+                  (context) => DynamicFieldBottomSheet(
+                    popBottomsheet: true,
+                    dynamicFieldsList: this.children,
+                    refreshForm: refreshTile,
+                  ),
+                );
               }),
           IconButton(
               icon: Icon(Icons.edit),
@@ -189,31 +193,42 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                     IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                           this._changeToEditMode(
-                                updateDiagnosisOrPrediagnosis);
+                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
                         })
                   ],
                 )
               ];
             });
           } else if (state is GetExamByDiagnosisDateAndIdSuccess) {
-            setState(() {
-              if (state.exam != null) {
-                this.children.add(LayoutUtils.buildVerticalSpacing(3.0));
-                var examDetails =
-                    ExamDetails.fromMap(state.exam["dynamicFields"]);
+            setState(
+              () {
+                if (state.exam != null) {
+                  this.children.add(LayoutUtils.buildVerticalSpacing(3.0));
+                  var examDetails =
+                      ExamDetails.fromMap(state.exam["dynamicFields"]);
 
-                this.children.add(_buildButton("Acessar o exame", () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ExamDetailsScreen(
-                              examDetails: examDetails,
-                              fileDownloadURL: state.exam["fileDownloadURL"],
-                              iv: state.exam["IV"],
-                              examDate: state.exam["examDate"],
-                              examType: state.exam["examType"])));
-                    }));
-              }
-            });
+                  this.children.add(
+                        _buildButton(
+                          "Acessar o exame",
+                          () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ExamDetailsScreen(
+                                  examDetails: examDetails,
+                                  fileDownloadURL:
+                                      state.exam["fileDownloadURL"],
+                                  iv: state.exam["IV"],
+                                  examDate: state.exam["examDate"],
+                                  examType: state.exam["examType"],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                }
+              },
+            );
           }
         },
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
@@ -299,11 +314,15 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
 
   Widget _buildButton(String text, Function onPressBehaviour) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 8.0),
       child: Center(
         child: RichText(
           text: TextSpan(
-              style: TextStyle(color: Colors.blue, fontSize: 16.0),
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w700,
+              ),
               text: text,
               recognizer: TapGestureRecognizer()..onTap = onPressBehaviour),
         ),

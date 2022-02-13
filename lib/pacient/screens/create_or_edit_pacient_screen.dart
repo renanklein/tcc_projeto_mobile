@@ -134,10 +134,10 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                         child: Text("Inserir Pré-Diagnóstico"),
                         onPressed: () {
                           Navigator.pushReplacementNamed(
-                                  context, preDiagnosisRoute,
-                                  arguments: RouteAppointmentArguments(
-                                      pacientModel: state.pacientCreated,
-                                      appointmentModel: this?.appointmentModel));
+                              context, preDiagnosisRoute,
+                              arguments: RouteAppointmentArguments(
+                                  pacientModel: state.pacientCreated,
+                                  appointmentModel: this?.appointmentModel));
                         },
                       ),
                     ],
@@ -340,9 +340,15 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                                               );
                                         }
                                       },
-                                      child: Text(this.pacient != null
-                                          ? 'Editar Paciente'
-                                          : 'Cadastrar Paciente'),
+                                      child: Text(
+                                        this.pacient != null
+                                            ? 'Editar Paciente'
+                                            : 'Cadastrar Paciente',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -365,7 +371,8 @@ Widget pacienteFormField(controller, label, hint, errorText, readOnly) {
   var cpfMask = MaskTextInputFormatter(
       mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')});
 
-  var emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  var emailRegex = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   return Padding(
     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
     child: TextFormField(
@@ -384,7 +391,8 @@ Widget pacienteFormField(controller, label, hint, errorText, readOnly) {
           return errorText;
         } else if (label == "CPF:" && !CPF.isValid(controller.text)) {
           return errorText;
-        } else if(label == "E-mail:" && !emailRegex.hasMatch(controller.text)){
+        } else if (label == "E-mail:" &&
+            !emailRegex.hasMatch(controller.text)) {
           return errorText;
         }
         return null;

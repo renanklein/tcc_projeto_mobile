@@ -71,7 +71,10 @@ class _AppointmentsWaitListScreenState
                 child: Text(
                   "Não há atendimentos cadastrados",
                   style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 17.0),
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               );
             }

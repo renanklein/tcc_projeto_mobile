@@ -61,9 +61,9 @@ class _ExamModelFormState extends State<ExamModelForm> {
       this._examTypeController.text = this.examModelType;
       this.oldExamModelType = this.examModelType;
       this.examModelFields.forEach((field, defaultValue) {
-        if(defaultValue.isEmpty){
+        if (defaultValue.isEmpty) {
           this._examModelFieldsNamesController.text += "$field;";
-        }else{
+        } else {
           this._examModelFieldsNamesController.text += "$field#$defaultValue;";
         }
       });
@@ -157,7 +157,7 @@ class _ExamModelFormState extends State<ExamModelForm> {
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           hintText:
-              "Insira os campos e seus respectivos valores padrão seperados por #. Separe o par campo-valor por ;",
+              "Insira os campos e seus respectivos valores padrão separados por #. Separe o par campo-valor utilizando ;",
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 20.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),

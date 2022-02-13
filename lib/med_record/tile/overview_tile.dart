@@ -212,7 +212,7 @@ class _OverviewTileState extends State<OverviewTile> {
                                       }
                                     },
                                     child: Text(
-                                      'Atualizar Resumo',
+                                      'Atualizar',
                                       style: TextStyle(
                                         fontSize: 18.0,
                                       ),

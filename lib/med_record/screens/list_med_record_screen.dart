@@ -258,31 +258,40 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                   pacient: medRecordArguments.pacientModel,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MaterialButton(
-                  child: Text("Cadastrar diagnostico"),
-                  color: Color(0xFF84FFFF),
-                  height: 55.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.70,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    child: Text(
+                      "Cadastrar diagnostico",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    color: Color(0xFF84FFFF),
+                    height: 45.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(createDiagnosisRoute,
+                              arguments: this.medRecordArguments.pacientModel)
+                          .then(
+                        (value) {
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                          Navigator.of(context).pushNamed(medRecordRoute,
+                              arguments: MedRecordArguments(
+                                  index: "4",
+                                  pacientModel:
+                                      this.medRecordArguments.pacientModel));
+                        },
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(createDiagnosisRoute,
-                            arguments: this.medRecordArguments.pacientModel)
-                        .then(
-                      (value) {
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
-                        Navigator.of(context).pushNamed(medRecordRoute,
-                            arguments: MedRecordArguments(
-                                index: "4",
-                                pacientModel:
-                                    this.medRecordArguments.pacientModel));
-                      },
-                    );
-                  },
                 ),
               ),
             ],
@@ -325,6 +334,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 )));
       },
       style: ElevatedButton.styleFrom(
+        minimumSize: Size(255.0, 45.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32.0),
         ),
@@ -334,7 +344,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         "Criar Solicitação de exame",
         style: TextStyle(
           fontSize: 18.0,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
       ),
@@ -358,6 +368,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
                 });
       },
       style: ElevatedButton.styleFrom(
+        minimumSize: Size(255.0, 45.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32.0),
         ),
@@ -367,7 +378,7 @@ class _MedRecordScreenState extends State<MedRecordScreen> {
         "Inserir exame",
         style: TextStyle(
           fontSize: 18.0,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
       ),

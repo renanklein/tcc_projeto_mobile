@@ -147,7 +147,7 @@ class PreDiagnosisModel {
           )),
       Text("Altura: ${this?.altura?.toString()}",
           textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      Text("IMC: ${this?.imc?.toString()}",
+      Text("IMC: ${this?.imc?.toStringAsFixed(2)}",
           textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
       this.temperatura != null
           ? Text("Temperatura: ${this?.temperatura?.toString()}",

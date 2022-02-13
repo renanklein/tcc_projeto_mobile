@@ -155,7 +155,10 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                     IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                          setState(() {
+                            this._changeToEditMode(
+                                updateDiagnosisOrPrediagnosis);
+                          });
                         })
                   ],
                 ),
@@ -186,7 +189,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                     IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          this._changeToEditMode(updateDiagnosisOrPrediagnosis);
+                           this._changeToEditMode(
+                                updateDiagnosisOrPrediagnosis);
                         })
                   ],
                 )
@@ -215,7 +219,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
         child: BlocBuilder<MedRecordBloc, MedRecordState>(
           bloc: this.medRecordBloc,
           builder: (context, state) {
-            if (state is MedRecordEventProcessing || state is GetExamByDiagnosisDateAndIdProcessing) {
+            if (state is MedRecordEventProcessing ||
+                state is GetExamByDiagnosisDateAndIdProcessing) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             }
 

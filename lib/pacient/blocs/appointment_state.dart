@@ -2,7 +2,7 @@ part of 'pacient_bloc.dart';
 
 class AppointmentsLoading extends PacientState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class AppointmentLoadEventSuccess extends PacientState {
@@ -15,5 +15,5 @@ class AppointmentLoadEventSuccess extends PacientState {
   List<AppointmentModel> get appointmentsLoaded => this._appointmentsLoaded;
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

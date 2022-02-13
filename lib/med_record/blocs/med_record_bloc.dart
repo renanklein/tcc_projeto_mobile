@@ -22,6 +22,7 @@ import 'package:tcc_projeto_app/pacient/models/appointment_model.dart';
 import 'package:tcc_projeto_app/pacient/models/pacient_model.dart';
 import 'package:tcc_projeto_app/pacient/repositories/pacient_repository.dart';
 import 'package:tcc_projeto_app/routes/medRecordArguments.dart';
+import 'package:tcc_projeto_app/utils/convert_utils.dart';
 import 'package:tcc_projeto_app/utils/readonly_text_field.dart';
 import 'package:tcc_projeto_app/utils/slt_pattern.dart';
 import 'package:http/http.dart' as http;
@@ -81,6 +82,7 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
         var dateFormat = DateFormat("dd/MM/yyyy");
 
         var futures = <Future>[];
+        var eventDate;
 
         if (event.appointment != null &&
             event.appointment.changedDate != null &&
@@ -89,11 +91,12 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
               event.appointment,
               event.appointment.changedDate,
               event.appointment.changedTime));
+          eventDate = event.appointment.changedDate != null
+              ? event.appointment.changedDate
+              : event.appointment.appointmentDate;
+        }else if(event.appointment == null && event.dtAppointmentEvent is String){
+          eventDate = ConvertUtils.dateTimeFromString(event.dtAppointmentEvent);
         }
-
-        var eventDate = event.appointment.changedDate != null
-            ? event.appointment.changedDate
-            : event.appointment.appointmentDate;
 
         var preDiagnosis = PreDiagnosisModel(
             peso: event.peso,
@@ -403,4 +406,10 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   }
 
   MedRecordState get initialState => MedRecordInicialState();
+
+  @override
+  Future<void> close() {
+    super.close();
+    print("Closing stream !!");
+  }
 }

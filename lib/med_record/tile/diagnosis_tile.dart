@@ -110,7 +110,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                     DynamicFieldBottomSheet(
                         popBottomsheet: true,
                         dynamicFieldsList: this.children,
-                        refreshForm: refreshTile));
+                        refreshForm: refreshTile,
+                        saveDynamicField: updateDiagnosisOrPrediagnosis));
               }),
           IconButton(
               icon: Icon(Icons.edit),
@@ -150,7 +151,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                                   popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.diagnosisModel.dynamicFields,
-                                  refreshForm: this.refresh));
+                                  refreshForm: this.refresh,
+                                  saveDynamicField: updateDiagnosisOrPrediagnosis,));
                         }),
                     IconButton(
                         icon: Icon(Icons.edit),
@@ -181,7 +183,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                                   popBottomsheet: true,
                                   dynamicFieldsList:
                                       state.preDiagnosisModel.dynamicFields,
-                                  refreshForm: this.refresh));
+                                  refreshForm: this.refresh, 
+                                  saveDynamicField: updateDiagnosisOrPrediagnosis));
                         }),
                     IconButton(
                         icon: Icon(Icons.edit),
@@ -277,7 +280,8 @@ class _DiagnosisTileState extends State<DiagnosisTile> {
                     DynamicFieldBottomSheet(
                         popBottomsheet: true,
                         dynamicFieldsList: this.children,
-                        refreshForm: refreshTile));
+                        refreshForm: refreshTile,
+                        saveDynamicField: updateDiagnosisOrPrediagnosis,));
               }),
           IconButton(
               icon: Icon(Icons.edit),

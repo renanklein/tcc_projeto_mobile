@@ -134,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
                         },
                         child: _dashboardItem(
                           Icons.library_add,
-                          'Atendimentos futuros',
+                          'Próximos Atendimentos',
                           0xFF1A237E,
                         ),
                       ),
@@ -180,7 +180,8 @@ class _DashboardState extends State<Dashboard> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color(color),
-                            fontSize: 20.0,
+                            fontSize: 19.0,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

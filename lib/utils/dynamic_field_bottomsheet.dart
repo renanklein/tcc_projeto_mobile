@@ -12,10 +12,11 @@ class DynamicFieldBottomSheet extends StatefulWidget {
   final fieldValueController = TextEditingController();
   final dynamicFieldsList;
   final refreshForm;
+  final saveDynamicField;
   final bool popBottomsheet;
 
   DynamicFieldBottomSheet(
-      {@required this.dynamicFieldsList, @required this.refreshForm, @required this.popBottomsheet});
+      {@required this.dynamicFieldsList, @required this.refreshForm, @required this.popBottomsheet, this.saveDynamicField});
 
   @override
   _DynamicFieldBottomSheetState createState() =>
@@ -32,6 +33,7 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
 
   List get dynamicFieldsList => this.widget.dynamicFieldsList;
   Function get refreshForm => this.widget.refreshForm;
+  Function get saveDynamicField => this.widget.saveDynamicField;
   bool get popBottomSheet => this.widget.popBottomsheet;
 
   @override
@@ -99,7 +101,10 @@ class _DynamicFieldBottomSheetState extends State<DynamicFieldBottomSheet> {
                                 );
                                 this.refreshForm(
                                     this.dynamicFieldsList, newField);
-
+                                    
+                                if(this.saveDynamicField != null){
+                                  this.saveDynamicField();
+                                }
                                 if(this.popBottomSheet){
                                   Navigator.of(context).pop();
                                 }

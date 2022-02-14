@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tcc_projeto_app/main.dart';
 import 'package:tcc_projeto_app/utils/text_form_field.dart';
 
-
 class PreDiagnosisModel {
   double _peso;
   double _altura;
@@ -87,89 +86,146 @@ class PreDiagnosisModel {
     var preDiagnosis = Map();
     fields.forEach((field) {
       if (field is Field) {
-        switch (field.fieldPlaceholder) {
-          case "PA Sistolica":
-            preDiagnosis['paSistolica'] = field.textController.text;
-            break;
+        _processField(preDiagnosis, field.fieldPlaceholder, field.textController.text);
+      } else if(field is Text){
+        var splitArray = field.data.split(":");
+        var placeholder = splitArray[0];
+        var value = splitArray[1];
 
-          case "PA Diastolica":
-            preDiagnosis['pADiastolica'] = field.textController.text;
-            break;
-
-          case "Peso":
-            preDiagnosis['peso'] = field.textController.text;
-            break;
-
-          case "Altura":
-            preDiagnosis['altura'] = field.textController.text;
-            break;
-
-          case "Temperatura":
-            preDiagnosis['temperatura'] = field.textController.text;
-            break;
-
-          case "IMC":
-            preDiagnosis['imc'] = field.textController.text;
-            break;
-
-          case "Glicemia":
-            preDiagnosis['glicemia'] = field.textController.text;
-            break;
-
-          case "Freq Cardíaca":
-            preDiagnosis['freqCardiaca'] = field.textController.text;
-            break;
-
-          case "Freq Repouso":
-            preDiagnosis['freqRepouso'] = field.textController.text;
-            break;
-
-          case "Observacao":
-            preDiagnosis['observacao'] = field.textController.text;
-            break;
-
-          default:
-            preDiagnosis[field.fieldPlaceholder] = field.textController.text;
-            break;
-        }
+        _processField(preDiagnosis, placeholder, value);
       }
     });
 
     return PreDiagnosisModel.fromMap(preDiagnosis, date);
   }
 
+  static void _processField(Map preDiagnosis ,String placeholder, String value){
+    switch (placeholder) {
+          case "PA Sistolica":
+            preDiagnosis['paSistolica'] =value;
+            break;
+
+          case "PA Diastolica":
+            preDiagnosis['pADiastolica'] =value;
+            break;
+
+          case "Peso":
+            preDiagnosis['peso'] =value;
+            break;
+
+          case "Altura":
+            preDiagnosis['altura'] =value;
+            break;
+
+          case "Temperatura":
+            preDiagnosis['temperatura'] =value;
+            break;
+
+          case "IMC":
+            preDiagnosis['imc'] =value;
+            break;
+
+          case "Glicemia":
+            preDiagnosis['glicemia'] =value;
+            break;
+
+          case "Freq Cardíaca":
+            preDiagnosis['freqCardiaca'] =value;
+            break;
+
+          case "Freq Repouso":
+            preDiagnosis['freqRepouso'] =value;
+            break;
+
+          case "Observacao":
+            preDiagnosis['observacao'] =value;
+            break;
+
+          default:
+            preDiagnosis[placeholder] =value;
+            break;
+        }
+  }
+
   List<Widget> toWidgetFields() {
     var fields = <Widget>[
-      Text("Peso: ${this?.peso?.toString()}",
+      Text(
+        "Peso: ${this?.peso?.toString()}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      Text(
+        "Altura: ${this?.altura?.toString()}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      Text(
+        "IMC: ${this?.imc?.toStringAsFixed(2)}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      this.temperatura != null
+          ? Text(
+              "Temperatura: ${this?.temperatura?.toString()}",
+              textAlign: TextAlign.justify,
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            )
+          : Container(),
+      Text(
+        "PA Sistolica: ${this?.pASistolica?.toString()}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      Text(
+        "PA Diastolica: ${this?.pADiastolica?.toString()}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      this.glicemia != null
+          ? Text(
+              "Glicemia: ${this?.glicemia?.toString()}",
+              textAlign: TextAlign.justify,
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            )
+          : Container(),
+      Text(
+        "Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+          fontSize: 17.0,
+        ),
+      ),
+      this.freqRepouso != null
+          ? Text(
+              "Freq Repouso: ${this?.freqRepouso?.toString()}",
+              textAlign: TextAlign.justify,
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            )
+          : Container(),
+      if (this.observacao != null && this.observacao.isNotEmpty)
+        Text(
+          "Observacao: ${this?.observacao?.toString()}",
           textAlign: TextAlign.justify,
           style: TextStyle(
             fontSize: 17.0,
-          )),
-      Text("Altura: ${this?.altura?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      Text("IMC: ${this?.imc?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      this.temperatura != null
-          ? Text("Temperatura: ${this?.temperatura?.toString()}",
-              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
-          : Container(),
-      Text("PA Sistolica: ${this?.pASistolica?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      Text("PA Diastolica: ${this?.pADiastolica?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      this.glicemia != null
-          ? Text("Glicemia: ${this?.glicemia?.toString()}",
-              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
-          : Container(),
-      Text("Freq Cardíaca: ${this?.freqCardiaca?.toString()}",
-          textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0)),
-      this.freqRepouso != null
-          ? Text("Freq Repouso: ${this?.freqRepouso?.toString()}",
-              textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
-          : Container(),
-      if (this.observacao != null && this.observacao.isNotEmpty)
-        Text("Observacao: ${this?.observacao?.toString()}",
-            textAlign: TextAlign.justify, style: TextStyle(fontSize: 17.0))
+          ),
+        )
       else
         Container()
     ];
@@ -211,8 +267,8 @@ class PreDiagnosisModel {
         ? map['glicemia']
         : "";
 
-    if(map['peso'] is int) map['peso'] = map['peso'].toDouble();
-    if(map['altura'] is int) map['altura'] = map['altura'].toDouble();
+    if (map['peso'] is int) map['peso'] = map['peso'].toDouble();
+    if (map['altura'] is int) map['altura'] = map['altura'].toDouble();
 
     var prediagnosis = PreDiagnosisModel(
         peso: map['peso'] is double

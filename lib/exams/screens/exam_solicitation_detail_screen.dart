@@ -58,13 +58,17 @@ class _ExamSolicitationDetailScreenState
             this.exam = state.exam;
           } else if (state is ExistsExamModelSuccess) {
             if (state.existsExamModel) {
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => ExamFormScreen(
-                      solicitationDate: ConvertUtils.dateTimeFromString(
-                          this.examSolicitationModel.solicitationDate),
-                      medRecordArguments: this.medRecordArguments,
-                      examType: this.examSolicitationModel.examTypeModel,
-                      examSolicitationId: examSolicitationId)));
+                    solicitationDate: ConvertUtils.dateTimeFromString(
+                        this.examSolicitationModel.solicitationDate),
+                    medRecordArguments: this.medRecordArguments,
+                    examType: this.examSolicitationModel.examTypeModel,
+                    examSolicitationId: examSolicitationId,
+                  ),
+                ),
+              );
             } else {
               showDialog(
                   context: context,
@@ -80,20 +84,26 @@ class _ExamSolicitationDetailScreenState
                             },
                             child: Text("Não")),
                         TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ExamModelForm(
-                                        isEdit: false,
-                                        fromExamSolicitation: true,
-                                        refreshExamModels: () {},
-                                        examModelType:
-                                            this.examSolicitationModel.examTypeModel,
-                                        examSolicitationDate: ConvertUtils.dateTimeFromString(this.examSolicitationModel.solicitationDate),
-                                        examSolicitationId: this.examSolicitationModel.id,
-                                        medRecordArguments: this.medRecordArguments
-                                      )));
-                            },
-                            child: Text("Sim"))
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ExamModelForm(
+                                    isEdit: false,
+                                    fromExamSolicitation: true,
+                                    refreshExamModels: () {},
+                                    examModelType: this
+                                        .examSolicitationModel
+                                        .examTypeModel,
+                                    examSolicitationDate:
+                                        ConvertUtils.dateTimeFromString(this
+                                            .examSolicitationModel
+                                            .solicitationDate),
+                                    examSolicitationId:
+                                        this.examSolicitationModel.id,
+                                    medRecordArguments:
+                                        this.medRecordArguments)));
+                          },
+                          child: Text("Sim"),
+                        )
                       ],
                     );
                   });

@@ -55,9 +55,18 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
             if (state is DiagnosisLoading) {
               return LayoutUtils.buildCircularProgressIndicator(context);
             } else if (state is MedRecordLoadEventFail) {
-              return Center(
-                child: Text(
-                    'Não há informações de diagnostico cadastradas para esse paciente'),
+              return Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  child: Text(
+                    "Não há diagnósticos cadastrados",
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               );
             } else {
               return Padding(
@@ -68,14 +77,21 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                     children: [
                       LayoutUtils.buildVerticalSpacing(10.0),
                       (state is DiagnosisLoadEventSuccess)
-                          ? Column(children: [
-                              _listsHeaders("Listar Diagnósticos"),
-                              ...listDiagnosisScreen(
-                                  state.medRecordLoaded, context, pacient),
-                              _listsHeaders("Listar Pré-diagnósticos"),
-                              ...listPreDiagnosisScreen(
-                                  state.medRecordLoaded, pacient)
-                            ])
+                          ? Column(
+                              children: [
+                                _listsHeaders("Listar Diagnósticos"),
+                                ...listDiagnosisScreen(
+                                  state.medRecordLoaded,
+                                  context,
+                                  pacient,
+                                ),
+                                _listsHeaders("Listar Pré-diagnósticos"),
+                                ...listPreDiagnosisScreen(
+                                  state.medRecordLoaded,
+                                  pacient,
+                                ),
+                              ],
+                            )
                           : LayoutUtils.buildCircularProgressIndicator(context)
                     ],
                   ));
@@ -113,16 +129,22 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     });
   }
 
-  List<Widget> listDiagnosisScreen(MedRecordModel medRecordModel,
-      BuildContext context, PacientModel pacient) {
+  List<Widget> listDiagnosisScreen(
+    MedRecordModel medRecordModel,
+    BuildContext context,
+    PacientModel pacient,
+  ) {
     if (medRecordModel.getDiagnosisList == null) return null;
 
-    var createdToday = medRecordModel.getDiagnosisList.where((element) => element.createdAt.day == DateTime.now().day).toList();
+    var createdToday = medRecordModel.getDiagnosisList
+        .where((element) => element.createdAt.day == DateTime.now().day)
+        .toList();
 
-    medRecordModel.getDiagnosisList.removeWhere((element) => element.createdAt.day == DateTime.now().day);
+    medRecordModel.getDiagnosisList
+        .removeWhere((element) => element.createdAt.day == DateTime.now().day);
 
-    createdToday.sort((a, b){
-      if(a.createdAt.isBefore(b.createdAt)){
+    createdToday.sort((a, b) {
+      if (a.createdAt.isBefore(b.createdAt)) {
         return 1;
       }
 
@@ -137,7 +159,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
       return 1;
     });
 
-    medRecordModel.getDiagnosisList.insertAll(0, createdToday);    
+    medRecordModel.getDiagnosisList.insertAll(0, createdToday);
 
     var fields = DiagnosisTile.fromDiagnosis(
         medRecordModel.getDiagnosisList, context, refreshDiagnosis, pacient);
@@ -150,7 +172,10 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
               child: Text(
                 "Não há diagnósticos cadastrados",
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 16.0),
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ))
       ];
@@ -160,28 +185,40 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
   }
 
   List<Widget> listPreDiagnosisScreen(
-      MedRecordModel medRecordModel, PacientModel pacientModel) {
+    MedRecordModel medRecordModel,
+    PacientModel pacientModel,
+  ) {
     if (medRecordModel.getPreDiagnosisList == null) return null;
 
-    var createdToday = medRecordModel.getPreDiagnosisList.where((element) => element.createdAt.day == DateTime.now().day).toList();
+    var createdToday = medRecordModel.getPreDiagnosisList
+        .where(
+          (element) => element.createdAt.day == DateTime.now().day,
+        )
+        .toList();
 
-    medRecordModel.getPreDiagnosisList.removeWhere((element) => element.createdAt.day == DateTime.now().day);
+    medRecordModel.getPreDiagnosisList.removeWhere(
+      (element) => element.createdAt.day == DateTime.now().day,
+    );
 
-    createdToday.sort((a, b){
-      if(a.createdAt.isBefore(b.createdAt)){
-        return 1;
-      }
+    createdToday.sort(
+      (a, b) {
+        if (a.createdAt.isBefore(b.createdAt)) {
+          return 1;
+        }
 
-      return -1;
-    });
-
-    medRecordModel.getPreDiagnosisList.sort((a, b) {
-      if (a.getPreDiagnosisDate.isBefore(b.getPreDiagnosisDate)) {
         return -1;
-      }
+      },
+    );
 
-      return 1;
-    });
+    medRecordModel.getPreDiagnosisList.sort(
+      (a, b) {
+        if (a.getPreDiagnosisDate.isBefore(b.getPreDiagnosisDate)) {
+          return -1;
+        }
+
+        return 1;
+      },
+    );
 
     medRecordModel.getPreDiagnosisList.insertAll(0, createdToday);
 
@@ -191,14 +228,17 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
     if (fields.isEmpty) {
       return <Widget>[
         Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Container(
-              child: Text(
-                "Não há pré-diagnósticos cadastrados",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 16.0),
-              ),
-            ))
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Não há pré-diagnósticos cadastrados",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ];
     }
 

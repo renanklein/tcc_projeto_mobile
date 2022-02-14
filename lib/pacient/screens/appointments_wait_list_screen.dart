@@ -71,7 +71,10 @@ class _AppointmentsWaitListScreenState
                 child: Text(
                   "Não há atendimentos cadastrados",
                   style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 17.0),
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               );
             }
@@ -81,11 +84,14 @@ class _AppointmentsWaitListScreenState
                   width: MediaQuery.of(context).size.width * 0.98,
                   child: Column(
                     children: <Widget>[
-                      SearchBar(
-                          placeholder:
-                              "Digite o nome do paciente para pesquisar",
-                          onChange: onSearchChange,
-                          searchBarController: this._searchBarController),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SearchBar(
+                            placeholder:
+                                "Digite o nome do paciente para pesquisar",
+                            onChange: onSearchChange,
+                            searchBarController: this._searchBarController),
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: this._suggestionAppointments.length > 0
@@ -136,30 +142,29 @@ class _AppointmentsWaitListScreenState
         ? this._suggestionAppointments
         : this._appointmentList;
 
-
     appointments.forEach((element) {
-      if(element.hasPreDiagnosis){
+      if (element.hasPreDiagnosis) {
         appointmentsWithPreDiagnosis.add(element);
       }
     });
 
     appointments.removeWhere((element) => element.hasPreDiagnosis);
 
-    appointments.sort((a,b){
-      if(a.appointmentDate.isBefore(b.appointmentDate)){
+    appointments.sort((a, b) {
+      if (a.appointmentDate.isBefore(b.appointmentDate)) {
         return -1;
       }
       return 1;
     });
 
-    appointmentsWithPreDiagnosis.sort((a,b){
-      if(a.appointmentDate.isBefore(b.appointmentDate)){
+    appointmentsWithPreDiagnosis.sort((a, b) {
+      if (a.appointmentDate.isBefore(b.appointmentDate)) {
         return -1;
       }
       return 1;
     });
 
-    appointmentsWithPreDiagnosis.forEach((element) { 
+    appointmentsWithPreDiagnosis.forEach((element) {
       appointments.add(element);
     });
 

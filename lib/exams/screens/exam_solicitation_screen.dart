@@ -47,9 +47,13 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
               } else if (this.solicitations.isEmpty) {
                 return Center(
                   child: Text(
-                    "Não solicitações cadastradas",
+                    "Não há solicitações cadastradas",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 17.0),
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }
@@ -60,9 +64,11 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
                   children: [
                     Text(
                       "Clique no cartão para exibir os detalhes da solicitação",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 15.0),
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15.0,
+                      ),
                     ),
                     LayoutUtils.buildVerticalSpacing(15.0),
                     ..._buildExamSolicitationCards()
@@ -72,29 +78,30 @@ class _ExamSolicitationScreenState extends State<ExamSolicitationScreen> {
             }));
   }
 
-  void _sortSolicitationsByDate(){
-    this.solicitations.sort((a,b){
+  void _sortSolicitationsByDate() {
+    this.solicitations.sort((a, b) {
       var dateA = ConvertUtils.dateTimeFromString(a.solicitationDate);
       var dateB = ConvertUtils.dateTimeFromString(b.solicitationDate);
 
-      if(dateA.isAfter(dateB)){
+      if (dateA.isAfter(dateB)) {
         return -1;
       }
 
       return 1;
     });
-
   }
-
 
   List<Widget> _buildExamSolicitationCards() {
     this._sortSolicitationsByDate();
     var solicitationCards = <Widget>[];
 
     this.solicitations.forEach((element) {
-      solicitationCards.add(ExamSolicitationCard(
+      solicitationCards.add(
+        ExamSolicitationCard(
           medRecordArguments: this.medRecordArguments,
-          examSolicitationModel: element));
+          examSolicitationModel: element,
+        ),
+      );
       solicitationCards.add(LayoutUtils.buildVerticalSpacing(20.0));
     });
 

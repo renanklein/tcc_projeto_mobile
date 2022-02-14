@@ -406,10 +406,4 @@ class MedRecordBloc extends Bloc<MedRecordEvent, MedRecordState> {
   }
 
   MedRecordState get initialState => MedRecordInicialState();
-
-  @override
-  Future<void> close() {
-    super.close();
-    print("Closing stream !!");
-  }
 }

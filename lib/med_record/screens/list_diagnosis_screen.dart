@@ -85,7 +85,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
                                   context,
                                   pacient,
                                 ),
-                                _listsHeaders("Listar Pré-diagnósticos"),
+                                _listsHeaders("Listar Pré-atendimentos"),
                                 ...listPreDiagnosisScreen(
                                   state.medRecordLoaded,
                                   pacient,
@@ -230,7 +230,7 @@ class _ListDiagnosisScreenState extends State<ListDiagnosisScreen> {
         Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            "Não há pré-diagnósticos cadastrados",
+            "Não há pré-atendimentos cadastrados",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).primaryColor,

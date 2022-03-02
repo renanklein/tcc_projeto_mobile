@@ -120,7 +120,7 @@ class AppointmentTile extends StatelessWidget {
               return AlertDialog(
                 title: Text("Paciente Encontrado"),
                 content: Text(
-                    "O Paciente foi encontrado. Clique abaixo para inserir o Pré-Diagnóstico"),
+                    "O Paciente foi encontrado. Clique abaixo para inserir o Pré-atendimentos"),
                 actions: <Widget>[
                   // define os botões na base do dialogo
                   TextButton(
@@ -130,7 +130,7 @@ class AppointmentTile extends StatelessWidget {
                     },
                   ),
                   TextButton(
-                    child: Text("Inserir Pré-Diagnóstico"),
+                    child: Text("Inserir Pré-atendimentos"),
                     onPressed: () {
                       Navigator.pushReplacementNamed(
                         context,

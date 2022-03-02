@@ -67,7 +67,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de pré-diagnostico"),
+        title: Text("Cadastro de pré-atendimento"),
         centerTitle: true,
       ),
       key: _scaffoldKey,
@@ -78,7 +78,7 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               messageSnackBar(
                 context,
-                "Pré-Diagnóstico Cadastrado com Sucesso",
+                "Pré-Atendimento cadastrado com Sucesso",
                 Colors.green,
                 Colors.white,
               ),
@@ -105,25 +105,6 @@ class _CreatePreDiagnosisScreenState extends State<CreatePreDiagnosisScreen> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Colors.lightBlue[100],
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                'Cadastrar Pré-Diagnóstico',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                            ),
-                          ),
                           FunctionTextFormField(
                             controller: pesoController,
                             label: 'Peso em kg',

@@ -121,7 +121,7 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                   return AlertDialog(
                     title: Text("Paciente Cadastrado"),
                     content: Text(
-                        "O Paciente foi cadastrado. Clique abaixo para inserir o Pré-Diagnóstico"),
+                        "O Paciente foi cadastrado. Clique abaixo para inserir o Pré-Atendimento"),
                     actions: <Widget>[
                       // define os botões na base do dialogo
                       TextButton(
@@ -131,7 +131,7 @@ class _CreateOrEditPacientScreenState extends State<CreateOrEditPacientScreen> {
                         },
                       ),
                       TextButton(
-                        child: Text("Inserir Pré-Diagnóstico"),
+                        child: Text("Inserir Pré-Atendimento"),
                         onPressed: () {
                           Navigator.pushReplacementNamed(
                               context, preDiagnosisRoute,
